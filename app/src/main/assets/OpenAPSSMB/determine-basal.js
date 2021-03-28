@@ -662,22 +662,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // add 30m to allow for insulin delivery (SMBs or temps)
     var insulinPeak5m = (insulinPeakTime/60)*12;
 
-    // MD: maxBolusPct code for UAM === START
     var predBGslengthDefault = Math.max(round((2*insulinPeak5m)+3),21); // = 27 (135 mins) for Fiasp, 30 (165 mins) for Novo/Humalog etc
     var predBGslength = predBGslengthDefault; // Set prediction length to default
 
-//    // If we have a TT of <= 5.5 (99) shorten the predictions, this can be used even for short automations now
-//    if (profile.temptargetSet && target_bg <= normalTarget) {
-//        predBGslengthDefault -= 1; // prediction bit shorter for anything 5.5 or less but not eatingsoon target(1h 35m)
-//        predBGslength = predBGslengthDefault; // this is now the default length in this TT
-//    }
-
     // If we are eating now shorten the predictions by 15 minutes
     if (eatingnow) {
-        predBGslengthDefault -= 3; // prediction shorter for anything 5.0 or less
+        predBGslengthDefault -= 3;
         predBGslength = predBGslengthDefault; // this is now the default length in this TT and SMB will use 80% when default length is in use
      }
-    //MD maxBolusPct code for UAM === END
 
     try {
         iobArray.forEach(function(iobTick) {
@@ -1213,42 +1205,36 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //MD: Bolus the insulinReq, up to maxBolus %, rounding down to nearest bolus increment
             var roundSMBTo = 1 / profile.bolus_increment;
             var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected
-            var maxBolusPct = 1; // set at maxBolus safety
 
-            if (eatingnow && eventualBG > target_bg) { // if we are eating now rising +0.16 and BGL prediction is higher than target
-                insulinReqPct = 0.70; // ths % is available to maxBolus as an SMB
+            // if we are eating now rising +0.16 and BGL prediction is higher than target
+            if (eatingnow && eventualBG > target_bg) {
+                insulinReqPct = 0.70; // default %
 
                 // insulin has already been boosted by the ISF adjustment increase insulinReq further if needed
                 var insulinReqBoost = 1 + Math.max(UAM_deltaAvgRise,0); // pct changes combined minimum of zero + 1 to allow multiply
-                var insulinReqBoostNoLimit = round(insulinReqBoost,2);
+                var insulinReqBoostNoLimit = round(insulinReqBoost,2); // used to see how big we could go!
                 insulinReqBoost = Math.min(insulinReqBoost,profile.EatingNowModeIRMax); // it can only ever be as high as EatingNowModeIRMax
 
-                // if current delta is not slowing enough compared to shortavg and insulinReq is low
+                // if current deltas indicate we need a boost and insulinReq is low we probably need insulin if eatingnow so add basal
                 if (insulinReqBoost > 1 && insulinReq < 0) {
-                    // If insulinReq is negative we probably need insulin if eatingsoon so add basal but keep SMB off, this will be boosted
                     insulinReq = basal;
-//                    insulinReqPct = 0;
+                    // insulinReqPct = 0; // keep SMB off for now while we test further
                 }
 
                 insulinReq = round(insulinReq * insulinReqBoost,2);
                 console.log("insulinReqoostNoLimit: " + insulinReqBoostNoLimit);
                 console.log("insulinReqBoost: " + insulinReqBoost);
 
-                // If we are eating soon allow larger maxBolus up to insulinReqPct of insulinReq
-                // The max-iob and maxbolus settings should be reviewed within the safety section of AAPS
-                // https://androidaps.readthedocs.io/en/latest/Usage/Open-APS-features.html#super-micro-bolus-smb
-                // maxBolus is allowed to go to this % of the insulinReq if bg is predicted to be higher
-                if (maxBolus < round(insulinReq * insulinReqPct,1)) {
-                    // only adjust maxbolus is we are within the hours specified
-                    if (now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) maxBolusPct = round((insulinReq * insulinReqPct) / maxBolus,2);
-                }
+                // only increase maxbolus limit if we are within the hours specified
+                if (now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) maxBolus = round(profile.EatingNowModeMaxbolus,1);
+
                 // If eating now and the rise is slowing turn off SMB for safety
                 if (UAM_deltaShortRise < 0) insulinReqPct = 0;
             }
 
 
             // boost insulinReq and maxBolus if required limited to EatingNowModeMaxbolus
-            var microBolus = Math.floor(Math.min(insulinReq * insulinReqPct ,maxBolus * maxBolusPct, profile.EatingNowModeMaxbolus)*roundSMBTo)/roundSMBTo;
+            var microBolus = Math.floor(Math.min(insulinReq * insulinReqPct ,maxBolus)*roundSMBTo)/roundSMBTo;
             // calculate a long enough zero temp to eventually correct back up to target
             var smbTarget = target_bg;
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
@@ -1293,7 +1279,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             rT.reason += " insulinReq " + insulinReq;
             if (typeof insulinReqBoost !=='undefined') rT.reason +=" (*"+ insulinReqBoostNoLimit +"/"+round(profile.EatingNowModeIRMax,2)+"@"+round(insulinReqPct*100,0)+"%)";
             if (microBolus >= maxBolus) {
-                rT.reason +=  "; maxBolus" + (Math.floor((maxBolus * maxBolusPct)*roundSMBTo)/roundSMBTo > maxBolus ? "^ ": " ") + Math.floor((maxBolus * maxBolusPct)*roundSMBTo)/roundSMBTo;
+                rT.reason +=  "; maxBolus" + (maxBolus = profile.EatingNowModeMaxbolus ? "^ ": " ") + maxBolus;
             }
             if (durationReq > 0) {
                 rT.reason += "; setting " + durationReq + "m low temp of " + smbLowTempReq + "U/h";
