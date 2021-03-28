@@ -184,7 +184,7 @@
                 android:key="@string/key_eatingnowmode_isfboost"
                 android:dialogMessage="Initial boost % for ISF to combat the rise."
                 android:title="Initial ISF Boost %"
-                validate:floatmaxNumber="1.5"
+                validate:floatmaxNumber="2.0"
                 validate:floatminNumber="1.0"
                 validate:testType="floatNumericRange"/>
 
