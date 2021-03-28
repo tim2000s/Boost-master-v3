@@ -278,6 +278,9 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
             resourceHelper.gs(R.string.key_hypo_target),
             resourceHelper.gs(R.string.key_activity_target),
             resourceHelper.gs(R.string.key_eatingsoon_target),
+            resourceHelper.gs(R.string.key_eatingsoon_small_target),
+            resourceHelper.gs(R.string.key_eatingsoon_medium_target),
+            resourceHelper.gs(R.string.key_eatingsoon_large_target),
             resourceHelper.gs(R.string.key_high_mark),
             resourceHelper.gs(R.string.key_low_mark)
         )

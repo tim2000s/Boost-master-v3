@@ -25,6 +25,7 @@ interface InsulinInterface : ConfigExportImportInterface{
     val friendlyName: String
     val comment: String
     val dia: Double
+    val peak: Int
 
     fun iobCalcForTreatment(treatment: Treatment, time: Long, dia: Double): Iob
 }
