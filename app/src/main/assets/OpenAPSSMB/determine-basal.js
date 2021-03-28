@@ -982,9 +982,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //rT.reason += "minGuardBG "+minGuardBG+"<"+threshold+": SMB disabled; ";
         enableSMB = false;
     }
-    if ( maxDelta > 0.30 * bg ) { //MD Allow SMB with larger delta %
-        console.error("maxDelta",convert_bg(maxDelta, profile),"> 30% of BG",convert_bg(bg, profile),"- disabling SMB");
-        rT.reason += "maxDelta "+convert_bg(maxDelta, profile)+" > 30% of BG "+convert_bg(bg, profile)+": SMB disabled; ";
+    if ( maxDelta > 0.20 * bg && ! eatingnow ) {
+        console.error("maxDelta",convert_bg(maxDelta, profile),"> 20% of BG",convert_bg(bg, profile),"- disabling SMB");
+        rT.reason += "maxDelta "+convert_bg(maxDelta, profile)+" > 20% of BG "+convert_bg(bg, profile)+": SMB disabled; ";
         enableSMB = false;
     }
 
