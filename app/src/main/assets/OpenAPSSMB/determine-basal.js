@@ -1255,7 +1255,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             durationReq = round(60*worstCaseInsulinReq / profile.current_basal);
 
             //MD: Only use minBolus if we dont have a TT
-            if (!profile.temptargetSet && !eatingnow) {
+            if (!profile.temptargetSet && !eatingnow && typeof liftISF === 'undefined') {
                 // Mackwe: If SMB dose < 500% TBR would deliver within 15 mins, use TBR instead of SMB
                 var maxTbrDoseMins = 15; // minutes for the TBR
                 var maxTbrDose = round((4*profile.current_basal)*(maxTbrDoseMins/60),4); //rounding this
