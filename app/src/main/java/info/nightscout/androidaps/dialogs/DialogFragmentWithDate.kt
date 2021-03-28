@@ -24,7 +24,7 @@ import javax.inject.Inject
 abstract class DialogFragmentWithDate : DaggerDialogFragment() {
 
     @Inject lateinit var aapsLogger: AAPSLogger
-    @Inject lateinit var sp: SP
+    @Inject open lateinit var sp: SP
     @Inject lateinit var dateUtil: DateUtil
 
     var eventTime = DateUtil.now()

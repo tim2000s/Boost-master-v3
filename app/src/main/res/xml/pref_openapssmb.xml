@@ -34,6 +34,11 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            android:key="openapsama_useautoisf"
+            android:title="@string/openapsama_useautoisf" />
+
+        <SwitchPreference
+            android:defaultValue="false"
             android:key="@string/key_use_smb"
             android:summary="@string/enablesmb_summary"
             android:title="@string/enablesmb" />
@@ -119,6 +124,12 @@
             android:summary="@string/enableuam_summary"
             android:title="@string/enableuam" />
 
+        <SwitchPreference
+            android:dependency="@string/key_use_uam"
+            android:defaultValue="false"
+            android:key="@string/key_use_ghostcob"
+            android:summary="Ignore all COB entries and rely purely on UAM for predictions"
+            android:title="Enable GhostCOB"/>
 
         <SwitchPreference
             android:defaultValue="true"
@@ -133,7 +144,7 @@
         <!-- TODO AS-FIX -->
         <SwitchPreference
             android:defaultValue="false"
-            android:enabled="false"
+            android:enabled="true"
             android:key="@string/key_high_temptarget_raises_sensitivity"
             android:summary="@string/high_temptarget_raises_sensitivity_summary"
             android:title="@string/high_temptarget_raises_sensitivity_title" />
@@ -141,10 +152,93 @@
         <!-- TODO AS-FIX -->
         <SwitchPreference
             android:defaultValue="false"
-            android:enabled="false"
+            android:enabled="true"
             android:key="@string/key_low_temptarget_lowers_sensitivity"
             android:summary="@string/low_temptarget_lowers_sensitivity_summary"
             android:title="@string/low_temptarget_lowers_sensitivity_title" />
+
+
+        <androidx.preference.PreferenceScreen
+            android:key="eatingnowmode_options"
+            android:title="Eating Now Mode">
+
+            <SwitchPreference
+                android:defaultValue="false"
+                android:key="@string/key_use_eatingnowmode"
+                android:summary="Eating Soon Mode will be always on during the time range specified."
+                android:title="Eating Now Mode"/>
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="5"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnowmode_iob"
+                android:dialogMessage="IOB required to activate Eating Now Mode"
+                android:title="IOB Trigger"
+                validate:floatmaxNumber="25.0"
+                validate:floatminNumber="0.1"
+                validate:testType="floatNumericRange"/>
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="1.0"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnowmode_isfboost"
+                android:dialogMessage="Initial boost % for ISF to combat the rise."
+                android:title="Initial ISF Boost %"
+                validate:floatmaxNumber="1.5"
+                validate:floatminNumber="1.0"
+                validate:testType="floatNumericRange"/>
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="1.0"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnowmode_insulinreqpct_max"
+                android:dialogMessage="Max multiplier for insulin required should the ISF boost not suffice."
+                android:title="Max Insulin Boost %"
+                validate:floatmaxNumber="2.5"
+                validate:floatminNumber="1.0"
+                validate:testType="floatNumericRange"/>
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="0.5"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnowmode_maxbolus"
+                android:dialogMessage="Maximum that maxbolus can go to within Eating Soon."
+                android:title="Maxbolus Limit"
+                validate:floatmaxNumber="3"
+                validate:floatminNumber="0.1"
+                validate:testType="floatNumericRange"/>
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="0.3"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnowmode_iobmax"
+                android:dialogMessage="This will use a percentage of max-iob and suspend EatingNow until IOB limit is lower."
+                android:title="Max IOB Percentage"
+                validate:floatmaxNumber="1"
+                validate:floatminNumber="0.1"
+                validate:testType="floatNumericRange"/>
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="9"
+                android:dialogMessage="Enter Eating Now start time in 24h e.g. 9AM is 9"
+                android:inputType="number"
+                android:key="@string/key_eatingnowmode_timestart"
+                android:title="Active Start Time"
+                validate:maxNumber="23"
+                validate:minNumber="0"
+                validate:testType="numericRange" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="17"
+                android:dialogMessage="Enter Eating Now end time in 24h e.g. 5PM is 17"
+                android:inputType="number"
+                android:key="@string/key_eatingnowmode_timeend"
+                android:title="Active End Time"
+                validate:maxNumber="23"
+                validate:minNumber="0"
+                validate:testType="numericRange" />
+
+        </androidx.preference.PreferenceScreen>
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="1"

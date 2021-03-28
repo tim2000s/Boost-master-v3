@@ -18,6 +18,7 @@ class BuildHelper @Inject constructor(private val config: Config) {
         val engineeringModeSemaphore = File(extFilesDir, "engineering__mode")
 
         engineeringMode = engineeringModeSemaphore.exists() && engineeringModeSemaphore.isFile
+        engineeringMode = true //MD This is just easier :)
         devBranch = BuildConfig.VERSION.contains("-") || BuildConfig.VERSION.matches(Regex(".*[a-zA-Z]+.*"))
     }
 

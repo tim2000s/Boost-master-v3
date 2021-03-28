@@ -162,7 +162,8 @@ class WizardDialog : DaggerDialogFragment() {
         binding.bgtrendcheckbox.setOnCheckedChangeListener(::onCheckedChanged)
         binding.sbcheckbox.setOnCheckedChangeListener(::onCheckedChanged)
 
-        val showCalc = sp.getBoolean(R.string.key_wizard_calculation_visible, false)
+        // val showCalc = sp.getBoolean(R.string.key_wizard_calculation_visible, false)
+        val showCalc = false //MD#04: Initial view is no visible calc options
         binding.delimiter.visibility = showCalc.toVisibility()
         binding.resulttable.visibility = showCalc.toVisibility()
         binding.calculationcheckbox.isChecked = showCalc
@@ -230,6 +231,15 @@ class WizardDialog : DaggerDialogFragment() {
     private fun loadCheckedStates() {
         binding.bgtrendcheckbox.isChecked = sp.getBoolean(R.string.key_wizard_include_trend_bg, false)
         binding.cobcheckbox.isChecked = sp.getBoolean(R.string.key_wizard_include_cob, false)
+        //MD#04: Uncheck the following when calculator loads
+        binding.bolusiobcheckbox.isChecked = false
+        binding.basaliobcheckbox.isChecked = false
+        binding.bgcheckbox.isChecked = false
+        binding.cobcheckbox.isChecked = false
+        binding.sbcheckbox.isChecked = false
+        binding.ttcheckbox.isChecked = false
+        binding.bgtrendcheckbox.isChecked = false
+        binding.alarm.isChecked = false
     }
 
     private fun initDialog() {
