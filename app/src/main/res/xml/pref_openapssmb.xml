@@ -181,10 +181,10 @@
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="1.0"
                 android:inputType="numberDecimal"
-                android:key="@string/key_eatingnowmode_isfboost"
-                android:dialogMessage="Initial boost % for ISF to combat the rise."
-                android:title="Initial ISF Boost %"
-                validate:floatmaxNumber="1.5"
+                android:key="@string/key_eatingnowmode_isfboost_max"
+                android:dialogMessage="Max ISF boost % to combat the rise. 1 is 100% therefore disabled."
+                android:title="Max ISF Boost %"
+                validate:floatmaxNumber="2.0"
                 validate:floatminNumber="1.0"
                 validate:testType="floatNumericRange"/>
 
@@ -192,7 +192,7 @@
                 android:defaultValue="1.0"
                 android:inputType="numberDecimal"
                 android:key="@string/key_eatingnowmode_insulinreqpct_max"
-                android:dialogMessage="Max multiplier for insulin required should the ISF boost not suffice."
+                android:dialogMessage="Max multiplier for insulin required should the ISF boost not suffice. 1 is 100% therefore disabled."
                 android:title="Max Insulin Boost %"
                 validate:floatmaxNumber="2.5"
                 validate:floatminNumber="1.0"

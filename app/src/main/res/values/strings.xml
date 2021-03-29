@@ -1406,7 +1406,7 @@
     <string name="eatingsoon_large_target">eatingsoon large target</string>
     <string name="key_use_eatingnowmode">key_use_eatingnowmode</string>
     <string name="key_eatingnowmode_iob">key_eatingnowmode_iob</string>
-    <string name="key_eatingnowmode_isfboost">key_eatingnowmode_isfboost</string>
+    <string name="key_eatingnowmode_isfboost_max">key_eatingnowmode_isfboost_max</string>
     <string name="key_eatingnowmode_insulinreqpct_max">key_eatingnowmode_insulinreqpct_max</string>
     <string name="key_eatingnowmode_maxbolus">key_eatingnowmode_maxbolus</string>
     <string name="key_eatingnowmode_iobmax">key_eatingnowmode_iobmax</string>

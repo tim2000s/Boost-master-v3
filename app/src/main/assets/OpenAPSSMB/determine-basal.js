@@ -287,6 +287,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.log("UAM_deltaShortRise: " + UAM_deltaShortRise);
     console.log("UAM_deltaLongRise: " + UAM_deltaLongRise);
     console.log("UAM_deltaAvgRise: " + UAM_deltaAvgRise);
+
+    var UAMBoost = round(1 + Math.max(UAM_deltaAvgRise,0),2); // pct changes combined minimum of zero + 1 to allow multiply
+    console.log("UAMBoost: " + UAMBoost);
     //MD: Eating now mode for UAM === END
 
     var sensitivityRatio;
@@ -385,7 +388,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
     console.error("; CR:",profile.carb_ratio);
-    if (eatingnow) sens = sens / profile.EatingNowModeISFBoost; // we want to change the ISF for predictions and initial insulinReq but not the basal to ensure more accurate IOB
+    if (eatingnow) sens = sens / Math.min(UAMBoost,profile.EatingNowModeISFBoostMax); // we want to change the ISF for predictions and initial insulinReq but not the basal to ensure more accurate IOB
     sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio, eatingnow);
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
@@ -916,7 +919,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", ISF: " + convert_bg(sens, profile) + (sens < profile_sens && eatingnow ? " ("+profile.EatingNowModeISFBoost+")":"") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", ISF: " + convert_bg(sens, profile) + (sens < profile_sens && eatingnow ? " ("+UAMBoost+"/"+profile.EatingNowModeISFBoostMax+")":"") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
     rT.reason += ", AS: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     if (typeof liftISF !== 'undefined') rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     if (lastCOBpredBG > 0) {
@@ -1211,9 +1214,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReqPct = 0.70; // default %
 
                 // insulin has already been boosted by the ISF adjustment increase insulinReq further if needed
-                var insulinReqBoost = 1 + Math.max(UAM_deltaAvgRise,0); // pct changes combined minimum of zero + 1 to allow multiply
-                var insulinReqBoostNoLimit = round(insulinReqBoost,2); // used to see how big we could go!
-                insulinReqBoost = Math.min(insulinReqBoost,profile.EatingNowModeIRMax); // it can only ever be as high as EatingNowModeIRMax
+                var insulinReqBoost = Math.min(UAMBoost,profile.EatingNowModeIRMax); // it can only ever be as high as EatingNowModeIRMax
 
                 // if current deltas indicate we need a boost and insulinReq is low we probably need insulin if eatingnow so add basal
                 if (insulinReqBoost > 1 && insulinReq < 0) {
@@ -1222,7 +1223,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 insulinReq = round(insulinReq * insulinReqBoost,2);
-                console.log("insulinReqoostNoLimit: " + insulinReqBoostNoLimit);
                 console.log("insulinReqBoost: " + insulinReqBoost);
 
                 // only increase maxbolus limit if we are within the hours specified
@@ -1277,7 +1277,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 durationReq = 30;
             }
             rT.reason += " insulinReq " + insulinReq;
-            if (typeof insulinReqBoost !=='undefined') rT.reason +=" (*"+ insulinReqBoostNoLimit +"/"+round(profile.EatingNowModeIRMax,2)+"@"+round(insulinReqPct*100,0)+"%)";
+            if (typeof insulinReqBoost !=='undefined') rT.reason +=" (*"+ UAMBoost +"/"+round(profile.EatingNowModeIRMax,2)+"@"+round(insulinReqPct*100,0)+"%)";
             if (microBolus >= maxBolus) {
                 rT.reason +=  "; maxBolus" + (maxBolus = profile.EatingNowModeMaxbolus ? "^ ": " ") + maxBolus;
             }
