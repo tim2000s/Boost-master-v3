@@ -388,7 +388,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
     console.error("; CR:",profile.carb_ratio);
-    if (eatingnow) sens = sens / Math.min(UAMBoost,profile.EatingNowModeISFBoostMax); // we want to change the ISF for predictions and initial insulinReq but not the basal to ensure more accurate IOB
+    if (eatingnow) sens = sens / Math.min(UAMBoost,profile.EatingNowModeISFMax); // we want to change the ISF for predictions and initial insulinReq but not the basal to ensure more accurate IOB
     sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio, eatingnow);
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
@@ -919,7 +919,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", ISF: " + convert_bg(sens, profile) + (sens < profile_sens && eatingnow ? " ("+UAMBoost+"/"+profile.EatingNowModeISFBoostMax+")":"") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", ISF: " + convert_bg(sens, profile) + (sens < profile_sens && eatingnow ? " ("+UAMBoost+"/"+profile.EatingNowModeISFMax+")":"") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
     rT.reason += ", AS: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     if (typeof liftISF !== 'undefined') rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     if (lastCOBpredBG > 0) {
