@@ -1216,8 +1216,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // insulin has already been boosted by the ISF adjustment increase insulinReq further if needed
                 var insulinReqBoost = Math.min(UAMBoost,profile.EatingNowModeIRMax); // it can only ever be as high as EatingNowModeIRMax
 
-                // if current deltas indicate we need a boost and insulinReq is low we probably need insulin if eatingnow so add basal
-                if (insulinReqBoost > 1 && insulinReq < 0) {
+                // if current deltas indicate we need a boost and insulinReq is low we probably need insulin if eatingnow so start with basal and boost if settings allow
+                if (UAMBoost > 2 && insulinReq < 0) {
                     insulinReq = basal;
                     // insulinReqPct = 0; // keep SMB off for now while we test further
                 }
