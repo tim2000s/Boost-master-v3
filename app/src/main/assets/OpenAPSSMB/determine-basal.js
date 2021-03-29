@@ -665,11 +665,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var predBGslengthDefault = Math.max(round((2*insulinPeak5m)+3),21); // = 27 (135 mins) for Fiasp, 30 (165 mins) for Novo/Humalog etc
     var predBGslength = predBGslengthDefault; // Set prediction length to default
 
-    // If we are eating now shorten the predictions by 15 minutes
-    if (eatingnow) {
-        predBGslengthDefault -= 3;
-        predBGslength = predBGslengthDefault; // this is now the default length in this TT and SMB will use 80% when default length is in use
-     }
+//    // If we are eating now shorten the predictions by 15 minutes
+//    if (eatingnow) {
+//        predBGslengthDefault -= 3;
+//        predBGslength = predBGslengthDefault; // this is now the default length in this TT and SMB will use 80% when default length is in use
+//     }
 
     try {
         iobArray.forEach(function(iobTick) {
