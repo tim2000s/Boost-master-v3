@@ -919,7 +919,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", ISF: " + convert_bg(sens, profile) + (sens < profile_sens && eatingnow ? " ("+profile.EatingNowModeISFBoost+")":"") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", ISF: " + convert_bg(sens, profile) + (sens < profile_sens && eatingnow ? " ("+ISFBoostTest+")":"") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
     rT.reason += ", AS: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     if (typeof liftISF !== 'undefined') rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     if (lastCOBpredBG > 0) {
