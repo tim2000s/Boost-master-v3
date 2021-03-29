@@ -219,6 +219,16 @@
                 validate:testType="floatNumericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="0.5"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnowmode_insulinreq"
+                android:dialogMessage="This will be the percentage used for insulinReq that will be available as an SMB. Maxbolus Limit is still applicable."
+                android:title="InsulinReq Percentage"
+                validate:floatmaxNumber="1"
+                validate:floatminNumber="0.1"
+                validate:testType="floatNumericRange"/>
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="9"
                 android:dialogMessage="Enter Eating Now start time in 24h e.g. 9AM is 9"
                 android:inputType="number"

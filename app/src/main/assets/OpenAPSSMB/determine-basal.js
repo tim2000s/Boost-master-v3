@@ -1211,7 +1211,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             // if we are eating now rising +0.16 and BGL prediction is higher than target
             if (eatingnow && eventualBG > target_bg) {
-                insulinReqPct = 0.70; // default %
+                insulinReqPct = profile.EatingNowModeInsulinReq; // default % from settings
 
                 // insulin has already been boosted by the ISF adjustment increase insulinReq further if needed
                 var insulinReqBoost = Math.min(UAMBoost,profile.EatingNowModeIRMax); // it can only ever be as high as EatingNowModeIRMax

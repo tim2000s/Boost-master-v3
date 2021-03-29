@@ -312,6 +312,7 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("EatingNowModeIRMax", sp.getDouble(R.string.key_eatingnowmode_insulinreqpct_max, 1.0));
         mProfile.put("EatingNowModeMaxbolus", sp.getDouble(R.string.key_eatingnowmode_maxbolus, 0.5));
         mProfile.put("EatingNowModeIOBMax", sp.getDouble(R.string.key_eatingnowmode_iobmax, 0.3));
+        mProfile.put("EatingNowModeInsulinReq", sp.getDouble(R.string.key_eatingnowmode_insulinreq, 0.5));
         mProfile.put("EatingNowModeTimeStart", sp.getDouble(R.string.key_eatingnowmode_timestart, 9));
         mProfile.put("EatingNowModeTimeEnd", sp.getDouble(R.string.key_eatingnowmode_timeend, 17));
         // patches ==== END
