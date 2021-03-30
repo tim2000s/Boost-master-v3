@@ -665,14 +665,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // add 30m to allow for insulin delivery (SMBs or temps)
     var insulinPeak5m = (insulinPeakTime/60)*12;
 
-    var predBGslengthDefault = Math.max(round((2*insulinPeak5m)+3),21); // = 27 (135 mins) for Fiasp, 30 (165 mins) for Novo/Humalog etc
+    var predBGslengthDefault = Math.max(round((2*insulinPeak5m)+3),30); // minimum of 2h 30 mins
     var predBGslength = predBGslengthDefault; // Set prediction length to default
-
-//    // If we are eating now shorten the predictions by 15 minutes
-//    if (eatingnow) {
-//        predBGslengthDefault -= 3;
-//        predBGslength = predBGslengthDefault; // this is now the default length in this TT and SMB will use 80% when default length is in use
-//     }
 
     try {
         iobArray.forEach(function(iobTick) {
@@ -715,11 +709,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             UAMpredBG = UAMpredBGs[UAMpredBGs.length-1] + predBGI + Math.min(0, predDev) + predUCI;
             //console.error(predBGI, predCI, predUCI);
-            if ( IOBpredBGs.length <= predBGslength) { IOBpredBGs.push(IOBpredBG); } //MD#02
-            if ( COBpredBGs.length <= predBGslength) { COBpredBGs.push(COBpredBG); } //MD#02
-            if ( aCOBpredBGs.length <= predBGslength) { aCOBpredBGs.push(aCOBpredBG); } //MD#02
-            if ( UAMpredBGs.length <= predBGslength) { UAMpredBGs.push(UAMpredBG); } //MD#02
-            if ( ZTpredBGs.length <= predBGslength) { ZTpredBGs.push(ZTpredBG); } //MD#02
+            if ( IOBpredBGs.length <= predBGslength) { IOBpredBGs.push(IOBpredBG); }
+            if ( COBpredBGs.length <= predBGslength) { COBpredBGs.push(COBpredBG); }
+            if ( aCOBpredBGs.length <= predBGslength) { aCOBpredBGs.push(aCOBpredBG); }
+            if ( UAMpredBGs.length <= predBGslength) { UAMpredBGs.push(UAMpredBG); }
+            if ( ZTpredBGs.length <= predBGslength) { ZTpredBGs.push(ZTpredBG); }
 
             // calculate minGuardBGs without a wait from COB, UAM, IOB predBGs
             if ( COBpredBG < minCOBGuardBG ) { minCOBGuardBG = round(COBpredBG); }
@@ -740,7 +734,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // wait 85-105m before setting COB and 60m for UAM minPredBGs
             if ( (cid || remainingCIpeak > 0) && COBpredBGs.length > insulinPeak5m && (COBpredBG < minCOBPredBG) ) { minCOBPredBG = round(COBpredBG); }
             if ( (cid || remainingCIpeak > 0) && COBpredBG > maxIOBPredBG ) { maxCOBPredBG = COBpredBG; }
-            if ( enableUAM && UAMpredBGs.length > 6 && (UAMpredBG < minUAMPredBG) ) { minUAMPredBG = round(UAMpredBG); }
+            if ( enableUAM && UAMpredBGs.length > 12 && (UAMpredBG < minUAMPredBG) ) { minUAMPredBG = round(UAMpredBG); }
             if ( enableUAM && UAMpredBG > maxIOBPredBG ) { maxUAMPredBG = UAMpredBG; }
         });
         // set eventualBG to include effect of carbs
@@ -812,7 +806,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // set eventualBG based on COB or UAM predBGs
         rT.eventualBG = eventualBG;
     }
-
     console.error("UAM Impact:",uci,"mg/dL per 5m; UAM Duration:",UAMduration,"hours");
 
 
@@ -977,9 +970,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //rT.reason += "minGuardBG "+minGuardBG+"<"+threshold+": SMB disabled; ";
         enableSMB = false;
     }
-    if ( maxDelta > 0.20 * bg && ! eatingnow ) {
-        console.error("maxDelta",convert_bg(maxDelta, profile),"> 20% of BG",convert_bg(bg, profile),"- disabling SMB");
-        rT.reason += "maxDelta "+convert_bg(maxDelta, profile)+" > 20% of BG "+convert_bg(bg, profile)+": SMB disabled; ";
+    if ( maxDelta > 0.30 * bg ) {
+        console.error("maxDelta",convert_bg(maxDelta, profile),"> 30% of BG",convert_bg(bg, profile),"- disabling SMB");
+        rT.reason += "maxDelta "+convert_bg(maxDelta, profile)+" > 30% of BG "+convert_bg(bg, profile)+": SMB disabled; ";
         enableSMB = false;
     }
 
