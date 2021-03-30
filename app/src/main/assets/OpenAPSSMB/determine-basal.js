@@ -1226,7 +1226,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReq = round(insulinReq * insulinReqBoost,2);
                 console.log("insulinReqBoost: " + insulinReqBoost);
 
-                // only increase maxbolus limit if we are within the hours specified and rise not slowing
+                // only increase maxbolus limit if we are within the hours specified and rise not slowing (this may get a quicker result)
                 if (now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) maxBolus = (UAM_deltaShortRise < 0 ? maxBolus : round(profile.EatingNowModeMaxbolus,1));
                 // if (now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) maxBolus = round(profile.EatingNowModeMaxbolus,1);
 
