@@ -1219,6 +1219,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // if current deltas indicate we need a boost and insulinReq is low we probably need insulin if eatingnow so start with basal and boost if settings allow
                 if (UAMBoost > 2 && insulinReq < 0) {
                     insulinReq = basal;
+                    rT.reason += "basal + ";
                     // insulinReqPct = 0; // keep SMB off for now while we test further
                 }
 
@@ -1276,8 +1277,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 smbLowTempReq = round( basal * durationReq/30 ,2);
                 durationReq = 30;
             }
-            rT.reason += " insulinReq " + insulinReq;
-            if (typeof insulinReqBoost !=='undefined') rT.reason +=" (*"+ UAMBoost +"/"+round(profile.EatingNowModeIRMax,2)+"@"+round(insulinReqPct*100,0)+"%)";
+            rT.reason += " insulinReq " + insulinReq + +"@"+round(insulinReqPct*100,0)+"%)";
+            if (UAMBoost > 1) rT.reason +=" (*"+ UAMBoost +"/"+round(profile.EatingNowModeIRMax,2);
             if (microBolus >= maxBolus) {
                 rT.reason +=  "; maxBolus" + (maxBolus == profile.EatingNowModeMaxbolus ? "^ ": " ") + maxBolus;
             }
