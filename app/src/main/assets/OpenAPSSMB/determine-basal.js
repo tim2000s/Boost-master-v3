@@ -1201,11 +1201,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //MD: Bolus the insulinReq, up to maxBolus %, rounding down to nearest bolus increment
             var roundSMBTo = 1 / profile.bolus_increment;
             var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected
-            var scaleSMB = 1/(target_bg/(UAMpredBG-target_bg)); // modified to allow multiplication
-            var insulinReqBoost = 1; // start as no boost
 
             // if we are eating now rising +0.16 and BGL prediction is higher than target
             if (eatingnow && eventualBG > target_bg) {
+                var scaleSMB = 1/(target_bg/(UAMpredBG-target_bg)); // used when UAMpredBG is twice the target_bg, modified to allow multiplication
+                var insulinReqBoost = 1; // start as no boost
                 insulinReqPct = profile.EatingNowModeInsulinReq; // default % from settings
 
                 // insulin may have already been boosted by the ISF adjustment increase insulinReq further if needed
