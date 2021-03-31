@@ -1201,6 +1201,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //MD: Bolus the insulinReq, up to maxBolus %, rounding down to nearest bolus increment
             var roundSMBTo = 1 / profile.bolus_increment;
             var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected
+            var scaleSMB = 1/(target_bg/(UAMpredBG-target_bg)); // modified to allow multiplication
 
             // if we are eating now rising +0.16 and BGL prediction is higher than target
             if (eatingnow && eventualBG > target_bg) {
@@ -1215,6 +1216,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.reason += "basal + ";
                     // insulinReqPct = 0; // keep SMB off for now while we test further
                 }
+
+                if (UAM_deltaShortRise > 0 && scaleSMB < 1 && scaleSMB > 0) insulinReqBoost = scaleSMB;
 
                 insulinReq = round(insulinReq * insulinReqBoost,2);
                 console.log("insulinReqBoost: " + insulinReqBoost);
