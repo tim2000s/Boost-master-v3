@@ -1202,13 +1202,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var roundSMBTo = 1 / profile.bolus_increment;
             var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected
             var scaleSMB = 1/(target_bg/(UAMpredBG-target_bg)); // modified to allow multiplication
+            var insulinReqBoost = 1; // start as no boost
 
             // if we are eating now rising +0.16 and BGL prediction is higher than target
             if (eatingnow && eventualBG > target_bg) {
                 insulinReqPct = profile.EatingNowModeInsulinReq; // default % from settings
 
                 // insulin has already been boosted by the ISF adjustment increase insulinReq further if needed
-                var insulinReqBoost = Math.min(UAMBoost,profile.EatingNowModeIRMax); // it can only ever be as high as EatingNowModeIRMax
+                var insulinReqBoost = UAMBoost;
 
                 // if current deltas indicate we need a boost and insulinReq is low we probably need insulin if eatingnow so start with basal and boost if settings allow
                 if (UAMBoost > 2 && insulinReq < 0) {
@@ -1219,6 +1220,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 if (UAM_deltaShortRise > 0 && scaleSMB < 1 && scaleSMB > 0) insulinReqBoost = scaleSMB;
 
+                insulinReqBoost = Math.min(insulinReqBoost,profile.EatingNowModeIRMax); // it can only ever be as high as EatingNowModeIRMax
                 insulinReq = round(insulinReq * insulinReqBoost,2);
                 console.log("insulinReqBoost: " + insulinReqBoost);
 
