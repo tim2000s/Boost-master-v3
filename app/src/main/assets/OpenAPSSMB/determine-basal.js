@@ -1217,7 +1217,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // insulinReqPct = 0; // keep SMB off for now while we test further
                 }
 
-                //If UAM_bg is large enough to scale a bolus, scale by scaleSMB up to maxBolus
+                //If UAM_bg is large enough to scale a bolus, scale by scaleSMB up to EatingNowModeMaxbolus
                 if (UAM_deltaShortRise > 0 && scaleSMB > 1) insulinReqBoost = scaleSMB;
 
                 insulinReqBoost = Math.min(insulinReqBoost,profile.EatingNowModeIRMax); // it can only ever be as high as EatingNowModeIRMax
@@ -1225,7 +1225,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("insulinReqBoost: " + insulinReqBoost);
 
                 // only increase maxbolus limit if we are within the hours specified and rise not slowing (this may get a quicker result)
-                if (now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) maxBolus = (UAM_deltaShortRise < 0 ? maxBolus : round(profile.EatingNowModeMaxbolus,1));
+                if (now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) maxBolus = (UAM_deltaShortRise > 0 ? round(profile.EatingNowModeMaxbolus,1) : maxBolus);
                 // if (now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) maxBolus = round(profile.EatingNowModeMaxbolus,1);
 
                 // If eating now and the rise is slowing turn off SMB for safety
