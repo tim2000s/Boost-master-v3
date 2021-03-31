@@ -1211,9 +1211,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var insulinReqBoost = UAMBoost;
 
                 // if current deltas indicate we need a boost and insulinReq is low we probably need insulin if eatingnow so start with basal and boost if settings allow
-                if (UAMBoost > 2 && insulinReq < 0) {
+                if (UAMBoost > 1 && insulinReq < 0) {
                     insulinReq = basal;
-                    rT.reason += "basal + ";
+                    rT.reason += "basal+";
                     // insulinReqPct = 0; // keep SMB off for now while we test further
                 }
 
