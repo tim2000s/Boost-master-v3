@@ -1218,7 +1218,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // insulinReqPct = 0; // keep SMB off for now while we test further
                 }
 
-                if (UAM_deltaShortRise > 0 && scaleSMB < 1 && scaleSMB > 0) insulinReqBoost = scaleSMB;
+                if (UAM_deltaShortRise > 0 && scaleSMB > 1) insulinReqBoost = scaleSMB;
 
                 insulinReqBoost = Math.min(insulinReqBoost,profile.EatingNowModeIRMax); // it can only ever be as high as EatingNowModeIRMax
                 insulinReq = round(insulinReq * insulinReqBoost,2);
