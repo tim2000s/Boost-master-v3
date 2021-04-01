@@ -195,7 +195,7 @@
                 android:dialogMessage="Max multiplier for insulin required should the ISF boost not suffice.\n0 is unlimited and maxBolus will be used.\n1 is 100% therefore disabled."
                 android:title="Max Insulin Boost %"
                 validate:floatmaxNumber="2.5"
-                validate:floatminNumber="1.0"
+                validate:floatminNumber="0"
                 validate:testType="floatNumericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
