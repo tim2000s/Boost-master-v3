@@ -1211,18 +1211,18 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // insulin may have already been boosted by the ISF adjustment increase insulinReq further if needed
                 insulinReqBoost = UAMBoost;
 
-                // if current deltas indicate we need a boost and insulinReq is low we probably need insulin if eatingnow so start with basal and boost if settings allow
-                if (UAMBoost > 1.1 && insulinReq < 0) {
-                    insulinReq = basal;
-                    rT.reason += "basal+";
-                    // insulinReqPct = 0; // keep SMB off for now while we test further
-                }
-
                 //If UAM_bg is large enough to scale a bolus, scale by scaleSMB up to EatingNowModeMaxbolus
                 if (UAM_deltaShortRise >= 0 && scaleSMB > 1) {
                     insulinReqBoost = scaleSMB;
                     rT.reason += "scaleSMB+";
                     console.log("scaleSMB: " + scaleSMB);
+                }
+
+                // if current deltas indicate we need a boost and insulinReq is low we probably need insulin if eatingnow so start with basal and boost if settings allow
+                if (UAMBoost > 1.1 || scaleSMB >1 && insulinReq < 0) {
+                    insulinReq = basal;
+                    rT.reason += "basal+";
+                    // insulinReqPct = 0; // keep SMB off for now while we test further
                 }
 
                 // Restrict insulinReqBoost to a max of EatingNowModeIRBMax if it is above 0
