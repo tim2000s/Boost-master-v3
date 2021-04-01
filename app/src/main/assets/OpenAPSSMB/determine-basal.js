@@ -1201,10 +1201,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var roundSMBTo = 1 / profile.bolus_increment;
             var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected
             var EatingNowModeMaxbolus = round( profile.current_basal * profile.EatingNowModeMaxbolusMinutes / 60 ,1);
+            var scaleSMB = 1/(target_bg/(UAMpredBG-target_bg)); // used when UAMpredBG is twice the target_bg, modified to allow multiplication
 
             // if we are eating now rising +0.16 and BGL prediction is higher than target
             if (eatingnow && eventualBG > target_bg) {
-                var scaleSMB = 1/(target_bg/(UAMpredBG-target_bg)); // used when UAMpredBG is twice the target_bg, modified to allow multiplication
                 var insulinReqBoost = 1; // start as no boost
                 insulinReqPct = profile.EatingNowModeInsulinReq; // default % from settings
 
@@ -1266,8 +1266,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
              }
 
             // if insulinReq > 0 but not enough for a microBolus, don't set an SMB zero temp
-//            if (insulinReq > 0 && microBolus < profile.bolus_increment || microBolus > 0 && insulinReq - microBolus >= 0) {
-            if (insulinReq > 0 && microBolus < profile.bolus_increment) { // try this
+            if (insulinReq > 0 && microBolus < profile.bolus_increment || microBolus > 0 && insulinReq - microBolus >= 0 && scaleSMB >1) {
                 durationReq = 0;
             }
 
@@ -1307,9 +1306,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (microBolus > 0) {
                     rT.units = microBolus;
                     rT.reason += "Microbolusing " + microBolus + "U. ";
-//                    insulinReq = insulinReq - microBolus;
-//                    // Mackwe: rate required to deliver remaining insulinReq over 20m:
-//                    rate = round(Math.max(basal + (3 * insulinReq),0),2);
+                    insulinReq = insulinReq - microBolus;
+                    // Mackwe: rate required to deliver remaining insulinReq over 20m:
+                    if (scaleSMB >1) rate = round(Math.max(basal + (3 * insulinReq),0),2);
                 }
             } else {
                 rT.reason += "Waiting " + nextBolusMins + "m " + nextBolusSeconds + "s to microbolus again. ";
