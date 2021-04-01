@@ -664,7 +664,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // add 30m to allow for insulin delivery (SMBs or temps)
     var insulinPeak5m = (insulinPeakTime/60)*12;
 
-    var predBGslengthDefault = Math.max(round((2*insulinPeak5m)+3),30); // minimum of 2h 30 mins
+    var predBGslengthDefault = Math.max(round((2*insulinPeak5m)+3),35); // minimum of 2h 30 mins
     var predBGslength = predBGslengthDefault; // Set prediction length to default
 
     try {
