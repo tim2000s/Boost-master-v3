@@ -199,14 +199,18 @@
                 validate:testType="floatNumericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0.5"
-                android:inputType="numberDecimal"
-                android:key="@string/key_eatingnowmode_maxbolus"
-                android:dialogMessage="Maximum that maxbolus can go to within Eating Soon."
-                android:title="Maxbolus Limit"
-                validate:floatmaxNumber="3"
-                validate:floatminNumber="0.1"
-                validate:testType="floatNumericRange"/>
+                android:defaultValue="30"
+                android:digits="0123456789"
+                android:inputType="number"
+                android:key="@string/key_eatingnowmode_maxbolusminutes"
+                android:dialogMessage="SMB Max minutes for Eating Now"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="Max minutes of basal to limit SMB to for Eating Now"
+                validate:floatmaxNumber="240"
+                validate:floatminNumber="15"
+                validate:testType="numericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="0.3"

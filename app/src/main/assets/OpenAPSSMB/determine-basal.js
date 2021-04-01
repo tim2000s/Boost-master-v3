@@ -1203,6 +1203,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             // if we are eating now rising +0.16 and BGL prediction is higher than target
             if (eatingnow && eventualBG > target_bg) {
+                var EatingNowModeMaxbolus = round( profile.current_basal * profile.EatingNowModeMaxbolusMinutes / 60 ,1);
                 var scaleSMB = 1/(target_bg/(UAMpredBG-target_bg)); // used when UAMpredBG is twice the target_bg, modified to allow multiplication
                 var insulinReqBoost = 1; // start as no boost
                 insulinReqPct = profile.EatingNowModeInsulinReq; // default % from settings
@@ -1230,7 +1231,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("insulinReqBoost: " + insulinReqBoost);
 
                 // only increase maxbolus limit if we are within the hours specified and rise not slowing (this may get a quicker result)
-                if (now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) maxBolus = (UAM_deltaShortRise > 0 ? round(profile.EatingNowModeMaxbolus,1) : maxBolus);
+                if (now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) maxBolus = (UAM_deltaShortRise > 0 ? EatingNowModeMaxbolus : maxBolus);
                 // if (now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) maxBolus = round(profile.EatingNowModeMaxbolus,1);
 
                 // If eating now and the rise is slowing turn off SMB for safety
@@ -1284,7 +1285,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             rT.reason += " insulinReq " + insulinReq + "@"+round(insulinReqPct*100,0)+"%";
             if (eatingnow && UAMBoost >1) rT.reason +=" (*"+ UAMBoost +"/"+round(profile.EatingNowModeIRBMax,2)+")";
             if (microBolus >= maxBolus) {
-                rT.reason +=  "; maxBolus" + (maxBolus == profile.EatingNowModeMaxbolus ? "^ ": " ") + maxBolus;
+                rT.reason +=  "; maxBolus" + (maxBolus == EatingNowModeMaxbolus ? "^ ": " ") + maxBolus;
             }
             if (durationReq > 0) {
                 rT.reason += "; setting " + durationReq + "m low temp of " + smbLowTempReq + "U/h";
