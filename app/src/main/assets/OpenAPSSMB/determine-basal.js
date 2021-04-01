@@ -1220,7 +1220,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 //If UAM_bg is large enough to scale a bolus, scale by scaleSMB up to EatingNowModeMaxbolus
                 if (UAM_deltaShortRise > 0 && scaleSMB > 1) insulinReqBoost = scaleSMB;
 
-                insulinReqBoost = Math.min(insulinReqBoost,profile.EatingNowModeIRMax); // it can only ever be as high as EatingNowModeIRMax
+                // Restrict insulinReqBoost to a max of EatingNowModeIRBMax if it is above 0
+                insulinReqBoost = Math.min(insulinReqBoost,(profile.EatingNowModeIRBMax > 0 ? profile.EatingNowModeIRBMax : insulinReqBoost));
                 insulinReq = round(insulinReq * insulinReqBoost,2);
                 console.log("insulinReqBoost: " + insulinReqBoost);
 
@@ -1277,7 +1278,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 durationReq = 30;
             }
             rT.reason += " insulinReq " + insulinReq + "@"+round(insulinReqPct*100,0)+"%";
-            if (eatingnow && profile.EatingNowModeIRMax >1) rT.reason +=" (*"+ UAMBoost +"/"+round(profile.EatingNowModeIRMax,2)+")";
+            if (eatingnow && UAMBoost >1) rT.reason +=" (*"+ UAMBoost +"/"+round(profile.EatingNowModeIRBMax,2)+")";
             if (microBolus >= maxBolus) {
                 rT.reason +=  "; maxBolus" + (maxBolus == profile.EatingNowModeMaxbolus ? "^ ": " ") + maxBolus;
             }
