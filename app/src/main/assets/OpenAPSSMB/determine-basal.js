@@ -261,7 +261,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
 
     // calculate the vaious deltas and pct changes
-    var UAM_safedelta = 0, UAM_deltaShortRise = 0, UAM_deltaLongRise = 0; UAM_deltaAvgRise = 0;
+    var UAM_safedelta = 0, UAM_deltaShortRise = 0, UAM_deltaLongRise = 0, UAM_deltaAvgRise = 0;
 
     // we have a rise that is safe to address later as IOb is below the max in the settings
     if (iob_data.iob <= (max_iob * profile.EatingNowModeIOBMax) && glucose_status.delta > 0) UAM_safedelta = glucose_status.delta;
