@@ -1218,7 +1218,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 //If UAM_bg is large enough to scale a bolus, scale by scaleSMB up to EatingNowModeMaxbolus
-                if (UAM_deltaShortRise > 0 && scaleSMB > 1) insulinReqBoost = scaleSMB;
+                if (UAM_deltaShortRise > 0 && scaleSMB > 1) {
+                    insulinReqBoost = scaleSMB;
+                    rT.reason += "scaleSMB+";
+                    console.log("scaleSMB: " + scaleSMB);
+                }
 
                 // Restrict insulinReqBoost to a max of EatingNowModeIRBMax if it is above 0
                 insulinReqBoost = Math.min(insulinReqBoost,(profile.EatingNowModeIRBMax > 0 ? profile.EatingNowModeIRBMax : insulinReqBoost));
