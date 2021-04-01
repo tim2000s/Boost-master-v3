@@ -203,11 +203,11 @@
                 android:digits="0123456789"
                 android:inputType="number"
                 android:key="@string/key_eatingnowmode_maxbolusminutes"
-                android:dialogMessage="SMB Max minutes for Eating Now"
+                android:title="SMB Max minutes for Eating Now"
                 android:maxLines="20"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
-                android:title="Max minutes of basal to limit SMB to for Eating Now"
+                android:dialogMessage="Max minutes of basal to limit SMB to for Eating Now"
                 validate:floatmaxNumber="240"
                 validate:floatminNumber="15"
                 validate:testType="numericRange"/>
