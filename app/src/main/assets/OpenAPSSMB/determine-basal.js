@@ -1207,7 +1207,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (eatingnow && eventualBG > target_bg) {
 
 //                var insulinReqBoost = 1; // start as no boost
-                insulinReqPct = profile.EatingNowModeInsulinReq; // default % from settings
+                insulinReqPct = profile.EatingNowModeInsulinReq; // default % from settings;
+                var UAMBoostReason = ""; //reason text for oaps pill
 
                 // only increase maxbolus limit if we are within the hours specified and rise not slowing
                 var EatingNowModeMaxSMB = round( profile.current_basal * profile.EatingNowModeMaxbolusMinutes / 60 ,1);
@@ -1215,9 +1216,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
                 if (UAMBoost > 1.1) {
-                    var boost_scale = 1+((eventualBG - target_bg) / target_bg);
+                    var boost_scale = round(1+((eventualBG - target_bg) / target_bg),2);
                     var boost_bolus = round( profile.current_basal * profile.EatingNowModebolusboostMinutes / 60 ,1);
                     insulinReq = boost_scale * boost_bolus;
+                    UAMBoostReason += "boosted " + boost_bolus + "*" + boost_scale;
                 }
 
                 //If UAM_bg is large enough to scale a bolus, scale by scaleSMB up to EatingNowModeMaxSMB
@@ -1289,7 +1291,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 durationReq = 30;
             }
             rT.reason += " insulinReq " + originalinsulinReq + (originalinsulinReq != insulinReq ? "=" + insulinReq : "") + "@"+round(insulinReqPct*100,0)+"%";
-            if (eatingnow && UAMBoost >1) rT.reason +=" (*"+ UAMBoost +"/"+round(profile.EatingNowModeIRBMax,2)+")";
+//            if (eatingnow && UAMBoost >1) rT.reason +=" (*"+ UAMBoost +"/"+round(profile.EatingNowModeIRBMax,2)+")";
+            if (eatingnow && UAMBoost >1) rT.reason +=" ("+ UAMBoostReason +")";
             if (microBolus >= maxBolus) {
                 rT.reason +=  "; maxBolus" + (maxBolus == EatingNowModeMaxSMB ? "^ ": " ") + maxBolus;
             }
