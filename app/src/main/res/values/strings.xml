@@ -1410,6 +1410,7 @@
     <string name="key_eatingnowmode_insulinreqpct_max">key_eatingnowmode_insulinreqpct_max</string>
     <string name="key_eatingnowmode_insulinreq">key_eatingnowmode_insulinreq</string>
     <string name="key_eatingnowmode_maxbolusminutes">key_eatingnowmode_maxbolusminutes</string>
+    <string name="key_eatingnowmode_maxbolusboostminutes">key_eatingnowmode_maxbolusboostminutes</string>
     <string name="key_eatingnowmode_iobmax">key_eatingnowmode_iobmax</string>
     <string name="key_eatingnowmode_timestart">key_eatingnowmode_timestart</string>
     <string name="key_eatingnowmode_timeend">key_eatingnowmode_timeend</string>

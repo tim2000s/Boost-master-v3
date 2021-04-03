@@ -202,6 +202,20 @@
                 android:defaultValue="30"
                 android:digits="0123456789"
                 android:inputType="number"
+                android:key="@string/key_eatingnowmode_maxbolusboostminutes"
+                android:title="Max minutes for Eating Now Boost"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:dialogMessage="Max minutes of current basal that will be used when insulinReq in negative and rising. This will be the starting amount of additional insulinReq under these circumstances"
+                validate:floatmaxNumber="240"
+                validate:floatminNumber="15"
+                validate:testType="numericRange"/>
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="30"
+                android:digits="0123456789"
+                android:inputType="number"
                 android:key="@string/key_eatingnowmode_maxbolusminutes"
                 android:title="SMB Max minutes for Eating Now"
                 android:maxLines="20"
