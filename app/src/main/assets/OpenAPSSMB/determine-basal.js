@@ -1274,8 +1274,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
              }
 
             // if insulinReq > 0 but not enough for a microBolus, don't set an SMB zero temp
-            if (insulinReq > 0 && microBolus < profile.bolus_increment || eatingnow && microBolus > 0 && insulinReq - microBolus >= 0) {
-//            if (insulinReq > 0 && microBolus < profile.bolus_increment) {
+//            if (insulinReq > 0 && microBolus < profile.bolus_increment || eatingnow && microBolus > 0 && insulinReq - microBolus >= 0) {
+            if (insulinReq > 0 && microBolus < profile.bolus_increment) {
                 durationReq = 0;
             }
 
@@ -1317,9 +1317,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (microBolus > 0) {
                     rT.units = microBolus;
                     rT.reason += "Microbolusing " + microBolus + "U. ";
-                    insulinReq = insulinReq - microBolus;
+//                    insulinReq = insulinReq - microBolus;
                     // Mackwe: rate required to deliver remaining insulinReq over 20m:
-                    if (eatingnow) rate = round(Math.max(basal + (3 * insulinReq),0),2);
+//                    if (eatingnow) rate = round(Math.max(basal + (3 * insulinReq),0),2);
                 }
             } else {
                 rT.reason += "Waiting " + nextBolusMins + "m " + nextBolusSeconds + "s to microbolus again. ";
