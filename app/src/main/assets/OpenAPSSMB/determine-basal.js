@@ -1217,9 +1217,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
                 if (UAMBoost > 1.1) {
                     var boost_scale = round(1+((eventualBG - target_bg) / target_bg),2);
-                    var boost_bolus = round( profile.current_basal * profile.EatingNowModebolusboostMinutes / 60 ,1);
+                    var boost_bolus = round( profile.current_basal * profile.EatingNowModebolusboostMinutes / 60 ,2);
                     insulinReq = round(boost_scale * boost_bolus,2);
-                    UAMBoostReason += "boosted " + boost_bolus + "*" + boost_scale;
+                    UAMBoostReason += "boost " + boost_bolus + "*" + boost_scale;
                 }
 
                 //If UAM_bg is large enough to scale a bolus, scale by scaleSMB up to EatingNowModeMaxSMB
