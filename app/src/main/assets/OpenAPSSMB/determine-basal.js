@@ -1202,7 +1202,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var roundSMBTo = 1 / profile.bolus_increment;
             var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var originalinsulinReq = insulinReq;
-            var scaleSMB = round(1/(target_bg/(UAMpredBG-target_bg)),2); // used when UAMpredBG is twice the target_bg, modified to allow multiplication
+//            var scaleSMB = round(1/(target_bg/(UAMpredBG-target_bg)),2); // used when UAMpredBG is twice the target_bg, modified to allow multiplication
 
             // if we are eating now rising +0.16 and BGL prediction is higher than target
             if (eatingnow && eventualBG > target_bg) {
@@ -1210,6 +1210,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //                var insulinReqBoost = 1; // start as no boost
                 insulinReqPct = profile.EatingNowModeInsulinReq; // default % from settings;
                 var UAMBoostReason = ""; //reason text for oaps pill
+                var boost_scale = round(((eventualBG - target_bg) / target_bg),2);
+                var boost_bolus = round( profile.current_basal * profile.EatingNowModebolusboostMinutes / 60 ,2);
 
                 // only increase maxbolus limit if we are within the hours specified and rise not slowing
                 var EatingNowModeMaxSMB = round( profile.current_basal * profile.EatingNowModeMaxbolusMinutes / 60 ,1);
@@ -1217,16 +1219,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
                 if (UAMBoost > 1.2) {
-                    var boost_scale = round(1+((eventualBG - target_bg) / target_bg),2);
-                    var boost_bolus = round( profile.current_basal * profile.EatingNowModebolusboostMinutes / 60 ,2);
-                    insulinReq = round(boost_scale * boost_bolus,2);
-                    UAMBoostReason = "boost " + boost_bolus + "*" + boost_scale;
+                    boost_scale += 1; // extra boost for this one
+                    insulinReq = round(insulinReq * boost_scale,2);
+                    UAMBoostReason = "+boost " + boost_bolus + "*" + boost_scale;
                 }
 
-                // If UAM_bg is large enough to scale a bolus, scale by scaleSMB up to EatingNowModeMaxSMB
-                if (UAM_deltaShortRise > 0 && scaleSMB > 1) {
-                    insulinReq = round(originalinsulinReq * scaleSMB,2);
-                    UAMBoostReason = "scaleSMB *" + scaleSMB;
+                // If eventual bg is large enough to scale a bolus, scale by boost_scale
+                else if (UAM_deltaShortRise >= 0 && boost_scale > 1) {
+                    if (insulinReq <=0) insulinReq = boost_bolus;
+                    insulinReq = round(insulinReq * boost_scale,2);
+                    UAMBoostReason = "boost " + boost_bolus + "*" + boost_scale;
                 }
 
                 // if current deltas indicate we need a boost and insulinReq is low we probably need insulin if eatingnow so start with basal and boost if settings allow
