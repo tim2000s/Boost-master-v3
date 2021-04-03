@@ -217,7 +217,7 @@
                 android:digits="0123456789"
                 android:inputType="number"
                 android:key="@string/key_eatingnowmode_maxbolusminutes"
-                android:title="SMB Max minutes for Eating Now"
+                android:title="Max SMB minutes"
                 android:maxLines="20"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
