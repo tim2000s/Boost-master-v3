@@ -285,7 +285,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // Force eatingnow mode by setting a 5.5 temp target EatingNowModeIOB trigger is ignored, EatingNowModeIOBMax is respected, max bolus is restricted if outside of allowed hours
         if (profile.temptargetSet && target_bg == profile.normal_target_bg) eatingnow = true;
     }
-
+    console.log("eatingnow: "+eatingnow);
     // set the UAMBoost factor that is the avg delta rise combined minimum of zero + 1 to allow multiply
     var UAMBoost = round(1 + Math.max(UAM_deltaAvgRise,0),2);
     console.log("UAMBoost: " + UAMBoost);
