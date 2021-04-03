@@ -1218,7 +1218,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAMBoost > 1.1) {
                     var boost_scale = round(1+((eventualBG - target_bg) / target_bg),2);
                     var boost_bolus = round( profile.current_basal * profile.EatingNowModebolusboostMinutes / 60 ,1);
-                    insulinReq = boost_scale * boost_bolus;
+                    insulinReq = round(boost_scale * boost_bolus,2);
                     UAMBoostReason += "boosted " + boost_bolus + "*" + boost_scale;
                 }
 
