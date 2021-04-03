@@ -1220,14 +1220,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
                 if (UAMBoost > 1.3) {
                     boost_scale += 1; // extra boost for this one
-                    insulinReq = round(insulinReq * boost_scale,2);
                     UAMBoostReason = "+boost " + boost_bolus + "*" + boost_scale;
                 }
 
                 // If eventual bg is large enough to scale a bolus, scale by boost_scale
                 else if (UAM_deltaShortRise >= 0 && boost_scale > 1) {
                     if (insulinReq <=0) insulinReq = boost_bolus;
-                    insulinReq = round(insulinReq * boost_scale,2);
                     UAMBoostReason = "boost " + boost_bolus + "*" + boost_scale;
                 }
 
@@ -1237,11 +1235,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //                    rT.reason += "basal+";
 //                }
 
-                // Restrict insulinReqBoost to a max of EatingNowModeIRBMax if it is above 0
-//                insulinReqBoost = Math.min(insulinReqBoost,(profile.EatingNowModeIRBMax > 0 ? profile.EatingNowModeIRBMax : insulinReqBoost));
-//                insulinReq = round(insulinReq * insulinReqBoost,2);
-//                console.log("insulinReqBoost: " + insulinReqBoost);
-
+                // Restrict boost_scale to a max of EatingNowModeIRBMax if it is above 0
+                boost_scale = Math.min(boost_scale,(profile.EatingNowModeIRBMax > 0 ? profile.EatingNowModeIRBMax : boost_scale));
+                insulinReq = round(insulinReq * boost_scale,2);
 
                 // If eating now and the rise is slowing turn off SMB for safety
                 // if (UAM_deltaShortRise < 0) insulinReqPct = 0;
