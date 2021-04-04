@@ -1230,11 +1230,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostReason = "boost " + insulinReq + "*" + boost_scale;
                 }
 
-                // if current deltas indicate we need a boost and insulinReq is low we probably need insulin if eatingnow so start with basal and boost if settings allow
-//                if (insulinReq < 0 && (UAMBoost > 1.1 || scaleSMB >1)) {
-//                    insulinReq = round( profile.current_basal * profile.EatingNowModebolusboostMinutes / 60 ,1);
-//                    rT.reason += "basal+";
-//                }
+                // eating now is only active when rising, if criteria above dont match turn on TBR using the boost
+                else if (insulinReq <= 0) {
+                    insulinReq = boost_bolus;
+                    UAMBoostReason += "TBR";
+                    insulinReqPct = 0;
+                }
 
                 // Restrict boost_scale to a max of EatingNowModeIRBMax if it is above 0
                 boost_scale = Math.min(boost_scale,(profile.EatingNowModeIRBMax > 0 ? profile.EatingNowModeIRBMax : boost_scale));
