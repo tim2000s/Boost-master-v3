@@ -1214,7 +1214,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var boost_bolus = round( profile.current_basal * profile.EatingNowModebolusboostMinutes / 60 ,2);
 
                 // only increase maxbolus limit if we are within the hours specified and rise not slowing
-                var EatingNowModeMaxSMB = round( profile.current_basal * profile.EatingNowModeMaxbolusMinutes / 60 ,1);
+                var EatingNowModeMaxSMB = round( profile.current_basal * profile.EatingNowModeMaxSMBMinutes / 60 ,1);
                 if (now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowModeMaxSMB : maxBolus);
 
                 //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
