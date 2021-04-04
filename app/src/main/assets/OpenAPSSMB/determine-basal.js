@@ -283,7 +283,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.log("UAMBoost: " + UAMBoost);
 
     // If we have Eating Now enabled and rising we will enable eating now mode
-    if (eatingnowPatch && profile.enableUAM && UAM_safedelta > 3) {
+    if (eatingnowPatch && profile.enableUAM && UAM_safedelta >=6) {
         // enable eatingnow if no TT and safe IOB within safe hours
         if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowModeIOB && now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) eatingnow = true;
         // Force eatingnow mode by setting a 5.5 temp target EatingNowModeIOB trigger is ignored, EatingNowModeIOBMax is respected, max bolus is restricted if outside of allowed hours
@@ -1218,7 +1218,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowModeMaxSMB : maxBolus);
 
                 //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
-                if (UAMBoost > 1.3) {
+                if (UAMBoost > 1.5) {
                     boost_scale += 1; // extra boost for this one
                     insulinReq = boost_bolus;
                     UAMBoostReason = "boost+ " + insulinReq + "*" + boost_scale;
