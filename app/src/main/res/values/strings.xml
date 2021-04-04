@@ -1404,14 +1404,14 @@
     <string name="eatingsoon_large">Large</string>
     <string name="eatingsoon_large_prebolus">eatingsoon large prebolus</string>
     <string name="eatingsoon_large_target">eatingsoon large target</string>
-    <string name="key_use_eatingnowmode">key_use_eatingnowmode</string>
-    <string name="key_eatingnowmode_iob">key_eatingnowmode_iob</string>
-    <string name="key_eatingnowmode_isf_max">key_eatingnowmode_isf_max</string>
-    <string name="key_eatingnowmode_insulinreqpct_max">key_eatingnowmode_insulinreqpct_max</string>
-    <string name="key_eatingnowmode_insulinreq">key_eatingnowmode_insulinreq</string>
-    <string name="key_eatingnowmode_maxbolusminutes">key_eatingnowmode_maxbolusminutes</string>
-    <string name="key_eatingnowmode_bolusboostminutes">key_eatingnowmode_bolusboostminutes</string>
-    <string name="key_eatingnowmode_iobmax">key_eatingnowmode_iobmax</string>
-    <string name="key_eatingnowmode_timestart">key_eatingnowmode_timestart</string>
-    <string name="key_eatingnowmode_timeend">key_eatingnowmode_timeend</string>
+    <string name="key_use_eatingnow">key_use_eatingnow</string>
+    <string name="key_eatingnow_iob">key_eatingnow_iob</string>
+    <string name="key_eatingnow_isf_max">key_eatingnow_isf_max</string>
+    <string name="key_eatingnow_insulinreqpct_max">key_eatingnow_insulinreqpct_max</string>
+    <string name="key_eatingnow_insulinreq">key_eatingnow_insulinreq</string>
+    <string name="key_eatingnow_maxbolusminutes">key_eatingnow_maxbolusminutes</string>
+    <string name="key_eatingnow_bolusboostminutes">key_eatingnow_bolusboostminutes</string>
+    <string name="key_eatingnow_iobmax">key_eatingnow_iobmax</string>
+    <string name="key_eatingnow_timestart">key_eatingnow_timestart</string>
+    <string name="key_eatingnow_timeend">key_eatingnow_timeend</string>
 </resources>

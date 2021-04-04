@@ -159,19 +159,19 @@
 
 
         <androidx.preference.PreferenceScreen
-            android:key="eatingnowmode_options"
+            android:key="eatingnow_options"
             android:title="Eating Now Mode">
 
             <SwitchPreference
                 android:defaultValue="false"
-                android:key="@string/key_use_eatingnowmode"
+                android:key="@string/key_use_eatingnow"
                 android:summary="Eating Soon Mode will be always on during the time range specified."
                 android:title="Eating Now Mode"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="5"
                 android:inputType="numberDecimal"
-                android:key="@string/key_eatingnowmode_iob"
+                android:key="@string/key_eatingnow_iob"
                 android:dialogMessage="IOB required to activate Eating Now Mode"
                 android:title="IOB Trigger"
                 validate:floatmaxNumber="25.0"
@@ -181,7 +181,7 @@
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="1.0"
                 android:inputType="numberDecimal"
-                android:key="@string/key_eatingnowmode_isf_max"
+                android:key="@string/key_eatingnow_isf_max"
                 android:dialogMessage="Max ISF % to combat the rise. 1 is 100% therefore disabled."
                 android:title="Max ISF %"
                 validate:floatmaxNumber="2.0"
@@ -191,7 +191,7 @@
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="1.0"
                 android:inputType="numberDecimal"
-                android:key="@string/key_eatingnowmode_insulinreqpct_max"
+                android:key="@string/key_eatingnow_insulinreqpct_max"
                 android:dialogMessage="Max multiplier for insulin required should the ISF boost not suffice.\n0 is unlimited and maxBolus will be used.\n1 is 100% therefore disabled."
                 android:title="Max Insulin Boost %"
                 validate:floatmaxNumber="2.5"
@@ -202,7 +202,7 @@
                 android:defaultValue="30"
                 android:digits="0123456789"
                 android:inputType="number"
-                android:key="@string/key_eatingnowmode_bolusboostminutes"
+                android:key="@string/key_eatingnow_bolusboostminutes"
                 android:title="Boost Bolus minutes"
                 android:maxLines="20"
                 android:selectAllOnFocus="true"
@@ -216,7 +216,7 @@
                 android:defaultValue="30"
                 android:digits="0123456789"
                 android:inputType="number"
-                android:key="@string/key_eatingnowmode_maxbolusminutes"
+                android:key="@string/key_eatingnow_maxbolusminutes"
                 android:title="Max SMB minutes"
                 android:maxLines="20"
                 android:selectAllOnFocus="true"
@@ -229,7 +229,7 @@
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="0.3"
                 android:inputType="numberDecimal"
-                android:key="@string/key_eatingnowmode_iobmax"
+                android:key="@string/key_eatingnow_iobmax"
                 android:dialogMessage="This will use a percentage of max-iob and suspend EatingNow until IOB limit is lower."
                 android:title="Max IOB Percentage"
                 validate:floatmaxNumber="1"
@@ -239,7 +239,7 @@
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="0.5"
                 android:inputType="numberDecimal"
-                android:key="@string/key_eatingnowmode_insulinreq"
+                android:key="@string/key_eatingnow_insulinreq"
                 android:dialogMessage="This will be the percentage used for insulinReq that will be available as an SMB. Maxbolus Limit is still applicable."
                 android:title="InsulinReq Percentage"
                 validate:floatmaxNumber="1"
@@ -250,7 +250,7 @@
                 android:defaultValue="9"
                 android:dialogMessage="Enter Eating Now start time in 24h e.g. 9AM is 9"
                 android:inputType="number"
-                android:key="@string/key_eatingnowmode_timestart"
+                android:key="@string/key_eatingnow_timestart"
                 android:title="Active Start Time"
                 validate:maxNumber="23"
                 validate:minNumber="0"
@@ -260,7 +260,7 @@
                 android:defaultValue="17"
                 android:dialogMessage="Enter Eating Now end time in 24h e.g. 5PM is 17"
                 android:inputType="number"
-                android:key="@string/key_eatingnowmode_timeend"
+                android:key="@string/key_eatingnow_timeend"
                 android:title="Active End Time"
                 validate:maxNumber="23"
                 validate:minNumber="0"

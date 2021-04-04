@@ -253,7 +253,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // patches ==== START
     var ignoreCOBPatch = profile.enableGhostCOB; //MD#01: Ignore any COB and rely purely on UAM
-    var eatingnowPatch = profile.enableEatingNowMode;
+    var eatingnowPatch = profile.enableEatingNow;
     // patches ===== END
 
     // MD: Eating now mode for UAM === START
@@ -264,7 +264,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var UAM_safedelta = 0, UAM_deltaShortRise = 0, UAM_deltaLongRise = 0, UAM_deltaAvgRise = 0;
 
     // we have a rise that is safe to address later as IOb is below the max in the settings
-    if (iob_data.iob <= (max_iob * profile.EatingNowModeIOBMax) && glucose_status.delta > 0) UAM_safedelta = glucose_status.delta;
+    if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax) && glucose_status.delta > 0) UAM_safedelta = glucose_status.delta;
 
     // Determine the pct change in BG if rising and IOB conditions are OK
     if (UAM_safedelta > 0) {
@@ -285,8 +285,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // If we have Eating Now enabled and rising we will enable eating now mode
     if (eatingnowPatch && profile.enableUAM && UAM_safedelta >=6) {
         // enable eatingnow if no TT and safe IOB within safe hours
-        if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowModeIOB && now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) eatingnow = true;
-        // Force eatingnow mode by setting a 5.5 temp target EatingNowModeIOB trigger is ignored, EatingNowModeIOBMax is respected, max bolus is restricted if outside of allowed hours
+        if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd) eatingnow = true;
+        // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
         if (profile.temptargetSet && target_bg == profile.normal_target_bg) eatingnow = true;
     }
     console.log("eatingnow: "+eatingnow);
@@ -388,7 +388,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
     console.error("; CR:",profile.carb_ratio);
-    if (eatingnow) sens = sens / Math.min(UAMBoost,profile.EatingNowModeISFMax); // we want to change the ISF for predictions and initial insulinReq but not the basal to ensure more accurate IOB
+    if (eatingnow) sens = sens / Math.min(UAMBoost,profile.EatingNowISFMax); // we want to change the ISF for predictions and initial insulinReq but not the basal to ensure more accurate IOB
     sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio, eatingnow);
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
@@ -912,7 +912,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", ISF: " + convert_bg(sens, profile) + (eatingnow && profile.EatingNowModeISFMax > 1 ? " ("+UAMBoost+"/"+profile.EatingNowModeISFMax+")":"") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", ISF: " + convert_bg(sens, profile) + (eatingnow && profile.EatingNowISFMax > 1 ? " ("+UAMBoost+"/"+profile.EatingNowISFMax+")":"") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
     rT.reason += ", AS: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     if (typeof liftISF !== 'undefined') rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     if (lastCOBpredBG > 0) {
@@ -1208,14 +1208,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (eatingnow && eventualBG > target_bg) {
 
 //                var insulinReqBoost = 1; // start as no boost
-                insulinReqPct = profile.EatingNowModeInsulinReq; // default % from settings;
+                insulinReqPct = profile.EatingNowInsulinReq; // default % from settings;
                 var UAMBoostReason = ""; //reason text for oaps pill
                 var boost_scale = round(((eventualBG - target_bg) / target_bg),2);
-                var boost_bolus = round( profile.current_basal * profile.EatingNowModebolusboostMinutes / 60 ,2);
+                var boost_bolus = round( profile.current_basal * profile.EatingNowbolusboostMinutes / 60 ,2);
 
                 // only increase maxbolus limit if we are within the hours specified and rise not slowing
-                var EatingNowModeMaxSMB = round( profile.current_basal * profile.EatingNowModeMaxSMBMinutes / 60 ,1);
-                if (now >= profile.EatingNowModeTimeStart && now < profile.EatingNowModeTimeEnd) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowModeMaxSMB : maxBolus);
+                var EatingNowMaxSMB = round( profile.current_basal * profile.EatingNowMaxSMBMinutes / 60 ,1);
+                if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowMaxSMB : maxBolus);
 
                 //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
                 if (UAMBoost > 1.4) {
@@ -1237,8 +1237,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = 0;
                 }
 
-                // Restrict boost_scale to a max of EatingNowModeIRBMax if it is above 0
-                boost_scale = Math.min(boost_scale,(profile.EatingNowModeIRBMax > 0 ? profile.EatingNowModeIRBMax : boost_scale));
+                // Restrict boost_scale to a max of EatingNowIRBMax if it is above 0
+                boost_scale = Math.min(boost_scale,(profile.EatingNowIRBMax > 0 ? profile.EatingNowIRBMax : boost_scale));
                 insulinReq = round(insulinReq * boost_scale,2);
 
                 // If eating now and the rise is slowing turn off SMB for safety
@@ -1247,7 +1247,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
 
 
-            // boost insulinReq and maxBolus if required limited to EatingNowModeMaxSMB
+            // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
             var microBolus = Math.floor(Math.min(insulinReq * insulinReqPct ,maxBolus)*roundSMBTo)/roundSMBTo;
             // calculate a long enough zero temp to eventually correct back up to target
             var smbTarget = target_bg;
@@ -1293,10 +1293,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             rT.reason += "UAMBoost " + UAMBoost + ",";
             rT.reason += " insulinReq " + originalinsulinReq + (originalinsulinReq != insulinReq ? "=" + insulinReq : "") + "@"+round(insulinReqPct*100,0)+"%";
-//            if (eatingnow && UAMBoost >1) rT.reason +=" (*"+ UAMBoost +"/"+round(profile.EatingNowModeIRBMax,2)+")";
+//            if (eatingnow && UAMBoost >1) rT.reason +=" (*"+ UAMBoost +"/"+round(profile.EatingNowIRBMax,2)+")";
             if (eatingnow && UAMBoost >1) rT.reason +=" ("+ UAMBoostReason +")";
             if (microBolus >= maxBolus) {
-                rT.reason +=  "; maxBolus" + (maxBolus == EatingNowModeMaxSMB ? "^ ": " ") + maxBolus;
+                rT.reason +=  "; maxBolus" + (maxBolus == EatingNowMaxSMB ? "^ ": " ") + maxBolus;
             }
             if (durationReq > 0) {
                 rT.reason += "; setting " + durationReq + "m low temp of " + smbLowTempReq + "U/h";

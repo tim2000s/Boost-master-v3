@@ -306,16 +306,16 @@ public class DetermineBasalAdapterSMBJS {
 
         // patches ==== START
         mProfile.put("enableGhostCOB", sp.getBoolean(R.string.key_use_ghostcob, false));
-        mProfile.put("enableEatingNowMode", sp.getBoolean(R.string.key_use_eatingnowmode, false));
-        mProfile.put("EatingNowModeIOB", sp.getDouble(R.string.key_eatingnowmode_iob, 5));
-        mProfile.put("EatingNowModeISFMax", sp.getDouble(R.string.key_eatingnowmode_isf_max, 1.0));
-        mProfile.put("EatingNowModeIRBMax", sp.getDouble(R.string.key_eatingnowmode_insulinreqpct_max, 1.0));
-        mProfile.put("EatingNowModeMaxSMBMinutes", sp.getInt(R.string.key_eatingnowmode_maxbolusminutes, 30));
-        mProfile.put("EatingNowModebolusboostMinutes", sp.getInt(R.string.key_eatingnowmode_bolusboostminutes, 30));
-        mProfile.put("EatingNowModeIOBMax", sp.getDouble(R.string.key_eatingnowmode_iobmax, 0.3));
-        mProfile.put("EatingNowModeInsulinReq", sp.getDouble(R.string.key_eatingnowmode_insulinreq, 0.5));
-        mProfile.put("EatingNowModeTimeStart", sp.getDouble(R.string.key_eatingnowmode_timestart, 9));
-        mProfile.put("EatingNowModeTimeEnd", sp.getDouble(R.string.key_eatingnowmode_timeend, 17));
+        mProfile.put("enableEatingNow", sp.getBoolean(R.string.key_use_eatingnow, false));
+        mProfile.put("EatingNowIOB", sp.getDouble(R.string.key_eatingnow_iob, 5));
+        mProfile.put("EatingNowISFMax", sp.getDouble(R.string.key_eatingnow_isf_max, 1.0));
+        mProfile.put("EatingNowIRBMax", sp.getDouble(R.string.key_eatingnow_insulinreqpct_max, 1.0));
+        mProfile.put("EatingNowMaxSMBMinutes", sp.getInt(R.string.key_eatingnow_maxbolusminutes, 30));
+        mProfile.put("EatingNowbolusboostMinutes", sp.getInt(R.string.key_eatingnow_bolusboostminutes, 30));
+        mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3));
+        mProfile.put("EatingNowInsulinReq", sp.getDouble(R.string.key_eatingnow_insulinreq, 0.5));
+        mProfile.put("EatingNowTimeStart", sp.getDouble(R.string.key_eatingnow_timestart, 9));
+        mProfile.put("EatingNowTimeEnd", sp.getDouble(R.string.key_eatingnow_timeend, 17));
         // patches ==== END
 
 
