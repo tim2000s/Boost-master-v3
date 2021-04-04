@@ -257,8 +257,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // patches ===== END
 
     // MD: Eating now mode for UAM === START
-    var eatingnow = false; // nah not eating yet
+    var eatingnow = false, eatingnowtimeOK = false; // nah not eating yet
     var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
+    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd) eatingnowtimeOK = true;
 
     // calculate the vaious deltas and pct changes
     var UAM_safedelta = 0, UAM_deltaShortRise = 0, UAM_deltaLongRise = 0, UAM_deltaAvgRise = 0;
@@ -285,7 +286,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // If we have Eating Now enabled and rising we will enable eating now mode
     if (eatingnowPatch && profile.enableUAM && UAM_safedelta >=6) {
         // enable eatingnow if no TT and safe IOB within safe hours
-        if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd) eatingnow = true;
+        if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && eatingnowtimeOK) eatingnow = true;
         // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
         if (profile.temptargetSet && target_bg == profile.normal_target_bg) eatingnow = true;
     }
@@ -1202,7 +1203,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var roundSMBTo = 1 / profile.bolus_increment;
             var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var originalinsulinReq = insulinReq;
-//            var scaleSMB = round(1/(target_bg/(UAMpredBG-target_bg)),2); // used when UAMpredBG is twice the target_bg, modified to allow multiplication
+
+            // if autoISF is active and insulinReq is at normal maxbolus then allow 100%
+            if (typeof liftISF !== 'undefined' && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
 
             // if we are eating now rising +0.16 and BGL prediction is higher than target
             if (eatingnow && eventualBG > target_bg) {
@@ -1215,7 +1218,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // only increase maxbolus limit if we are within the hours specified and rise not slowing
                 var EatingNowMaxSMB = round( profile.current_basal * profile.EatingNowMaxSMBMinutes / 60 ,1);
-                if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowMaxSMB : maxBolus);
+                if (eatingnowtimeOK) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowMaxSMB : maxBolus);
 
                 //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
                 if (UAMBoost > 1.4) {
@@ -1245,7 +1248,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // if (UAM_deltaShortRise < 0) insulinReqPct = 0;
 
             }
-
 
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
             var microBolus = Math.floor(Math.min(insulinReq * insulinReqPct ,maxBolus)*roundSMBTo)/roundSMBTo;
