@@ -1070,9 +1070,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //console.error("Increasing insulinReq from " + insulinReq + " to " + newinsulinReq);
             insulinReq = newinsulinReq;
         }
-        // rate required to deliver insulinReq less insulin over 20m:
-        var rate = basal + (3 * insulinReq);
-        rate = round(rate, 2);
+        // rate required to deliver insulinReq less insulin over 30m:
+        var rate = basal + (2 * insulinReq);
+        rate = round_basal(rate, profile);
 
         // if required temp < existing temp basal
         var insulinScheduled = currenttemp.duration * (currenttemp.rate - basal) / 60;
@@ -1169,9 +1169,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             insulinReq = max_iob-iob_data.iob;
         }
 
-        // rate required to deliver insulinReq more insulin over 20m:
-        rate = round(basal + (3 * insulinReq),2);
-        insulinReq = round(insulinReq,2);
+        // rate required to deliver insulinReq more insulin over 30m:
+        rate = basal + (2 * insulinReq);
+        rate = round_basal(rate, profile);
+        insulinReq = round(insulinReq,3);
         rT.insulinReq = insulinReq;
         //console.error(iob_data.lastBolusTime);
         // minutes since last bolus
@@ -1320,8 +1321,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.units = microBolus;
                     rT.reason += "Microbolusing " + microBolus + "U. ";
                     insulinReq = insulinReq - microBolus;
-                    // Mackwe: rate required to deliver remaining insulinReq over 20m:
-                    if (eatingnow) rate = round(Math.max(basal + (3 * insulinReq),0),2);
+                    // Mackwe: rate required to deliver remaining insulinReq over 30m:
+                    if (eatingnow) rate = round(Math.max(basal + (2 * insulinReq),0),2);
                 }
             } else {
                 rT.reason += "Waiting " + nextBolusMins + "m " + nextBolusSeconds + "s to microbolus again. ";
@@ -1341,12 +1342,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         if (rate > maxSafeBasal) {
             rT.reason += "adj. req. rate: "+rate+" to maxSafeBasal: "+maxSafeBasal+", ";
-            rate = round(maxSafeBasal, 2);
+            rate = round_basal(maxSafeBasal, profile);
         }
 
         insulinScheduled = currenttemp.duration * (currenttemp.rate - basal) / 60;
-        if (insulinScheduled >= insulinReq * 1.5) { // if current temp would deliver >2x more than the required insulin, lower the rate
-            rT.reason += currenttemp.duration + "m@" + (currenttemp.rate).toFixed(2) + " > 1.5 * insulinReq. Setting temp basal of " + rate + "U/hr. ";
+        if (insulinScheduled >= insulinReq * 2) { // if current temp would deliver >2x more than the required insulin, lower the rate
+            rT.reason += currenttemp.duration + "m@" + (currenttemp.rate).toFixed(2) + " > 2 * insulinReq. Setting temp basal of " + rate + "U/hr. ";
             return tempBasalFunctions.setTempBasal(rate, 30, profile, rT, currenttemp);
         }
 
