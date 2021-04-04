@@ -1221,7 +1221,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAMBoost > 1.3) {
                     boost_scale += 1; // extra boost for this one
                     insulinReq = boost_bolus;
-                    UAMBoostReason = "+boost+ " + boost_bolus + "*" + boost_scale;
+                    UAMBoostReason = "boost+ " + insulinReq + "*" + boost_scale;
                 }
 
                 // If eventual bg is large enough to scale a bolus, scale by boost_scale
