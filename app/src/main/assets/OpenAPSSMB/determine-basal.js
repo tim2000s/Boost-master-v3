@@ -1220,13 +1220,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
                 if (UAMBoost > 1.3) {
                     boost_scale += 1; // extra boost for this one
+                    insulinReq = boost_bolus;
                     UAMBoostReason = "+boost+ " + boost_bolus + "*" + boost_scale;
                 }
 
                 // If eventual bg is large enough to scale a bolus, scale by boost_scale
                 else if (UAM_deltaShortRise >= 0 && boost_scale > 1) {
                     if (insulinReq <=0) insulinReq = boost_bolus;
-                    UAMBoostReason = "boost " + boost_bolus + "*" + boost_scale;
+                    UAMBoostReason = "boost " + insulinReq + "*" + boost_scale;
                 }
 
                 // if current deltas indicate we need a boost and insulinReq is low we probably need insulin if eatingnow so start with basal and boost if settings allow
