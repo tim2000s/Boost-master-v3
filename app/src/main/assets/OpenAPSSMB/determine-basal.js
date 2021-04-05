@@ -924,7 +924,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.reason += ", UAMpredBG " + convert_bg(lastUAMpredBG, profile); //MD Missing ;
     }
     rT.reason +=", predBGslength: " + predBGslength; // +"/" + predBGslengthDefault;
-    rT.reason += "UAMBoost " + UAMBoost;
+    rT.reason += ", UAMBoost " + UAMBoost;
     if (eatingnow) rT.reason +="; EatingNow";
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
