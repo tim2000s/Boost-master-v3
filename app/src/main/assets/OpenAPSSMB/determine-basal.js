@@ -262,11 +262,20 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd) eatingnowtimeOK = true;
     if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax) eatingnowMaxIOBOK = true;
 
+    // If we have Eating Now enabled and rising we will enable eating now mode
+    if (eatingnowPatch && profile.enableUAM && eatingnowMaxIOBOK) {
+        // enable eatingnow if no TT and safe IOB within safe hours
+        if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && eatingnowtimeOK) eatingnow = true;
+        // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
+        if (profile.temptargetSet && target_bg == profile.normal_target_bg) eatingnow = true;
+    }
+    console.log("eatingnow: "+eatingnow);
+
     // calculate the various deltas and pct changes
     var UAM_safedelta = 0, UAM_deltaShortRise = 0, UAM_deltaLongRise = 0, UAM_deltaAvgRise = 0, UAMBoost = 1;
 
     // Determine the pct change in BG if rising and IOB conditions are OK
-    if (eatingnowMaxIOBOK) {
+    if (eatingnow) {
         UAM_safedelta = glucose_status.delta;
         // Calculate percentage change in deltas, long to short and short to now
         if (glucose_status.long_avgdelta !=0) UAM_deltaLongRise = round((glucose_status.short_avgdelta - glucose_status.long_avgdelta) / Math.abs(glucose_status.long_avgdelta),2);
@@ -282,14 +291,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.log("UAM_deltaAvgRise: " + UAM_deltaAvgRise);
     console.log("UAMBoost: " + UAMBoost);
 
-    // If we have Eating Now enabled and rising we will enable eating now mode
-    if (eatingnowPatch && profile.enableUAM && eatingnowMaxIOBOK) {
-        // enable eatingnow if no TT and safe IOB within safe hours
-        if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && eatingnowtimeOK) eatingnow = true;
-        // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
-        if (profile.temptargetSet && target_bg == profile.normal_target_bg) eatingnow = true;
-    }
-    console.log("eatingnow: "+eatingnow);
+
     //MD: Eating now mode for UAM === END
 
     var sensitivityRatio;
