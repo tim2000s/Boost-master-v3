@@ -124,7 +124,7 @@ function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_d
     //r weightISF = (1 - profile.autosens_min)*2;           // mod 7b: use 0.6 to get factor 0.8; use 1 to get factor 0, i.e. OFF
     var weightISF = profile.autoisf_hourlychange;           // mod 7d: specify factor directly; use factor 0 to shut autoISF OFF
 //    if (meal_data.mealCOB==0 && dura05>=10) {
-    if (dura05>=10 && !eatingnow) {
+    if (dura05>=10) {
         if (avg05 > target_bg) {
             // # fight the resistance at high levels
             var maxISFReduction = profile.autoisf_max;      // mod 7d
