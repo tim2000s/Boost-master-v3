@@ -924,6 +924,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.reason += ", UAMpredBG " + convert_bg(lastUAMpredBG, profile); //MD Missing ;
     }
     rT.reason +=", predBGslength: " + predBGslength; // +"/" + predBGslengthDefault;
+    rT.reason += "UAMBoost " + UAMBoost;
     if (eatingnow) rT.reason +="; EatingNow";
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
@@ -1223,7 +1224,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (eatingnowtimeOK) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowMaxSMB : maxBolus);
 
                 // NEW STUFF!!
-                insulinReq = (insulinReq <=0 ? boost_bolus : insulinReq); // MAYBE WE CAN AVERAGE THIS WITH BOOST_SCALE?
+                if (UAM_safedelta >=5) insulinReq = (insulinReq <=0 ? boost_bolus : insulinReq); // If we are rising >=0.3 with UAMBoost
                 if (boost_scale > 1) UAMBoost = round( (boost_scale + UAMBoost)/2,2 );
 
                 // If short delta is not slowing or eventual bg is large enough to scale a bolus, boost
@@ -1314,7 +1315,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 smbLowTempReq = round( basal * durationReq/30 ,2);
                 durationReq = 30;
             }
-            rT.reason += "UAMBoost " + UAMBoost + ",";
             rT.reason += " insulinReq " + originalinsulinReq + (originalinsulinReq != insulinReq ? "=" + insulinReq : "") + "@"+round(insulinReqPct*100,0)+"%";
 //            if (eatingnow && UAMBoost >1) rT.reason +=" (*"+ UAMBoost +"/"+round(profile.EatingNowIRBMax,2)+")";
             if (eatingnow && UAMBoost >1) rT.reason +=" ("+ UAMBoostReason +")";
