@@ -1223,12 +1223,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (eatingnowtimeOK) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowMaxSMB : maxBolus);
 
                 // NEW STUFF!!
-                insulinReq = (insulinReq <=0 ? boost_bolus : insulinReq); // MAYBE WE CAN AVERAGE THIS WITH BOOST_SCALE?
-                if (boost_scale > 1 ) UAMBoost = round( (boost_scale + UAMBoost)/2,2 );
+                insulinReq = (insulinReq < =0 ? boost_bolus : insulinReq); // MAYBE WE CAN AVERAGE THIS WITH BOOST_SCALE?
+                if (boost_scale > 1) UAMBoost = round( (boost_scale + UAMBoost)/2,2 );
 
                 // If short delta is not slowing or eventual bg is large enough to scale a bolus, boost
                 if (UAM_deltaShortRise >= 0) {
-                    UAMBoostReason = "boost" (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
+                    UAMBoostReason = "boost" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
                 }
 
                 // if short delta rise has slowed disable SMB
