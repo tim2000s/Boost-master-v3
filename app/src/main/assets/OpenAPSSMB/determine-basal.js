@@ -1209,7 +1209,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // if autoISF is active and insulinReq is at normal maxbolus then allow 100%
             if (typeof liftISF !== 'undefined' && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
 
-            // if we are eating now rising +0.16 and BGL prediction is higher than target
+            // if we are eating now and BGL prediction is higher than target
             if (eatingnow && eventualBG > target_bg) {
 
 //                var insulinReqBoost = 1; // start as no boost
@@ -1223,7 +1223,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (eatingnowtimeOK) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowMaxSMB : maxBolus);
 
                 // NEW STUFF!!
-                insulinReq = (insulinReq < =0 ? boost_bolus : insulinReq); // MAYBE WE CAN AVERAGE THIS WITH BOOST_SCALE?
+                insulinReq = (insulinReq <=0 ? boost_bolus : insulinReq); // MAYBE WE CAN AVERAGE THIS WITH BOOST_SCALE?
                 if (boost_scale > 1) UAMBoost = round( (boost_scale + UAMBoost)/2,2 );
 
                 // If short delta is not slowing or eventual bg is large enough to scale a bolus, boost
