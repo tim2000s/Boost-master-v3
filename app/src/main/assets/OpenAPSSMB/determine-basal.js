@@ -390,7 +390,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
     console.error("; CR:",profile.carb_ratio);
-    if (eatingnow) sens = sens / Math.min(UAMBoost,profile.EatingNowISFMax); // we want to change the ISF for predictions and initial insulinReq but not the basal to ensure more accurate IOB
     sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio, eatingnow);
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
@@ -914,7 +913,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", ISF: " + convert_bg(sens, profile) + (eatingnow && profile.EatingNowISFMax > 1 ? " ("+UAMBoost+"/"+profile.EatingNowISFMax+")":"") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", ISF: " + convert_bg(sens, profile) + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
     rT.reason += ", AS: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     if (typeof liftISF !== 'undefined') rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     if (lastCOBpredBG > 0) {
@@ -1225,7 +1224,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReq = (insulinReq <=0 ? boost_bolus : insulinReq);
 
                 // if eventualBG is above target_bg starting position is TBR only with no SMB
-                UAMBoostReason = "TBR";
+                UAMBoostReason = "TBR " + insulinReq;
                 insulinReqPct = 0;
 
                 // If we are rising >=0.3

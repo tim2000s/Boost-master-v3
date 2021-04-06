@@ -181,16 +181,6 @@
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="1.0"
                 android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_isf_max"
-                android:dialogMessage="Max ISF % to combat the rise. 1 is 100% therefore disabled."
-                android:title="Max ISF %"
-                validate:floatmaxNumber="2.0"
-                validate:floatminNumber="1.0"
-                validate:testType="floatNumericRange"/>
-
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="1.0"
-                android:inputType="numberDecimal"
                 android:key="@string/key_eatingnow_uamboostpct_max"
                 android:dialogMessage="Max percentage for UAMBoost.\nThis is applied to the insulin required based on the BGL rise.\n\n0 is unlimited UAMBoost limited to maxBolus.\n1 is 100% therefore UAMBoost will be disabled."
                 android:title="Max UAMBoost %"

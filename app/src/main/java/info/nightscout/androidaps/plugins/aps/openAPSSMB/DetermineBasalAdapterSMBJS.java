@@ -308,7 +308,6 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("enableGhostCOB", sp.getBoolean(R.string.key_use_ghostcob, false));
         mProfile.put("enableEatingNow", sp.getBoolean(R.string.key_use_eatingnow, false));
         mProfile.put("EatingNowIOB", sp.getDouble(R.string.key_eatingnow_iob, 5));
-        mProfile.put("EatingNowISFMax", sp.getDouble(R.string.key_eatingnow_isf_max, 1.0));
         mProfile.put("EatingNowUAMBoostMax", sp.getDouble(R.string.key_eatingnow_uamboostpct_max, 1.0));
         mProfile.put("EatingNowMaxSMBMinutes", sp.getInt(R.string.key_eatingnow_maxbolusminutes, 30));
         mProfile.put("EatingNowbolusboostMinutes", sp.getInt(R.string.key_eatingnow_bolusboostminutes, 30));
