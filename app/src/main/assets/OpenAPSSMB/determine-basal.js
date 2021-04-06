@@ -1240,8 +1240,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // Restrict UAMBoost to a max of EatingNowUAMBoostMax if it is above 0
                     UAMBoost = Math.min(UAMBoost,(profile.EatingNowUAMBoostMax > 0 ? profile.EatingNowUAMBoostMax : UAMBoost));
 
-                    // If short delta is not slowing boost with UAMBoost
-                    if (UAM_deltaShortRise >= 0) UAMBoostReason = "boost" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
+                    // Reason is that we boosted, this could be restriced by maxbolus is rise is slowing
+                    UAMBoostReason = "boost" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
 
                     // Apply the boost to insulin required
                     insulinReq = round(insulinReq * UAMBoost,2);
