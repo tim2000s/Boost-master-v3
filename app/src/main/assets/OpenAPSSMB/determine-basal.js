@@ -19,7 +19,7 @@
 // Fix the round_basal issue?
 function round_basal(basal, profile)
 {
-    profile = 2; // number of decimal places
+    profile = 2; // force number of decimal places for the pump
     return round(basal, profile);
 }
 
