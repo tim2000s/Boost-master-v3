@@ -1208,6 +1208,31 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var EatingNowMaxSMB = round( profile.current_basal * profile.EatingNowMaxSMBMinutes / 60 ,1);
                 if (eatingnowtimeOK) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowMaxSMB : maxBolus);
 
+                // If eventual BG is expected to be at least double the target BG average boost_scale with UAMBoost
+                if (boost_scale > 1) UAMBoost = round( (boost_scale + UAMBoost)/2,2 );
+
+                // If the insulinReq is negative lets calculate what 200% would be... I think...
+                if (insulinReq < 0) {
+                    insulinReq = Math.abs(insulinReq);
+                    UAMBoost -=1; // reduce UAMBoost for correct multiplication... I think...
+                }
+
+                // If we are rising >=0.3
+                if (UAM_safedelta >=5) {
+                    insulinReqPct = profile.EatingNowInsulinReq; // default % from settings
+                    // Reason is that we boosted, this could be restricted by maxbolus is rise is slowing
+                    UAMBoostReason = "boost" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
+                } else {
+                    // if eventualBG is above target_bg starting position is TBR only with no SMB
+                    UAMBoostReason = "TBR " + insulinReq + "*" + UAMBoost;
+                    insulinReqPct = 0;
+                }
+
+                // Apply the boost to insulin required
+                insulinReq = round(insulinReq * UAMBoost,2);
+
+
+                /*
                 // If we also have negative insulin then add boost_bolus as the prediction is higher than target_bg
                 insulinReq = (insulinReq <=0 ? boost_bolus : insulinReq);
 
@@ -1233,6 +1258,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // Apply the boost to insulin required
                     insulinReq = round(insulinReq * UAMBoost,2);
                 }
+               */
             }
             // END === if we are eating now and BGL prediction is higher than target ===
 
