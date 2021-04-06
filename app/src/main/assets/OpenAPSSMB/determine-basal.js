@@ -20,7 +20,7 @@
 function round_basal(basal, profile)
 {
     profile = 2; // number of decimal places
-    round(basal, profile);
+    return round(basal, profile);
 }
 
 // Rounds value to 'digits' decimal places
