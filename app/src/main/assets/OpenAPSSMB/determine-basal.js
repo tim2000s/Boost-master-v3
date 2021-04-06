@@ -1245,7 +1245,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 }
 
-                // if short delta rise has slowed
+                // if short delta rise has slowed no SMB allowed
                 if (UAM_deltaShortRise < 0) {
                     UAMBoostReason = "TBR";
                     insulinReqPct = 0;
