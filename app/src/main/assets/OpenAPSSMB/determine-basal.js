@@ -240,7 +240,61 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         return rT;
     }
 
-    //MD relocated iob_data just for now START
+    var sensitivityRatio;
+    var high_temptarget_raises_sensitivity = profile.exercise_mode || profile.high_temptarget_raises_sensitivity;
+    var normalTarget = profile.normal_target_bg; // evaluate high/low temptarget against 100, not scheduled target (which might change)
+    if ( profile.half_basal_exercise_target ) {
+        var halfBasalTarget = profile.half_basal_exercise_target;
+    } else {
+        halfBasalTarget = 160; // when temptarget is 160 mg/dL, run 50% basal (120 = 75%; 140 = 60%)
+        // 80 mg/dL with low_temptarget_lowers_sensitivity would give 1.5x basal, but is limited to autosens_max (1.2x by default)
+    }
+    if ( high_temptarget_raises_sensitivity && profile.temptargetSet && target_bg > normalTarget
+        || profile.low_temptarget_lowers_sensitivity && profile.temptargetSet && target_bg < normalTarget ) {
+        // w/ target 100, temp target 110 = .89, 120 = 0.8, 140 = 0.67, 160 = .57, and 200 = .44
+        // e.g.: Sensitivity ratio set to 0.8 based on temp target of 120; Adjusting basal from 1.65 to 1.35; ISF from 58.9 to 73.6
+        //sensitivityRatio = 2/(2+(target_bg-normalTarget)/40);
+        var c = halfBasalTarget - normalTarget;
+        sensitivityRatio = c/(c+target_bg-normalTarget);
+        sensitivityRatio = sensitivityRatio * autosens_data.ratio; //now apply existing sensitivity or resistance
+        // limit sensitivityRatio to profile.autosens_max with existing autosens
+        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max*autosens_data.ratio);
+        sensitivityRatio = round(sensitivityRatio,2);
+        console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
+    } else if (typeof autosens_data !== 'undefined' && autosens_data) {
+        sensitivityRatio = autosens_data.ratio;
+        console.log("Autosens ratio: "+sensitivityRatio+"; ");
+    }
+    if (sensitivityRatio) {
+        basal = profile.current_basal * sensitivityRatio;
+        basal = round_basal(basal, profile);
+        if (basal !== profile_current_basal) {
+            console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
+        } else {
+            console.log("Basal unchanged: "+basal+"; ");
+        }
+    }
+
+    // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
+    if (profile.temptargetSet) {
+        //console.log("Temp Target set, not adjusting with autosens; ");
+    } else if (typeof autosens_data !== 'undefined' && autosens_data) {
+        if ( profile.sensitivity_raises_target && autosens_data.ratio < 1 || profile.resistance_lowers_target && autosens_data.ratio > 1 ) {
+            // with a target of 100, default 0.7-1.2 autosens min/max range would allow a 93-117 target range
+            min_bg = round((min_bg - 60) / autosens_data.ratio) + 60;
+            max_bg = round((max_bg - 60) / autosens_data.ratio) + 60;
+            var new_target_bg = round((target_bg - 60) / autosens_data.ratio) + 60;
+            // don't allow target_bg below 80
+            new_target_bg = Math.max(80, new_target_bg);
+            if (target_bg === new_target_bg) {
+                console.log("target_bg unchanged: "+new_target_bg+"; ");
+            } else {
+                console.log("target_bg from "+target_bg+" to "+new_target_bg+"; ");
+            }
+            target_bg = new_target_bg;
+        }
+    }
+
     if (typeof iob_data === 'undefined' ) {
         rT.error ='Error: iob_data undefined. ';
         return rT;
@@ -256,7 +310,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.error ='Error: iob_data missing some property. ';
         return rT;
     }
-    //MD relocated iob_data just for now END
 
     // patches ==== START
     var ignoreCOBPatch = profile.enableGhostCOB; //MD#01: Ignore any COB and rely purely on UAM
@@ -299,77 +352,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.log("UAMBoost: " + UAMBoost);
 
     //MD: Eating now mode for UAM === END
-
-    var sensitivityRatio;
-    var high_temptarget_raises_sensitivity = profile.exercise_mode || profile.high_temptarget_raises_sensitivity;
-    var normalTarget = profile.normal_target_bg; // evaluate high/low temptarget against 100, not scheduled target (which might change)
-    if ( profile.half_basal_exercise_target ) {
-        var halfBasalTarget = profile.half_basal_exercise_target;
-    } else {
-        halfBasalTarget = 160; // when temptarget is 160 mg/dL, run 50% basal (120 = 75%; 140 = 60%)
-        // 80 mg/dL with low_temptarget_lowers_sensitivity would give 1.5x basal, but is limited to autosens_max (1.2x by default)
-    }
-    if ( high_temptarget_raises_sensitivity && profile.temptargetSet && target_bg > normalTarget
-        || profile.low_temptarget_lowers_sensitivity && profile.temptargetSet && target_bg < normalTarget ) {
-        // w/ target 100, temp target 110 = .89, 120 = 0.8, 140 = 0.67, 160 = .57, and 200 = .44
-        // e.g.: Sensitivity ratio set to 0.8 based on temp target of 120; Adjusting basal from 1.65 to 1.35; ISF from 58.9 to 73.6
-        //sensitivityRatio = 2/(2+(target_bg-normalTarget)/40);
-        var c = halfBasalTarget - normalTarget;
-        sensitivityRatio = c/(c+target_bg-normalTarget);
-        sensitivityRatio = sensitivityRatio * autosens_data.ratio; //now apply existing sensitivity or resistance
-        // limit sensitivityRatio to profile.autosens_max with existing autosens
-        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max*autosens_data.ratio);
-        sensitivityRatio = round(sensitivityRatio,2);
-        console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
-    } else if (typeof autosens_data !== 'undefined' && autosens_data) {
-        sensitivityRatio = autosens_data.ratio;
-        console.log("Autosens ratio: "+sensitivityRatio+"; ");
-    }
-    if (sensitivityRatio) {
-        basal = profile.current_basal * sensitivityRatio;
-        basal = round_basal(basal, profile);
-        if (basal !== profile_current_basal) {
-            console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
-        } else {
-            console.log("Basal unchanged: "+basal+"; ");
-        }
-    }
-
-    // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
-    if (profile.temptargetSet) {
-        //console.log("Temp Target set, not adjusting with autosens; ");
-    } else if (typeof autosens_data !== 'undefined' && autosens_data && !eatingnow) { // not if we are eating now as ISF has been adjusted NOTE autoisf may adjust ISF if not eatingnow
-        if ( profile.sensitivity_raises_target && autosens_data.ratio < 1 || profile.resistance_lowers_target && autosens_data.ratio > 1 ) {
-            // with a target of 100, default 0.7-1.2 autosens min/max range would allow a 93-117 target range
-            min_bg = round((min_bg - 60) / autosens_data.ratio) + 60;
-            max_bg = round((max_bg - 60) / autosens_data.ratio) + 60;
-            var new_target_bg = round((target_bg - 60) / autosens_data.ratio) + 60;
-            // don't allow target_bg below 80
-            new_target_bg = Math.max(80, new_target_bg);
-            if (target_bg === new_target_bg) {
-                console.log("target_bg unchanged: "+new_target_bg+"; ");
-            } else {
-                console.log("target_bg from "+target_bg+" to "+new_target_bg+"; ");
-            }
-            target_bg = new_target_bg;
-        }
-    }
-
-//    if (typeof iob_data === 'undefined' ) {
-//        rT.error ='Error: iob_data undefined. ';
-//        return rT;
-//    }
-//
-//    var iobArray = iob_data;
-//    if (typeof(iob_data.length) && iob_data.length > 1) {
-//        iob_data = iobArray[0];
-//        //console.error(JSON.stringify(iob_data[0]));
-//    }
-//
-//    if (typeof iob_data.activity === 'undefined' || typeof iob_data.iob === 'undefined' ) {
-//        rT.error ='Error: iob_data missing some property. ';
-//        return rT;
-//    }
 
     var tick;
 
