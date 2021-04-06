@@ -465,7 +465,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         target_bg = adjustedTargetBG;
         max_bg = adjustedMaxBG;
     // adjust target BG range if configured to bring down high BG faster
-    } else if ( bg > max_bg && profile.adv_target_adjustments && ! profile.temptargetSet && ! eatingnow ) { // and not eating now
+    } else if ( bg > max_bg && profile.adv_target_adjustments && ! profile.temptargetSet ) {
         // with target=100, as BG rises from 100 to 160, adjustedTarget drops from 100 to 80
         adjustedMinBG = round(Math.max(80, min_bg - (bg - min_bg)/3 ),0);
         adjustedTargetBG =round( Math.max(80, target_bg - (bg - target_bg)/3 ),0);
