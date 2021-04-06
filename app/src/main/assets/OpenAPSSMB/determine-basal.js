@@ -297,6 +297,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.log("UAM_deltaLongRise: " + UAM_deltaLongRise);
     console.log("UAM_deltaAvgRise: " + UAM_deltaAvgRise);
     console.log("UAMBoost: " + UAMBoost);
+    console.log("profile:" + profile);
 
 
     //MD: Eating now mode for UAM === END
