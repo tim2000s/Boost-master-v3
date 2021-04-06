@@ -14,7 +14,14 @@
 */
 
 
-var round_basal = require('../round-basal')
+//var round_basal = require('../round-basal')
+
+// Fix the round_basal issue?
+function round_basal(basal, profile)
+{
+    profile = 2; // number of decimal places
+    round(basal, profile);
+}
 
 // Rounds value to 'digits' decimal places
 function round(value, digits)
