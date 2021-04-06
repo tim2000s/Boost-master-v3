@@ -1224,15 +1224,28 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (eatingnowtimeOK) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowMaxSMB : maxBolus);
 
                 // NEW STUFF!!
-                if (UAM_safedelta >=5) insulinReq = (insulinReq <=0 ? boost_bolus : insulinReq); // If we are rising >=0.3 with UAMBoost
-                if (boost_scale > 1) UAMBoost = round( (boost_scale + UAMBoost)/2,2 );
 
-                // If short delta is not slowing or eventual bg is large enough to scale a bolus, boost
-                if (UAM_deltaShortRise >= 0) {
-                    UAMBoostReason = "boost" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
+                // If we are rising >=0.3
+                if (UAM_safedelta >=5) {
+
+                    // If we also have negative insulin then add boost_bolus
+                    insulinReq = (insulinReq <=0 ? boost_bolus : insulinReq);
+
+                    // If eventual BG is expected to be at least double the target BG average boost_scale with UAMBoost
+                    if (boost_scale > 1) UAMBoost = round( (boost_scale + UAMBoost)/2,2 );
+
+                    // Restrict UAMBoost to a max of EatingNowIRBMax if it is above 0
+                    UAMBoost = Math.min(UAMBoost,(profile.EatingNowIRBMax > 0 ? profile.EatingNowIRBMax : UAMBoost));
+
+                    // If short delta is not slowing boost with UAMBoost
+                    if (UAM_deltaShortRise >= 0) UAMBoostReason = "boost" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
+
+                    // Apply the boost to insulin required
+                    insulinReq = round(insulinReq * UAMBoost,2);
+
                 }
 
-                // if short delta rise has slowed disable SMB
+                // if short delta rise has slowed
                 if (UAM_deltaShortRise < 0) {
                     UAMBoostReason = "TBR";
                     insulinReqPct = 0;
@@ -1259,11 +1272,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = 0;
                 }
                 */
-
-
-                // Restrict boost_scale to a max of EatingNowIRBMax if it is above 0
-                UAMBoost = Math.min(UAMBoost,(profile.EatingNowIRBMax > 0 ? profile.EatingNowIRBMax : UAMBoost));
-                insulinReq = round(insulinReq * UAMBoost,2);
 
 
                 // If eating now and the rise is slowing turn off SMB for safety
@@ -1317,7 +1325,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             rT.reason += " insulinReq " + originalinsulinReq + (originalinsulinReq != insulinReq ? "=" + insulinReq : "") + "@"+round(insulinReqPct*100,0)+"%";
 //            if (eatingnow && UAMBoost >1) rT.reason +=" (*"+ UAMBoost +"/"+round(profile.EatingNowIRBMax,2)+")";
-            if (eatingnow && UAMBoost >1) rT.reason +=" ("+ UAMBoostReason +")";
+            if (eatingnow && UAMBoostReason !=="") rT.reason +=" ("+ UAMBoostReason +")";
             if (microBolus >= maxBolus) {
                 rT.reason +=  "; maxBolus" + (maxBolus == EatingNowMaxSMB ? "^ ": " ") + maxBolus;
             }
