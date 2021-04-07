@@ -1226,7 +1226,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // Reason is that we boosted, this could be restricted by maxbolus is rise is slowing
                     UAMBoostReason = "boost" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
                 } else {
-                    // if eventualBG is above target_bg starting position is TBR only with no SMB
+                    // if eventualBG is above target_bg but rising slower or falling restrict insulinReq
                     insulinReqPct = 0.5;
                     UAMBoostReason = "limit " + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
                 }
