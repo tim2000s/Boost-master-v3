@@ -1227,8 +1227,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostReason = "boost" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
                 } else {
                     // if eventualBG is above target_bg starting position is TBR only with no SMB
-                    insulinReqPct = 0;
-                    UAMBoostReason = "TBR " + insulinReq + "*" + UAMBoost;
+                    insulinReqPct = 0.5;
+                    UAMBoostReason = "limit " + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
                 }
 
                 // Apply the boost to insulin required
