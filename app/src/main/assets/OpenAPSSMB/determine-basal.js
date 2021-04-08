@@ -1230,7 +1230,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = 0.5;
                     UAMBoostReason = " (limit " + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBooster + ")";
                 }
-                UAMBoostReason += "UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
+                UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
 
                 // Apply the boost to insulin required
                 insulinReq = round(insulinReq * UAMBooster,2);
