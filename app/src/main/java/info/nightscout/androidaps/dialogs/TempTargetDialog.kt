@@ -91,7 +91,7 @@ class TempTargetDialog : DialogFragmentWithDate() {
                 resourceHelper.gs(R.string.manual),
                 resourceHelper.gs(R.string.eatingsoon),
                 resourceHelper.gs(R.string.activity),
-                resourceHelper.gs(R.string.hypo),
+                resourceHelper.gs(R.string.hypo)
                 // resourceHelper.gs(R.string.eatingsoon_small)+" "+(defaultValueHelper.determineEatingSoonTTPrebolus(R.string.key_eatingsoon_small_prebolus)-180)/10+"U",
                 // resourceHelper.gs(R.string.eatingsoon_medium)+" "+(defaultValueHelper.determineEatingSoonTTPrebolus(R.string.key_eatingsoon_medium_prebolus)-180)/10+"U",
                 // resourceHelper.gs(R.string.eatingsoon_large)+" "+(defaultValueHelper.determineEatingSoonTTPrebolus(R.string.key_eatingsoon_large_prebolus)-180)/10+"U"
