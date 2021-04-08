@@ -911,7 +911,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.reason += ", UAMpredBG " + convert_bg(lastUAMpredBG, profile); //MD Missing ;
     }
     rT.reason +=", predBGslength: " + predBGslength; // +"/" + predBGslengthDefault;
-    rT.reason += ", UAMBoost " + UAMBoost;
     if (eatingnow) rT.reason +=", EatingNow";
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
@@ -1203,18 +1202,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 var boost_scale = round(((eventualBG - target_bg) / target_bg),2);
                 var boost_bolus = round( profile.current_basal * profile.EatingNowbolusboostMinutes / 60 ,2);
+                var UAMBooster = UAMBoost; // this will be the combined boost
 
                 // only increase maxbolus limit if we are within the hours specified and rise not slowing
                 var EatingNowMaxSMB = round( profile.current_basal * profile.EatingNowMaxSMBMinutes / 60 ,1);
                 if (eatingnowtimeOK) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowMaxSMB : maxBolus);
 
                 // If eventual BG is expected to be at least double the target BG average boost_scale with UAMBoost
-                if (boost_scale > 1) UAMBoost = round( (boost_scale + UAMBoost)/2,2 );
+                if (boost_scale > 1) UAMBooster = round( (boost_scale + UAMBoost)/2,2 );
 
                 // If the insulinReq is negative and we are eventualBG not enough for boost_scale lets calculate what 200% would be... I think...
                 if (insulinReq < 0 && boost_scale <1) {
                     insulinReq = Math.abs(insulinReq); // prepare insulinReq for multiplication
-                    UAMBoost = Math.max(UAMBoost-1,1); // reduce UAMBoost for correct multiplication if we didnt need Boost+ ,make it minimum of 1 to prevent 0 * insulinReq
+                    UAMBooster = Math.max(UAMBooster-1,1); // reduce UAMBooster for correct multiplication if we didnt need Boost+ ,make it minimum of 1 to prevent 0 * insulinReq
                 }
 
                 // If we have negative insulin then boost_scale must be needed, add boost_bolus as the prediction is higher than target_bg
@@ -1224,15 +1224,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAM_safedelta >=5) {
                     insulinReqPct = profile.EatingNowInsulinReq; // default % from settings
                     // Reason is that we boosted, this could be restricted by maxbolus is rise is slowing
-                    UAMBoostReason = "boost" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
+                    UAMBoostReason = " (boost" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBooster + ")";
                 } else {
                     // if eventualBG is above target_bg but rising slower or falling restrict insulinReq
                     insulinReqPct = 0.5;
-                    UAMBoostReason = "limit " + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
+                    UAMBoostReason = " (limit " + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBooster + ")";
                 }
+                UAMBoostReason += "UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
 
                 // Apply the boost to insulin required
-                insulinReq = round(insulinReq * UAMBoost,2);
+                insulinReq = round(insulinReq * UAMBooster,2);
 
 
                 /*
@@ -1310,7 +1311,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 durationReq = 30;
             }
             rT.reason += " insulinReq " + originalinsulinReq + (originalinsulinReq != insulinReq ? "=" + insulinReq : "") + "@"+round(insulinReqPct*100,0)+"%";
-            if (eatingnow && UAMBoostReason !=="") rT.reason +=" ("+ UAMBoostReason +")";
+            if (UAMBoostReason !=="") rT.reason += UAMBoostReason;
             if (microBolus >= maxBolus) {
                 rT.reason +=  "; maxBolus" + (maxBolus == EatingNowMaxSMB ? "^ ": " ") + maxBolus;
             }
