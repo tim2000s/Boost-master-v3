@@ -1223,7 +1223,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReq = (insulinReq <=0 ? boost_bolus : insulinReq);
 
                 // If we are rising >=0.3
-                if (UAM_safedelta >=5) {
+                if (UAM_safedelta >=5 && UAMBooster >1) {
                     // Reason is that we boosted, this could be restricted by maxbolus is rise is slowing
                     UAMBoostReason = " (boost" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBooster + ")";
                 } else {
@@ -1238,7 +1238,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // Allow all the insulin now if its less than the default maxBolus and insulinReqPct has not been limited
                 if (insulinReq <= originalmaxBolus && insulinReqPct == profile.EatingNowInsulinReq) insulinReqPct = 1;
-
 
                 /*
                 // If we also have negative insulin then add boost_bolus as the prediction is higher than target_bg
