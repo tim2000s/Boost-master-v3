@@ -1215,8 +1215,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // If the insulinReq is negative and we are eventualBG not enough for boost_scale lets calculate what 200% would be... I think...
                 if (insulinReq < 0 && boost_scale <1) {
-                    insulinReq = Math.abs(insulinReq); // prepare insulinReq for multiplication
-                    UAMBooster = Math.max(UAMBooster-1,1); // reduce UAMBooster for correct multiplication if we didnt need Boost+ ,make it minimum of 1 to prevent 0 * insulinReq
+                    insulinReq = Math.abs(insulinReq)/2; // prepare insulinReq for multiplication
                 }
 
                 // If we have negative insulin then boost_scale must be needed, add boost_bolus as the prediction is higher than target_bg
