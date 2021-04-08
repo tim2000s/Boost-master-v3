@@ -1192,6 +1192,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var roundSMBTo = 1 / profile.bolus_increment;
             var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var originalinsulinReq = insulinReq;
+            var originalmaxBolus = maxBolus;
             var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
 
             // if autoISF is active and insulinReq is less than normal maxbolus then allow 100%
@@ -1200,6 +1201,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // START === if we are eating now and BGL prediction is higher than target ===
             if (eatingnow && eventualBG > target_bg) {
 
+                insulinReqPct = profile.EatingNowInsulinReq; // default % from settings
                 var boost_scale = round(((eventualBG - target_bg) / target_bg),2);
                 var boost_bolus = round( profile.current_basal * profile.EatingNowbolusboostMinutes / 60 ,2);
                 var UAMBooster = UAMBoost; // this will be the combined boost
@@ -1222,7 +1224,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // If we are rising >=0.3
                 if (UAM_safedelta >=5) {
-                    insulinReqPct = profile.EatingNowInsulinReq; // default % from settings
                     // Reason is that we boosted, this could be restricted by maxbolus is rise is slowing
                     UAMBoostReason = " (boost" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBooster + ")";
                 } else {
@@ -1234,6 +1235,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // Apply the boost to insulin required
                 insulinReq = round(insulinReq * UAMBooster,2);
+
+                // Allow all the insulin now if its less than the default maxBolus and insulinReqPct has not been limited
+                if (insulinReq <= originalmaxBolus && insulinReqPct == profile.EatingNowInsulinReq) insulinReqPct = 1;
 
 
                 /*
