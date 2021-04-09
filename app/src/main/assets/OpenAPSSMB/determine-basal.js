@@ -1219,7 +1219,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // If we have negative insulin then boost_scale must be needed, add boost_bolus as the prediction is higher than target_bg
-                insulinReq = (insulinReq <=0 ? boost_bolus : insulinReq);
+                insulinReq = round((insulinReq <=0 ? boost_bolus : insulinReq),2);
 
                 // If we are rising >=0.3
                 if (UAM_safedelta >=5 && UAMBooster >1) {
@@ -1336,14 +1336,18 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (microBolus > 0) {
                     rT.units = microBolus;
                     rT.reason += "Microbolusing " + microBolus + "U. ";
-                    insulinReq = insulinReq - microBolus;
-                    // Mackwe: rate required to deliver remaining insulinReq over 30m:
-                    if (eatingnow) rate = round(Math.max(basal + (2 * insulinReq),0),2);
                 }
             } else {
                 rT.reason += "Waiting " + nextBolusMins + "m " + nextBolusSeconds + "s to microbolus again. ";
             }
             //rT.reason += ". ";
+
+            // when eatingnow allow the remaining insulinReq to be delivered as TBR
+            if (eatingnow) {
+                insulinReq = insulinReq - microBolus;
+                // rate required to deliver remaining insulinReq over 30m:
+                rate = round(Math.max(basal + (2 * insulinReq),0),2);
+            }
 
             // if no zero temp is required, don't return yet; allow later code to set a high temp
             if (durationReq > 0) {
