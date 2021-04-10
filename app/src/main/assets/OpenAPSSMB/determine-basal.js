@@ -1221,6 +1221,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // If we have negative insulin then boost_scale must be needed, add boost_bolus as the prediction is higher than target_bg
 //                insulinReq = round((insulinReq <=0 ? boost_bolus : insulinReq),2);
                 insulinReq = round((insulinReq <=0 ? Math.abs(insulinReq)/2 : insulinReq),2); // lets try this!?
+                if (boost_scale >1) insulinReq += boost_bolus; // lets try this!?
 
                 // If we are rising >=0.3
                 if (UAM_safedelta >=5 && UAMBooster >1) {
