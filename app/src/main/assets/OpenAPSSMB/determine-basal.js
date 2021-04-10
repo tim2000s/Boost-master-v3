@@ -1214,12 +1214,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (boost_scale > 1) UAMBooster = round( (boost_scale + UAMBoost)/2,2 );
 
                 // If the insulinReq is negative and we are eventualBG not enough for boost_scale lets calculate what 200% would be... I think...
-                if (insulinReq < 0 && boost_scale <1) {
-                    insulinReq = Math.abs(insulinReq)/2; // prepare insulinReq for multiplication
-                }
+//                if (insulinReq < 0 && boost_scale <1) {
+//                    insulinReq = Math.abs(insulinReq)/2; // prepare insulinReq for multiplication
+//                }
 
                 // If we have negative insulin then boost_scale must be needed, add boost_bolus as the prediction is higher than target_bg
-                insulinReq = round((insulinReq <=0 ? boost_bolus : insulinReq),2);
+//                insulinReq = round((insulinReq <=0 ? boost_bolus : insulinReq),2);
+                insulinReq = round((insulinReq <=0 ? Math.abs(insulinReq)/2 : insulinReq),2); // lets try this!?
 
                 // If we are rising >=0.3
                 if (UAM_safedelta >=5 && UAMBooster >1) {
@@ -1228,7 +1229,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else {
                     // if eventualBG is above target_bg but rising slower or falling restrict insulinReq
                     insulinReqPct = 0.5;
-                    UAMBoostReason = " (limit " + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBooster + ")";
+                    UAMBoostReason = " (limit" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBooster + ")";
                 }
                 UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
 
@@ -1237,34 +1238,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // Allow all the insulin now if its less than the default maxBolus and insulinReqPct has not been limited
                 if (insulinReq <= originalmaxBolus && insulinReqPct == profile.EatingNowInsulinReq) insulinReqPct = 1;
-
-                /*
-                // If we also have negative insulin then add boost_bolus as the prediction is higher than target_bg
-                insulinReq = (insulinReq <=0 ? boost_bolus : insulinReq);
-
-                // if eventualBG is above target_bg starting position is TBR only with no SMB
-                UAMBoostReason = "TBR " + insulinReq;
-                insulinReqPct = 0;
-
-                // If we are rising >=0.3
-                if (UAM_safedelta >=5) {
-
-                    // default % from settings, this will override the TBR of 0% when rising at this level
-                    insulinReqPct = profile.EatingNowInsulinReq;
-
-                    // If eventual BG is expected to be at least double the target BG average boost_scale with UAMBoost
-                    if (boost_scale > 1) UAMBoost = round( (boost_scale + UAMBoost)/2,2 );
-
-                    // Restrict UAMBoost to a max of EatingNowUAMBoostMax if it is above 0
-                    UAMBoost = Math.min(UAMBoost,(profile.EatingNowUAMBoostMax > 0 ? profile.EatingNowUAMBoostMax : UAMBoost));
-
-                    // Reason is that we boosted, this could be restricted by maxbolus is rise is slowing
-                    UAMBoostReason = "boost" + (boost_scale >1 ? "+ ":" ") + insulinReq + "*" + UAMBoost;
-
-                    // Apply the boost to insulin required
-                    insulinReq = round(insulinReq * UAMBoost,2);
-                }
-               */
             }
             // END === if we are eating now and BGL prediction is higher than target ===
 
