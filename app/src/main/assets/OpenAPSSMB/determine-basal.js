@@ -1202,7 +1202,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (eatingnow && eventualBG > target_bg) {
 
                 insulinReqPct = profile.EatingNowInsulinReq; // default % from settings
-                var boostBGthreshold = ( profile.EatingNowUAMBoostBG > 0 ? convert_bg(profile.EatingNowUAMBoostBG, profile) : 216 ); // default is 216 = 12 mmol
+                var boostBGthreshold = 162; //( profile.EatingNowUAMBoostBG > 0 ? convert_bg(profile.EatingNowUAMBoostBG, profile) : 216 ); // default is 216 = 12 mmol
+                console.log("boostBGthreshold:"+  convert_bg(profile.EatingNowUAMBoostBG, profile));
                 var boost_scale = round((eventualBG / boostBGthreshold),2);
                 // var boost_scale = round(((eventualBG - target_bg) / target_bg),2);
                 var boost_bolus = round( profile.current_basal * profile.EatingNowbolusboostMinutes / 60 ,2);
