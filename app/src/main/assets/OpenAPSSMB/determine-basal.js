@@ -1238,7 +1238,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReq = round(insulinReq,2);
 
                 // Allow all the insulin now if its less than the default maxBolus and insulinReqPct has not been limited
-                if (insulinReq <= originalmaxBolus && insulinReqPct == profile.EatingNowInsulinReq) insulinReqPct = 1;
+                if (round(insulinReq,1) <= originalmaxBolus && insulinReqPct == profile.EatingNowInsulinReq) insulinReqPct = 1;
             }
             // END === if we are eating now and BGL prediction is higher than target ===
 
