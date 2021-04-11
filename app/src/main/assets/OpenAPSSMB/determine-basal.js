@@ -1229,18 +1229,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // If we are rising >=0.3
                 if (UAM_safedelta >=5 && UAMBooster >1) {
-                    insulinReq += (boost_scale > 1 ? boost_bolus : 0); // lets try this!?
                     // Reason is that we boosted, this could be restricted by maxbolus if rise is slowing
-                    UAMBoostReason = " (boost" + (boost_scale >1 ? "+ ":" ") + round(insulinReq,2) + "*" + UAMBooster + ")";
+                    UAMBoostReason = " (boost" + (boost_scale >1 ? "+ " : " ") + round(insulinReq,2) + "*" + UAMBooster + (boost_scale >1 ? "+" + boost_bolus : "")+ ")";
                 } else {
                     // if eventualBG is above target_bg but rising slower or falling restrict insulinReq
                     insulinReqPct = 0.5;
-                    UAMBoostReason = " (limit" + (boost_scale >1 ? "+ ":" ") + round(insulinReq,2) + "*" + UAMBooster + ")";
+                    UAMBoostReason = " (limit" + (boost_scale >1 ? "+ " : " ") + round(insulinReq,2) + "*" + UAMBooster + (boost_scale >1 ? "+" + boost_bolus : "")+ ")";
                 }
                 UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
 
-                // Apply the boost to insulin required
-                insulinReq = round(insulinReq * UAMBooster,2);
+                // Apply the boost to insulin required then add the boost bolus
+                insulinReq *= UAMBooster;
+                insulinReq += (boost_scale > 1 ? boost_bolus : 0); // lets try this!?
+                inuslinReq = round(insulinReq,2);
 
                 // Allow all the insulin now if its less than the default maxBolus and insulinReqPct has not been limited
                 if (insulinReq <= originalmaxBolus && insulinReqPct == profile.EatingNowInsulinReq) insulinReqPct = 1;
