@@ -314,6 +314,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // patches ==== START
     var ignoreCOBPatch = profile.enableGhostCOB; //MD#01: Ignore any COB and rely purely on UAM
     var eatingnowPatch = profile.enableEatingNow;
+    if (profile.out_units === "mmol/L") boostBGthreshold =  round(profile.EatingNowUAMBoostBG * 18, 1).toFixed(1);
     // patches ===== END
 
     // MD: Eating now mode for UAM === START
@@ -350,7 +351,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.log("UAM_deltaLongRise: " + UAM_deltaLongRise);
     console.log("UAM_deltaAvgRise: " + UAM_deltaAvgRise);
     console.log("UAMBoost: " + UAMBoost);
-    console.log("boostBGthreshold:"+  convert_bg(profile.EatingNowUAMBoostBG, profile));
+    console.log("boostBGthreshold:"+  boostBGthreshold;
 
 
     //MD: Eating now mode for UAM === END

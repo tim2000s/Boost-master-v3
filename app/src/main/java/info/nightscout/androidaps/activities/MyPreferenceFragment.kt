@@ -282,8 +282,7 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
             resourceHelper.gs(R.string.key_eatingsoon_medium_target),
             resourceHelper.gs(R.string.key_eatingsoon_large_target),
             resourceHelper.gs(R.string.key_high_mark),
-            resourceHelper.gs(R.string.key_low_mark),
-            resourceHelper.gs(R.string.key_eatingnow_boostbg)
+            resourceHelper.gs(R.string.key_low_mark)
         )
         if (unitDependent.toList().contains(pref.key) && pref is EditTextPreference) {
             val converted = Profile.toCurrentUnits(profileFunction, SafeParse.stringToDouble(pref.text))
