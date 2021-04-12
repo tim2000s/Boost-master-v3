@@ -1213,7 +1213,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // only increase maxbolus limit if we are within the hours specified and rise not slowing
                 var EatingNowMaxSMB = round( profile.current_basal * profile.EatingNowMaxSMBMinutes / 60 ,1);
-                if (eatingnowtimeOK) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowMaxSMB : maxBolus);
+                if (eatingnowtimeOK) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowMaxSMB : originalmaxBolus);
 
                 // If eventual BG is expected to be at least double the target BG average boost_scale with UAMBoost
                 if (boost_scale > 1) UAMBooster = round( (boost_scale + UAMBoost)/2,2 );
