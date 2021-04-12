@@ -1227,7 +1227,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostReason = " (boost" + (boost_scale >1 ? "+ " : " ") + round(insulinReq,2) + "*" + UAMBooster + (boost_scale >1 ? "+" + boost_bolus : "")+ ")";
                 } else {
                     // if eventualBG is above target_bg but rising slower or falling restrict insulinReq
-                    insulinReqPct = 0.5;
+                    insulinReqPct = (UAM_safedelta <=0 ? 0 : 0.5);
                     UAMBoostReason = " (limit" + (boost_scale >1 ? "+ " : " ") + round(insulinReq,2) + "*" + UAMBooster + (boost_scale >1 ? "+" + boost_bolus : "")+ ")";
                 }
                 UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
