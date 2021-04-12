@@ -1222,13 +1222,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReq = (insulinReq <=0 ? Math.abs(insulinReq)/3 : insulinReq); // lets try this!?
 
                 // If we are rising >=0.3
-                if (UAM_safedelta >=5 && UAMBooster >1) {
+                if (UAM_safedelta >=5 && UAMBooster >=1) {
                     // Reason is that we boosted, this could be restricted by maxbolus if rise is slowing
                     UAMBoostReason = " (boost";
                 } else {
-                    // if eventualBG is above target_bg but rising slower or falling restrict insulinReq
-//                    insulinReqPct = (UAM_safedelta <=0 ? 0 : 0.5);
-                    insulinReqPct = 0;
+                    // if eventualBG is above target_bg but rising slower or falling restrict insulinReqPct
+                    insulinReq += (UAM_safedelta >0 && insulinReq < boost_bolus ? boost_bolus : 0); // if rising slowly and insulinReq is low, boost it for the TBR
+                    insulinReqPct = 0; // TBR only
                     UAMBoostReason = " (limit";
                 }
                 UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReq,2) + "*" + UAMBooster + (boost_scale >=1 ? " + " + boost_bolus + "*" + boost_scale : "")+ ")";
