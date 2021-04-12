@@ -1230,7 +1230,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = (UAM_safedelta <=0 ? 0 : 0.5);
                     UAMBoostReason = " (limit";
                 }
-                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReq,2) + "*" + UAMBooster + (boost_scale >=1 ? " + " + boost_bolus "*" + boost_scale : "")+ ")";
+                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReq,2) + "*" + UAMBooster + (boost_scale >=1 ? " + " + boost_bolus + "*" + boost_scale : "")+ ")";
                 UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
 
                 // Apply the boost to insulin required then add the boost bolus
