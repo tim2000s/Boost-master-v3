@@ -1188,7 +1188,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("profile.maxSMBBasalMinutes:",profile.maxSMBBasalMinutes,"profile.current_basal:",profile.current_basal);
                 maxBolus = round( profile.current_basal * profile.maxSMBBasalMinutes / 60 ,1);
             }
-            //MD: Start of the UAM Boost of the insulinReq, up to maxBolus %, rounding down to nearest bolus increment
+            //UAMBoost of the insulinReq, up to maxBolus %, rounding down to nearest bolus increment ==== START ====
             var roundSMBTo = 1 / profile.bolus_increment;
             var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var originalinsulinReq = insulinReq;
@@ -1231,18 +1231,18 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = 0; // TBR only
                     UAMBoostReason = " (limit";
                 }
-                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReq,2) + "*" + UAMBooster + (boost_scale >=1 ? " + " + boost_bolus + "*" + boost_scale : "")+ ")";
+                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReq,2) + "*" + UAMBooster + (boost_scale >=1 ? " + " + boost_bolus + "*" + UAMBooster : "")+ ")";
                 UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
 
                 // Apply the boost to insulin required then add the boost bolus
                 insulinReq *= UAMBooster;
-                insulinReq += (boost_scale >= 1 ? boost_scale * boost_bolus : 0); // lets try this!?
+                insulinReq += (boost_scale >= 1 ? boost_scale * UAMBooster : 0); // lets try this!?
                 insulinReq = round(insulinReq,2);
 
                 // Allow all the insulin now if its less than the default maxBolus and insulinReqPct has not been limited
                 if (round(insulinReq,1) <= originalmaxBolus && insulinReqPct == profile.EatingNowInsulinReq) insulinReqPct = 1;
             }
-            // END === if we are eating now and BGL prediction is higher than target ===
+            //UAMBoost of the insulinReq, up to maxBolus %, rounding down to nearest bolus increment ==== END ====
 
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
             var microBolus = Math.floor(Math.min(insulinReq * insulinReqPct ,maxBolus)*roundSMBTo)/roundSMBTo;
