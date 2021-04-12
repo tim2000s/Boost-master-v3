@@ -1219,22 +1219,23 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (boost_scale > 1) UAMBooster = round( (boost_scale + UAMBoost)/2,2 );
 
                 // If we have negative insulin then boost_scale must be needed, add boost_bolus as the prediction is higher than target_bg
-                insulinReq = (insulinReq <=0 ? Math.abs(insulinReq)/2 : insulinReq); // lets try this!?
+                insulinReq = (insulinReq <=0 ? Math.abs(insulinReq)/3 : insulinReq); // lets try this!?
 
                 // If we are rising >=0.3
                 if (UAM_safedelta >=5 && UAMBooster >1) {
                     // Reason is that we boosted, this could be restricted by maxbolus if rise is slowing
-                    UAMBoostReason = " (boost" + (boost_scale >1 ? "+ " : " ") + round(insulinReq,2) + "*" + UAMBooster + (boost_scale >1 ? "+" + boost_bolus : "")+ ")";
+                    UAMBoostReason = " (boost";
                 } else {
                     // if eventualBG is above target_bg but rising slower or falling restrict insulinReq
                     insulinReqPct = (UAM_safedelta <=0 ? 0 : 0.5);
-                    UAMBoostReason = " (limit" + (boost_scale >1 ? "+ " : " ") + round(insulinReq,2) + "*" + UAMBooster + (boost_scale >1 ? "+" + boost_bolus : "")+ ")";
+                    UAMBoostReason = " (limit";
                 }
+                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReq,2) + "*" + UAMBooster + (boost_scale >=1 ? " + " + boost_bolus "*" + boost_scale : "")+ ")";
                 UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
 
                 // Apply the boost to insulin required then add the boost bolus
                 insulinReq *= UAMBooster;
-                insulinReq += (boost_scale > 1 ? boost_bolus : 0); // lets try this!?
+                insulinReq += (boost_scale >= 1 ? boost_scale * boost_bolus : 0); // lets try this!?
                 insulinReq = round(insulinReq,2);
 
                 // Allow all the insulin now if its less than the default maxBolus and insulinReqPct has not been limited
