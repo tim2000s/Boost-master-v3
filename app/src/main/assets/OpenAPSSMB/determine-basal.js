@@ -703,7 +703,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if ( aCOBpredBGs.length <= predBGslength) { aCOBpredBGs.push(aCOBpredBG); }
             if ( UAMpredBGs.length <= predBGslength) { UAMpredBGs.push(UAMpredBG); }
             if ( ZTpredBGs.length <= predBGslength) { ZTpredBGs.push(ZTpredBG); }
-
             // calculate minGuardBGs without a wait from COB, UAM, IOB predBGs
             if ( COBpredBG < minCOBGuardBG ) { minCOBGuardBG = round(COBpredBG); }
             if ( UAMpredBG < minUAMGuardBG ) { minUAMGuardBG = round(UAMpredBG); }
@@ -1048,7 +1047,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // multiply by 2 to low-temp faster for increased hypo safety
         var insulinReq = 2 * Math.min(0, (eventualBG - target_bg) / sens);
         insulinReq = round( insulinReq , 2);
-
         // calculate naiveInsulinReq based on naive_eventualBG
         var naiveInsulinReq = Math.min(0, (naive_eventualBG - target_bg) / sens);
         naiveInsulinReq = round( naiveInsulinReq , 2);
