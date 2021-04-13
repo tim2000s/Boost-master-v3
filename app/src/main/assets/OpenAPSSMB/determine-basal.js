@@ -1191,9 +1191,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //UAMBoost of the insulinReq, up to maxBolus %, rounding down to nearest bolus increment ==== START ====
             var roundSMBTo = 1 / profile.bolus_increment;
             var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected outside of eating now
-            var originalinsulinReq = insulinReq;
             var originalmaxBolus = maxBolus;
             var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
+            var insulinReqBoost = 0; // no boost yet
 
             // if autoISF is active and insulinReq is less than normal maxbolus then allow 100%
             if (typeof liftISF !== 'undefined' && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
@@ -1217,8 +1217,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // If eventual BG is expected to be at least double the target BG average boost_scale with UAMBoost
                 if (boost_scale > 1) UAMBooster = round( (boost_scale + UAMBoost)/2,2 );
 
-                // If we have negative insulin then boost_scale must be needed, add boost_bolus as the prediction is higher than target_bg
-                insulinReq = (insulinReq <=0 ? Math.abs(insulinReq)/3 : insulinReq); // lets try this!?
+                // If we have negative insulin then prepare the bosst addition to reset insulinReq to 0
+                insulinReqBoost = (insulinReq <0 ? Math.abs(insulinReq) : 0);
 
                 // If we are rising > 0.3
                 if (UAM_safedelta > 5 && UAMBooster >=1) {
@@ -1227,17 +1227,17 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = (boost_scale >=1 ? 1 : insulinReqPct); // If we are expected to go to boostBGthreshold then allow 100% up to maxbolus
                 } else {
                     // if eventualBG is above target_bg but rising slower or falling restrict insulinReqPct
-                    insulinReq += (UAM_safedelta >0 && insulinReq < profile.current_basal ? profile.current_basal : 0); // if rising slowly and insulinReq is low set it to current basal
+                    insulinReqBoost += (UAM_safedelta >0 && insulinReq < profile.current_basal ? profile.current_basal : 0); // if rising slowly and insulinReq is low set it to current basal
                     insulinReqPct = 0; // TBR only
                     UAMBoostReason = " (limit";
                 }
-                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReq,2) + "*" + UAMBooster + (boost_scale >=1 ? " + " + boost_bolus + "*" + UAMBooster : "")+ ")";
+                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReqBoost,2) + "*" + UAMBooster + (boost_scale >=1 ? " + " + boost_bolus + "*" + UAMBooster : "")+ ")";
                 UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
 
                 // Apply the boost to insulin required then add the boost bolus
-                insulinReq *= UAMBooster;
-                insulinReq += (boost_scale >= 1 ? boost_bolus * UAMBooster : 0); // lets try this!?
-                insulinReq = round(insulinReq,2);
+                insulinReqBoost *= UAMBooster;
+                insulinReqBoost += (boost_scale >= 1 ? boost_bolus * UAMBooster : 0); // lets try this!?
+                insulinReqBoost = round(insulinReqBoost,2);
 
                 // Allow all the insulin now if its less than the default maxBolus and insulinReqPct has not been limited
                 // if (round(insulinReq,1) <= originalmaxBolus && insulinReqPct > 0) insulinReqPct = 1;
@@ -1245,7 +1245,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //UAMBoost of the insulinReq, up to maxBolus %, rounding down to nearest bolus increment ==== END ====
 
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
-            var microBolus = Math.floor(Math.min(insulinReq * insulinReqPct ,maxBolus)*roundSMBTo)/roundSMBTo;
+            var microBolus = Math.floor(Math.min((insulinReq + insulinReqBoost) * insulinReqPct ,maxBolus)*roundSMBTo)/roundSMBTo;
             // calculate a long enough zero temp to eventually correct back up to target
             var smbTarget = target_bg;
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
@@ -1288,7 +1288,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 smbLowTempReq = round( basal * durationReq/30 ,2);
                 durationReq = 30;
             }
-            rT.reason += " insulinReq " + originalinsulinReq + (originalinsulinReq != insulinReq ? "=" + insulinReq : "") + "@"+round(insulinReqPct*100,0)+"%";
+            rT.reason += " insulinReq " + insulinReq + (insulinReqBoost >0 ? "+" + insulinReqBoost : "") + "@"+round(insulinReqPct*100,0)+"%";
             if (UAMBoostReason !=="") rT.reason += UAMBoostReason;
             if (microBolus >= maxBolus) {
                 rT.reason +=  "; maxBolus" + (maxBolus == EatingNowMaxSMB ? "^ ": " ") + maxBolus;
@@ -1318,12 +1318,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             //rT.reason += ". ";
 
-            // when eatingnow allow the remaining insulinReq to be delivered as TBR
-            if (eatingnow) {
-                insulinReq = insulinReq - microBolus;
-                // rate required to deliver remaining insulinReq over 30m:
-                rate = round(Math.max(basal + (2 * insulinReq),0),2);
-            }
+//            // when eatingnow allow the remaining insulinReq to be delivered as TBR
+//            if (eatingnow) {
+//                insulinReq = insulinReq - microBolus;
+//                // rate required to deliver remaining insulinReq over 30m:
+//                rate = round(Math.max(basal + (2 * insulinReq),0),2);
+//            }
 
             // if no zero temp is required, don't return yet; allow later code to set a high temp
             if (durationReq > 0) {
