@@ -207,7 +207,7 @@
                 android:maxLines="20"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
-                android:dialogMessage="Minutes of current basal to use as the initial bolus boost"
+                android:dialogMessage="Minutes of current basal to use as the minimum bolus for BG predicted to exceed the UAMBoost BG Threshold"
                 validate:floatmaxNumber="240"
                 validate:floatminNumber="15"
                 validate:testType="numericRange"/>
