@@ -1221,8 +1221,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // If we have negative insulin then boost_scale must be needed, add boost_bolus as the prediction is higher than target_bg
                 insulinReq = (insulinReq <=0 ? Math.abs(insulinReq)/3 : insulinReq); // lets try this!?
 
-                // If we are rising >=0.3
-                if (UAM_safedelta >=5 && UAMBooster >=1) {
+                // If we are rising > 0.3
+                if (UAM_safedelta > 5 && UAMBooster >=1) {
                     // Reason is that we boosted, this could be restricted by maxbolus if rise is slowing
                     UAMBoostReason = " (boost";
                 } else {
@@ -1271,8 +1271,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
              }
 
             // if insulinReq > 0 but not enough for a microBolus, don't set an SMB zero temp
-            if (insulinReq > 0 && microBolus < profile.bolus_increment || eatingnow && insulinReq - microBolus >= 0) {
-//            if (insulinReq > 0 && microBolus < profile.bolus_increment) {
+//            if (insulinReq > 0 && microBolus < profile.bolus_increment || eatingnow && insulinReq - microBolus >= 0) {
+            if (insulinReq > 0 && microBolus < profile.bolus_increment) {
                 durationReq = 0;
             }
 
@@ -1319,11 +1319,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //rT.reason += ". ";
 
             // when eatingnow allow the remaining insulinReq to be delivered as TBR
-            if (eatingnow) {
-                insulinReq = insulinReq - microBolus;
-                // rate required to deliver remaining insulinReq over 30m:
-                rate = round(Math.max(basal + (2 * insulinReq),0),2);
-            }
+//            if (eatingnow) {
+//                insulinReq = insulinReq - microBolus;
+//                // rate required to deliver remaining insulinReq over 30m:
+//                rate = round(Math.max(basal + (2 * insulinReq),0),2);
+//            }
 
             // if no zero temp is required, don't return yet; allow later code to set a high temp
             if (durationReq > 0) {
