@@ -1236,7 +1236,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // Apply the boost to insulin required then add the boost bolus
                 insulinReq *= UAMBooster;
-                insulinReq += (boost_scale >= 1 ? boost_scale * UAMBooster : 0); // lets try this!?
+                insulinReq += (boost_scale >= 1 ? boost_bolus * UAMBooster : 0); // lets try this!?
                 insulinReq = round(insulinReq,2);
 
                 // Allow all the insulin now if its less than the default maxBolus and insulinReqPct has not been limited
