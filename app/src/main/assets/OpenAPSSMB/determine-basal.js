@@ -1201,7 +1201,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // START === if we are eating now and BGL prediction is higher than target ===
             if (eatingnow && eventualBG > target_bg) {
 
-                insulinReqPct = profile.EatingNowInsulinReq; // default % from settings
                 var boostBGthreshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowUAMBoostBG * 18, 1).toFixed(1) : profile.EatingNowUAMBoostBG);
                 if (boostBGthreshold == 0) boostBGthreshold = 216 ; // default is 216 = 12 mmol
                 console.log("boostBGthreshold: "+boostBGthreshold);
