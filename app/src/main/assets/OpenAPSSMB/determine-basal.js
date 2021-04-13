@@ -1288,7 +1288,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 smbLowTempReq = round( basal * durationReq/30 ,2);
                 durationReq = 30;
             }
-            rT.reason += " insulinReq " + insulinReq + (insulinReqBoost >0 ? "+" + insulinReqBoost : "") + "@"+round(insulinReqPct*100,0)+"%";
+            rT.reason += " insulinReq " + round(insulinReqBoost+insulinReq,2) + (insulinReqBoost >0 ? "(" + insulinReq + ")" : "") + "@"+round(insulinReqPct*100,0)+"%";
             if (UAMBoostReason !=="") rT.reason += UAMBoostReason;
             if (microBolus >= maxBolus) {
                 rT.reason +=  "; maxBolus" + (maxBolus == EatingNowMaxSMB ? "^ ": " ") + maxBolus;
