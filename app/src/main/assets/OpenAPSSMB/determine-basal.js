@@ -1319,11 +1319,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //rT.reason += ". ";
 
             // when eatingnow allow the remaining insulinReq to be delivered as TBR
-//            if (eatingnow) {
-//                insulinReq = insulinReq - microBolus;
-//                // rate required to deliver remaining insulinReq over 30m:
-//                rate = round(Math.max(basal + (2 * insulinReq),0),2);
-//            }
+            if (eatingnow) {
+                insulinReq = insulinReq - microBolus;
+                // rate required to deliver remaining insulinReq over 30m:
+                rate = round(Math.max(basal + (2 * insulinReq),0),2);
+            }
 
             // if no zero temp is required, don't return yet; allow later code to set a high temp
             if (durationReq > 0) {
