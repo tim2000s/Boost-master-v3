@@ -1220,7 +1220,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // If we are rising > 0.3
 //                if (UAM_safedelta > 5 && UAMBooster >=1) {
-                if (UAM_deltaShortRise >=0 && boost_scale >=1) // === TEST ===
+                if (UAM_deltaShortRise >=0 && boost_scale >=1) { // === TEST ===
                     // Reason is that we boosted, this could be restricted by maxbolus if rise is slowing
                     UAMBoostReason = " (boost";
                     insulinReqPct = (boost_scale >=1 ? 1 : insulinReqPct); // If we are expected to go to boostBGthreshold then allow 100% up to maxbolus
