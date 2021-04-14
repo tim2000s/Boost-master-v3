@@ -1229,12 +1229,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = 0; // TBR only
                     UAMBoostReason = " (limit";
                 }
-                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReqBoost,2) + "*" + UAMBooster + (boost_scale >=1 ? " + " + boost_bolus + "*" + UAMBooster : "")+ ")";
+//                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReqBoost,2) + "*" + UAMBooster + (boost_scale >=1 ? " + " + boost_bolus + "*" + UAMBooster : "")+ ")";
+                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReqBoost,2) + "*1" + (boost_scale >=1 ? " + " + boost_bolus + "*" + boost_scale : "")+ ")"; // === TEST ===
                 UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
 
                 // Apply the boost to insulin required then add the boost bolus
-                insulinReqBoost *= UAMBooster;
-                insulinReqBoost += (boost_scale >= 1 ? boost_bolus * UAMBooster : 0); // lets try this!?
+//                insulinReqBoost *= UAMBooster; === TEST ===  IGNORING UAMBOOST FOR NOW
+//                insulinReqBoost += (boost_scale >= 1 ? boost_bolus * UAMBooster : 0); // lets try this!?
+                insulinReqBoost += (boost_scale >= 1 ? boost_bolus * boost_scale : 0); // === TEST === USING boost_scale
                 insulinReqBoost = round(insulinReqBoost,2);
 
                 // Allow all the insulin now if its less than the default maxBolus and insulinReqPct has not been limited
