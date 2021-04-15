@@ -1189,7 +1189,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //UAMBoost of the insulinReq, up to maxBolus %, rounding down to nearest bolus increment ==== START ====
             var roundSMBTo = 1 / profile.bolus_increment;
             var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected outside of eating now
-            var originalmaxBolus = maxBolus;
             var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
 
@@ -1206,10 +1205,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var boost_scale = round((eventualBG / boostBGthreshold),2);
                 var boost_bolus = round( profile.current_basal * profile.EatingNowbolusboostMinutes / 60 ,2);
                 var UAMBooster = UAMBoost; // this will be the combined boost
-
-                // only increase maxbolus limit if we are within the hours specified and rise not slowing
                 var EatingNowMaxSMB = round( profile.current_basal * profile.EatingNowMaxSMBMinutes / 60 ,1);
-                if (eatingnowtimeOK) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowMaxSMB : originalmaxBolus);
 
                 // If eventual BG is expected to be at least double the target BG average boost_scale with UAMBoost
                 if (boost_scale >= 1) UAMBooster = round( (boost_scale + UAMBoost)/2,2 );
@@ -1241,6 +1237,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else {
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                     UAMBoostReason = " (boost" + UAMBoostReason + ")";
+                    maxBolus = (eatingnowtimeOK ? EatingNowMaxSMB : maxBolus); // increase maxbolus if we are within the hours specified and rise not slowing
                 }
 
                 // ============== REASON ADDITIONS  ==============
