@@ -1231,7 +1231,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostReason = " (limit";
                 }
 //                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReqBoost,2) + "*" + UAMBooster + (boost_scale >=1 ? " + " + boost_bolus + "*" + UAMBooster : "")+ ")";
-                UAMBoostReason += (insulinReqBoost > 0 ? round(insulinReqBoost,2) : "") + (boost_scale >=1 ? " + " + boost_bolus + "*" + boost_scale : "")+ ")"; // === TEST ===
+                UAMBoostReason += " " + round(insulinReqBoost,2) + (boost_scale >=1 ? " + " + boost_bolus + "*" + boost_scale : "")+ ")"; // === TEST ===
                 UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
 
                 // Apply the boost to insulin required then add the boost bolus
