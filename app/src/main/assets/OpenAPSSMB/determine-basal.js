@@ -1214,8 +1214,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoostReason += " " + round(insulinReqBoost,2) + " ";
 
                 // ============== BOOST ==============
-                // If we are predicted to exceed boostBGthreshold with a sudden delta change allow UAMBoost
-                if (boost_scale >=1 && UAMBoost >=2.5) {
+                // If there is a sudden delta change allow UAMBoost
+                if (UAMBoost >=2.5) {
                     // boost the insulin further
                     var UAMBoostMaxed = (profile.EatingNowUAMBoostMax > 0 ? Math.min(profile.EatingNowUAMBoostMax,UAMBoost) : UAMBoost);
                     insulinReqBoost += boost_bolus * UAMBoostMaxed;
