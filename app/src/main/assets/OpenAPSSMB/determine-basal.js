@@ -1226,7 +1226,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = (boost_scale >=1 ? 1 : insulinReqPct); // If we are expected to go to boostBGthreshold then allow 100% up to maxbolus
                 } else {
                     // if eventualBG is above target_bg but rising slower or falling restrict insulinReqPct
-                    insulinReqBoost += (UAM_safedelta >0 && insulinReq < boost_bolus ? boost_bolus : 0); // if rising slowly and insulinReq is low set it to current basal
+//                    insulinReqBoost += (UAM_safedelta >0 && insulinReq < boost_bolus ? boost_bolus : 0); // if rising slowly and insulinReq is low set it to current basal
                     insulinReqPct = 0; // TBR only
                     UAMBoostReason = " (limit";
                 }
