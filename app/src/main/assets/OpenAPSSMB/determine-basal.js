@@ -1245,7 +1245,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== REASON ADDITIONS  ==============
                 UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
-                insulinReqBoost = round(insulinReqBoost,2);
             }
             //UAMBoost of the insulinReq, up to maxBolus %, rounding down to nearest bolus increment ==== END ====
 
