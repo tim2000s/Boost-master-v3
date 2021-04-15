@@ -1215,7 +1215,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // If eventual BG is expected to be at least double the target BG average boost_scale with UAMBoost
                 if (boost_scale > 1) UAMBooster = round( (boost_scale + UAMBoost)/2,2 );
 
-                // If we have negative insulin then prepare the bosst addition to reset insulinReq to 0
+                // If we have negative insulin then prepare the boost addition to reset insulinReq to 0
                 insulinReqBoost = (insulinReq <0 ? Math.abs(insulinReq) : 0);
 
                 // If we are rising > 0.3
@@ -1231,7 +1231,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostReason = " (limit";
                 }
 //                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReqBoost,2) + "*" + UAMBooster + (boost_scale >=1 ? " + " + boost_bolus + "*" + UAMBooster : "")+ ")";
-                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReqBoost,2) + "*1" + (boost_scale >=1 ? " + " + boost_bolus + "*" + boost_scale : "")+ ")"; // === TEST ===
+                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReqBoost,2) + (boost_scale >=1 ? " + " + boost_bolus + "*" + boost_scale : "")+ ")"; // === TEST ===
                 UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
 
                 // Apply the boost to insulin required then add the boost bolus
