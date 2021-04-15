@@ -1211,7 +1211,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // If we have negative insulin then prepare the boost addition to set baseline to 0 units
                 insulinReqBoost = (insulinReq <0 ? Math.abs(insulinReq) : 0);
-                UAMBoostReason += " " + round(insulinReqBoost,2) + " ";
+                UAMBoostReason += " " + round(insulinReqBoost,2);
 
                 // ============== BOOST ==============
                 // If there is a sudden delta change allow UAMBoost
@@ -1219,7 +1219,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     var UAMBoostMaxed = (profile.EatingNowUAMBoostMax > 0 ? Math.min(profile.EatingNowUAMBoostMax,UAMBoost) : UAMBoost);
                     insulinReqBoost += boost_bolus * UAMBoostMaxed;
-                    UAMBoostReason = "+ " + UAMBoostReason + boost_bolus + "*" + UAMBoostMaxed;
+                    UAMBoostReason = "+ " + UAMBoostReason + " + " + boost_bolus + "*" + UAMBoostMaxed;
                 }
 
                 // If we are predicted to exceed boostBGthreshold allow boost_scale
