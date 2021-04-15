@@ -1187,7 +1187,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 maxBolus = round( profile.current_basal * profile.maxSMBBasalMinutes / 60 ,1);
             }
             //UAMBoost of the insulinReq, up to maxBolus %, rounding down to nearest bolus increment ==== START ====
-            var roundSMBTo = 1 / profile.bolus_increment;
             var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
@@ -1245,6 +1244,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             //UAMBoost of the insulinReq, up to maxBolus %, rounding down to nearest bolus increment ==== END ====
 
+            var roundSMBTo = 1 / profile.bolus_increment;
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
             var microBolus = Math.floor(Math.min((insulinReq + insulinReqBoost) * insulinReqPct ,maxBolus)*roundSMBTo)/roundSMBTo;
             // calculate a long enough zero temp to eventually correct back up to target
