@@ -1204,7 +1204,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("boostBGthreshold: "+boostBGthreshold);
 
                 var boost_scale = round((eventualBG / boostBGthreshold),2);
-                // var boost_scale = round(((eventualBG - target_bg) / target_bg),2);
                 var boost_bolus = round( profile.current_basal * profile.EatingNowbolusboostMinutes / 60 ,2);
                 var UAMBooster = UAMBoost; // this will be the combined boost
 
@@ -1213,35 +1212,40 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (eatingnowtimeOK) maxBolus = (UAM_deltaShortRise >= 0 ? EatingNowMaxSMB : originalmaxBolus);
 
                 // If eventual BG is expected to be at least double the target BG average boost_scale with UAMBoost
-                if (boost_scale > 1) UAMBooster = round( (boost_scale + UAMBoost)/2,2 );
+                if (boost_scale >= 1) UAMBooster = round( (boost_scale + UAMBoost)/2,2 );
 
-                // If we have negative insulin then prepare the boost addition to reset insulinReq to 0
+                // If we have negative insulin then prepare the boost addition to set baseline to 0 units
                 insulinReqBoost = (insulinReq <0 ? Math.abs(insulinReq) : 0);
+                UAMBoostReason += " " + round(insulinReqBoost,2) + " ";
 
-                // If we are rising > 0.3
-//                if (UAM_safedelta > 5 && UAMBooster >=1) {
-                if (UAM_deltaShortRise >=0 && boost_scale >=1) { // === TEST ===
-                    // Reason is that we boosted, this could be restricted by maxbolus if rise is slowing
-                    UAMBoostReason = " (boost";
-                    insulinReqPct = (boost_scale >=1 ? 1 : insulinReqPct); // If we are expected to go to boostBGthreshold then allow 100% up to maxbolus
-                } else {
-                    // if eventualBG is above target_bg but rising slower or falling restrict insulinReqPct
-//                    insulinReqBoost += (UAM_safedelta >0 && insulinReq < boost_bolus ? boost_bolus : 0); // if rising slowly and insulinReq is low set it to current basal
-                    insulinReqPct = 0; // TBR only
-                    UAMBoostReason = " (limit";
+                // ============== BOOST ==============
+                // If we are predicted to exceed boostBGthreshold with a sudden delta change allow UAMBoost
+                if (boost_scale >=1 && UAMBoost >=2.5) {
+                    // boost the insulin further
+                    insulinReqBoost += boost_bolus * UAMBoost;
+                    UAMBoostReason = "+ " + UAMBoostReason + boost_bolus + "*" + UAMBoost;
                 }
-//                UAMBoostReason += (boost_scale >1 ? "+ " : " ") + round(insulinReqBoost,2) + "*" + UAMBooster + (boost_scale >=1 ? " + " + boost_bolus + "*" + UAMBooster : "")+ ")";
-                UAMBoostReason += " " + round(insulinReqBoost,2) + (boost_scale >=1 ? " + " + boost_bolus + "*" + boost_scale : "")+ ")"; // === TEST ===
+
+                // If we are predicted to exceed boostBGthreshold allow boost_scale
+                if (boost_scale >=1) {
+                    // boost the insulin further
+                    insulinReqBoost += boost_bolus * boost_scale;
+                    UAMBoostReason += " + " + boost_bolus + "*" + boost_scale;
+                }
+
+                // ============== RESTRICTIONS ==============
+                 // if the rise is slowing TBR only
+                if (UAM_deltaShortRise <0) {
+                    insulinReqPct = 0; // TBR only
+                    UAMBoostReason = " (limit" + UAMBoostReason + ")";
+                } else {
+                    insulinReqPct = 1; // allow all insulin up to maxBolus
+                    UAMBoostReason = " (boost" + UAMBoostReason + ")";
+                }
+
+                // ============== REASON ADDITIONS  ==============
                 UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
-
-                // Apply the boost to insulin required then add the boost bolus
-//                insulinReqBoost *= UAMBooster; === TEST ===  IGNORING UAMBOOST FOR NOW
-//                insulinReqBoost += (boost_scale >= 1 ? boost_bolus * UAMBooster : 0); // lets try this!?
-                insulinReqBoost += (boost_scale >= 1 ? boost_bolus * boost_scale : 0); // === TEST === USING boost_scale
                 insulinReqBoost = round(insulinReqBoost,2);
-
-                // Allow all the insulin now if its less than the default maxBolus and insulinReqPct has not been limited
-                // if (round(insulinReq,1) <= originalmaxBolus && insulinReqPct > 0) insulinReqPct = 1;
             }
             //UAMBoost of the insulinReq, up to maxBolus %, rounding down to nearest bolus increment ==== END ====
 
