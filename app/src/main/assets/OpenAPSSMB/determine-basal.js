@@ -1272,8 +1272,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
              }
 
             // if insulinReq > 0 but not enough for a microBolus, don't set an SMB zero temp
-//            if (insulinReq > 0 && microBolus < profile.bolus_increment || eatingnow && insulinReq - microBolus >= 0) {
-            if (insulinReq > 0 && microBolus < profile.bolus_increment) {
+            if (insulinReq > 0 && microBolus < profile.bolus_increment || eatingnow && insulinReqPct ==0 && insulinReq - microBolus >= 0) {
+//            if (insulinReq > 0 && microBolus < profile.bolus_increment) {
                 durationReq = 0;
             }
 
