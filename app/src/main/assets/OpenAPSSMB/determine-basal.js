@@ -1231,7 +1231,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== RESTRICTIONS ==============
                  // if the rise is slowing TBR only
-                if (UAM_deltaShortRise <0) {
+                if (UAM_deltaShortRise <0 && insulinReq <=0) { // if original insulinReq is positive dont limit
                     insulinReqPct = 0; // TBR only
                     UAMBoostReason = " (limit" + UAMBoostReason + ")";
                 } else {
