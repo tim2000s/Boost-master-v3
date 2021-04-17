@@ -1190,6 +1190,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
+            var SMB_TBR = false; // dont allow TBR with SMB
 
             // if autoISF is active and insulinReq is less than normal maxbolus then allow 100%
             if (typeof liftISF !== 'undefined' && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
@@ -1229,10 +1230,17 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostReason += " + " + boost_bolus + "*" + boost_scale;
                 }
 
+                // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction
+                if (bg > profile.EatingNowUAMBoostBG && UAM_deltaShortRise >= 0 && boost_scale <1) {
+                    insulinReqBoost += round(((bg - target_bg) / sens), 2);
+                    UAMBoostReason += " + corr " + round(((bg - target_bg) / sens), 2); // at this point sens may have autoISF included?
+                }
+
                 // ============== RESTRICTIONS ==============
                  // if the rise is slowing TBR only
                 if (UAM_deltaShortRise <0 && insulinReq <=0) { // if original insulinReq is positive dont limit
                     insulinReqPct = 0; // TBR only
+                    SMB_TBR = true;
                     UAMBoostReason = " (limit" + UAMBoostReason + ")";
                 } else {
                     insulinReqPct = 1; // allow all insulin up to maxBolus
@@ -1273,7 +1281,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
              }
 
             // if insulinReq > 0 but not enough for a microBolus, don't set an SMB zero temp
-            if (insulinReq > 0 && microBolus < profile.bolus_increment || eatingnow && insulinReqPct ==0) {
+            if (insulinReq > 0 && microBolus < profile.bolus_increment || eatingnow && SMB_TBR && insulinReq + insulinReqBoost - microBolus >0) {
 //            if (insulinReq > 0 && microBolus < profile.bolus_increment) {
                 durationReq = 0;
             }
@@ -1321,7 +1329,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //rT.reason += ". ";
 
 //            // when eatingnow allow the remaining insulinReq to be delivered as TBR
-            if (eatingnow & insulinReqPct ==0) {
+            if (eatingnow & SMB_TBR) {
                 insulinReq = insulinReq + insulinReqBoost - microBolus;
                 // rate required to deliver remaining insulinReq over 30m:
                 rate = round(Math.max(basal + (2 * insulinReq),0),2);
