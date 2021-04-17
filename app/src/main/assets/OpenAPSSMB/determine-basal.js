@@ -1231,7 +1231,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction
-                if (bg > profile.EatingNowUAMBoostBG && UAM_deltaShortRise >= 0 && boost_scale <1) {
+                if (bg > profile.EatingNowUAMBoostBG && UAM_deltaShortRise >= 0 && boost_scale <1 && UAMBoost <2.5) {
                     insulinReqBoost += (bg - target_bg) / sens;
                     UAMBoostReason += " + corr " + round(((bg - target_bg) / sens), 2); // at this point sens may have autoISF included?
                 }
@@ -1256,6 +1256,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var roundSMBTo = 1 / profile.bolus_increment;
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
             var microBolus = Math.floor(Math.min((insulinReq + insulinReqBoost) * insulinReqPct ,maxBolus)*roundSMBTo)/roundSMBTo;
+            // if we dont have any insulinReq remaining then dont bother with TBR and allow ZT
+            if (SMB_TBR && insulinReq + insulinReqBoost - microBolus <=0) SMB_TBR = false;
             // calculate a long enough zero temp to eventually correct back up to target
             var smbTarget = target_bg;
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
@@ -1281,7 +1283,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
              }
 
             // if insulinReq > 0 but not enough for a microBolus, don't set an SMB zero temp
-            if (insulinReq > 0 && microBolus < profile.bolus_increment || eatingnow && SMB_TBR && insulinReq + insulinReqBoost - microBolus >0) {
+            if (insulinReq > 0 && microBolus < profile.bolus_increment || eatingnow && SMB_TBR) {
 //            if (insulinReq > 0 && microBolus < profile.bolus_increment) {
                 durationReq = 0;
             }
