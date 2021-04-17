@@ -117,7 +117,7 @@ function enable_smb(
     return false;
 }
 
-function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio, eatingnow)
+function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio)
 {   // #### mod 7e: added switch fr autoISF ON/OFF
     if ( !profile.use_autoisf ) {
         console.error("autoISF disabled in Preferences");
@@ -341,7 +341,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
     console.error("; CR:",profile.carb_ratio);
-    sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio, eatingnow);
+    sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio);
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
     if (typeof iob_data.lastTemp !== 'undefined' ) {
