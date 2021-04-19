@@ -1219,6 +1219,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     var UAMBoostMaxed = (profile.EatingNowUAMBoostMax > 0 ? Math.min(profile.EatingNowUAMBoostMax,UAMBoost) : UAMBoost);
                     insulinReqBoost += boost_bolus * UAMBoostMaxed;
                     UAMBoostReason = "+ " + UAMBoostReason + " + " + boost_bolus + "*" + UAMBoostMaxed;
+                    insulinReqPct = Math.min(boost_scale,1); // If not going too high then scale the insulinReqPct
                 }
 
                 // If we are predicted to exceed boostBGthreshold allow boost_scale
@@ -1226,6 +1227,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     insulinReqBoost += boost_bolus * boost_scale;
                     UAMBoostReason += " + " + boost_bolus + "*" + boost_scale;
+                    insulinReqPct = 1; // allow all insulin up to maxBolus
                 }
 
                 // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction
@@ -1241,7 +1243,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     SMB_TBR = true;
                     UAMBoostReason = " (limit" + UAMBoostReason + ")";
                 } else {
-                    insulinReqPct = 1; // allow all insulin up to maxBolus
                     UAMBoostReason = " (boost" + UAMBoostReason + ")";
                     maxBolus = (eatingnowtimeOK ? EatingNowMaxSMB : maxBolus); // increase maxbolus if we are within the hours specified and rise not slowing
                 }
