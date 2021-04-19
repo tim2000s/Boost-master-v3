@@ -1220,6 +1220,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqBoost += boost_bolus * UAMBoostMaxed;
                     UAMBoostReason = "+ " + UAMBoostReason + " + " + boost_bolus + "*" + UAMBoostMaxed;
                     insulinReqPct = Math.min(boost_scale,1); // If not going too high then scale the insulinReqPct
+                    SMB_TBR = true;
                 }
 
                 // If we are predicted to exceed boostBGthreshold allow boost_scale
