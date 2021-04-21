@@ -1251,7 +1251,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== REASON ADDITIONS  ==============
-                UAMBoostReason += ", UAMBoost " + UAMBoost + (UAMBoost >=2.5 ? "*":"") + ", BGBoost " + boost_scale + (boost_scale>=1 ? "*":"");
+                UAMBoostReason += ", UAMBoost " + UAMBoost + (UAMBoost >=2.5 && UAM_safedelta >=3 ? "*":"") + ", BGBoost " + boost_scale + (boost_scale>=1 ? "*":"");
             }
             // ============  UAMBoost for Eating Now mode  ==================== END
 
