@@ -1202,11 +1202,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 var boost_scale = round((eventualBG / boostBGthreshold),2);
                 var boost_bolus = round( profile.current_basal * profile.EatingNowbolusboostMinutes / 60 ,2);
-                var UAMBooster = UAMBoost; // this will be the combined boost
+                var UAMBooster = 0; // this will be the combined boost
                 var EatingNowMaxSMB = round( profile.current_basal * profile.EatingNowMaxSMBMinutes / 60 ,1);
 
                 // If eventual BG is expected to be at least double the target BG average boost_scale with UAMBoost
-                if (boost_scale >= 1) UAMBooster = round( (boost_scale + UAMBoost)/2,2 );
+                // if (boost_scale >= 1) UAMBooster = round( (boost_scale + UAMBoost)/2,2 );
 
                 // If we have negative insulin then prepare the boost addition to set baseline to 0 units
                 insulinReqBoost = (insulinReq <0 ? Math.abs(insulinReq) : 0);
@@ -1217,8 +1217,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAMBoost >=2.5 && UAM_safedelta >=3) {
                     // boost the insulin further
                     var UAMBoostMaxed = (profile.EatingNowUAMBoostMax > 0 ? Math.min(profile.EatingNowUAMBoostMax,UAMBoost) : UAMBoost);
-                    insulinReqBoost += boost_bolus * UAMBoostMaxed;
-                    UAMBoostReason += " + " + boost_bolus + "*" + UAMBoostMaxed;
+                    UAMBooster += UAMBoostMaxed;
                     insulinReqPct = Math.min(boost_scale,1); // If not going too high then scale the insulinReqPct
                     SMB_TBR = true;
                 }
@@ -1226,10 +1225,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // If we are predicted to exceed boostBGthreshold allow boost_scale
                 if (boost_scale >=1) {
                     // boost the insulin further
-                    insulinReqBoost += boost_bolus * boost_scale;
-                    UAMBoostReason += " + " + boost_bolus + "*" + boost_scale;
+                    UAMBooster += boost_scale;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                 }
+
+                // set the reason based on above and calculate the boost
+                UAMBoostReason+ = " + " + boost_bolus + "*" + UAMBooster;
+                insulinReqBoost += boost_bolus * UAMBooster;
 
                 // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction, but dont increase insulinReq
                 if (bg > boostBGthreshold && UAM_deltaShortRise >= 0 && boost_scale <1 && UAMBoost <2.5) {
