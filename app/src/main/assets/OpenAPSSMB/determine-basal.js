@@ -1214,11 +1214,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== BOOST ==============
                 // If there is a sudden delta change allow UAMBoost
-                if (UAMBoost >=2.5) {
+                if (UAMBoost >=2.5 & UAM_safedelta >=3) {
                     // boost the insulin further
                     var UAMBoostMaxed = (profile.EatingNowUAMBoostMax > 0 ? Math.min(profile.EatingNowUAMBoostMax,UAMBoost) : UAMBoost);
                     insulinReqBoost += boost_bolus * UAMBoostMaxed;
-                    UAMBoostReason = "+ " + UAMBoostReason + " + " + boost_bolus + "*" + UAMBoostMaxed;
+                    UAMBoostReason += " + " + boost_bolus + "*" + UAMBoostMaxed;
                     insulinReqPct = Math.min(boost_scale,1); // If not going too high then scale the insulinReqPct
                     SMB_TBR = true;
                 }
@@ -1249,7 +1249,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== REASON ADDITIONS  ==============
-                UAMBoostReason += ", UAMBoost " + UAMBoost + ", Boost+ " + boost_scale;
+                UAMBoostReason += ", UAMBoost " + UAMBoost + (UAMBoost >=2.5 ? "*":"") + ", BGBoost " + boost_scale + (boost_scale>=1 ? "*":"");
             }
             // ============  UAMBoost for Eating Now mode  ==================== END
 
@@ -1301,7 +1301,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 durationReq = 30;
             }
             rT.reason += " insulinReq " + round(insulinReqBoost+insulinReq,2) + (insulinReqBoost >0 ? "(" + insulinReq + ")" : "") + "@"+round(insulinReqPct*100,0)+"%";
-            if (UAMBoostReason !=="") rT.reason += UAMBoostReason;
+            if (insulinReqBoost >0) rT.reason += UAMBoostReason;
             if (microBolus >= maxBolus) {
                 rT.reason +=  "; maxBolus" + (maxBolus == EatingNowMaxSMB ? "^ ": " ") + maxBolus;
             }
