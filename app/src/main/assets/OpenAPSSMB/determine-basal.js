@@ -1230,7 +1230,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // set the reason based on above and calculate the boost
-                UAMBoostReason+ = " + " + boost_bolus + "*" + UAMBooster;
+                UAMBoostReason += " + " + boost_bolus + "*" + UAMBooster;
                 insulinReqBoost += boost_bolus * UAMBooster;
 
                 // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction, but dont increase insulinReq
