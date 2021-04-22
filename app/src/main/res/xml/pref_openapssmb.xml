@@ -181,9 +181,9 @@
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="0"
                 android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_boostbg"
-                android:title="UAMBoost BG Threshold"
-                android:dialogMessage="When BG is predicted to exceed this, UAMBoost is used and will add to insulinReq."
+                android:key="@string/key_eatingnow_bgboostbg"
+                android:title="BGBoost Threshold"
+                android:dialogMessage="When BG is predicted to exceed this, BGBoost is used for insulinReq."
                 validate:floatmaxNumber="270.0"
                 validate:floatminNumber="7.0"
                 validate:testType="floatNumericRange" />
@@ -202,12 +202,26 @@
                 android:defaultValue="30"
                 android:digits="0123456789"
                 android:inputType="number"
-                android:key="@string/key_eatingnow_bolusboostminutes"
-                android:title="Boost Bolus minutes"
+                android:key="@string/key_eatingnow_bgboostminutes"
+                android:title="BGBoost Bolus minutes"
                 android:maxLines="20"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
-                android:dialogMessage="Minutes of current basal to use as the minimum bolus for BG predicted to exceed the UAMBoost BG Threshold"
+                android:dialogMessage="Minutes of current basal to use as the minimum bolus for BG predicted to exceed the BGBoost Threshold"
+                validate:floatmaxNumber="240"
+                validate:floatminNumber="15"
+                validate:testType="numericRange"/>
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="30"
+                android:digits="0123456789"
+                android:inputType="number"
+                android:key="@string/key_eatingnow_uamboostminutes"
+                android:title="UAMBoost Bolus minutes"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:dialogMessage="Minutes of current basal to use as the minimum bolus for BGL rises"
                 validate:floatmaxNumber="240"
                 validate:floatminNumber="15"
                 validate:testType="numericRange"/>
