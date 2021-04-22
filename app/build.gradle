@@ -157,6 +157,27 @@ android {
             System.setProperty("disableFirebase", "true")
             ext.enableCrashlytics = false
         }
+        applicationVariants.all{
+                // this method is use to rename your all apk weather
+                // it may be signed or unsigned(debug apk)
+            variant ->
+                variant.outputs.each{
+                        // on below line we are setting a name to our apk
+                    output->
+                        // on below line we are specifying our app name.
+                        project.ext { appName = 'GFG' }
+                        // on below line we are adding the formatted date to our apk file name.
+                        def formattedDate = new Date().format('yyyy-MM-dd-HH-mm-ss')
+                        // on below line we are creating a new name for our apk.
+                        def newName = output.outputFile.name
+                        // on below line we are replacing our previous name with our app name.
+                        newName = newName.replace("app-", "$project.ext.appName-")
+                        // on below line we are replacing -debug with our formatted date.
+                        newName = newName.replace("-debug", "-debug-" + formattedDate)
+                        // at last we are setting our apk name to it.
+                        output.outputFileName  = newName
+                }
+        }
     }
     productFlavors {
         flavorDimensions "standard"
