@@ -1209,7 +1209,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // if (boost_scale >= 1) UAMBooster = round( (boost_scale + UAMBoost)/2,2 );
 
                 // If we have negative insulin then prepare the boost addition to set baseline to 0 units
-                insulinReqBoost = (insulinReq <0 ? Math.abs(insulinReq) : 0);
+                // insulinReqBoost = (insulinReq <0 ? Math.abs(insulinReq) : 0);
+                insulinReqBoost = 0 - insulinReq; // insulinReq negative = positive, positive = negative
                 UAMBoostReason += " " + round(insulinReqBoost,2);
 
                 // ============== BOOST ==============
