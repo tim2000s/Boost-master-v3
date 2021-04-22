@@ -171,7 +171,7 @@ android {
                         // on below line we are creating a new name for our apk.
                         def newName = output.outputFile.name
                         // on below line we are replacing our previous name with our app name.
-                        newName = newName.replace("app-", "$project.ext.appName-")
+//                        newName = newName.replace("app-", "$project.ext.appName-")
                         // on below line we are replacing -release with our formatted date and ID.
                         newName = newName.replace("-release", formattedDate + "-JD")
                         // at last we are setting our apk name to it.
