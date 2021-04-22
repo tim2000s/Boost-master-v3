@@ -1234,6 +1234,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqBoost += BGBoost_bolus * BGBoost_scale;
                     UAMBoostReason += " + " + BGBoost_bolus + "*" + BGBoost_scale;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
+                    SMB_TBR = true;
                 }
 
                 // set the reason based on above and calculate the boost
