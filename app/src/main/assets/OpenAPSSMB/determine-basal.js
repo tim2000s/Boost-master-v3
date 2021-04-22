@@ -1221,7 +1221,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     var UAMBoostMaxed = (profile.EatingNowUAMBoostMax > 0 ? Math.min(profile.EatingNowUAMBoostMax,UAMBoost) : UAMBoost);
                     // UAMBooster += UAMBoostMaxed;
-                    UAMBoostReason += " + " UAMBoost_bolus + "*" + UAMBoostMaxed;
+                    UAMBoostReason += " + " + UAMBoost_bolus + "*" + UAMBoostMaxed;
                     insulinReqBoost += UAMBoost_bolus * UAMBoostMaxed;
                     insulinReqPct = Math.min(BGBoost_scale,1); // If not going too high then scale the insulinReqPct
                     SMB_TBR = true;
@@ -1232,7 +1232,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     //UAMBooster += BGBoost_scale;
                     insulinReqBoost += BGBoost_bolus * BGBoost_scale;
-                    UAMBoostReason += " + " BGBoost_bolus + "*" + BGBoost_scale;
+                    UAMBoostReason += " + " + BGBoost_bolus + "*" + BGBoost_scale;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                 }
 
