@@ -1227,7 +1227,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction, but dont increase insulinReq
                 if (bg > boostBGthreshold && UAM_deltaShortRise >= 0 && BGBoost_scale <1 && UAMBoost <2.5) {
                     insulinReqBoost = (bg - target_bg) / sens;
-                    UAMBoostReason = " corr " + round(insulinReqBoost, 2); // at this point sens may have autoISF included?
+                    UAMBoostReason = " (corr " + round(insulinReqBoost, 2) + ")"; // at this point sens may have autoISF included?
                 }
 
                 // ============== RESTRICTIONS ==============
@@ -1237,7 +1237,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     SMB_TBR = true;
                     UAMBoostReason = " (limit)";
                 } else {
-                    UAMBoostReason = " (boost" + UAMBoostReason + ")";
                     maxBolus = (eatingnowtimeOK ? EatingNowMaxSMB : maxBolus); // increase maxbolus if we are within the hours specified and rise not slowing
                 }
 
