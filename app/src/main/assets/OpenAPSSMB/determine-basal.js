@@ -1247,6 +1247,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
+                insulinReqPct = round(insulinReqPct,2);
             }
             // ============  UAMBoost for Eating Now mode  ==================== END
 
