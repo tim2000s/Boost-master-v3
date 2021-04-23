@@ -176,6 +176,7 @@ android {
                         newName = newName.replace("-release", "-release-" + formattedDate + "-JD")
                         // at last we are setting our apk name to it.
                         output.outputFileName  = newName
+                        output.outputFile = new File(path_to_filename, output.outputFile.name)
                 }
         }
     }
