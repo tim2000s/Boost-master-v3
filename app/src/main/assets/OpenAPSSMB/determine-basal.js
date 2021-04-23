@@ -1243,7 +1243,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== REASON ADDITIONS  ==============
-                UAMBoostReason += ", UAMBoost" +  profile.EatingNowUAMBoostMinutes + " " + UAMBoost + (UAMBoost >=2.5 && UAM_safedelta >=3 ? "*" + UAMBoost_bolus :"") + ", BGBoost" + profile.EatingNowBGBoostMinutes + " " + BGBoost_scale + (BGBoost_scale>=1 ? "*" + BGBoost_bolus :"");
+                UAMBoostReason += ", UAMBoost" +  profile.EatingNowUAMBoostMinutes + " " + UAMBoost + (UAMBoost >=2.5 && UAM_safedelta >=4 ? "*" + UAMBoost_bolus :"") + ", BGBoost" + profile.EatingNowBGBoostMinutes + " " + BGBoost_scale + (BGBoost_scale>=1 && UAM_safedelta >=4 ? "*" + BGBoost_bolus :"");
 
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
