@@ -1213,7 +1213,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     var UAMBoostMaxed = (profile.EatingNowUAMBoostMax > 0 ? Math.min(profile.EatingNowUAMBoostMax,UAMBoost) : UAMBoost);
                     insulinReqBoost +=  UAMBoostMaxed * UAMBoost_bolus;
-                    insulinReqPct = Math.min(BGBoost_scale - BGBoost_relative,1); // scale the insulinReqPct based on BG and BGBoost_scale
+                    insulinReqPct = 1; // allow all insulin up to maxBolus
+                    insulinReqPct = (UAM_safedelta < 9 ? Math.min(BGBoost_scale - BGBoost_relative,1) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
                     SMB_TBR = true;
                 }
 
