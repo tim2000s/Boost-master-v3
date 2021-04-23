@@ -1201,7 +1201,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (boostBGthreshold == 0) boostBGthreshold = 216 ; // default is 216 = 12 mmol
                 console.log("boostBGthreshold: "+boostBGthreshold);
 
-                var BGBoost_scale = round((eventualBG / boostBGthreshold),2);
+                var BGBoost_scale = round(eventualBG / boostBGthreshold,2);
+                var BGBoost_relative = round(bg / boostBGthreshold,2);
                 var BGBoost_bolus = round( profile.current_basal * profile.EatingNowBGBoostMinutes / 60 ,2);
                 var UAMBoost_bolus = round( profile.current_basal * profile.EatingNowUAMBoostMinutes / 60 ,2);
                 var EatingNowMaxSMB = round( profile.current_basal * profile.EatingNowMaxSMBMinutes / 60 ,1);
@@ -1212,7 +1213,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     var UAMBoostMaxed = (profile.EatingNowUAMBoostMax > 0 ? Math.min(profile.EatingNowUAMBoostMax,UAMBoost) : UAMBoost);
                     insulinReqBoost +=  UAMBoostMaxed * UAMBoost_bolus;
-                    insulinReqPct = Math.min(BGBoost_scale,1); // If not going too high then scale the insulinReqPct
+                    insulinReqPct = Math.min(BGBoost_scale - BGBoost_relative,1); // scale the insulinReqPct based on BG and BGBoost_scale
                     SMB_TBR = true;
                 }
 
@@ -1221,7 +1222,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     insulinReqBoost +=  BGBoost_scale * BGBoost_bolus;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
-                    SMB_TBR = true;
+                    SMB_TBR = false;
                 }
 
                 // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction, but dont increase insulinReq
