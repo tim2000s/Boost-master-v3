@@ -1221,7 +1221,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (BGBoost_scale >=1) {
                     // boost the insulin further
                     insulinReqBoost +=  BGBoost_scale * BGBoost_bolus;
-                    insulinReqPct = 1; // allow all insulin up to maxBolus
+                    insulinReqPct = Math.min(BGBoost_scale - BGBoost_relative,1); // scale the insulinReqPct based on BG and BGBoost_scale
+                    // insulinReqPct = 1; // allow all insulin up to maxBolus
                     SMB_TBR = false;
                 }
 
