@@ -1260,6 +1260,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== REASON ADDITIONS  ==============
                 UAMBoostReason += ", UAMBoost" +  profile.EatingNowUAMBoostMinutes + " " + UAMBoost + (UAMBoost >=2.5 && UAM_safedelta >=3 ? "*":"") + ", BGBoost" + profile.EatingNowBGBoostMinutes + " " + BGBoost_scale + (BGBoost_scale>=1 ? "*":"");
+
+                // if the boost is less than insulinReq dont bother!
+                if (insulinReq > insulinReqBoost) insulinReqBoost = 0;
             }
             // ============  UAMBoost for Eating Now mode  ==================== END
 
