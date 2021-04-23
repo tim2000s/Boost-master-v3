@@ -1204,12 +1204,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var BGBoost_scale = round((eventualBG / boostBGthreshold),2);
                 var BGBoost_bolus = round( profile.current_basal * profile.EatingNowBGBoostMinutes / 60 ,2);
                 var UAMBoost_bolus = round( profile.current_basal * profile.EatingNowUAMBoostMinutes / 60 ,2);
-                //var boost_bolus = round( profile.current_basal * profile.EatingNowBoostBGMinutes / 60 ,2);
-                // var UAMBooster = 0; // this will be the combined boost
                 var EatingNowMaxSMB = round( profile.current_basal * profile.EatingNowMaxSMBMinutes / 60 ,1);
-
-                // If eventual BG is expected to be at least double the target BG average boost_scale with UAMBoost
-                // if (boost_scale >= 1) UAMBooster = round( (boost_scale + UAMBoost)/2,2 );
 
                 // ============== BOOST ==============
                 // If there is a sudden delta change allow UAMBoost
