@@ -1223,7 +1223,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqBoost +=  BGBoost_scale * BGBoost_bolus;
                     insulinReqPct = Math.min(BGBoost_scale - BGBoost_relative,1); // scale the insulinReqPct based on BG and BGBoost_scale
                     // insulinReqPct = 1; // allow all insulin up to maxBolus
-                    SMB_TBR = false;
+                    SMB_TBR = true;
                 }
 
                 // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction, but dont increase insulinReq
