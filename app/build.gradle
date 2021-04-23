@@ -176,7 +176,8 @@ android {
                         newName = newName.replace("-release", "-release-" + formattedDate + "-JD")
                         // at last we are setting our apk name to it.
                         output.outputFileName  = newName
-                        output.outputFile = new File('/home/dicko/Documents/Google Drive/AAPS/Jamie/* Build */', output.outputFile.name)
+                        // output.outputFile = new File('/home/dicko/Documents/Google Drive/AAPS/Jamie/* Build */', output.outputFile.name)
+                        variant.getPackageApplication().outputDirectory = new File("/home/dicko/Documents/Google Drive/AAPS/Jamie/* Build *")
                 }
         }
     }
