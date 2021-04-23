@@ -1216,9 +1216,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAMBoost >=2.5 && UAM_safedelta >=3) {
                     // boost the insulin further
                     var UAMBoostMaxed = (profile.EatingNowUAMBoostMax > 0 ? Math.min(profile.EatingNowUAMBoostMax,UAMBoost) : UAMBoost);
-                    // UAMBooster += UAMBoostMaxed;
-                    UAMBoostReason += " + " + UAMBoost_bolus + "*" + UAMBoostMaxed;
-                    insulinReqBoost += UAMBoost_bolus * UAMBoostMaxed;
+                    insulinReqBoost +=  UAMBoostMaxed * UAMBoost_bolus;
                     insulinReqPct = Math.min(BGBoost_scale,1); // If not going too high then scale the insulinReqPct
                     SMB_TBR = true;
                 }
@@ -1226,9 +1224,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // If we are predicted to exceed boostBGthreshold allow BGBoost_scale
                 if (BGBoost_scale >=1) {
                     // boost the insulin further
-                    //UAMBooster += BGBoost_scale;
-                    insulinReqBoost += BGBoost_bolus * BGBoost_scale;
-                    UAMBoostReason += " + " + BGBoost_bolus + "*" + BGBoost_scale;
+                    insulinReqBoost +=  BGBoost_scale * BGBoost_bolus;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                     SMB_TBR = true;
                 }
@@ -1244,14 +1240,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAM_deltaShortRise <0 && insulinReq <=0) { // if original insulinReq is positive dont limit
                     insulinReqPct = 0; // TBR only
                     SMB_TBR = true;
-                    UAMBoostReason = " (limit" + UAMBoostReason + ")";
+                    UAMBoostReason = " (limit)";
                 } else {
                     UAMBoostReason = " (boost" + UAMBoostReason + ")";
                     maxBolus = (eatingnowtimeOK ? EatingNowMaxSMB : maxBolus); // increase maxbolus if we are within the hours specified and rise not slowing
                 }
 
                 // ============== REASON ADDITIONS  ==============
-                UAMBoostReason += ", UAMBoost" +  profile.EatingNowUAMBoostMinutes + " " + UAMBoost + (UAMBoost >=2.5 && UAM_safedelta >=3 ? "*":"") + ", BGBoost" + profile.EatingNowBGBoostMinutes + " " + BGBoost_scale + (BGBoost_scale>=1 ? "*":"");
+                UAMBoostReason += ", UAMBoost" +  profile.EatingNowUAMBoostMinutes + " " + UAMBoost + (UAMBoost >=2.5 && UAM_safedelta >=3 ? "*" + UAMBoost_bolus :"") + ", BGBoost" + profile.EatingNowBGBoostMinutes + " " + BGBoost_scale + (BGBoost_scale>=1 ? "*" + BGBoost_bolus :"");
 
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
