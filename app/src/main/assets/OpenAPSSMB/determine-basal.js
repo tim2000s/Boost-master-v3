@@ -1161,7 +1161,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // enable eatingnow if no TT and safe IOB within safe hours
                 if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && eatingnowtimeOK) eatingnow = true;
                 // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
-                if (profile.temptargetSet && target_bg == profile.normal_target_bg && profile.temptarget_minutesrunning >0) eatingnow = true;
+                if (profile.temptargetSet && target_bg == profile.normal_target_bg && profile.temptarget_minutesrunning >0) eatingnow = true; // tt duration prevents immediate SMB
+                if (profile.EatingNowOverride && ! eatingnowtimeOK && profile.temptargetSet && target_bg <= profile.normal_target_bg) eatingnow = true; // any TT of normal target or below will allow eating now to operate outside of hours
             }
 
             // calculate the various deltas and pct changes
@@ -1244,8 +1245,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     SMB_TBR = true;
                     UAMBoostReason = " (limit)";
                 } else {
-                    maxBolus = (eatingnowtimeOK ? EatingNowMaxSMB : maxBolus); // increase maxbolus if we are within the hours specified and rise not slowing
-                    SMB_TBR = (eatingnowtimeOK ? SMB_TBR : true); // allow SMB_TBR if not within time but eating now is enabled ie. TT
+                    // increase maxbolus if we are within the hours specified and rise not slowing
+                    maxBolus = (eatingnowtimeOK ? EatingNowMaxSMB : maxBolus);
+                    // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus above
+                    maxBolus = (! eatingnowtimeOK && profile.EatingNowOverride && profile.temptargetSet && target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
+                    // allow SMB_TBR if not within time but eating now is enabled ie. TT of 5.5
+                    SMB_TBR = (! eatingnowtimeOK && profile.EatingNowOverride && profile.temptargetSet && target_bg == profile.normal_target_bg ? true : SMB_TBR);
                 }
 
                 // ============== REASON ADDITIONS  ==============

@@ -270,6 +270,12 @@
                 validate:minNumber="0"
                 validate:testType="numericRange" />
 
+            <SwitchPreference
+                android:defaultValue="false"
+                android:key="@string/key_use_eatingnow_override"
+                android:summary="Eating Now mode will be allowed outside of the active time range as follows:\nA temptarget of profile target will increase TBR, SMB will not be increased.\nA temptarget less than profile target will allow full functionality with larger SMB."
+                android:title="Eating Now Mode"/>
+
         </androidx.preference.PreferenceScreen>
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference

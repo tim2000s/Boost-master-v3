@@ -1415,4 +1415,5 @@
     <string name="key_eatingnow_iobmax">key_eatingnow_iobmax</string>
     <string name="key_eatingnow_timestart">key_eatingnow_timestart</string>
     <string name="key_eatingnow_timeend">key_eatingnow_timeend</string>
+    <string name="key_use_eatingnow_override">key_use_eatingnow_override</string>
 </resources>

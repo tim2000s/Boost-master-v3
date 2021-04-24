@@ -316,6 +316,7 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3));
         mProfile.put("EatingNowTimeStart", sp.getDouble(R.string.key_eatingnow_timestart, 9));
         mProfile.put("EatingNowTimeEnd", sp.getDouble(R.string.key_eatingnow_timeend, 17));
+        mProfile.put("EatingNowOverride", sp.getBoolean(R.string.key_use_eatingnow_override, false));
         // patches ==== END
 
 
