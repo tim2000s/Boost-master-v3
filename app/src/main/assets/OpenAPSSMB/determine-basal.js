@@ -1209,12 +1209,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== BOOST ==============
                 // If there is a sudden delta change allow UAMBoost >=0.22
-                if (UAMBoost >=2.5 && UAM_safedelta >0) {
+                if (UAMBoost >=2.5 && UAM_safedelta >=4) {
                     // boost the insulin further
                     var UAMBoostMaxed = (profile.EatingNowUAMBoostMax > 0 ? Math.min(profile.EatingNowUAMBoostMax,UAMBoost) : UAMBoost);
                     insulinReqBoost +=  UAMBoostMaxed * UAMBoost_bolus;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
-                    insulinReqPct = (UAM_safedelta < 7 ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
+                    // insulinReqPct = (UAM_safedelta < 7 ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
                     SMB_TBR = true;
                 }
 
