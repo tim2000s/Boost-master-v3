@@ -273,8 +273,8 @@
             <SwitchPreference
                 android:defaultValue="false"
                 android:key="@string/key_use_eatingnow_override"
-                android:summary="Eating Now mode will be allowed outside of the active time range as follows:\nA temptarget of profile target will increase TBR, SMB will not be increased.\nA temptarget less than profile target will allow full functionality with larger SMB."
-                android:title="Eating Now Mode"/>
+                android:summary="*** WARNING ***\nEating Now mode will be allowed to operate outside of the active time range as follows:\n\n  - A temptarget set to normal target will increase TBR, SMB will not be increased.\n  - A temptarget less than profile target will allow full functionality with larger SMB."
+                android:title="Allow override"/>
 
         </androidx.preference.PreferenceScreen>
 
