@@ -1245,6 +1245,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostReason = " (limit)";
                 } else {
                     maxBolus = (eatingnowtimeOK ? EatingNowMaxSMB : maxBolus); // increase maxbolus if we are within the hours specified and rise not slowing
+                    SMB_TBR = (eatingnowtimeOK ? SMB_TBR : true); // allow SMB_TBR if not within time but eating now is enabled ie. TT
                 }
 
                 // ============== REASON ADDITIONS  ==============
