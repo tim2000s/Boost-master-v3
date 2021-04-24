@@ -1197,12 +1197,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // START === if we are eating now and BGL prediction is higher than target ===
             if (eatingnow && eventualBG > target_bg) {
 
-                var boostBGthreshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowBGBoostBG * 18, 1).toFixed(1) : profile.EatingNowBGBoostBG);
-                if (boostBGthreshold == 0) boostBGthreshold = 216 ; // default is 216 = 12 mmol
-                console.log("boostBGthreshold: "+boostBGthreshold);
+                var BGBoost_threshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowBGBoostBG * 18, 1).toFixed(1) : profile.EatingNowBGBoostBG);
+                if (BGBoost_threshold == 0) BGBoost_threshold = 216 ; // default is 216 = 12 mmol
+                console.log("BGBoost_threshold: "+BGBoost_threshold);
 
-                var BGBoost_scale = round(eventualBG / boostBGthreshold,2);
-                var BGBoost_relative = round(bg / boostBGthreshold,2);
+                var BGBoost_scale = round(eventualBG / BGBoost_threshold,2);
+                var BGBoost_relative = round(bg / BGBoost_threshold,2);
                 var BGBoost_bolus = round( profile.current_basal * profile.EatingNowBGBoostMinutes / 60 ,2);
                 var UAMBoost_bolus = round( profile.current_basal * profile.EatingNowUAMBoostMinutes / 60 ,2);
                 var EatingNowMaxSMB = round( profile.current_basal * profile.EatingNowMaxSMBMinutes / 60 ,1);
@@ -1218,7 +1218,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     SMB_TBR = true;
                 }
 
-                // If we are predicted to exceed boostBGthreshold allow BGBoost_scale >=0.22
+                // If we are predicted to exceed BGBoost_threshold allow BGBoost_scale >=0.22
                 if (BGBoost_scale >=1 && UAM_safedelta >0) {
                     // boost the insulin further
                     insulinReqBoost +=  BGBoost_scale * BGBoost_bolus;
@@ -1228,7 +1228,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction, but dont increase insulinReq
-                if (bg > boostBGthreshold && UAM_deltaShortRise >= 0 && BGBoost_scale <1 && UAMBoost <2.5) {
+                if (bg > BGBoost_threshold && UAM_deltaShortRise >= 0 && BGBoost_scale <1 && UAMBoost <2.5) {
                     insulinReqBoost = (bg - target_bg) / sens;
                     UAMBoostReason = " (corr " + round(insulinReqBoost, 2) + ")"; // at this point sens may have autoISF included?
                 }
