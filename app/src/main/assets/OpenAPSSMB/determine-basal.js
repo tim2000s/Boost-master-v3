@@ -1215,7 +1215,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqBoost +=  UAMBoostMaxed * UAMBoost_bolus;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                     // insulinReqPct = (UAM_safedelta < 7 ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
-                    SMB_TBR = true;
+                    //SMB_TBR = false;
                 }
 
                 // If we are predicted to exceed BGBoost_threshold allow BGBoost_scale >0
@@ -1224,14 +1224,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqBoost +=  BGBoost_scale * BGBoost_bolus;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                     insulinReqPct = (UAM_safedelta < 7 ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
-                    SMB_TBR = (SMB_TBR ? true : false); // if its already true respect it
+                    //SMB_TBR = (SMB_TBR ? true : false); // if its already true respect it
                 }
 
                 // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction
                 if (bg > BGBoost_threshold && UAM_deltaShortRise >= 0 && insulinReqBoost == 0) {
                     insulinReqBoost = (bg - target_bg) / sens;
                     UAMBoostReason = " (corr " + round(insulinReqBoost, 2) + ")"; // at this point sens may have autoISF included?
-                    SMB_TBR = true;
+                    //SMB_TBR = true;
                 }
 
                 // ============== RESTRICTIONS ==============
