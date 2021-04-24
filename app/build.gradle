@@ -176,7 +176,7 @@ android {
                         newName = newName.replace("-release", "-release-" + formattedDate + "-JD")
                         // at last we are setting our apk name to it.
                         output.outputFileName  = newName
-                        variant.getPackageApplication().outputDirectory = new File("/home/dicko/Documents/Google Drive/AAPS/Jamie/* Build *")
+                        variant.getPackageApplication().outputDirectory = new File("/home/dicko/Documents/Google Drive/AAPS/* Build *")
                 }
         }
     }
@@ -301,6 +301,13 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+}
+
+task copyApks(type: Copy) {
+    from('/home/dicko/Documents/Google Drive/AAPS/* Build *') {
+        exclude '**/*unsigned.apk', '**/*unaligned.apk'
+    }
+    into '/home/dicko/Documents/Google Drive/AAPS/Jamie/* Build *'
 }
 
 /*
