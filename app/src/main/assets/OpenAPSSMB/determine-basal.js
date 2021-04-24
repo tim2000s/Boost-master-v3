@@ -1218,7 +1218,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     SMB_TBR = true;
                 }
 
-                // If we are predicted to exceed BGBoost_threshold allow BGBoost_scale >=0.22
+                // If we are predicted to exceed BGBoost_threshold allow BGBoost_scale >0
                 if (BGBoost_scale >=1 && UAM_safedelta >0) {
                     // boost the insulin further
                     insulinReqBoost +=  BGBoost_scale * BGBoost_bolus;
