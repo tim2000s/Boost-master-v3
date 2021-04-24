@@ -1201,6 +1201,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (BGBoost_threshold == 0) BGBoost_threshold = 216 ; // default is 216 = 12 mmol
                 console.log("BGBoost_threshold: "+BGBoost_threshold);
 
+                var BGBoosted = false, UAMBoosted = false;
                 var BGBoost_scale = round(eventualBG / BGBoost_threshold,2);
                 var BGBoost_relative = round(bg / BGBoost_threshold,2);
                 var BGBoost_bolus = round( profile.current_basal * profile.EatingNowBGBoostMinutes / 60 ,2);
@@ -1209,13 +1210,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== BOOST ==============
                 // If there is a sudden delta change allow UAMBoost >=0.22
-                if (UAMBoost >=2.5 && UAM_safedelta >=4) {
+                if (UAMBoost >=2.5 && UAM_safedelta >=4 && bg < BGBoost_threshold) {
                     // boost the insulin further
                     var UAMBoostMaxed = (profile.EatingNowUAMBoostMax > 0 ? Math.min(profile.EatingNowUAMBoostMax,UAMBoost) : UAMBoost);
                     insulinReqBoost +=  UAMBoostMaxed * UAMBoost_bolus;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                     // insulinReqPct = (UAM_safedelta < 7 ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
                     //SMB_TBR = false;
+                    UAMBoosted = true;
                 }
 
                 // If we are predicted to exceed BGBoost_threshold allow BGBoost_scale >0
@@ -1225,6 +1227,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                     insulinReqPct = (UAM_safedelta < 7 ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
                     //SMB_TBR = (SMB_TBR ? true : false); // if its already true respect it
+                    BGBoosted = true;
                 }
 
                 // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction
@@ -1245,7 +1248,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== REASON ADDITIONS  ==============
-                UAMBoostReason += ", UAMBoost" +  profile.EatingNowUAMBoostMinutes + ": " + UAMBoost + (UAMBoost >=2.5 && UAM_safedelta >=4 ? "*" + UAMBoost_bolus :"") + ", BGBoost" + profile.EatingNowBGBoostMinutes + ": " + BGBoost_scale + (BGBoost_scale>=1 && UAM_safedelta >=4 ? "*" + BGBoost_bolus :"");
+                UAMBoostReason += ", UAMBoost" +  profile.EatingNowUAMBoostMinutes + ": " + UAMBoost + (UAMBoosted ? "*" + UAMBoost_bolus :"") + ", BGBoost" + profile.EatingNowBGBoostMinutes + ": " + BGBoost_scale + (BGBoosted ? "*" + BGBoost_bolus :"");
 
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);

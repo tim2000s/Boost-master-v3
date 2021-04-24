@@ -179,6 +179,7 @@ android {
                         variant.getPackageApplication().outputDirectory = new File("/home/dicko/Documents/Google Drive/AAPS/* Build *")
                 }
         }
+    bum
     }
     productFlavors {
         flavorDimensions "standard"
@@ -303,12 +304,12 @@ dependencies {
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
 
-task copyApks(type: Copy) {
-    from('/home/dicko/Documents/Google Drive/AAPS/* Build *') {
-        include '**/*JD.apk'
-    }
-    into '/home/dicko/Documents/Google Drive/AAPS/Jamie/* Build *'
-}
+//task copyApks(type: Copy) {
+//    from('/home/dicko/Documents/Google Drive/AAPS/* Build *') {
+//        include '**/*JD.apk'
+//    }
+//    into '/home/dicko/Documents/Google Drive/AAPS/Jamie/* Build *'
+//}
 
 
 //task clean(type: Delete) {
