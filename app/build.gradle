@@ -305,10 +305,16 @@ dependencies {
 
 task copyApks(type: Copy) {
     from('/home/dicko/Documents/Google Drive/AAPS/* Build *') {
-        exclude '**/*unsigned.apk', '**/*unaligned.apk'
+        include '**/*JD.apk'
     }
     into '/home/dicko/Documents/Google Drive/AAPS/Jamie/* Build *'
 }
+
+
+//task clean(type: Delete) {
+//    delete '/home/dicko/Documents/Google Drive/AAPS/* Build *'
+//}
+
 
 /*
 // Run 'adb' shell command to clear application data of main app for 'debug' variant
