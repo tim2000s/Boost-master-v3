@@ -220,7 +220,7 @@
                 android:dialogMessage="UAMBoost Max SMB for BGL rises"
                 validate:floatmaxNumber="5.0"
                 validate:floatminNumber="0.1"
-                validate:testType="numericRange"/>
+                validate:testType="floatNumericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="30"
@@ -244,7 +244,7 @@
                 android:dialogMessage="BGBoost Max SMB for BGL rises"
                 validate:floatmaxNumber="5.0"
                 validate:floatminNumber="0.1"
-                validate:testType="numericRange"/>
+                validate:testType="floatNumericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="0.3"
