@@ -1210,14 +1210,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var EatingNowMaxSMB = round( profile.current_basal * profile.EatingNowMaxSMBMinutes / 60 ,1);
 
                 // ============== BOOST ==============
-                // If there is a sudden delta change allow UAMBoost >=0.22
-                if (UAMBoost >=2.5 && UAM_safedelta >=4 && bg < BGBoost_threshold) {
+                // If there is a sudden delta change allow UAMBoost >0.28
+                if (UAMBoost >=1.5 && UAM_safedelta >5 && bg < BGBoost_threshold) {
                     // boost the insulin further
                     var UAMBoostMaxed = (profile.EatingNowUAMBoostMax > 0 ? Math.min(profile.EatingNowUAMBoostMax,UAMBoost) : UAMBoost);
                     insulinReqBoost +=  UAMBoostMaxed * UAMBoost_bolus;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                     // insulinReqPct = (UAM_safedelta < 7 ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
-                    //SMB_TBR = false;
+                    SMB_TBR = true;
                     UAMBoosted = true;
                 }
 
@@ -1227,7 +1227,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqBoost +=  BGBoost_scale * BGBoost_bolus;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                     insulinReqPct = (UAM_safedelta < 7 ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
-                    //SMB_TBR = (SMB_TBR ? true : false); // if its already true respect it
+                    // SMB_TBR = (SMB_TBR ? true : false); // if its already true respect it
                     BGBoosted = true;
                 }
 
@@ -1240,7 +1240,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== RESTRICTIONS ==============
                  // if the rise is slowing TBR only
-                if (UAM_deltaShortRise <0 && insulinReq <=0) { // if original insulinReq is positive dont limit
+                if (UAM_deltaShortRise < 0) {
                     insulinReqPct = 0; // TBR only
                     SMB_TBR = true;
                     UAMBoostReason = " (limit)";
