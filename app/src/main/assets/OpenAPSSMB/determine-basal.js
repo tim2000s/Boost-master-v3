@@ -1206,12 +1206,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var BGBoost_scale = round(eventualBG / BGBoost_threshold,2);
                 var BGBoost_relative = round(bg / BGBoost_threshold,2);
                 var BGBoost_bolus = round( profile.current_basal * profile.EatingNowBGBoostMinutes / 60 ,2);
+                var BGBoostMaxSMB = round(profile.EatingNowBGBoostMaxSMB,2);
                 var UAMBoost_bolus = round( profile.current_basal * profile.EatingNowUAMBoostMinutes / 60 ,2);
-                var EatingNowMaxSMB = round( profile.current_basal * profile.EatingNowMaxSMBMinutes / 60 ,1);
+                var EatingNowMaxSMB = 0;
 
                 // ============== BOOST ==============
                 // If there is a sudden delta change allow UAMBoost
-                if (UAMBoost >=1.5 && UAM_safedelta >=6 && glucose_status.short_avgdelta >= 4 && bg < BGBoost_threshold) {
+                if (UAMBoost >=2.0 && UAM_safedelta >=6 && glucose_status.short_avgdelta >= 4 && bg < BGBoost_threshold) {
                     // boost the insulin further
                     var UAMBoostMaxed = (profile.EatingNowUAMBoostMax > 0 ? Math.min(profile.EatingNowUAMBoostMax,UAMBoost) : UAMBoost);
                     insulinReqBoost +=  UAMBoostMaxed * UAMBoost_bolus;
@@ -1219,6 +1220,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // insulinReqPct = (UAM_safedelta < 7 ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
                     SMB_TBR = true;
                     UAMBoosted = true;
+                    EatingNowMaxSMB = round(profile.EatingNowUAMBoostMaxSMB,2);
                 }
 
                 // If we are predicted to exceed BGBoost_threshold allow BGBoost_scale >0
@@ -1229,6 +1231,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = (UAM_safedelta < 7 ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
                     SMB_TBR = false;
                     BGBoosted = true;
+                    EatingNowMaxSMB = round(profile.EatingNowBGBoostMaxSMB,2);
                 }
 
                 // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction

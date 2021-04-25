@@ -213,17 +213,13 @@
                 validate:testType="numericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="30"
-                android:digits="0123456789"
-                android:inputType="number"
-                android:key="@string/key_eatingnow_uamboostsmaxsmb"
+                android:defaultValue="0.1"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnow_uamboostmaxsmb"
                 android:title="UAMBoost Max SMB"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
                 android:dialogMessage="UAMBoost Max SMB for BGL rises"
-                validate:floatmaxNumber="5"
-                validate:floatminNumber="15"
+                validate:floatmaxNumber="5.0"
+                validate:floatminNumber="0.1"
                 validate:testType="numericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
@@ -241,31 +237,13 @@
                 validate:testType="numericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="30"
-                android:digits="0123456789"
-                android:inputType="number"
-                android:key="@string/key_eatingnow_maxbolusminutes"
-                android:title="Max SMB minutes"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:dialogMessage="Max minutes of basal to limit SMB to for Eating Now"
-                validate:floatmaxNumber="240"
-                validate:floatminNumber="15"
-                validate:testType="numericRange"/>
-
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="30"
-                android:digits="0123456789"
-                android:inputType="number"
-                android:key="@string/key_eatingnow_maxbolusminutes"
-                android:title="Max SMB minutes"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:dialogMessage="Max minutes of basal to limit SMB to for Eating Now"
-                validate:floatmaxNumber="240"
-                validate:floatminNumber="15"
+                android:defaultValue="0.1"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnow_bgboostmaxsmb"
+                android:title="BGBoost Max SMB"
+                android:dialogMessage="BGBoost Max SMB for BGL rises"
+                validate:floatmaxNumber="5.0"
+                validate:floatminNumber="0.1"
                 validate:testType="numericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference

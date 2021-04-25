@@ -1408,9 +1408,10 @@
     <string name="key_eatingnow_iob">key_eatingnow_iob</string>
     <string name="key_eatingnow_uamboostpct_max">key_eatingnow_uamboostpct_max</string>
     <string name="key_eatingnow_insulinreq">key_eatingnow_insulinreq</string>
-    <string name="key_eatingnow_maxbolusminutes">key_eatingnow_maxbolusminutes</string>
     <string name="key_eatingnow_bgboostminutes">key_eatingnow_bgboostminutes</string>
+    <string name="key_eatingnow_bgboostmaxsmb">key_eatingnow_bgboostmaxsmb</string>
     <string name="key_eatingnow_uamboostminutes">key_eatingnow_uamboostminutes</string>
+    <string name="key_eatingnow_uamboostmaxsmb">key_eatingnow_uamboostmaxsmb</string>
     <string name="key_eatingnow_bgboostbg">key_eatingnow_bgboostbg</string>
     <string name="key_eatingnow_iobmax">key_eatingnow_iobmax</string>
     <string name="key_eatingnow_timestart">key_eatingnow_timestart</string>
