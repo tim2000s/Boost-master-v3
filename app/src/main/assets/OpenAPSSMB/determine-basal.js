@@ -1231,7 +1231,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqBoost += BGBoost_scale * BGBoost_bolus;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                     // insulinReqPct = (UAM_safedelta < 7 ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
-                    insulinReqPct = (UAM_safedelta < 7 ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
+                    insulinReqPct = (UAM_safedelta < 7 && typeof liftISF === 'undefined'  ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct); // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
                     SMB_TBR = false;
                     BGBoosted = true;
                     EatingNowMaxSMB = round(profile.EatingNowBGBoostMaxSMB,2);
@@ -1279,8 +1279,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
             durationReq = round(60*worstCaseInsulinReq / profile.current_basal);
 
-            //MD: Only use minBolus if we dont have a TT and autoISF not in use
-            if (!profile.temptargetSet && !eatingnow && typeof liftISF === 'undefined') {
+            //MD: Only use minBolus if not eating now and night time and no resistance
+            if (!eatingnow && !eatingnowtimeOK && typeof liftISF === 'undefined') {
                 // Mackwe: If SMB dose < 500% TBR would deliver within 15 mins, use TBR instead of SMB
                 var maxTbrDoseMins = 15; // minutes for the TBR
                 var maxTbrDose = round((4*profile.current_basal)*(maxTbrDoseMins/60),4); //rounding this
