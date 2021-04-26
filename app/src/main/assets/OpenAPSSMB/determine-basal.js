@@ -1237,7 +1237,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction
-                if (bg > BGBoost_threshold && UAM_deltaShortRise >= 0 && insulinReqBoost == 0) {
+                if (bg > BGBoost_threshold && UAM_deltaShortRise >= 0 && (!UAMBoosted && !BGBoosted) ) {
                     insulinReqBoost = (bg - target_bg) / sens;
                     UAMBoostReason = " (corr " + round(insulinReqBoost, 2) + ")"; // at this point sens may have autoISF included?
                     //SMB_TBR = true;
