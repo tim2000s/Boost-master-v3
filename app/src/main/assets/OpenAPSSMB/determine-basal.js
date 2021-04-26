@@ -1324,8 +1324,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             rT.reason += ". ";
 
-            //allow SMBs every 5 minutes by default
-            var SMBInterval = 5;
+            //allow SMBs every 3 minutes by default
+            var SMBInterval = 3;
             if (profile.SMBInterval) {
                 // allow SMBIntervals between 1 and 10 minutes
                 SMBInterval = Math.min(10,Math.max(1,profile.SMBInterval));
@@ -1345,11 +1345,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //rT.reason += ". ";
 
 //            // when eatingnow allow the remaining insulinReq to be delivered as TBR
-//            if (eatingnow & SMB_TBR) {
-//                insulinReq = insulinReq - microBolus;
-//                // rate required to deliver remaining insulinReq over 30m:
-//                rate = round(Math.max(basal + (2 * insulinReq),0),2);
-//            }
+            if (eatingnow & SMB_TBR) {
+                insulinReq = insulinReq - microBolus;
+                // rate required to deliver remaining insulinReq over 30m:
+                rate = round(Math.max(basal + (2 * insulinReq),0),2);
+            }
 
             // if no zero temp is required, don't return yet; allow later code to set a high temp
             if (durationReq > 0) {
