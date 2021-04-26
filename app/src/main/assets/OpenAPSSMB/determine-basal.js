@@ -1208,7 +1208,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var BGBoost_bolus = round( profile.current_basal * profile.EatingNowBGBoostMinutes / 60 ,2);
                 var BGBoostMaxSMB = round(profile.EatingNowBGBoostMaxSMB,2);
                 var UAMBoost_bolus = round( profile.current_basal * profile.EatingNowUAMBoostMinutes / 60 ,2);
-                var EatingNowMaxSMB = 0;
+                var EatingNowMaxSMB = maxBolus;
 
                 // ============== BOOST ==============
                 // If there is a sudden delta change allow UAMBoost
