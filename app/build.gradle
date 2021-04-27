@@ -360,6 +360,6 @@ if (isMaster() && !allCommitted()) {
 //    throw new GradleException('There are uncommitted changes. Clone sources again as described in wiki and do not allow gradle update')
 }
 
-task callCL(type: Exec) {
-    commandLine 'rsync -av /home/dicko/Documents/AAPS-BUILD/full/release/*app*.apk /home/dicko/gdrive/AAPS/~Build~/'
-}
+//task callCL(type: Exec) {
+//    commandLine '/home/dicko/Documents/AAPS-BUILD/sync.sh'
+//}
