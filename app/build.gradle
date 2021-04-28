@@ -176,9 +176,6 @@ android {
                         newName = newName.replace("-release", "-release-" + formattedDate + "-MAD")
                         // at last we are setting our apk name to it.
                         output.outputFileName  = newName
-//                      output.outputFileName  = newName + output.getFilter(com.android.build.OutputFile.ABI)+ ".apk"
-//                       outputFileName = fileName + output.getFilter(com.android.build.OutputFile.ABI)+ ".apk"
-//                        variant.getPackageApplication().outputDirectory = new File("/home/dicko/Documents/Google Drive/AAPS/* Build *")
                 }
         }
     }
@@ -304,7 +301,6 @@ dependencies {
 
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
-
 /*
 // Run 'adb' shell command to clear application data of main app for 'debug' variant
 task clearMainAppData(type: Exec) {
@@ -347,4 +343,13 @@ if (isMaster() && !gitAvailable()) {
 }
 if (isMaster() && !allCommitted()) {
 //    throw new GradleException('There are uncommitted changes. Clone sources again as described in wiki and do not allow gradle update')
+}
+
+// Sync to Google Drive
+task CopytoGoogleDrive {
+    doLast {
+        exec {
+            commandLine 'sh', '/home/dicko/Documents/AAPS-BUILD/sync.sh'
+        }
+    }
 }
