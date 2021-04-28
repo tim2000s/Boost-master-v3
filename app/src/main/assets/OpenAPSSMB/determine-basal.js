@@ -1237,6 +1237,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     BGBoosted = true;
                 }
 
+                // ============== CORRECTION ==============
                 // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction
                 if (bg > BGBoost_threshold && UAM_deltaShortRise >= 0 && (!UAMBoosted && !BGBoosted) ) {
                     insulinReqBoost = (bg - target_bg) / sens;
@@ -1260,9 +1261,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     SMB_TBR = (! eatingnowtimeOK && profile.EatingNowOverride && profile.temptargetSet && target_bg == profile.normal_target_bg ? true : SMB_TBR);
                 }
 
-                // ============== REASON ADDITIONS  ==============
+                // ============== INSULIN BOOST  ==============
                 UAMBoostReason += ", Boost: UAM" +  profile.EatingNowUAMBoostMinutes + ": " + UAMBoost + (UAMBoosted ? "*" + UAMBoost_bolus :"") + ", BG" + profile.EatingNowBGBoostMinutes + ": " + BGBoost_scale + (BGBoosted ? "*" + BGBoost_bolus :"");
-
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
