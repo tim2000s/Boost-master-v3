@@ -1212,11 +1212,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var BGBoost_bolus = profile.EatingNowBGBoostBolus;
                 var BGBoostMaxSMB = round(profile.EatingNowBGBoostMaxSMB,2);
                 var UAMBoost_bolus = profile.EatingNowUAMBoostBolus;
+                var UAMBoost_threshold = 2.0;
                 var EatingNowMaxSMB = maxBolus;
 
                 // ============== UAMBOOST ==============
                 // If there is a sudden delta change allow UAMBoost
-                if (UAMBoost >=2.0 && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0 && bg < BGBoost_threshold) {
+                if (UAMBoost >= UAMBoost_threshold && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0 && bg < BGBoost_threshold) {
                     // boost the insulin further
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
                     insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
@@ -1266,7 +1267,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== INSULIN BOOST  ==============
-                UAMBoostReason += ", Boost: UAM: " + UAMBoost + (UAMBoosted ? "*" + UAMBoost_bolus :"") + ", BG: " + BGBoost_scale + (BGBoosted ? "*" + BGBoost_bolus :"");
+                UAMBoostReason += ", Boost: UAM >" + round(UAMBoost_threshold,1) + ": " + UAMBoost + (UAMBoosted ? "*" + UAMBoost_bolus :"") + ", BG >" + BGBoost_threshold + ": " + BGBoost_scale + (BGBoosted ? "*" + BGBoost_bolus :"");
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
