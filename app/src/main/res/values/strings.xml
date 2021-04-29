@@ -1407,7 +1407,7 @@
     <string name="key_use_eatingnow">key_use_eatingnow</string>
     <string name="key_eatingnow_iob">key_eatingnow_iob</string>
     <string name="key_eatingnow_insulinreq">key_eatingnow_insulinreq</string>
-    <string name="key_eatingnow_bgboostminutes">key_eatingnow_bgboostminutes</string>
+    <string name="key_eatingnow_bgboostbolus">key_eatingnow_bgboostbolus</string>
     <string name="key_eatingnow_bgboostmaxsmb">key_eatingnow_bgboostmaxsmb</string>
     <string name="key_eatingnow_uamboostminutes">key_eatingnow_uamboostminutes</string>
     <string name="key_eatingnow_uamboostmaxsmb">key_eatingnow_uamboostmaxsmb</string>

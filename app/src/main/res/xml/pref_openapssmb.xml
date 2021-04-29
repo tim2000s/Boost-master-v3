@@ -213,18 +213,14 @@
                 validate:testType="floatNumericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="30"
-                android:digits="0123456789"
-                android:inputType="number"
-                android:key="@string/key_eatingnow_bgboostminutes"
-                android:title="BGBoost Bolus minutes"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:dialogMessage="Minutes of current basal to use as the minimum bolus for BG predicted to exceed the BGBoost Threshold"
-                validate:floatmaxNumber="240"
+                android:defaultValue="0"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnow_bgboostbolus"
+                android:title="BGBoost Bolus"
+                android:dialogMessage="Minimum bolus to boost for BG predicted to exceed the BGBoost Threshold\n0 will use insulinReq as the minimum"
+                validate:floatmaxNumber="5.0"
                 validate:floatminNumber="0"
-                validate:testType="numericRange"/>
+                validate:testType="floatNumericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="0.1"
