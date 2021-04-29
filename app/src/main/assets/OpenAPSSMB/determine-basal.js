@@ -1161,8 +1161,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // enable eatingnow if no TT and safe IOB within safe hours
                 if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && eatingnowtimeOK) eatingnow = true;
                 // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
-                if (profile.temptargetSet && target_bg == profile.normal_target_bg && profile.temptarget_minutesrunning >0) eatingnow = true; // tt duration prevents immediate SMB
-                if (profile.EatingNowOverride && profile.temptargetSet && target_bg <= profile.normal_target_bg) eatingnow = true; // any TT of normal target or below will allow eating now to operate outside of hours
+                if (profile.temptargetSet && profile.temptarget_minutesrunning >0) {  // tt duration prevents immediate SMB
+                    // normal target enables eating now
+                    if (target_bg == profile.normal_target_bg) eatingnow = true;
+                     // any TT of normal target or below with override will allow eating now to operate outside of hours
+                    if (profile.EatingNowOverride && target_bg <= profile.normal_target_bg) eatingnow = true;
+                 }
             }
 
             // calculate the various deltas and pct changes
