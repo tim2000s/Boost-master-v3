@@ -1216,7 +1216,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== UAMBOOST ==============
                 // If there is a sudden delta change allow UAMBoost
-                if (UAMBoost >=2.0 && UAM_safedelta >=6 && glucose_status.short_avgdelta >= 4 && glucose_status.long_avgdelta > 0 && bg < BGBoost_threshold) {
+                if (UAMBoost >=2.0 && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0 && bg < BGBoost_threshold) {
                     // boost the insulin further
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
                     insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
