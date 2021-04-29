@@ -1211,7 +1211,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var BGBoost_relative = round(bg / BGBoost_threshold,2);
                 var BGBoost_bolus = profile.EatingNowBGBoostBolus;
                 var BGBoostMaxSMB = round(profile.EatingNowBGBoostMaxSMB,2);
-                var UAMBoost_bolus = round( profile.current_basal * profile.EatingNowUAMBoostMinutes / 60 ,2);
+                var UAMBoost_bolus = profile.EatingNowUAMBoostBolus;
                 var EatingNowMaxSMB = maxBolus;
 
                 // ============== UAMBOOST ==============
@@ -1266,7 +1266,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== INSULIN BOOST  ==============
-                UAMBoostReason += ", Boost: UAM" +  profile.EatingNowUAMBoostMinutes + ": " + UAMBoost + (UAMBoosted ? "*" + UAMBoost_bolus :"") + ", BG: " + BGBoost_scale + (BGBoosted ? "*" + BGBoost_bolus :"");
+                UAMBoostReason += ", Boost: UAM: " + UAMBoost + (UAMBoosted ? "*" + UAMBoost_bolus :"") + ", BG: " + BGBoost_scale + (BGBoosted ? "*" + BGBoost_bolus :"");
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
