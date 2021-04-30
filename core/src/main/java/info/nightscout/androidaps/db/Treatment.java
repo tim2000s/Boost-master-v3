@@ -70,7 +70,7 @@ public class Treatment implements DataPointWithLabelInterface, DbObjectBase {
     public double dia = Constants.defaultDIA; // currently unused, will be used in the future
     @DatabaseField
     public String boluscalc;
-    public String boostType = null;
+    public String boostType;
 
     public Treatment() {
         StaticInjector.Companion.getInstance().androidInjector().inject(this); // TODO it will be removed by new database
@@ -106,7 +106,6 @@ public class Treatment implements DataPointWithLabelInterface, DbObjectBase {
         }
         if (json.has("boostType")) {
             treatment.boostType = json.getString("boostType");
-            // if (treatment.boostType != "BGBoost" || treatment.boostType != "UAMBoost") treatment.boostType = null;
         }
         return treatment;
     }
