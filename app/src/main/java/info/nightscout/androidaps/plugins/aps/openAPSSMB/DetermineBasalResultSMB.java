@@ -73,6 +73,8 @@ public class DetermineBasalResultSMB extends APSResult {
 
             if (result.has("boosted")) {
                 boosted = result.getString("boosted");
+            } else {
+                boosted = "";
             }
 
             } catch (JSONException e) {
