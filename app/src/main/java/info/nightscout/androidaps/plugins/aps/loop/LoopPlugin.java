@@ -774,6 +774,7 @@ public class LoopPlugin extends PluginBase implements LoopInterface {
         DetailedBolusInfo detailedBolusInfo = new DetailedBolusInfo();
         detailedBolusInfo.lastKnownBolusTime = treatmentsPlugin.getLastBolusTime();
         detailedBolusInfo.eventType = CareportalEvent.CORRECTIONBOLUS;
+        if (request.boosted) detailedBolusInfo.eventType = request.boosted;
         detailedBolusInfo.insulin = request.smb;
         detailedBolusInfo.isSMB = true;
         detailedBolusInfo.source = Source.USER;

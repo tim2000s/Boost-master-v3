@@ -51,6 +51,7 @@ public class APSResult {
 
     public long date = 0;
     public String reason;
+    public String boosted;
     public double rate;
     public int percent;
     public boolean usePercent = false;
