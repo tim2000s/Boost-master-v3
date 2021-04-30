@@ -120,7 +120,7 @@ class TreatmentsBolusFragment : DaggerFragment() {
             val iob = t.iobCalc(System.currentTimeMillis(), profile.dia)
             holder.iob.text = resourceHelper.gs(R.string.formatinsulinunits, iob.iobContrib)
             holder.mealOrCorrection.text = if (t.isSMB) "SMB" else if (t.mealBolus) resourceHelper.gs(R.string.mealbolus) else resourceHelper.gs(R.string.correctionbous)
-            holder.mealOrCorrection.text = if (t.boostType !=null) "SMB" + t.boostType.toString() else holder.mealOrCorrection.text
+            holder.mealOrCorrection.text = if (t.boostType != null) "SMB" + t.boostType else holder.mealOrCorrection.text
             holder.ph.visibility = if (t.source == Source.PUMP) View.VISIBLE else View.GONE
             holder.ns.visibility = if (NSUpload.isIdValid(t._id)) View.VISIBLE else View.GONE
             holder.invalid.visibility = if (t.isValid) View.GONE else View.VISIBLE

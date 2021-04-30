@@ -104,9 +104,9 @@ public class Treatment implements DataPointWithLabelInterface, DbObjectBase {
             if (carbs <= 0)
                 treatment.mealBolus = false;
         }
-        if (treatment.isSMB && json.has("eventType")) {
-            treatment.boostType = json.getString("eventType");
-            if (treatment.boostType != "BGBoost" || treatment.boostType != "UAMBoost") treatment.boostType = null;
+        if (treatment.isSMB && json.has("boostType")) {
+            treatment.boostType = json.getString("boostType");
+            // if (treatment.boostType != "BGBoost" || treatment.boostType != "UAMBoost") treatment.boostType = null;
         }
         return treatment;
     }
