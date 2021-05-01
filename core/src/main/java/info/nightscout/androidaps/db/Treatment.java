@@ -70,7 +70,8 @@ public class Treatment implements DataPointWithLabelInterface, DbObjectBase {
     public double dia = Constants.defaultDIA; // currently unused, will be used in the future
     @DatabaseField
     public String boluscalc;
-    public String boostType;
+    @DatabaseField
+    public String boostType="";
 
     public Treatment() {
         StaticInjector.Companion.getInstance().androidInjector().inject(this); // TODO it will be removed by new database
@@ -88,12 +89,12 @@ public class Treatment implements DataPointWithLabelInterface, DbObjectBase {
             return null;
         treatment.carbs = JsonHelper.safeGetDouble(json, "carbs");
         treatment.insulin = JsonHelper.safeGetDouble(json, "insulin");
-        treatment.boostType = "UAM";
         treatment.pumpId = JsonHelper.safeGetLong(json, "pumpId");
         treatment._id = json.getString("_id");
         treatment.isSMB = JsonHelper.safeGetBoolean(json, "isSMB");
         if (json.has("eventType")) {
             treatment.mealBolus = !json.get("eventType").equals("Correction Bolus");
+            if (treatment.mealBolus) treatment.boostType = "-" + JsonHelper.safeGetString(json,"eventType");
             double carbs = treatment.carbs;
             if (json.has("boluscalc")) {
                 JSONObject boluscalc = json.getJSONObject("boluscalc");
@@ -105,9 +106,6 @@ public class Treatment implements DataPointWithLabelInterface, DbObjectBase {
             if (carbs <= 0)
                 treatment.mealBolus = false;
         }
-//        if (json.has("boostType")) {
-//            treatment.boostType = json.getString("boostType");
-//        }
         return treatment;
     }
 
@@ -222,6 +220,7 @@ public class Treatment implements DataPointWithLabelInterface, DbObjectBase {
         mealBolus = t.mealBolus;
         pumpId = t.pumpId;
         isSMB = t.isSMB;
+        boostType = t.boostType;
     }
 
     public void copyBasics(Treatment t) {
