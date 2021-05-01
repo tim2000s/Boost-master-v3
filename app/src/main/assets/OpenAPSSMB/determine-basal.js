@@ -1246,7 +1246,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (bg > BGBoost_threshold && UAM_deltaShortRise >= 0 && (!UAMBoosted && !BGBoosted) && typeof liftISF !== 'undefined') {
                     insulinReqBoost = (bg - target_bg) / sens;
                     UAMBoostReason = " (corr " + round(insulinReqBoost, 2) + ")"; // at this point sens may have autoISF included?
-                    EatingNowBGBoostMaxSMB = insulinReqBoost; // allow all of the correction
+                    EatingNowBGBoostMaxSMB = insulinReqBoost; // allow all of the correction as SMB, default insulinReqPct will be used
                     insulinReqBoost +=  profile_current_basal; // add some more for TBR's
                     SMB_TBR = true;
                 }
