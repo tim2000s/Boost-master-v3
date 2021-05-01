@@ -639,6 +639,7 @@ public class TreatmentsPlugin extends PluginBase implements TreatmentsInterface 
         treatment.isSMB = detailedBolusInfo.isSMB;
         if (detailedBolusInfo.carbTime == 0)
             treatment.carbs = detailedBolusInfo.carbs;
+        treatment.boostType = detailedBolusInfo.boostType;
         treatment.mealBolus = treatment.carbs > 0;
         treatment.boluscalc = detailedBolusInfo.boluscalc != null ? detailedBolusInfo.boluscalc.toString() : null;
         TreatmentService.UpdateReturn creatOrUpdateResult;
