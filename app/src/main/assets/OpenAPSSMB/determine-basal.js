@@ -1346,7 +1346,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (lastBolusAge > SMBInterval) {
                 if (microBolus > 0) {
                     rT.units = microBolus;
-                    rT.reason += "Microbolusing " + microBolus + "U. ";
+                    rT.reason += "Microbolusing " + microBolus + "/" + maxBolus "U. ";
                     // add the boost type if applicable
                     if ( BGBoosted || UAMBoosted ) {
                         rT.boostType = ( BGBoosted ? "BG" : rT.boostType );
