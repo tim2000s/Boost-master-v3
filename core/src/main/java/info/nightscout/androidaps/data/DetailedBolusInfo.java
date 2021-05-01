@@ -36,6 +36,7 @@ public class DetailedBolusInfo {
         DetailedBolusInfo n = new DetailedBolusInfo();
         n.date = date;
         n.eventType = eventType;
+        n.boostType = boostType;
         n.insulin = insulin;
         n.carbs = carbs;
         n.source = source;
