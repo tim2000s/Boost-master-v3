@@ -773,7 +773,7 @@ public class LoopPlugin extends PluginBase implements LoopInterface {
         // deliver SMB
         DetailedBolusInfo detailedBolusInfo = new DetailedBolusInfo();
         detailedBolusInfo.lastKnownBolusTime = treatmentsPlugin.getLastBolusTime();
-        detailedBolusInfo.eventType = CareportalEvent.CORRECTIONBOLUS;
+        detailedBolusInfo.eventType = (request.boostType == null ? CareportalEvent.CORRECTIONBOLUS : request.boostType);
         if (request.boostType != null) detailedBolusInfo.boostType = request.boostType;
         detailedBolusInfo.insulin = request.smb;
         detailedBolusInfo.isSMB = true;
