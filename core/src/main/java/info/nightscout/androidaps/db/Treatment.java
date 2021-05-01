@@ -88,6 +88,7 @@ public class Treatment implements DataPointWithLabelInterface, DbObjectBase {
             return null;
         treatment.carbs = JsonHelper.safeGetDouble(json, "carbs");
         treatment.insulin = JsonHelper.safeGetDouble(json, "insulin");
+        treatment.boostType = "UAM";
         treatment.pumpId = JsonHelper.safeGetLong(json, "pumpId");
         treatment._id = json.getString("_id");
         treatment.isSMB = JsonHelper.safeGetBoolean(json, "isSMB");
@@ -104,9 +105,9 @@ public class Treatment implements DataPointWithLabelInterface, DbObjectBase {
             if (carbs <= 0)
                 treatment.mealBolus = false;
         }
-        if (json.has("boostType")) {
-            treatment.boostType = json.getString("boostType");
-        }
+//        if (json.has("boostType")) {
+//            treatment.boostType = json.getString("boostType");
+//        }
         return treatment;
     }
 
