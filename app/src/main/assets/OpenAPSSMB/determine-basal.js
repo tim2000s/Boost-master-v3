@@ -1242,8 +1242,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== CORRECTION ==============
-                // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction
-                if (bg > BGBoost_threshold && UAM_deltaShortRise >= 0 && (!UAMBoosted && !BGBoosted) ) {
+                // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction when autoISF is active
+                if (bg > BGBoost_threshold && UAM_deltaShortRise >= 0 && (!UAMBoosted && !BGBoosted) && typeof liftISF !== 'undefined') {
                     insulinReqBoost = (bg - target_bg) / sens;
                     UAMBoostReason = " (corr " + round(insulinReqBoost, 2) + ")"; // at this point sens may have autoISF included?
                     EatingNowBGBoostMaxSMB = insulinReqBoost; // allow all of the correction
