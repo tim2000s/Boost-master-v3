@@ -70,6 +70,11 @@ public class DetermineBasalResultSMB extends APSResult {
                     aapsLogger.error(LTag.APS, "Error parsing 'deliverAt' date: " + date, e);
                 }
             }
+
+            if (result.has("boostType")) {
+                boostType = result.getString("boostType");
+            }
+
         } catch (JSONException e) {
             aapsLogger.error(LTag.APS, "Error parsing determine-basal result JSON", e);
         }
