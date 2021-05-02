@@ -70,7 +70,6 @@ public class DetermineBasalResultSMB extends APSResult {
                     aapsLogger.error(LTag.APS, "Error parsing 'deliverAt' date: " + date, e);
                 }
             }
-
         } catch (JSONException e) {
             aapsLogger.error(LTag.APS, "Error parsing determine-basal result JSON", e);
         }
