@@ -1259,7 +1259,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostReason = " (limit)";
                 } else {
                     // increase maxbolus if we are within the hours specified and rise not slowing
-//                     maxBolus = (eatingnowtimeOK ? EatingNowMaxSMB : maxBolus);
+                    //  maxBolus = (eatingnowtimeOK ? EatingNowMaxSMB : maxBolus);
                     // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus above
                     // maxBolus = (! eatingnowtimeOK && profile.EatingNowOverride && profile.temptargetSet && target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
                     // allow SMB_TBR if not within time but eating now is enabled ie. TT of 5.5
