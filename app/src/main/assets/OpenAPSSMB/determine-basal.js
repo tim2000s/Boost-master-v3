@@ -1154,6 +1154,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false; // nah not eating yet
             var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
             if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd) eatingnowtimeOK = true;
+            console.log("eatingnowtimeOK: " + eatingnowtimeOK);
             if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
 
             // If we have Eating Now enabled and rising we will enable eating now mode
@@ -1270,7 +1271,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // increase maxbolus if we are within the hours specified
                     maxBolus = EatingNowMaxSMB;
                     insulinReqPct = insulinReqPct;
-                } else if (!eatingnowtimeOK && profile.EatingNowOverride && profile.temptargetSet) {
+                } else if (profile.EatingNowOverride && profile.temptargetSet) {
                     // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus
                     maxBolus = (target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
                     SMB_TBR = (target_bg == profile.normal_target_bg ? true : SMB_TBR);
