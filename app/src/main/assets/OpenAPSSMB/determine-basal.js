@@ -1358,11 +1358,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (microBolus > 0) {
                     rT.units = microBolus;
                     rT.reason += "Microbolusing " + microBolus + "/" + maxBolus "U. ";
-                    // add the boost type if applicable
-                    if ( BGBoosted || UAMBoosted ) {
-                        rT.boostType = ( BGBoosted ? "BG" : rT.boostType );
-                        rT.boostType = ( UAMBoosted ? "UAM" : rT.boostType );
-                    }
                 }
             } else {
                 rT.reason += "Waiting " + nextBolusMins + "m " + nextBolusSeconds + "s to microbolus again. ";

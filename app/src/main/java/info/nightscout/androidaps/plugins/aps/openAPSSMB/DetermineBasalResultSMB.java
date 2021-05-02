@@ -71,10 +71,6 @@ public class DetermineBasalResultSMB extends APSResult {
                 }
             }
 
-            if (result.has("boostType")) {
-                boostType = result.getString("boostType");
-            }
-
         } catch (JSONException e) {
             aapsLogger.error(LTag.APS, "Error parsing determine-basal result JSON", e);
         }

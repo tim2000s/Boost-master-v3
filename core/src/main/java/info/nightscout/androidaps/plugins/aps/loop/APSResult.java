@@ -51,7 +51,6 @@ public class APSResult {
 
     public long date = 0;
     public String reason;
-    public String boostType="";
     public double rate;
     public int percent;
     public boolean usePercent = false;
@@ -194,7 +193,6 @@ public class APSResult {
     protected void doClone(APSResult newResult) {
         newResult.date = date;
         newResult.reason = reason != null ? reason : null;
-        newResult.boostType = boostType;
         newResult.rate = rate;
         newResult.duration = duration;
         newResult.tempBasalRequested = tempBasalRequested;
