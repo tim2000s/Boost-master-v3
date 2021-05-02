@@ -1221,8 +1221,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
                     insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
-                    insulinReqPct = 1; // allow all insulin up to maxBolus
-                    EatingNowMaxSMB = (profile.EatingNowUAMBoostMaxSMB > 0 ? round(profile.EatingNowUAMBoostMaxSMB,2) : maxBolus);
+                    insulinReqPct = ( bg > BGBoost_threshold ? insulinReqPct : 1 ); // allow all insulin up to maxBolus if below BGBoost_threshold
+                    EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? round(profile.EatingNowUAMBoostMaxSMB,2) : maxBolus );
                     SMB_TBR = true;
                     UAMBoosted = true;
                 }
