@@ -1270,7 +1270,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // increase maxbolus if we are within the hours specified
                     maxBolus = EatingNowMaxSMB;
                     insulinReqPct = insulinReqPct;
-                } else if (profile.EatingNowOverride && profile.temptargetSet) {
+                } else if (!eatingnowtimeOK && profile.EatingNowOverride && profile.temptargetSet) {
                     // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus
                     maxBolus = (target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
                     SMB_TBR = (target_bg == profile.normal_target_bg ? true : SMB_TBR);
