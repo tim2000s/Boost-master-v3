@@ -1250,20 +1250,31 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     SMB_TBR = true;
                 }
 
-                // ============== RESTRICTIONS ==============
+                // ============== RISE RESTRICTIONS ==============
                  // if the rise is slowing TBR only
                 if (UAM_deltaShortRise < 0) {
                     insulinReqPct = (typeof liftISF !== 'undefined'? insulinReqPct : 0); // TBR only if no autoISF
-                    // if autoISF is active and insulinReq is less than normal maxbolus then allow 100%
                     SMB_TBR = true;
                     UAMBoostReason = " (limit)";
                 } else {
                     // increase maxbolus if we are within the hours specified and rise not slowing
-                    maxBolus = (eatingnowtimeOK ? EatingNowMaxSMB : maxBolus);
+                    // maxBolus = (eatingnowtimeOK ? EatingNowMaxSMB : maxBolus);
                     // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus above
-                    maxBolus = (! eatingnowtimeOK && profile.EatingNowOverride && profile.temptargetSet && target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
+                    // maxBolus = (! eatingnowtimeOK && profile.EatingNowOverride && profile.temptargetSet && target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
                     // allow SMB_TBR if not within time but eating now is enabled ie. TT of 5.5
-                    SMB_TBR = (! eatingnowtimeOK && profile.EatingNowOverride && profile.temptargetSet && target_bg == profile.normal_target_bg ? true : SMB_TBR);
+                    // SMB_TBR = (! eatingnowtimeOK && profile.EatingNowOverride && profile.temptargetSet && target_bg == profile.normal_target_bg ? true : SMB_TBR);
+                }
+
+                // ============== TIME RESTRICTIONS ==============
+                if (eatingnowtimeOK) {
+                    // increase maxbolus if we are within the hours specified
+                    maxBolus = EatingNowMaxSMB;
+                    insulinReqPct = insulinReqPct;
+                } else if (profile.EatingNowOverride && profile.temptargetSet) {
+                    // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus
+                    maxBolus = (target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
+                    SMB_TBR = (target_bg == profile.normal_target_bg ? true : SMB_TBR);
+                    insulinReqPct = 0.7; // need this for safety as testing
                 }
 
                 // ============== INSULIN BOOST  ==============
@@ -1346,7 +1357,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (lastBolusAge > SMBInterval) {
                 if (microBolus > 0) {
                     rT.units = microBolus;
-                    rT.reason += "Microbolusing " + microBolus + "U. ";
+                    rT.reason += "Microbolusing " + microBolus + "/" + maxBolus "U. ";
                 }
             } else {
                 rT.reason += "Waiting " + nextBolusMins + "m " + nextBolusSeconds + "s to microbolus again. ";
