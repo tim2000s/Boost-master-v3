@@ -1240,6 +1240,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // when predicted to go to twice the BG_threshold allow TBR
                     SMB_TBR = ( BGBoost_scale >=2 ? true :false);
                     BGBoosted = true;
+
+                    // if we have enough UAMBoost we can try combining the boost?!
+                    if (UAMBoost >= UAMBoost_threshold) {
+                        // align the boost_bolus amounts
+                        UAMBoost_bolus = BGBoost_bolus;
+                        insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
+                        UAMBoosted = true;
+                    }
+
                 }
 
                 // ============== CORRECTION ==============
@@ -1366,6 +1375,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     if ( BGBoosted || UAMBoosted ) {
                         rT.boostType = ( BGBoosted ? "BG" : rT.boostType );
                         rT.boostType = ( UAMBoosted ? "UAM" : rT.boostType );
+                        rT.boostType = ( BGBoosted && UAMBoosted ? "BG-UAM" : rT.boostType );
                     }
                 }
             } else {
