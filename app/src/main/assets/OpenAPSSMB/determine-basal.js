@@ -1221,7 +1221,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
                     insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
-                    insulinReqPct = ( bg > BGBoost_threshold ? insulinReqPct : 1 ); // allow all insulin up to maxBolus if below BGBoost_threshold
+                    insulinReqPct = 1;
                     EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? round(profile.EatingNowUAMBoostMaxSMB,2) : maxBolus );
                     SMB_TBR = true;
                     UAMBoosted = true;
@@ -1257,25 +1257,23 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (bg > BGBoost_threshold && UAM_deltaShortRise >= 0 && (!UAMBoosted && !BGBoosted) && typeof liftISF !== 'undefined') {
                     insulinReqBoost = (bg - target_bg) / profile_sens;
                     UAMBoostReason = " (corr " + round(insulinReqBoost, 2) + ")"; // at this point sens may have autoISF included?
-                    insulinReqPct = (liftISF == profile.autoisf_max ? 1 : 0);
+                    // insulinReqPct = (liftISF == profile.autoisf_max ? 1 : 0);
                     SMB_TBR = true;
                     EatingNowMaxSMB = maxBolus;
                 }
 
                 // ============== RISE RESTRICTIONS ==============
                  // if the rise is slowing TBR only
-                if (UAM_deltaShortRise < 0) {
+                if (UAM_deltaAvgRise < 0) {
                     insulinReqPct = (typeof liftISF !== 'undefined'? insulinReqPct : 0); // TBR only if no autoISF
                     SMB_TBR = true;
                     EatingNowMaxSMB = maxBolus;
                     UAMBoostReason = " (limit)";
+                    // Restrict insulinReq when above BGBoost_threshold
+                    insulinReqPct = ( bg > BGBoost_threshold ? 0.7 : insulinReqPct );
                 } else {
-                    // increase maxbolus if we are within the hours specified and rise not slowing
-                    //  maxBolus = (eatingnowtimeOK ? EatingNowMaxSMB : maxBolus);
-                    // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus above
-                    // maxBolus = (! eatingnowtimeOK && profile.EatingNowOverride && profile.temptargetSet && target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
-                    // allow SMB_TBR if not within time but eating now is enabled ie. TT of 5.5
-                    // SMB_TBR = (! eatingnowtimeOK && profile.EatingNowOverride && profile.temptargetSet && target_bg == profile.normal_target_bg ? true : SMB_TBR);
+                    // Restrict insulinReq when above BGBoost_threshold
+                    insulinReqPct = ( bg > BGBoost_threshold ? 0.7 : insulinReqPct );
                 }
 
                 // ============== TIME RESTRICTIONS ==============
