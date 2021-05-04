@@ -1238,7 +1238,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // insulinReqPct = (UAM_safedelta < 6 && typeof liftISF === 'undefined'  ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct);
                     EatingNowMaxSMB = (profile.EatingNowBGBoostMaxSMB > 0 ? round(profile.EatingNowBGBoostMaxSMB,2) : maxBolus);
                     // when predicted to go to twice the BG_threshold allow TBR
-                    SMB_TBR = ( BGBoost_scale >=1.5 ? true :false );
+                    //SMB_TBR = ( BGBoost_scale >=1.5 ? true :false );
+                    SMB_TBR = true;
                     BGBoosted = true;
                 }
 
