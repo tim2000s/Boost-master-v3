@@ -1287,7 +1287,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus
                     maxBolus = (target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
                     insulinReqPct = 0.7; // need this for safety as testing
-                    SMB_TBR = (target_bg == profile.normal_target_bg ? true : SMB_TBR);
                 }
 
                 // ============== INSULIN BOOST  ==============
@@ -1303,7 +1302,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var microBolus = Math.floor(Math.min(insulinReq * insulinReqPct ,maxBolus)*roundSMBTo)/roundSMBTo;
 
             // if we dont have any insulinReq remaining then dont bother with TBR and allow ZT
-            if (SMB_TBR && insulinReq - microBolus <=0) SMB_TBR = false;
+            if (SMB_TBR && insulinReq - microBolus <= 0) SMB_TBR = false;
             UAMBoostReason += (SMB_TBR ? ", TBR+" : "");
 
             // calculate a long enough zero temp to eventually correct back up to target
