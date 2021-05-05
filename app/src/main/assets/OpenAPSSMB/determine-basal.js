@@ -1212,12 +1212,17 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var BGBoost_bolus = profile.EatingNowBGBoostBolus;
                 var UAMBoost_bolus = profile.EatingNowUAMBoostBolus;
                 var EatingNowMaxSMB = maxBolus;
-                var UAMBoost_threshold = (profile.temptargetSet && target_bg == 90 ? 1.2 : 2.0); // if TT is 5.0 increase UAMBoost trigger sensitivity
-                UAMBoost_threshold = (profile.temptargetSet && profile.temptarget_minutesrunning < 60 && iob_data.iob < Math.max(profile.EatingNowBGBoostMaxSMB, profile.EatingNowUAMBoostMaxSMB) ? 1.2 : UAMBoost_threshold);
+
+                // Sensitive threshold is min normal is max
+                var UAMBoost_threshold_min = 1.2, UAMBoost_threshold_max = 2;
+                var UAMBoost_threshold = (profile.temptargetSet && target_bg == 90 ? UAMBoost_threshold_min : UAMBoost_threshold_max); // if TT is 5.0 increase UAMBoost trigger sensitivity
+                UAMBoost_threshold = (profile.temptargetSet && profile.temptarget_minutesrunning < 60 && iob_data.iob < Math.max(profile.EatingNowBGBoostMaxSMB, profile.EatingNowUAMBoostMaxSMB) ? UAMBoost_threshold_min : UAMBoost_threshold);
 
                 // ============== UAMBOOST ==============
                 // If there is a sudden delta change allow UAMBoost
-                if (UAMBoost >= UAMBoost_threshold && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && (glucose_status.long_avgdelta > 0 || UAMBoost_threshold < 2)) {
+                if (UAMBoost >= UAMBoost_threshold &&
+                    (UAMBoost_threshold == UAMBoost_threshold_max && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) ||
+                    (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >=3 && glucose_status.short_avgdelta > 0)) {
                     // boost the insulin further
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
                     insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
