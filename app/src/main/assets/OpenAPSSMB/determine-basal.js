@@ -1210,7 +1210,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var BGBoost_scale = round(eventualBG / BGBoost_threshold,2);
                 var BGBoost_relative = round(bg / BGBoost_threshold,2);
                 var BGBoost_bolus = profile.EatingNowBGBoostBolus;
-                var BGBoostMaxSMB = round(profile.EatingNowBGBoostMaxSMB,2);
                 var UAMBoost_bolus = profile.EatingNowUAMBoostBolus;
                 var EatingNowMaxSMB = maxBolus;
                 var UAMBoost_threshold = (profile.temptargetSet && target_bg == 90 ? 1.2 : 2.0); // if TT is 5.0 increase UAMBoost trigger sensitivity
