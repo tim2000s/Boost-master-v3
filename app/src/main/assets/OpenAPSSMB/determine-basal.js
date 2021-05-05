@@ -1280,10 +1280,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== TIME RESTRICTIONS ==============
                  // if we just had a loop iteration only allow TBR's
-                 if (minAgo < 1) {
-                     insulinReqPct = 0;
-                     SMB_TBR = true;
-                 }
+//                 if (minAgo < 1) {
+//                     insulinReqPct = 0;
+//                     SMB_TBR = true;
+//                 }
 
                 if (eatingnowtimeOK) {
                     // increase maxbolus if we are within the hours specified
