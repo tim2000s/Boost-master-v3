@@ -1162,11 +1162,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // enable eatingnow if no TT and safe IOB within safe hours
                 if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && eatingnowtimeOK) eatingnow = true;
                 // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
-                if (profile.temptargetSet && profile.temptarget_minutesrunning >0) {  // tt duration prevents immediate SMB
+                if (profile.temptargetSet) {  // tt duration prevents immediate SMB
                     // normal target enables eating now
                     if (target_bg == profile.normal_target_bg) eatingnow = true;
                      // any TT of normal target or below with override will allow eating now to operate outside of hours
-                    if (profile.EatingNowOverride && target_bg <= profile.normal_target_bg) eatingnow = true;
+                    if (profile.EatingNowOverride && target_bg < profile.normal_target_bg) eatingnow = true;
                  }
             }
 
@@ -1216,7 +1216,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // Sensitive threshold is min normal is max
                 var UAMBoostOK = false, UAMBoost_threshold_min = 1.2, UAMBoost_threshold_max = 2;
                 var UAMBoost_threshold = (profile.temptargetSet && target_bg == 90 ? UAMBoost_threshold_min : UAMBoost_threshold_max); // if TT is 5.0 increase UAMBoost trigger sensitivity
+
+                // ================= EXPERIMENTAL =======================
                 UAMBoost_threshold = (profile.temptargetSet && profile.temptarget_minutesrunning < 60 && iob_data.iob < Math.max(profile.EatingNowBGBoostMaxSMB, profile.EatingNowUAMBoostMaxSMB) ? UAMBoost_threshold_min : UAMBoost_threshold);
+                // ================= EXPERIMENTAL =======================
 
                 // ============== UAMBOOST ==============
                 // are we in sensitive mode or normal mode and is it OK to boost?
@@ -1299,7 +1302,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else if (profile.EatingNowOverride && profile.temptargetSet) {
                     // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus
                     maxBolus = (target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
-                    insulinReqPct = (insulinReqPct == 0 ? 0 : 0.7); // need this for safety as testing
+                    insulinReqPct = (insulinReqPct == 0 ? 0 : 0.5); // need this for safety as testing
                 }
 
                 // ============== INSULIN BOOST  ==============
