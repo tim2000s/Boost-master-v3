@@ -1201,7 +1201,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (typeof liftISF !== 'undefined' && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
 
             // START === if we are eating now and BGL prediction is higher than target ===
-            if (eatingnow && eventualBG > target_bg && minAgo < 1) {
+            if (eatingnow && eventualBG > target_bg) {
                 var BGBoost_threshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowBGBoostBG * 18, 1).toFixed(1) : profile.EatingNowBGBoostBG);
                 if (BGBoost_threshold == 0) BGBoost_threshold = 216 ; // default is 216 = 12 mmol
                 console.log("BGBoost_threshold: "+BGBoost_threshold);
@@ -1279,6 +1279,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== TIME RESTRICTIONS ==============
+                 // if we just had a loop iteration only allow TBR's
+                 if (minAgo < 1) {
+                     insulinReqPct = 0;
+                     SMB_TBR = true;
+                 }
+
                 if (eatingnowtimeOK) {
                     // increase maxbolus if we are within the hours specified
                     maxBolus = EatingNowMaxSMB;
@@ -1287,7 +1293,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else if (profile.EatingNowOverride && profile.temptargetSet) {
                     // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus
                     maxBolus = (target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
-                    insulinReqPct = 0.7; // need this for safety as testing
+                    insulinReqPct = (insulinReqPct == 0 ? 0 : 0.7); // need this for safety as testing
                 }
 
                 // ============== INSULIN BOOST  ==============
