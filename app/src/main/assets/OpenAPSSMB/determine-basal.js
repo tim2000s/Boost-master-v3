@@ -279,7 +279,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (profile.temptargetSet) {
         //console.log("Temp Target set, not adjusting with autosens; ");
     } else if (typeof autosens_data !== 'undefined' && autosens_data) {
-        if ( profile.sensitivity_raises_target && autosens_data.ratio < 1 || profile.resistance_lowers_target && autosens_data.ratio > 1 ) {
+        if ( profile.sensitivity_raises_target && autosens_data.ratio < 1 || profile.resistance_lowers_target && Math.min(autosens_data.ratio,profile.autosens_max) > 1 ) {
             // with a target of 100, default 0.7-1.2 autosens min/max range would allow a 93-117 target range
             min_bg = round((min_bg - 60) / autosens_data.ratio) + 60;
             max_bg = round((max_bg - 60) / autosens_data.ratio) + 60;
@@ -1164,9 +1164,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
                 if (profile.temptargetSet) {  // tt duration prevents immediate SMB
                     // normal target enables eating now
-                    if (target_bg == profile.normal_target_bg && typeof new_target_bg === 'undefined') eatingnow = true;
+                    if (target_bg == profile.normal_target_bg) eatingnow = true;
                      // any TT of normal target or below with override will allow eating now to operate outside of hours
-                    if (profile.EatingNowOverride && target_bg < profile.normal_target_bg && typeof new_target_bg === 'undefined') eatingnow = true;
+                    if (profile.EatingNowOverride && target_bg < profile.normal_target_bg) eatingnow = true;
                  }
             }
 
@@ -1254,7 +1254,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== BGBOOST+ ==============
                 // If we are predicted to exceed BGBoost_threshold and UAMBoost is above UAMBoost_threshold boost more
-                if (BGBoosted && UAMBoost >= UAMBoost_threshold) {
+                if (BGBoosted && UAMBoost >= UAMBoost_threshold && UAMBoostOK) {
                     // align the boost_bolus amounts
                     UAMBoost_bolus = BGBoost_bolus;
                     insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
@@ -1301,7 +1301,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     SMB_TBR = SMB_TBR;
                 } else if (profile.EatingNowOverride && profile.temptargetSet) {
                     // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus
-                    maxBolus = (target_bg < profile.normal_target_bg  && typeof new_target_bg === 'undefined' ? EatingNowMaxSMB : maxBolus);
+                    maxBolus = (target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
                     insulinReqPct = (insulinReqPct == 0 ? 0 : 0.7); // need this for safety as testing
                 }
 
