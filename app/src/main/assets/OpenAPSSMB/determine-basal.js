@@ -1191,7 +1191,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("UAM_deltaAvgRise: " + UAM_deltaAvgRise);
                 console.log("UAMBoost: " + UAMBoost);
 
-            var insulinReqPct = 0.70; // this is the default insulinReqPct and maxBolus is respected outside of eating now
+            var insulinReqPct = 0.7; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
             var insulinReqOrig = insulinReq;
@@ -1280,10 +1280,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = maxBolus;
                     UAMBoostReason = " (limit)";
                     // Restrict insulinReq when above BGBoost_threshold
-                    insulinReqPct = ( bg > BGBoost_threshold ? 0.7 : insulinReqPct );
+                    insulinReqPct = ( bg > BGBoost_threshold ? 0.6 : insulinReqPct );
                 } else {
                     // Restrict insulinReq when above BGBoost_threshold
-                    insulinReqPct = ( bg > BGBoost_threshold ? 0.7 : insulinReqPct );
+                    insulinReqPct = ( bg > BGBoost_threshold ? 0.6 : insulinReqPct );
                     SMB_TBR = ( insulinReqPct < 1 ? true : SMB_TBR );
                 }
 
@@ -1302,7 +1302,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else if (profile.EatingNowOverride && profile.temptargetSet) {
                     // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus
                     maxBolus = (target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
-                    insulinReqPct = (insulinReqPct == 0 ? 0 : 0.7); // need this for safety as testing
+                    insulinReqPct = (insulinReqPct == 0 ? 0 : 0.6); // need this for safety as testing
                 }
 
                 // ============== INSULIN BOOST  ==============
