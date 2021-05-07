@@ -1284,6 +1284,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else {
                     // Restrict insulinReq when above BGBoost_threshold
                     insulinReqPct = ( bg > BGBoost_threshold ? 0.6 : insulinReqPct );
+                    // if BG above threshold with autoISF active and using BGBoost not BGBoost+ then allow 100%
+                    if (bg > BGBoost_threshold && typeof liftISF !== 'undefined' && BGBoosted && !UAMBoosted) insulinReqPct = 1.0;
                     SMB_TBR = ( insulinReqPct < 1 ? true : SMB_TBR );
                 }
 
