@@ -1282,6 +1282,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostReason = " (limit)";
                     // Restrict insulinReq when above BGBoost_threshold
                     insulinReqPct = ( bg > BGBoost_threshold ? 0.6 : insulinReqPct );
+                    // this may help after sensor errors
+                    insulinReqPct = (UAM_safedelta == 0 && glucose_status.short_avgdelta == 0 ? 0 : insulinReqPct);
                 } else {
                     // Restrict insulinReq when above BGBoost_threshold
                     insulinReqPct = ( bg > BGBoost_threshold ? 0.6 : insulinReqPct );
