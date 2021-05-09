@@ -1152,6 +1152,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             // ============  UAMBoost for Eating Now mode  ==================== START
             var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false; // nah not eating yet
+            target_bg = round(target_bg,2); // 5.0 seems to sometimes be 90.000000000000000001
             var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
             if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd) eatingnowtimeOK = true;
             console.log("eatingnowtimeOK: " + eatingnowtimeOK);
