@@ -1218,9 +1218,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // Sensitive threshold is min normal is max
                 var UAMBoostOK = false, UAMBoost_threshold_min = 1.2, UAMBoost_threshold_max = 2;
                 var UAMBoost_threshold = UAMBoost_threshold_max;
-                //UAMBoost_threshold = (profile.temptargetSet && target_bg < profile.normal_target_bg && profile.temptarget_minutesrunning < 60 && iob_data.iob < Math.max(profile.EatingNowBGBoostMaxSMB, profile.EatingNowUAMBoostMaxSMB) ? UAMBoost_threshold_min : UAMBoost_threshold);
+
                 // ====== EXPERIMENTAL ======
                 UAMBoost_threshold = (!profile.temptargetSet && iob_data.iob < Math.max(profile.EatingNowBGBoostMaxSMB, profile.EatingNowUAMBoostMaxSMB) ? UAMBoost_threshold_min : UAMBoost_threshold);
+                UAMBoost_threshold = (profile.temptargetSet && target_bg < profile.normal_target_bg && profile.temptarget_minutesrunning < 60 && iob_data.iob < Math.max(profile.EatingNowBGBoostMaxSMB, profile.EatingNowUAMBoostMaxSMB) ? UAMBoost_threshold_min : UAMBoost_threshold);
                 // ====== EXPERIMENTAL ======
                 UAMBoost_threshold = (profile.temptargetSet && target_bg == 90 ? UAMBoost_threshold_min : UAMBoost_threshold); // if TT is 5.0 increase UAMBoost trigger sensitivity
 
