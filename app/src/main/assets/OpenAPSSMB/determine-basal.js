@@ -1246,6 +1246,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (BGBoost_scale >=1 && UAM_safedelta >0 && !UAMBoosted) {
                     // boost the insulin further
                     BGBoost_bolus = Math.max(insulinReq, BGBoost_bolus); // use insulinReq if it is more
+                    BGBoost_scale *= round(Math.min(Math.max(UAM_safedelta/9,1),2),2); // boost for delta test
                     insulinReqBoost += BGBoost_scale * BGBoost_bolus;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                     // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
