@@ -1225,7 +1225,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoost_threshold = (profile.temptargetSet && target_bg <= 90 ? UAMBoost_threshold_min : UAMBoost_threshold); // if TT is 5.0 or less increase UAMBoost trigger sensitivity
 
                 // Sensitive mode
-                if (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >=3 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
+                if (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
+                // if (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >=3 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
                 // Normal mode
                 if (UAMBoost_threshold == UAMBoost_threshold_max && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
                 // UAMBoostOK only when IOB is less than UAMBoost MaxSMB without TT
