@@ -1262,7 +1262,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== BGBOOST+ ==============
                 // If we are predicted to exceed BGBoost_threshold and UAMBoost is above UAMBoost_threshold boost more
-                if (BGBoosted && UAMBoost >= UAMBoost_threshold && UAMBoostOK) {
+                if (BGBoosted && UAMBoost >= UAMBoost_threshold) {
                     // align the boost_bolus amounts
                     UAMBoost_bolus = BGBoost_bolus;
                     insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
