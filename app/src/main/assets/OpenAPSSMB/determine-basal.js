@@ -1215,7 +1215,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var BGBoost_scale = round(eventualBG / BGBoost_threshold,2);
                 var BGBoost_relative = round(bg / BGBoost_threshold,2);
                 var BGBoost_bolus = profile.EatingNowBGBoostBolus;
-                var UAMBoost_bolus = profile.EatingNowUAMBoostBolus * profile.percentage * (typeof liftISF !== 'undefined' ? liftISF : autosens_data.ratio);
+                var UAMBoost_bolus = profile.EatingNowUAMBoostBolus * (typeof liftISF !== 'undefined' ? liftISF : autosens_data.ratio);
                 var EatingNowMaxSMB = maxBolus;
 
                 // ============== UAMBOOST ==============
