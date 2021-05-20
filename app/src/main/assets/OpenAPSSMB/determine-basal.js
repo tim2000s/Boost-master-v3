@@ -1238,7 +1238,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
                     insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
                     insulinReqPct = 1;
-                    EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? round(profile.EatingNowUAMBoostMaxSMB,2) : maxBolus );
+                    EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
                     SMB_TBR = true;
                     UAMBoosted = true;
                 }
@@ -1253,7 +1253,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                     // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
                     // insulinReqPct = (UAM_safedelta < 6 && typeof liftISF === 'undefined'  ? Math.abs(Math.min(BGBoost_scale - BGBoost_relative,1)) : insulinReqPct);
-                    EatingNowMaxSMB = (profile.EatingNowBGBoostMaxSMB > 0 ? round(profile.EatingNowBGBoostMaxSMB,2) : maxBolus);
+                    EatingNowMaxSMB = (profile.EatingNowBGBoostMaxSMB > 0 ? profile.EatingNowBGBoostMaxSMB : maxBolus);
                     // when predicted to go to twice the BG_threshold allow TBR
                     //SMB_TBR = ( BGBoost_scale >=1.5 ? true :false );
                     SMB_TBR = true;
@@ -1299,6 +1299,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // if BG above threshold with autoISF active and using BGBoost not BGBoost+ then allow 100%
                     if (bg > BGBoost_threshold && typeof liftISF !== 'undefined' && BGBoosted && !UAMBoosted) insulinReqPct = 1.0;
                     SMB_TBR = ( insulinReqPct < 1 ? true : SMB_TBR );
+                    EatingNowMaxSMB = round(EatingNowMaxSMB,1);
                 }
 
                 // ============== TIME RESTRICTIONS ==============
