@@ -1242,7 +1242,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // UAMBoostOK only when IOB is less than UAMBoost MaxSMB without a low TT (4.5)
                 if (UAMBoostOK && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) {
                     if (!profile.temptargetSet) UAMBoostOK = false;
-                    if (profile.temptargetSet && target_bg >= 81) UAMBoostOK = false;
+                    if (profile.temptargetSet && target_bg > 81) UAMBoostOK = false;
                 }
 
                 // If there is a sudden delta change allow UAMBoost
