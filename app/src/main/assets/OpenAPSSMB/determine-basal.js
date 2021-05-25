@@ -1222,15 +1222,28 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // Sensitive threshold is min normal is max
                 var UAMBoostOK = false, UAMBoost_threshold_min = 1.2, UAMBoost_threshold_max = 2;
                 var UAMBoost_threshold = (iob_data.iob > profile.EatingNowUAMBoostMaxSMB ? UAMBoost_threshold_max : UAMBoost_threshold_min);
-                UAMBoost_threshold = (profile.temptargetSet && target_bg <= 90 ? UAMBoost_threshold_min : UAMBoost_threshold); // if TT is 5.0 or less increase UAMBoost trigger sensitivity
+
+                // ****** Temp Target Set <= 5.0 ******
+                if (profile.temptargetSet && target_bg <= 90) {
+                    // Increase UAMBoost trigger sensitivity
+                    UAMBoost_threshold = UAMBoost_threshold_min;
+                    // Sensitive mode with low TT delta is lower
+                    if (UAM_safedelta >=4 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
+                }
+
+                // No long_avgdelta required for 45 minutes
+                if (profile.temptargetSet && target_bg <= profile.normal_target_bg && profile.temptarget_minutesrunning <= 45 && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
 
                 // Sensitive mode
                 if (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
-                // if (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >=3 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
                 // Normal mode
                 if (UAMBoost_threshold == UAMBoost_threshold_max && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
-                // UAMBoostOK only when IOB is less than UAMBoost MaxSMB without TT
-                if (!profile.temptargetSet && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) UAMBoostOK = false;
+
+                // UAMBoostOK only when IOB is less than UAMBoost MaxSMB without a low TT (4.5)
+                if (UAMBoostOK && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) {
+                    if (!profile.temptargetSet) UAMBoostOK = false;
+                    if (profile.temptargetSet && target_bg >= 81) UAMBoostOK = false;
+                }
 
                 // If there is a sudden delta change allow UAMBoost
                 if (UAMBoost >= UAMBoost_threshold && UAMBoostOK) {
