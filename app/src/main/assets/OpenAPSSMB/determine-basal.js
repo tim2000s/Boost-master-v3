@@ -1196,11 +1196,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("UAM_deltaAvgRise: " + UAM_deltaAvgRise);
                 console.log("UAMBoost: " + UAMBoost);
 
+            // vars also required when eatingnow criteria not met
             var insulinReqPct = 0.7; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
             var insulinReqOrig = insulinReq;
             var SMB_TBR = false; // dont allow TBR with SMB
+            var EatingNowMaxSMB = maxBolus;
+            var BGBoosted = false, UAMBoosted = false;
 
             // if autoISF is active and insulinReq is less than normal maxbolus then allow 100%
             if (typeof liftISF !== 'undefined' && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
@@ -1211,7 +1214,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (BGBoost_threshold == 0) BGBoost_threshold = 216 ; // default is 216 = 12 mmol
                 console.log("BGBoost_threshold: "+BGBoost_threshold);
 
-                var BGBoosted = false, UAMBoosted = false;
                 var BGBoost_scale = round(eventualBG / BGBoost_threshold,2);
                 var BGBoost_relative = round(bg / BGBoost_threshold,2);
                 var BGBoost_bolus = profile.EatingNowBGBoostBolus;
@@ -1221,7 +1223,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoost_bolus *= (typeof liftISF !== 'undefined' ? liftISF : 1);
                 // apply any autosens
                 UAMBoost_bolus *= (typeof autosens_data !== 'undefined' && autosens_data ? autosens_data.ratio : 1);
-                var EatingNowMaxSMB = maxBolus;
 
                 // ============== UAMBOOST ==============
                 // Sensitive threshold is min normal is max
