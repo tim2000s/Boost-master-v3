@@ -1283,7 +1283,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== BGBOOST+ ==============
-                // If we are predicted to exceed BGBoost_threshold and UAMBoost is above UAMBoost_threshold boost more
+                // If we are predicted to exceed BGBoost_threshold and UAMBoost is above UAMBoost_threshold boost more (ie Delta not sufficient for UAMBoost)
                 if (BGBoosted && UAMBoost >= UAMBoost_threshold) {
                     // align the boost_bolus amounts
                     UAMBoost_bolus = BGBoost_bolus;
@@ -1292,15 +1292,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoosted = true;
                 }
 
-//                // ============== CORRECTION ==============
-//                // If BG is above EatingNowUAMBoostBG and rise not slowing allow a correction when autoISF is active
-//                if (bg > BGBoost_threshold && UAM_deltaShortRise >= 0 && (!UAMBoosted && !BGBoosted) && typeof liftISF !== 'undefined') {
-//                    insulinReqBoost = (bg - target_bg) / profile_sens;
-//                    UAMBoostReason = " (corr " + round(insulinReqBoost, 2) + ")"; // at this point sens may have autoISF included?
-//                    // insulinReqPct = (liftISF == profile.autoisf_max ? 1 : 0);
-//                    SMB_TBR = true;
-//                    EatingNowMaxSMB = maxBolus;
-//                }
+                // ============== CORRECTION ==============
+                // If BG is above BGBoost_threshold and rise not slowing allow a correction when autoISF is active
+                if (bg > BGBoost_threshold && UAMBoost >= UAMBoost_threshold && (!UAMBoosted && !BGBoosted) && typeof liftISF !== 'undefined') {
+                    insulinReqBoost = (bg - target_bg) / profile_sens;
+                    UAMBoostReason = " (corr " + round(insulinReqBoost, 2) + ")"; // at this point sens may have autoISF included?
+                    // insulinReqPct = (liftISF == profile.autoisf_max ? 1 : 0);
+                    SMB_TBR = true;
+                    EatingNowMaxSMB = maxBolus;
+                }
 
                 // ============== RISE RESTRICTIONS ==============
                  // if the rise is slowing TBR only
