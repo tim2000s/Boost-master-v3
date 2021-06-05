@@ -314,7 +314,7 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("EatingNowBGBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_bgboostmaxsmb, 0.1) * profile.getPercentage()/100);
         mProfile.put("EatingNowUAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus, 0) * profile.getPercentage()/100);
         mProfile.put("EatingNowUAMBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_uamboostmaxsmb, 0.1) * profile.getPercentage()/100);
-        mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3));
+        mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3) * profile.getPercentage()/100);
         mProfile.put("EatingNowTimeStart", sp.getDouble(R.string.key_eatingnow_timestart, 9));
         mProfile.put("EatingNowTimeEnd", sp.getDouble(R.string.key_eatingnow_timeend, 17));
         mProfile.put("EatingNowOverride", sp.getBoolean(R.string.key_use_eatingnow_override, false));
