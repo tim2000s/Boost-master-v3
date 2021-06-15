@@ -1244,9 +1244,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ****** No Temp Target Set ******
                 // Sensitive mode
-                if (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
+                if (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 1) UAMBoostOK = true;
+                // if (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
                 // Normal mode
-                if (UAMBoost_threshold == UAMBoost_threshold_max && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
+                if (UAMBoost_threshold == UAMBoost_threshold_max && UAM_safedelta >6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 1) UAMBoostOK = true;
+                // if (UAMBoost_threshold == UAMBoost_threshold_max && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
 
                 // UAMBoostOK only when IOB is less than UAMBoost MaxSMB without a low TT (4.5)
                 if (UAMBoostOK && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) {
