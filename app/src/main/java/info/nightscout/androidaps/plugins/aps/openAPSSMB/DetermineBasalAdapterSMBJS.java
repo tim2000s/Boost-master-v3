@@ -249,10 +249,13 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("type", "current");
         mProfile.put("max_daily_basal", profile.getMaxDailyBasal());
         mProfile.put("max_basal", maxBasal);
-        mProfile.put("min_bg", minBg);
-        mProfile.put("max_bg", maxBg);
-        mProfile.put("target_bg", targetBg);
-        mProfile.put("normal_target_bg", profile.getTargetMgdl());
+        mProfile.put("min_bg", Math.round(minBg));
+        mProfile.put("max_bg", Math.round(maxBg));
+        mProfile.put("target_bg", Math.round(targetBg));
+//        double normal_target_bg = profile.getTargetMgdl(Profile.secondsFromMidnight(mCurrentTime));
+        double normal_target_bg = profile.getTargetMgdl();
+        mProfile.put("normal_target_bg",Math.round(normal_target_bg));
+
         mProfile.put("carb_ratio", profile.getIc());
         mProfile.put("sens", profile.getIsfMgdl());
         mProfile.put("max_daily_safety_multiplier", sp.getInt(R.string.key_openapsama_max_daily_safety_multiplier, 3));
@@ -305,19 +308,35 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("autoisf_max",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autoisf_max, "1.2")));
         mProfile.put("autoisf_hourlychange",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autoisf_hourlychange, "0.2")));
 
+        //MD: TempTarget Info ==== START
+        TempTarget tempTarget = treatmentsPlugin.getTempTargetFromHistory(System.currentTimeMillis());
+
+        if (tempTarget != null) {
+            mProfile.put("temptarget_duration", tempTarget.durationInMinutes);
+            mProfile.put("temptarget_minutesrunning", tempTarget.getRealTTDuration());
+        }
+        //MD: TempTarget Info ==== END
+
         // patches ==== START
         mProfile.put("enableGhostCOB", sp.getBoolean(R.string.key_use_ghostcob, false));
         mProfile.put("enableEatingNow", sp.getBoolean(R.string.key_use_eatingnow, false));
         mProfile.put("EatingNowIOB", sp.getDouble(R.string.key_eatingnow_iob, 5));
-        mProfile.put("EatingNowBGBoostBG", sp.getDouble(R.string.key_eatingnow_bgboostbg, 0));
-        mProfile.put("EatingNowBGBoostBolus", sp.getDouble(R.string.key_eatingnow_bgboostbolus, 0) * profile.getPercentage()/100);
-        mProfile.put("EatingNowBGBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_bgboostmaxsmb, 0.1) * profile.getPercentage()/100);
-        mProfile.put("EatingNowUAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus, 0) * profile.getPercentage()/100);
-        mProfile.put("EatingNowUAMBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_uamboostmaxsmb, 0.1) * profile.getPercentage()/100);
+//        mProfile.put("EatingNowBGBoostBG", sp.getDouble(R.string.key_eatingnow_bgboostbg, 0));
+//        mProfile.put("EatingNowBGBoostBolus", sp.getDouble(R.string.key_eatingnow_bgboostbolus, 0) * profile.getPercentage()/100);
+//        mProfile.put("EatingNowBGBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_bgboostmaxsmb, 0.1) * profile.getPercentage() / 100);
+
+        //set UAMBoost Max SMB based upon TT
+        if (tempTarget != null && Math.round(targetBg) < Math.round(normal_target_bg)) {
+            mProfile.put("EatingNowUAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus_tt, 0) * profile.getPercentage()/100);
+            mProfile.put("EatingNowUAMBoostMaxSMB", sp.getInt(R.string.key_eatingnow_uamboostmaxsmb_tt, 0));
+        } else {
+            mProfile.put("EatingNowUAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus, 0) * profile.getPercentage()/100);
+            mProfile.put("EatingNowUAMBoostMaxSMB", sp.getInt(R.string.key_eatingnow_uamboostmaxsmb, 0));
+        }
+        mProfile.put("EatingNowISFBoost", sp.getDouble(R.string.key_eatingnow_isfboost, 1));
         mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3) * profile.getPercentage()/100);
         mProfile.put("EatingNowTimeStart", sp.getDouble(R.string.key_eatingnow_timestart, 9));
         mProfile.put("EatingNowTimeEnd", sp.getDouble(R.string.key_eatingnow_timeend, 17));
-        mProfile.put("EatingNowOverride", sp.getBoolean(R.string.key_use_eatingnow_override, false));
         // patches ==== END
 
 
@@ -340,16 +359,6 @@ public class DetermineBasalAdapterSMBJS {
         if (tempBasal != null) {
             mCurrentTemp.put("minutesrunning", tempBasal.getRealDuration());
         }
-
-        //MD: TempTarget Info ==== START
-        TempTarget tempTarget = treatmentsPlugin.getTempTargetFromHistory(System.currentTimeMillis());
-//        mCurrentTT = new JSONObject();
-
-        if (tempTarget != null) {
-            mProfile.put("temptarget_duration", tempTarget.durationInMinutes);
-            mProfile.put("temptarget_minutesrunning", tempTarget.getRealTTDuration());
-        }
-        //MD: TempTarget Info ==== END
 
         mIobData = IobCobCalculatorPlugin.convertToJSONArray(iobArray);
 

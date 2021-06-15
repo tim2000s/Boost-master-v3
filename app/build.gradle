@@ -121,8 +121,8 @@ android {
         targetSdkVersion 28
         multiDexEnabled true
         versionCode 1500
-        version "2.8.2"
-        version = version + "-MAD"
+        version "2.8.2.1"
+        version = version + "-EN"
         buildConfigField "String", "VERSION", '"' + version + '"'
         buildConfigField "String", "BUILDVERSION", '"' + generateGitBuild() + '-' + generateDate() + '"'
         buildConfigField "String", "REMOTE", '"' + generateGitRemote() + '"'
@@ -174,7 +174,7 @@ android {
                         // on below line we are replacing our previous name with our app name.
 //                        newName = newName.replace("app-", "$project.ext.appName-")
                         // on below line we are replacing -release with our formatted date and ID.
-                        newName = newName.replace("-release", "-release-" + formattedDate + "-MAD")
+                        newName = newName.replace("-release", "-release-" + formattedDate + "-EN")
                         // at last we are setting our apk name to it.
                         output.outputFileName  = newName
                 }
@@ -346,11 +346,5 @@ if (isMaster() && !allCommitted()) {
 //    throw new GradleException('There are uncommitted changes. Clone sources again as described in wiki and do not allow gradle update')
 }
 
-// Sync to Google Drive
-task CopytoGoogleDrive {
-    doLast {
-        exec {
-            commandLine 'sh', '/home/dicko/Documents/AAPS-BUILD/sync.sh'
-        }
-    }
-}
+
+
