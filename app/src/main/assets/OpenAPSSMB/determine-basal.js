@@ -1294,7 +1294,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // align the boost_bolus amounts
                     UAMBoost_bolus = BGBoost_bolus;
                     insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
-                    EatingNowMaxSMB = Math.max(profile.EatingNowUAMBoostMaxSMB, EatingNowMaxSMB);
+                    // EatingNowMaxSMB = Math.max(profile.EatingNowUAMBoostMaxSMB, EatingNowMaxSMB);
                     UAMBoosted = true;
                 }
 
