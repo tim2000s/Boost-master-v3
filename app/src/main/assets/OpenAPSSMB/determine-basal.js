@@ -1260,8 +1260,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAMBoost >= UAMBoost_threshold && UAMBoostOK) {
                     // boost the insulin further
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
-                    insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
+                    insulinReqBoost += UAMBoost * UAMBoost_bolus;
                     insulinReqPct = 1;
+                    // Restrict insulinReqPct if UAMBoosted with no TT, low insulin and BGL bounce
+                    insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_min && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
+
                     EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
                     // with a low TT allow scaling of EatingNowMaxSMB
                     EatingNowMaxSMB *= ( profile.temptargetSet ? profile.normal_target_bg / target_bg : 1 );
@@ -1320,8 +1323,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else {
                     // Restrict insulinReq when above BGBoost_threshold
                     // insulinReqPct = ( bg > BGBoost_threshold ? 0.6 : insulinReqPct );
-                    // Restrict insulinReq when above BGBoost_threshold using delta
-                    insulinReqPct = ( bg > BGBoost_threshold ? round(Math.max(Math.min(UAM_safedelta/18,1),0.6),2) : insulinReqPct );
+                    // Restrict insulinReq when above BGBoost_threshold using delta if its not zero
+                    insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > 0 ? round(Math.max(Math.min(UAM_safedelta/18,1),0.6),2) : insulinReqPct );
                     // if BG above threshold with autoISF active and using BGBoost not BGBoost+ then allow 100%
                     if (bg > BGBoost_threshold && typeof liftISF !== 'undefined' && BGBoosted && !UAMBoosted) insulinReqPct = 1.0;
                     SMB_TBR = ( insulinReqPct < 1 ? true : SMB_TBR );
