@@ -1277,7 +1277,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (BGBoost_scale >=1 && UAM_safedelta >0 && !UAMBoosted) {
                     // boost the insulin further
                     BGBoost_bolus = Math.max(insulinReq, BGBoost_bolus); // use insulinReq if it is more
-                    BGBoost_scale *= Math.min(Math.max(UAM_safedelta/9,1),2); // boost for delta test min 1x max 2x
+                    BGBoost_scale *= Math.min(Math.max(UAM_safedelta/9,1),3); // boost for delta test min 1x max 3x
                     insulinReqBoost += BGBoost_scale * BGBoost_bolus;
                     insulinReqPct = 1; // allow all insulin up to maxBolus
                     // scale the insulinReqPct based on BG and BGBoost_scale if < 0.5mmol
@@ -1289,15 +1289,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     BGBoosted = true;
                 }
 
-                // ============== BGBOOST+ ==============
-                // If we are predicted to exceed BGBoost_threshold and UAMBoost is above UAMBoost_threshold boost more (ie Delta not sufficient for UAMBoost)
-                if (BGBoosted && UAMBoost >= UAMBoost_threshold) {
-                    // align the boost_bolus amounts
-                    UAMBoost_bolus = BGBoost_bolus;
-                    insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
-                    // EatingNowMaxSMB = Math.max(profile.EatingNowUAMBoostMaxSMB, EatingNowMaxSMB);
-                    UAMBoosted = true;
-                }
+//                // ============== BGBOOST+ ==============
+//                // If we are predicted to exceed BGBoost_threshold and UAMBoost is above UAMBoost_threshold boost more (ie Delta not sufficient for UAMBoost)
+//                if (BGBoosted && UAMBoost >= UAMBoost_threshold) {
+//                    // align the boost_bolus amounts
+//                    UAMBoost_bolus = BGBoost_bolus;
+//                    insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
+//                    // EatingNowMaxSMB = Math.max(profile.EatingNowUAMBoostMaxSMB, EatingNowMaxSMB);
+//                    UAMBoosted = true;
+//                }
 
                 // ============== CORRECTION ==============
                 // If BG is above BGBoost_threshold and rise not slowing allow a correction when autoISF is active
