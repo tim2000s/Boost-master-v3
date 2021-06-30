@@ -1019,8 +1019,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //console.error("Increasing insulinReq from " + insulinReq + " to " + newinsulinReq);
             insulinReq = newinsulinReq;
         }
-        // rate required to deliver insulinReq less insulin over 30m:
-        var rate = basal + (2 * insulinReq);
+        // rate required to deliver insulinReq less insulin over 20m:
+        var rate = basal + (3 * insulinReq);
         rate = round_basal(rate, profile);
 
         // if required temp < existing temp basal
@@ -1118,8 +1118,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             insulinReq = max_iob-iob_data.iob;
         }
 
-        // rate required to deliver insulinReq more insulin over 30m:
-        rate = basal + (2 * insulinReq);
+        // rate required to deliver insulinReq more insulin over 20m:
+        rate = basal + (3 * insulinReq);
         rate = round_basal(rate, profile);
         insulinReq = round(insulinReq,3);
         rT.insulinReq = insulinReq;
@@ -1445,8 +1445,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //            // when eatingnow allow the remaining insulinReq to be delivered as TBR
             if (eatingnow & SMB_TBR) {
                 insulinReq = insulinReq - microBolus;
-                // rate required to deliver remaining insulinReq over 30m:
-                rate = round(Math.max(basal + (2 * insulinReq),0),2);
+                // rate required to deliver remaining insulinReq over 20m:
+                rate = round(Math.max(basal + (3 * insulinReq),0),2);
             }
 
             // if no zero temp is required, don't return yet; allow later code to set a high temp
@@ -1466,8 +1466,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
 
         insulinScheduled = currenttemp.duration * (currenttemp.rate - basal) / 60;
-        if (insulinScheduled >= insulinReq * 2) { // if current temp would deliver >2x more than the required insulin, lower the rate
-            rT.reason += currenttemp.duration + "m@" + (currenttemp.rate).toFixed(2) + " > 2 * insulinReq. Setting temp basal of " + rate + "U/hr. ";
+        if (insulinScheduled >= insulinReq * 1.5) { // if current temp would deliver >2x more than the required insulin, lower the rate
+            rT.reason += currenttemp.duration + "m@" + (currenttemp.rate).toFixed(2) + " > 1.5 * insulinReq. Setting temp basal of " + rate + "U/hr. ";
             return tempBasalFunctions.setTempBasal(rate, 30, profile, rT, currenttemp);
         }
 
