@@ -1237,8 +1237,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoost_threshold = UAMBoost_threshold_min;
                     // Sensitive mode with low TT delta is lower
                     if (UAM_safedelta >=4 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
+                    // Any rise for 30 minutes triggers UAMBoost
+                    if (profile.temptarget_minutesrunning <= 30 && UAM_safedelta >=0) UAMBoostOK = true;
                     // No long_avgdelta required for 45 minutes
-                    if (profile.temptarget_minutesrunning <= 45 && UAM_safedelta >=4 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
+                    // if (profile.temptarget_minutesrunning <= 45 && UAM_safedelta >=4 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
 
                     // ****** Breakie Mode = 4.5 ******
                     if (target_bg == 81 && UAM_safedelta >=0) UAMBoostOK = true;
