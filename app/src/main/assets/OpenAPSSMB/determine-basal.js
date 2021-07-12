@@ -1252,10 +1252,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // Normal mode
                 if (UAMBoost_threshold == UAMBoost_threshold_max && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
 
-                // UAMBoostOK only when IOB is less than UAMBoost MaxSMB without a low TT (4.5)
+                // UAMBoostOK only when IOB is less than UAMBoost MaxSMB without a low TT
                 if (UAMBoostOK && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) {
-                    if (!profile.temptargetSet) UAMBoostOK = false;
-                    if (profile.temptargetSet && target_bg > 81) UAMBoostOK = false;
+                    //if (!profile.temptargetSet) UAMBoostOK = false;
+                    // default is to not allow further boost
+                    UAMBoostOK = false;
+                    // Any rise for 30 minutes triggers UAMBoost
+                    if (profile.temptargetSet && profile.temptarget_minutesrunning <= 30) UAMBoostOK = true;
+                    //if (profile.temptargetSet && target_bg > 81) UAMBoostOK = false;
                 }
 
                 // If there is a sudden delta change allow UAMBoost
