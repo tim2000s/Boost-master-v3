@@ -1273,7 +1273,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                     EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
                     // with a low TT allow scaling of EatingNowMaxSMB
-                    EatingNowMaxSMB *= ( profile.temptargetSet ? profile.normal_target_bg / target_bg : 1 );
+                    //EatingNowMaxSMB *= ( profile.temptargetSet ? profile.normal_target_bg / target_bg : 1 );
                     SMB_TBR = true;
                     UAMBoosted = true;
                 }
