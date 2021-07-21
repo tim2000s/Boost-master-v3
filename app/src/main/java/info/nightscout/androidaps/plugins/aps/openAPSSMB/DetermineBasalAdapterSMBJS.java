@@ -311,7 +311,6 @@ public class DetermineBasalAdapterSMBJS {
         if (tempTarget != null) {
             mProfile.put("temptarget_duration", tempTarget.durationInMinutes);
             mProfile.put("temptarget_minutesrunning", tempTarget.getRealTTDuration());
-            mProfile.put("EatingNowUAMBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_uamboostmaxsmb_tt, 0.1) * profile.getPercentage() / 100);
         }
         //MD: TempTarget Info ==== END
 
@@ -323,7 +322,14 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("EatingNowBGBoostBolus", sp.getDouble(R.string.key_eatingnow_bgboostbolus, 0) * profile.getPercentage()/100);
         mProfile.put("EatingNowBGBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_bgboostmaxsmb, 0.1) * profile.getPercentage() / 100);
         mProfile.put("EatingNowUAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus, 0) * profile.getPercentage()/100);
-        if (tempTarget == null) mProfile.put("EatingNowUAMBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_uamboostmaxsmb, 0.1) * profile.getPercentage()/100);
+
+        //set UAMBoost Max SMB based upon TT
+        if (tempTarget != null && targetBg != profile.getTargetMgdl()) {
+            mProfile.put("EatingNowUAMBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_uamboostmaxsmb_tt, 0.1) * profile.getPercentage() / 100);
+        } else {
+            mProfile.put("EatingNowUAMBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_uamboostmaxsmb, 0.1) * profile.getPercentage()/100);
+        }
+
         mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3) * profile.getPercentage()/100);
         mProfile.put("EatingNowTimeStart", sp.getDouble(R.string.key_eatingnow_timestart, 9));
         mProfile.put("EatingNowTimeEnd", sp.getDouble(R.string.key_eatingnow_timeend, 17));
