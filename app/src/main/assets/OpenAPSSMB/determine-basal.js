@@ -64,7 +64,7 @@ function enable_smb(
     if (! microBolusAllowed) {
         console.error("SMB disabled (!microBolusAllowed)");
         return false;
-    } else if (! profile.allowSMB_with_high_temptarget && profile.temptargetSet && target_bg > 100) {
+    } else if (! profile.allowSMB_with_high_temptarget && profile.temptargetSet && target_bg > profile.normal_target_bg) {
         console.error("SMB disabled due to high temptarget of",target_bg);
         return false;
     } else if (meal_data.bwFound === true && profile.A52_risk_enable === false) {
