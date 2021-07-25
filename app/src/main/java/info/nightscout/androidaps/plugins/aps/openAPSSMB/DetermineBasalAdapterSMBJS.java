@@ -249,8 +249,8 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("type", "current");
         mProfile.put("max_daily_basal", profile.getMaxDailyBasal());
         mProfile.put("max_basal", maxBasal);
-        mProfile.put("min_bg", minBg);
-        mProfile.put("max_bg", maxBg);
+        mProfile.put("min_bg", Math.round(minBg));
+        mProfile.put("max_bg", Math.round(maxBg));
         mProfile.put("target_bg", Math.round(targetBg));
         double normal_target_bg = profile.getTargetMgdl(Profile.secondsFromMidnight(mCurrentTime));
         mProfile.put("normal_target_bg",Math.round(normal_target_bg));
