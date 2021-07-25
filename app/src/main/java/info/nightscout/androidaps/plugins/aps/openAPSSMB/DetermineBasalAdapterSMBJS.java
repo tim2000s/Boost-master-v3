@@ -251,9 +251,9 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("max_basal", maxBasal);
         mProfile.put("min_bg", minBg);
         mProfile.put("max_bg", maxBg);
-        mProfile.put("target_bg", targetBg);
+        mProfile.put("target_bg", Math.round(targetBg));
         double normal_target_bg = profile.getTargetMgdl(Profile.secondsFromMidnight(mCurrentTime));
-        mProfile.put("normal_target_bg",normal_target_bg);
+        mProfile.put("normal_target_bg",Math.round(normal_target_bg));
 
         mProfile.put("carb_ratio", profile.getIc());
         mProfile.put("sens", profile.getIsfMgdl());
@@ -326,7 +326,7 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("EatingNowUAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus, 0) * profile.getPercentage()/100);
 
         //set UAMBoost Max SMB based upon TT
-        if (tempTarget != null && targetBg != normal_target_bg) {
+        if (tempTarget != null && mProfile.getDouble("targetBg") != mProfile.getDouble("normal_target_bg")) {
             mProfile.put("EatingNowUAMBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_uamboostmaxsmb_tt, 0.1) * profile.getPercentage() / 100);
         } else {
             mProfile.put("EatingNowUAMBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_uamboostmaxsmb, 0.1) * profile.getPercentage()/100);
