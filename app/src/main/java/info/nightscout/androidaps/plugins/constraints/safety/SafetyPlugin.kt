@@ -6,6 +6,7 @@ import info.nightscout.androidaps.R
 import info.nightscout.androidaps.interfaces.Profile
 import info.nightscout.androidaps.interfaces.*
 import info.nightscout.androidaps.logging.AAPSLogger
+import info.nightscout.androidaps.plugins.aps.fullUAM.FullUAMPlugin
 import info.nightscout.androidaps.plugins.aps.openAPSAMA.OpenAPSAMAPlugin
 import info.nightscout.androidaps.plugins.aps.openAPSSMB.OpenAPSSMBPlugin
 import info.nightscout.androidaps.plugins.bus.RxBusWrapper
@@ -34,6 +35,7 @@ class SafetyPlugin @Inject constructor(
     private val constraintChecker: ConstraintChecker,
     private val openAPSAMAPlugin: OpenAPSAMAPlugin,
     private val openAPSSMBPlugin: OpenAPSSMBPlugin,
+    private val fullUAMPlugin: FullUAMPlugin,
     private val sensitivityOref1Plugin: SensitivityOref1Plugin,
     private val activePlugin: ActivePlugin,
     private val hardLimits: HardLimits,
@@ -186,10 +188,12 @@ class SafetyPlugin @Inject constructor(
 
     override fun applyMaxIOBConstraints(maxIob: Constraint<Double>): Constraint<Double> {
         val apsMode = sp.getString(R.string.key_aps_mode, "open")
+        // TODO set maxIobPref (or equivalent) for fullUAMPlugin
         val maxIobPref: Double = if (openAPSSMBPlugin.isEnabled(PluginType.APS)) sp.getDouble(R.string.key_openapssmb_max_iob, 3.0) else sp.getDouble(R.string.key_openapsma_max_iob, 1.5)
         maxIob.setIfSmaller(aapsLogger, maxIobPref, String.format(resourceHelper.gs(R.string.limitingiob), maxIobPref, resourceHelper.gs(R.string.maxvalueinpreferences)), this)
         if (openAPSAMAPlugin.isEnabled(PluginType.APS)) maxIob.setIfSmaller(aapsLogger, hardLimits.maxIobAMA(), String.format(resourceHelper.gs(R.string.limitingiob), hardLimits.maxIobAMA(), resourceHelper.gs(R.string.hardlimit)), this)
         if (openAPSSMBPlugin.isEnabled(PluginType.APS)) maxIob.setIfSmaller(aapsLogger, hardLimits.maxIobSMB(), String.format(resourceHelper.gs(R.string.limitingiob), hardLimits.maxIobSMB(), resourceHelper.gs(R.string.hardlimit)), this)
+        if (fullUAMPlugin.isEnabled(PluginType.APS)) maxIob.setIfSmaller(aapsLogger, hardLimits.maxIobSMB(), String.format(resourceHelper.gs(R.string.limitingiob), hardLimits.maxIobSMB(), resourceHelper.gs(R.string.hardlimit)), this)
         if (apsMode == "lgs") maxIob.setIfSmaller(aapsLogger, HardLimits.MAX_IOB_LGS, String.format(resourceHelper.gs(R.string.limitingiob), HardLimits.MAX_IOB_LGS, resourceHelper.gs(R.string.lowglucosesuspend)), this)
         return maxIob
     }
