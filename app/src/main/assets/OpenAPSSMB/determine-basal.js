@@ -1197,7 +1197,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("UAMBoost: " + UAMBoost);
 
             // vars also required when eatingnow criteria not met
-            var insulinReqPct = 0.7; // this is the default insulinReqPct and maxBolus is respected outside of eating now
+            var insulinReqPctDefault = 0.7; // this is the default insulinReqPct and maxBolus is respected outside of eating now
+            var insulinReqPct = insulinReqPctDefault; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
             var insulinReqOrig = insulinReq;
@@ -1248,6 +1249,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ****** No Temp Target Set ******
                 // Sensitive mode
+                // Can the delta be adjusted based upon IOB? a low IOB with a high delta is eating now
                 if (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
                 // Normal mode
                 if (UAMBoost_threshold == UAMBoost_threshold_max && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
@@ -1263,7 +1265,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // If there is a sudden delta change allow UAMBoost
-                if (UAMBoost >= UAMBoost_threshold && UAMBoostOK) {
+                if (UAMBoostOK && UAMBoost >= UAMBoost_threshold) {
                     // boost the insulin further
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
                     insulinReqBoost += UAMBoost * UAMBoost_bolus;
@@ -1323,14 +1325,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = maxBolus;
                     UAMBoostReason = " (limit)";
                     // Restrict insulinReq when above BGBoost_threshold
-                    insulinReqPct = ( bg > BGBoost_threshold ? 0.6 : insulinReqPct );
+                    insulinReqPct = ( bg > BGBoost_threshold ? insulinReqPctDefault : insulinReqPct );
                     // this may help after sensor errors
                     insulinReqPct = (UAM_safedelta == 0 && glucose_status.short_avgdelta == 0 ? 0 : insulinReqPct);
                 } else {
                     // Restrict insulinReq when above BGBoost_threshold
                     // insulinReqPct = ( bg > BGBoost_threshold ? 0.6 : insulinReqPct );
                     // Restrict insulinReq when above BGBoost_threshold using delta if its not zero
-                    insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > 0 ? round(Math.max(Math.min(UAM_safedelta/18,1),0.7),2) : insulinReqPct );
+                    insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > 0 ? round(Math.max(Math.min(UAM_safedelta/18,1),insulinReqPctDefault),2) : insulinReqPct );
                     // if BG above threshold with autoISF active and using BGBoost not BGBoost+ then allow 100%
                     if (bg > BGBoost_threshold && typeof liftISF !== 'undefined' && BGBoosted && !UAMBoosted) insulinReqPct = 1.0;
                     SMB_TBR = ( insulinReqPct < 1 ? true : SMB_TBR );
@@ -1352,7 +1354,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else if (profile.EatingNowOverride && profile.temptargetSet) {
                     // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus
                     maxBolus = (target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
-                    insulinReqPct = (insulinReqPct == 0 ? 0 : 0.6); // need this for safety as testing
+                    insulinReqPct = (insulinReqPct == 0 ? 0 : insulinReqPctDefault); // need this for safety as testing
                 }
 
                 // ============== INSULIN BOOST  ==============
