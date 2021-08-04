@@ -973,6 +973,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         durationReq = round(durationReq/30)*30;
         // always set a 30-120m zero temp (oref0-pump-loop will let any longer SMB zero temp run)
         durationReq = Math.min(120,Math.max(30,durationReq));
+        // BUM
         return tempBasalFunctions.setTempBasal(0, durationReq, profile, rT, currenttemp);
     }
 
@@ -1197,7 +1198,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("UAMBoost: " + UAMBoost);
 
             // vars also required when eatingnow criteria not met
-            var insulinReqPctDefault = 0.7; // this is the default insulinReqPct and maxBolus is respected outside of eating now
+            var Does he  = 0.7; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var insulinReqPct = insulinReqPctDefault; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet

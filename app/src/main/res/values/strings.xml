@@ -1412,6 +1412,7 @@
     <string name="key_eatingnow_uamboostbolus">key_eatingnow_uamboostbolus</string>
     <string name="key_eatingnow_uamboostmaxsmb">key_eatingnow_uamboostmaxsmb</string>
     <string name="key_eatingnow_uamboostmaxsmb_tt">key_eatingnow_uamboostmaxsmb_tt</string>
+    <string name="key_eatingnow_uamboostbolus_tt">key_eatingnow_uamboostbolus_tt</string>
     <string name="key_eatingnow_bgboostbg">key_eatingnow_bgboostbg</string>
     <string name="key_eatingnow_iobmax">key_eatingnow_iobmax</string>
     <string name="key_eatingnow_timestart">key_eatingnow_timestart</string>
