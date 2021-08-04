@@ -1233,8 +1233,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // var UAMBoost_threshold = (iob_data.iob >= (profile.EatingNowUAMBoostMaxSMB * 0.95) ? UAMBoost_threshold_max : UAMBoost_threshold_min);
 
 
-                // ****** Temp Target Set <= 5.0 ******
-                if (profile.temptargetSet && target_bg <= 90) {
+                // ****** Temp Target Set < normal profile target ******
+                if (profile.temptargetSet && target_bg < profile.normal_target_bg) {
                     // Increase UAMBoost trigger sensitivity
                     UAMBoost_threshold = UAMBoost_threshold_min;
                     // Sensitive mode with low TT delta is lower
