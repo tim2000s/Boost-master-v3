@@ -314,6 +314,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // patches ==== START
     var ignoreCOBPatch = profile.enableGhostCOB; //MD#01: Ignore any COB and rely purely on UAM
     var eatingnowPatch = profile.enableEatingNow;
+
+    // Eating Now Variables
+    var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false; // nah not eating yet
+    var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
+    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd) eatingnowtimeOK = true;
+    console.log("eatingnowtimeOK: " + eatingnowtimeOK);
+    if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
+
     // patches ===== END
 
     var tick;
@@ -973,7 +981,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         durationReq = round(durationReq/30)*30;
         // always set a 30-120m zero temp (oref0-pump-loop will let any longer SMB zero temp run)
         durationReq = Math.min(120,Math.max(30,durationReq));
-        // BUM
+        // **** EXPERIMENTAL ****
+        if (eatingnowPatch && eatingnowtimeOK && eatingnowMaxIOBOK && minDelta > 0 && minDelta > expectedDelta && profile.temptargetSet && target_bg <= profile.normal_target_bg && profile.temptarget_minutesrunning <=45) return tempBasalFunctions.setTempBasal(tempBasalFunctions.getMaxSafeBasal(profile), 15, profile, rT, currenttemp);
+        // **** EXPERIMENTAL ****
         return tempBasalFunctions.setTempBasal(0, durationReq, profile, rT, currenttemp);
     }
 
@@ -1152,12 +1162,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
 
             // ============  UAMBoost for Eating Now mode  ==================== START
-            var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false; // nah not eating yet
+//            var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false; // nah not eating yet
             target_bg = round(target_bg,2); // 5.0 seems to sometimes be 90.000000000000000001
-            var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
-            if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd) eatingnowtimeOK = true;
-            console.log("eatingnowtimeOK: " + eatingnowtimeOK);
-            if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
+//            var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
+//            if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd) eatingnowtimeOK = true;
+//            console.log("eatingnowtimeOK: " + eatingnowtimeOK);
+//            if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
 
             // If we have Eating Now enabled and rising we will enable eating now mode
             if (eatingnowPatch && profile.enableUAM && ignoreCOBPatch && eatingnowMaxIOBOK) {
