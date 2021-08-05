@@ -322,6 +322,23 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.log("eatingnowtimeOK: " + eatingnowtimeOK);
     if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
 
+    // If we have Eating Now enabled and rising we will enable eating now mode
+    if (eatingnowPatch && profile.enableUAM && ignoreCOBPatch && eatingnowMaxIOBOK) {
+        // enable eatingnow if no TT and safe IOB within safe hours
+        if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && eatingnowtimeOK) eatingnow = true;
+        // enable eating now when there are COB so that a TT isn't required, only works with GhostCOB
+        if (meal_data.mealCOB > 0) eatingnow = false;
+        // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
+        if (profile.temptargetSet) {  // tt duration prevents immediate SMB
+            // normal target or less enables eating now
+            if (target_bg <= profile.normal_target_bg) eatingnow = true;
+            // high target disables eating now
+            if (target_bg > profile.normal_target_bg) eatingnow = false;
+             // any TT of normal target or below with override will allow eating now to operate outside of hours
+            // if (profile.EatingNowOverride && target_bg < profile.normal_target_bg) eatingnow = true;
+         }
+    }
+
     // patches ===== END
 
     var tick;
@@ -982,7 +999,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // always set a 30-120m zero temp (oref0-pump-loop will let any longer SMB zero temp run)
         durationReq = Math.min(120,Math.max(30,durationReq));
         // **** EXPERIMENTAL ****
-        if (eatingnowPatch && eatingnowtimeOK && eatingnowMaxIOBOK && minDelta > 0 && minDelta > expectedDelta && profile.temptargetSet && target_bg <= profile.normal_target_bg && profile.temptarget_minutesrunning <=45) {
+        if (eatingnow && eatingnowtimeOK && minDelta > 0 && minDelta > expectedDelta && profile.temptargetSet && profile.temptarget_minutesrunning <=45) {
             rT.reason += ", minDelta > expectedDelta TBR+";
             return tempBasalFunctions.setTempBasal(tempBasalFunctions.getMaxSafeBasal(profile), 15, profile, rT, currenttemp);
         }
@@ -1172,22 +1189,22 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //            console.log("eatingnowtimeOK: " + eatingnowtimeOK);
 //            if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
 
-            // If we have Eating Now enabled and rising we will enable eating now mode
-            if (eatingnowPatch && profile.enableUAM && ignoreCOBPatch && eatingnowMaxIOBOK) {
-                // enable eatingnow if no TT and safe IOB within safe hours
-                if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && eatingnowtimeOK) eatingnow = true;
-                // enable eating now when there are COB so that a TT isn't required, only works with GhostCOB
-                if (meal_data.mealCOB >10) eatingnow = true;
-                // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
-                if (profile.temptargetSet) {  // tt duration prevents immediate SMB
-                    // normal target or less enables eating now
-                    if (target_bg <= profile.normal_target_bg) eatingnow = true;
-                    // high target disables eating now
-                    if (target_bg > profile.normal_target_bg) eatingnow = false;
-                     // any TT of normal target or below with override will allow eating now to operate outside of hours
-                    // if (profile.EatingNowOverride && target_bg < profile.normal_target_bg) eatingnow = true;
-                 }
-            }
+//            // If we have Eating Now enabled and rising we will enable eating now mode
+//            if (eatingnowPatch && profile.enableUAM && ignoreCOBPatch && eatingnowMaxIOBOK) {
+//                // enable eatingnow if no TT and safe IOB within safe hours
+//                if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && eatingnowtimeOK) eatingnow = true;
+//                // enable eating now when there are COB so that a TT isn't required, only works with GhostCOB
+//                if (meal_data.mealCOB > 0) eatingnow = false;
+//                // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
+//                if (profile.temptargetSet) {  // tt duration prevents immediate SMB
+//                    // normal target or less enables eating now
+//                    if (target_bg <= profile.normal_target_bg) eatingnow = true;
+//                    // high target disables eating now
+//                    if (target_bg > profile.normal_target_bg) eatingnow = false;
+//                     // any TT of normal target or below with override will allow eating now to operate outside of hours
+//                    // if (profile.EatingNowOverride && target_bg < profile.normal_target_bg) eatingnow = true;
+//                 }
+//            }
 
             // calculate the various deltas and pct changes
             var UAM_safedelta = 0, UAM_deltaShortRise = 0, UAM_deltaLongRise = 0, UAM_deltaAvgRise = 0, UAMBoost = 1;
