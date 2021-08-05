@@ -982,7 +982,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // always set a 30-120m zero temp (oref0-pump-loop will let any longer SMB zero temp run)
         durationReq = Math.min(120,Math.max(30,durationReq));
         // **** EXPERIMENTAL ****
-        if (eatingnowPatch && eatingnowtimeOK && eatingnowMaxIOBOK && minDelta > 0 && minDelta > expectedDelta && profile.temptargetSet && target_bg <= profile.normal_target_bg && profile.temptarget_minutesrunning <=45) return tempBasalFunctions.setTempBasal(tempBasalFunctions.getMaxSafeBasal(profile), 15, profile, rT, currenttemp);
+        if (eatingnowPatch && eatingnowtimeOK && eatingnowMaxIOBOK && minDelta > 0 && minDelta > expectedDelta && profile.temptargetSet && target_bg <= profile.normal_target_bg && profile.temptarget_minutesrunning <=45) {
+            rT.reason += ", minDelta > expectedDelta TBR+";
+            return tempBasalFunctions.setTempBasal(tempBasalFunctions.getMaxSafeBasal(profile), 15, profile, rT, currenttemp);
+        }
         // **** EXPERIMENTAL ****
         return tempBasalFunctions.setTempBasal(0, durationReq, profile, rT, currenttemp);
     }
