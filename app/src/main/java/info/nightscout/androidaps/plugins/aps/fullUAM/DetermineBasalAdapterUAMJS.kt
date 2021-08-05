@@ -191,9 +191,13 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.profile.put("current_basal_safety_multiplier", sp.getDouble(R.string.key_openapsama_current_basal_safety_multiplier, 4.0))
 
         //mProfile.put("high_temptarget_raises_sensitivity", SP.getBoolean(R.string.key_high_temptarget_raises_sensitivity, UAMDefaults.high_temptarget_raises_sensitivity));
-        this.profile.put("high_temptarget_raises_sensitivity", false)
+//**********************************************************************************************************************************************
+        //this.profile.put("high_temptarget_raises_sensitivity", false)
         //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, UAMDefaults.low_temptarget_lowers_sensitivity));
-        this.profile.put("low_temptarget_lowers_sensitivity", false)
+        this.profile.put("high_temptarget_raises_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_high_temptarget_raises_sensitivity),UAMDefaults.high_temptarget_raises_sensitivity))
+        this.profile.put("low_temptarget_lowers_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_low_temptarget_lowers_sensitivity),UAMDefaults.low_temptarget_lowers_sensitivity))
+        //this.profile.put("low_temptarget_lowers_sensitivity", false)
+//**********************************************************************************************************************************************
         this.profile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, UAMDefaults.sensitivity_raises_target))
         this.profile.put("resistance_lowers_target", sp.getBoolean(R.string.key_resistance_lowers_target, UAMDefaults.resistance_lowers_target))
         this.profile.put("adv_target_adjustments", UAMDefaults.adv_target_adjustments)
@@ -225,6 +229,19 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.profile.put("current_basal", basalRate)
         this.profile.put("temptargetSet", tempTargetSet)
         this.profile.put("autosens_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_max, "1.2")))
+//**********************************************************************************************************************************************
+        this.profile.put("UAM_InsulinReq",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_InsulinReq,"65")))
+        this.profile.put("scale_min",SafeParse.stringToDouble(sp.getString(R.string.key_scale_min,"70")))
+        this.profile.put("scale_max",SafeParse.stringToDouble(sp.getString(R.string.key_scale_max,"20")))
+        this.profile.put("scale_50",SafeParse.stringToDouble(sp.getString(R.string.key_scale_50,"2")))
+//MP: UAM_boluscap start
+        this.profile.put("UAM_boluscap",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_boluscap,"2.5")))
+        this.profile.put("Mealfactor_start",  SafeParse.stringToDouble(sp.getString(R.string.key_Mealfactor_start, "7.0")))
+        this.profile.put("Mealfactor_end",  SafeParse.stringToDouble(sp.getString(R.string.key_Mealfactor_end, "23.0")))
+        this.profile.put("UAM_eventualBG",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_eventualBG,"155")))
+        this.profile.put("W2_IOB_threshold",SafeParse.stringToDouble(sp.getString(R.string.key_w2_iob_threshold,"20")))
+        this.profile.put("UAM_hyperBG",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_hyperBG,"220")));
+//**********************************************************************************************************************************************
         if (profileFunction.getUnits() == GlucoseUnit.MMOL) {
             this.profile.put("out_units", "mmol/L")
         }
@@ -235,7 +252,6 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         currentTemp.put("rate", tb?.convertedToAbsolute(now, profile) ?: 0.0)
         // as we have non default temps longer than 30 mintues
         if (tb != null) currentTemp.put("minutesrunning", tb.getPassedDurationToTimeInMinutes(now))
-
         iobData = iobCobCalculator.convertToJSONArray(iobArray)
         mGlucoseStatus.put("glucose", glucoseStatus.glucose)
         mGlucoseStatus.put("noise", glucoseStatus.noise)
