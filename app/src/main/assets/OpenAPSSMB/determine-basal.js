@@ -1281,9 +1281,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ****** No Temp Target Set ******
                 // Sensitive mode
                 // Can the delta be adjusted based upon IOB? a low IOB with a high delta is eating now
-                if (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
+                if (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >=5 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
                 // Normal mode
-                if (UAMBoost_threshold == UAMBoost_threshold_max && UAM_safedelta >=6 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
+                if (UAMBoost_threshold == UAMBoost_threshold_max && UAM_safedelta >=5 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
 
                 // UAMBoostOK only when IOB is less than UAMBoost MaxSMB without a low TT
                 if (UAMBoostOK && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) {
@@ -1303,6 +1303,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = 1;
                     // Restrict insulinReqPct if UAMBoosted with no TT, low insulin and BGL bounce
                     insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_min && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
+                    // Restrict insulinReqPct if UAMBoosted with no TT and low delta
+                    insulinReqPct = (UAM_safedelta < 7 && !profile.temptargetSet ? 0 : insulinReqPct);
 
                     EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
                     // with a low TT allow scaling of EatingNowMaxSMB
