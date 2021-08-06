@@ -253,7 +253,7 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("max_bg", Math.round(maxBg));
         mProfile.put("target_bg", Math.round(targetBg));
 //        double normal_target_bg = profile.getTargetMgdl(Profile.secondsFromMidnight(mCurrentTime));
-        double normal_target_bg = profile.getTargetMgdl(Profile.secondsFromMidnight());
+        double normal_target_bg = profile.getTargetMgdl();
         mProfile.put("normal_target_bg",Math.round(normal_target_bg));
 
         mProfile.put("carb_ratio", profile.getIc());
