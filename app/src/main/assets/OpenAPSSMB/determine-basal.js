@@ -171,6 +171,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
     var profile_current_basal = round_basal(profile.current_basal, profile);
     var basal = profile_current_basal;
+    var maxSafeBasal = tempBasalFunctions.getMaxSafeBasal(profile);
 
     var systemTime = new Date();
     if (currentTime) {
@@ -1001,7 +1002,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // **** EXPERIMENTAL ****
         if (eatingnow && eatingnowtimeOK && minDelta > 0 && minDelta > expectedDelta && profile.temptargetSet && profile.temptarget_minutesrunning <=45) {
             rT.reason += ", minDelta > expectedDelta TBR+";
-            return tempBasalFunctions.setTempBasal(tempBasalFunctions.getMaxSafeBasal(profile), 15, profile, rT, currenttemp);
+            return tempBasalFunctions.setTempBasal(MaxSafeBasal, 15, profile, rT, currenttemp);
         }
         // **** EXPERIMENTAL ****
         return tempBasalFunctions.setTempBasal(0, durationReq, profile, rT, currenttemp);
@@ -1330,15 +1331,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     BGBoosted = true;
                 }
 
-//                // ============== BGBOOST+ ==============
-//                // If we are predicted to exceed BGBoost_threshold and UAMBoost is above UAMBoost_threshold boost more (ie Delta not sufficient for UAMBoost)
-//                if (BGBoosted && UAMBoost >= UAMBoost_threshold) {
-//                    // align the boost_bolus amounts
-//                    UAMBoost_bolus = BGBoost_bolus;
-//                    insulinReqBoost +=  UAMBoost * UAMBoost_bolus;
-//                    // EatingNowMaxSMB = Math.max(profile.EatingNowUAMBoostMaxSMB, EatingNowMaxSMB);
-//                    UAMBoosted = true;
-//                }
+                // ============== BGBOOST TBR ==============
+                // If we are predicted to exceed BGBoost_threshold allow BGBoost TBR when no insulin required
+                if (BGBoosted && minDelta > expectedDelta && insulinReqBoost <=0) {
+                    // Need to let this flow into the code and not just return basal
+                    insulinReqPct = 0;
+                    SMB_TBR = true;
+                    insulinReqBoost = (maxSafeBasal / 60) * 15;
+                }
 
                 // ============== CORRECTION ==============
                 // If BG is above BGBoost_threshold and rise not slowing allow a correction when autoISF is active
@@ -1498,8 +1498,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
 
         }
-
-        var maxSafeBasal = tempBasalFunctions.getMaxSafeBasal(profile);
 
         if (rate > maxSafeBasal) {
             rT.reason += "adj. req. rate: "+rate+" to maxSafeBasal: "+maxSafeBasal+", ";
