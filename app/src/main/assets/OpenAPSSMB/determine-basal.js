@@ -1331,14 +1331,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     BGBoosted = true;
                 }
 
-                // ============== BGBOOST TBR ==============
-                // If we are predicted to exceed BGBoost_threshold allow BGBoost TBR when no insulin required
-                if (BGBoosted && minDelta > expectedDelta && insulinReqBoost <=0) {
-                    // Need to let this flow into the code and not just return basal
-                    insulinReqPct = 0;
-                    SMB_TBR = true;
-                    insulinReqBoost = (maxSafeBasal / 60) * 15;
-                }
+//                // ============== BGBOOST TBR ==============
+//                // If we are predicted to exceed BGBoost_threshold allow BGBoost TBR when no insulin required
+//                if (BGBoosted && minDelta > expectedDelta && insulinReqBoost <=0) {
+//                    // Need to let this flow into the code and not just return basal
+//                    insulinReqPct = 0;
+//                    SMB_TBR = true;
+//                    insulinReqBoost = (maxSafeBasal / 60) * 15;
+//                }
 
                 // ============== CORRECTION ==============
                 // If BG is above BGBoost_threshold and rise not slowing allow a correction when autoISF is active
