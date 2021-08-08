@@ -999,12 +999,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         durationReq = round(durationReq/30)*30;
         // always set a 30-120m zero temp (oref0-pump-loop will let any longer SMB zero temp run)
         durationReq = Math.min(120,Math.max(30,durationReq));
-//        // **** EXPERIMENTAL ****
-//        if (eatingnow && eatingnowtimeOK && minDelta > 0 && minDelta > expectedDelta && profile.temptargetSet && profile.temptarget_minutesrunning <=45) {
-//            rT.reason += ", minDelta > expectedDelta TBR+";
-//            return tempBasalFunctions.setTempBasal(MaxSafeBasal, 15, profile, rT, currenttemp);
-//        }
-//        // **** EXPERIMENTAL ****
+        // **** EXPERIMENTAL ****
+        if (eatingnow && eatingnowtimeOK && minDelta > 0 && minDelta > expectedDelta && profile.temptargetSet && profile.temptarget_minutesrunning <=45) {
+            rT.reason += ", minDelta > expectedDelta TBR+";
+            return tempBasalFunctions.setTempBasal(maxSafeBasal, 15, profile, rT, currenttemp);
+        }
+        // **** EXPERIMENTAL ****
         return tempBasalFunctions.setTempBasal(0, durationReq, profile, rT, currenttemp);
     }
 
@@ -1331,14 +1331,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     BGBoosted = true;
                 }
 
-//                // ============== BGBOOST TBR ==============
-//                // If we are predicted to exceed BGBoost_threshold allow BGBoost TBR when no insulin required
-//                if (BGBoosted && minDelta > expectedDelta && insulinReqBoost <=0) {
-//                    // Need to let this flow into the code and not just return basal
-//                    insulinReqPct = 0;
-//                    SMB_TBR = true;
-//                    insulinReqBoost = (maxSafeBasal / 60) * 15;
-//                }
+                // ============== BGBOOST TBR ==============
+                // If we are predicted to exceed BGBoost_threshold allow BGBoost TBR when no insulin required
+                if (BGBoosted && minDelta > expectedDelta && insulinReqBoost <=0) {
+                    // Need to let this flow into the code and not just return basal
+                    insulinReqPct = 0;
+                    SMB_TBR = true;
+                    insulinReqBoost = (maxSafeBasal / 60) * 15;
+                }
 
                 // ============== CORRECTION ==============
                 // If BG is above BGBoost_threshold and rise not slowing allow a correction when autoISF is active
