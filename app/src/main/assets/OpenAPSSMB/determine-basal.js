@@ -1358,7 +1358,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = maxBolus;
                     UAMBoostReason = " (limit)";
                     // Restrict insulinReq when above BGBoost_threshold
-                    insulinReqPct = ( bg > BGBoost_threshold ? insulinReqPctDefault : insulinReqPct );
+                    insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > insulinReqPctDefault ? insulinReqPctDefault : insulinReqPct );
                     // this may help after sensor errors
                     insulinReqPct = (UAM_safedelta == 0 && glucose_status.short_avgdelta == 0 ? 0 : insulinReqPct);
                 } else {
