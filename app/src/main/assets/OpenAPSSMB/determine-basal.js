@@ -1336,9 +1336,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // If we are predicted to exceed BGBoost_threshold allow BGBoost TBR when no insulin required
                 if (BGBoosted && minDelta > expectedDelta && insulinReqBoost <=0) {
                     // Need to let this flow into the code and not just return basal
-                    insulinReqPct = 0.5;
+                    insulinReqPct = insulinReqPctDefault;
                     SMB_TBR = true;
-                    insulinReqBoost = (maxSafeBasal / 60) * 15;
+                    //insulinReqBoost = (maxSafeBasal / 60) * 15;
+                    //profile.current_basal
+                    insulinReqBoost = maxBolus;
                     EatingNowMaxSMB = maxBolus / 2;
                 }
 
