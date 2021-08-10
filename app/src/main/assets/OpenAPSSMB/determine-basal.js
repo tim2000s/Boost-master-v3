@@ -1219,7 +1219,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAM_deltaAvgRise = round(((UAM_deltaShortRise + UAM_deltaLongRise)/2),2); // pct changes combined
                  // set the UAMBoost factor that is the avg delta rise combined minimum of zero + 1 to allow multiply
                 UAMBoost = round(1 + Math.max(UAM_deltaAvgRise,0),2);
-                rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + ":";
+                rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + (profile.temptargetSet ? "(" + 45-profile.temptarget_minutesrunning + ")" : "") + ":";
+
             }
 
                 console.log("UAM_safedelta: " +UAM_safedelta);
