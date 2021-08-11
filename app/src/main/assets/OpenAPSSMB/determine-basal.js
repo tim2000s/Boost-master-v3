@@ -1001,7 +1001,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         durationReq = Math.min(120,Math.max(30,durationReq));
         // **** EXPERIMENTAL ****
         if (eatingnow && eatingnowtimeOK && minDelta > 0 && minDelta > expectedDelta && profile.temptargetSet && profile.temptarget_minutesrunning <=45) {
-            rT.reason += ", minDelta > expectedDelta TBR+";
+            rT.reason += ", minDelta more than expected TBR+";
             return tempBasalFunctions.setTempBasal(maxSafeBasal, 15, profile, rT, currenttemp);
         }
         // **** EXPERIMENTAL ****
