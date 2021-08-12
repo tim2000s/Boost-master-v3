@@ -1313,7 +1313,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostReason = " (corr " + round(insulinReqBoost, 2) + ")"; // at this point sens may have autoISF included?
                     // insulinReqPct = (liftISF == profile.autoisf_max ? 1 : 0);
                     SMB_TBR = true;
-                    EatingNowMaxSMB = maxBolus;
+                    //EatingNowMaxSMB = maxBolus;
+                    // Allow ENMax SMB for maxbolus
+                    EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
                 }
 
                 // ============== RISE RESTRICTIONS ==============
