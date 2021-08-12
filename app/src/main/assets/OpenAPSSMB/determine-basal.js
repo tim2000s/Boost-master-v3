@@ -1183,32 +1183,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
 
             // ============  UAMBoost for Eating Now mode  ==================== START
-//            var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false; // nah not eating yet
-            target_bg = round(target_bg,2); // 5.0 seems to sometimes be 90.000000000000000001
-//            var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
-//            if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd) eatingnowtimeOK = true;
-//            console.log("eatingnowtimeOK: " + eatingnowtimeOK);
-//            if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
-
-//            // If we have Eating Now enabled and rising we will enable eating now mode
-//            if (eatingnowPatch && profile.enableUAM && ignoreCOBPatch && eatingnowMaxIOBOK) {
-//                // enable eatingnow if no TT and safe IOB within safe hours
-//                if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && eatingnowtimeOK) eatingnow = true;
-//                // enable eating now when there are COB so that a TT isn't required, only works with GhostCOB
-//                if (meal_data.mealCOB > 0) eatingnow = false;
-//                // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
-//                if (profile.temptargetSet) {  // tt duration prevents immediate SMB
-//                    // normal target or less enables eating now
-//                    if (target_bg <= profile.normal_target_bg) eatingnow = true;
-//                    // high target disables eating now
-//                    if (target_bg > profile.normal_target_bg) eatingnow = false;
-//                     // any TT of normal target or below with override will allow eating now to operate outside of hours
-//                    // if (profile.EatingNowOverride && target_bg < profile.normal_target_bg) eatingnow = true;
-//                 }
-//            }
-
-            // calculate the various deltas and pct changes
+            // variables for deltas and defaults
             var UAM_safedelta = 0, UAM_deltaShortRise = 0, UAM_deltaLongRise = 0, UAM_deltaAvgRise = 0, UAMBoost = 1;
+            var insulinReqPctDefault = 0.7; // this is the default insulinReqPct and maxBolus is respected outside of eating now
+            var insulinReqPct = insulinReqPctDefault; // this is the default insulinReqPct and maxBolus is respected outside of eating now
+            var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
+            var insulinReqBoost = 0; // no boost yet
+            var insulinReqOrig = insulinReq;
+            var SMB_TBR = false; // dont allow TBR with SMB
+            var EatingNowMaxSMB = maxBolus;
+            var BGBoosted = false, UAMBoosted = false;
 
             // Determine the pct change in BG if rising and IOB conditions are OK
             if (eatingnow) {
@@ -1222,22 +1206,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + (profile.temptargetSet ? "(" + Math.max(Math.min(45, profile.temptarget_duration)-profile.temptarget_minutesrunning,0) + ")" : "") + ":";
 
             }
-
-                console.log("UAM_safedelta: " +UAM_safedelta);
-                console.log("UAM_deltaShortRise: " + UAM_deltaShortRise);
-                console.log("UAM_deltaLongRise: " + UAM_deltaLongRise);
-                console.log("UAM_deltaAvgRise: " + UAM_deltaAvgRise);
-                console.log("UAMBoost: " + UAMBoost);
-
-            // vars also required when eatingnow criteria not met
-            var insulinReqPctDefault = 0.7; // this is the default insulinReqPct and maxBolus is respected outside of eating now
-            var insulinReqPct = insulinReqPctDefault; // this is the default insulinReqPct and maxBolus is respected outside of eating now
-            var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
-            var insulinReqBoost = 0; // no boost yet
-            var insulinReqOrig = insulinReq;
-            var SMB_TBR = false; // dont allow TBR with SMB
-            var EatingNowMaxSMB = maxBolus;
-            var BGBoosted = false, UAMBoosted = false;
+            console.log("UAM_safedelta: " +UAM_safedelta);
+            console.log("UAM_deltaShortRise: " + UAM_deltaShortRise);
+            console.log("UAM_deltaLongRise: " + UAM_deltaLongRise);
+            console.log("UAM_deltaAvgRise: " + UAM_deltaAvgRise);
+            console.log("UAMBoost: " + UAMBoost);
 
             // if autoISF is active and insulinReq is less than normal maxbolus then allow 100%
             if (typeof liftISF !== 'undefined' && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
@@ -1262,42 +1235,29 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // Sensitive threshold is min normal is max
                 var UAMBoostOK = false, UAMBoost_threshold_min = 1.2, UAMBoost_threshold_max = 2;
                 var UAMBoost_threshold = (iob_data.iob < (UAMBoost_threshold_min * UAMBoost_bolus) ? UAMBoost_threshold_min : UAMBoost_threshold_max);
-                // var UAMBoost_threshold = (iob_data.iob >= (profile.EatingNowUAMBoostMaxSMB * 0.95) ? UAMBoost_threshold_max : UAMBoost_threshold_min);
-
 
                 // ****** Temp Target Set <= normal profile target ******
                 if (profile.temptargetSet && target_bg <= profile.normal_target_bg) {
                     // Increase UAMBoost trigger sensitivity
                     UAMBoost_threshold = UAMBoost_threshold_min;
-                    // Sensitive mode with low TT delta is lower
-                    //if (UAM_safedelta >=4 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
                     // Any rise for 45 minutes triggers UAMBoost
                     if (profile.temptarget_minutesrunning <= 45 && UAM_safedelta >=0) UAMBoostOK = true;
-                    // No long_avgdelta required for 45 minutes
-                    // if (profile.temptarget_minutesrunning <= 45 && UAM_safedelta >=4 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
-
-                    // ****** Breakie Mode = 4.5 ******
-                    if (target_bg == 81 && UAM_safedelta >=0) UAMBoostOK = true;
                 }
 
                 // ****** No Temp Target Set ******
-                // Sensitive mode
-                // Can the delta be adjusted based upon IOB? a low IOB with a high delta is eating now
+                // Minimum Threshold mode
                 if (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >=7 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
-                // Normal mode
+                // Maximum Threshold mode
                 if (UAMBoost_threshold == UAMBoost_threshold_max && UAM_safedelta >=7 && glucose_status.short_avgdelta > 0 && glucose_status.long_avgdelta > 0) UAMBoostOK = true;
                 // BGBoost Combo Mode :)
                 if (UAM_safedelta >=5 && BGBoost_scale >=1) UAMBoostOK = true;
 
-
-                // UAMBoostOK only when IOB is less than UAMBoost MaxSMB without a low TT
+                // Check IOB for UAMBoost, when IOB is less than UAMBoost MaxSMB without a TT
                 if (UAMBoostOK && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) {
-                    //if (!profile.temptargetSet) UAMBoostOK = false;
                     // default is to not allow further boost
                     UAMBoostOK = false;
-                    // Any rise for 30 minutes triggers UAMBoost
+                    // No IOB limit for 45 minutes with a TT, allowing UAMBoost
                     if (profile.temptargetSet && profile.temptarget_minutesrunning <= 45) UAMBoostOK = true;
-                    //if (profile.temptargetSet && target_bg > 81) UAMBoostOK = false;
                 }
 
                 // If there is a sudden delta change allow UAMBoost
@@ -1309,7 +1269,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // Restrict insulinReqPct if UAMBoosted with no TT, low insulin and BGL bounce
                     insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_min && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
                     // Restrict insulinReqPct if UAMBoosted with no TT and low delta
-                    // insulinReqPct = (UAM_safedelta < 7 && !profile.temptargetSet ? 0 : insulinReqPct);
 
                     EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
                     // with a low TT allow scaling of EatingNowMaxSMB
