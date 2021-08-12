@@ -1314,8 +1314,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // insulinReqPct = (liftISF == profile.autoisf_max ? 1 : 0);
                     SMB_TBR = true;
                     //EatingNowMaxSMB = maxBolus;
-                    // Allow ENMax SMB for maxbolus
-                    EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
+                    // Allow ENMax SMB for BGBoost as maxbolus
+                    EatingNowMaxSMB = (profile.EatingNowBGBoostMaxSMB > 0 ? profile.EatingNowBGBoostMaxSMB : maxBolus);
                 }
 
                 // ============== RISE RESTRICTIONS ==============
