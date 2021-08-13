@@ -46,7 +46,6 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
     @Inject lateinit var activePlugin: ActivePlugin
     @Inject lateinit var repository: AppRepository
     @Inject lateinit var openHumansUploader: OpenHumansUploader
-    //@Inject lateinit var repository: AppRepository
 
     private var profile = JSONObject()
     private var mGlucoseStatus = JSONObject()
@@ -166,8 +165,6 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         mealDataParam = mealData.toString()
         return determineBasalResultUAM
     }
-
-
 
     @Suppress("SpellCheckingInspection") fun setData(profile: Profile,
                                                      maxIob: Double,
