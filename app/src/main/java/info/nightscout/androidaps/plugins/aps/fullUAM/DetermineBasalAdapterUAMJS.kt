@@ -266,7 +266,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         } else {
             mGlucoseStatus.put("delta", glucoseStatus.delta)
         }
-        bolusMealLinks(now).blockingGet()?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTime = bolus.timestamp }
+        bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTime = bolus.timestamp }
 
         mGlucoseStatus.put("short_avgdelta", glucoseStatus.shortAvgDelta)
         mGlucoseStatus.put("long_avgdelta", glucoseStatus.longAvgDelta)
@@ -298,8 +298,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         return NativeJSON.parse(rhino, scope, jsonArray.toString()) { _: Context?, _: Scriptable?, _: Scriptable?, objects: Array<Any?> -> objects[1] }
     }
 
-    private fun bolusMealLinks(now: Long) = repository
-        .getBolusesDataFromTime(now - millsToThePast, false)
+    private fun bolusMealLinks(now: Long) = repository.getBolusesDataFromTime(now - millsToThePast, false).blockingGet()
 
     @Throws(IOException::class) private fun readFile(filename: String): String {
         val bytes = scriptReader.readFile(filename)
