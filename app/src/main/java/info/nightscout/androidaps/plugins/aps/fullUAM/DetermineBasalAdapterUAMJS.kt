@@ -4,6 +4,8 @@ import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.R
 import info.nightscout.androidaps.data.IobTotal
 import info.nightscout.androidaps.data.MealData
+import info.nightscout.androidaps.database.AppRepository
+import info.nightscout.androidaps.database.entities.Bolus
 import info.nightscout.androidaps.extensions.convertedToAbsolute
 import info.nightscout.androidaps.extensions.getPassedDurationToTimeInMinutes
 import info.nightscout.androidaps.extensions.plannedRemainingMinutes
@@ -20,6 +22,7 @@ import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker
 import info.nightscout.androidaps.plugins.general.openhumans.OpenHumansUploader
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.GlucoseStatus
 import info.nightscout.androidaps.utils.SafeParse
+import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import info.nightscout.androidaps.utils.sharedPreferences.SP
 import org.json.JSONArray
@@ -41,6 +44,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
     @Inject lateinit var profileFunction: ProfileFunction
     @Inject lateinit var iobCobCalculator: IobCobCalculator
     @Inject lateinit var activePlugin: ActivePlugin
+    @Inject lateinit var repository: AppRepository
     @Inject lateinit var openHumansUploader: OpenHumansUploader
 
     private var profile = JSONObject()
@@ -53,6 +57,8 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
     private var smbAlwaysAllowed = false
     private var currentTime: Long = 0
     private var saveCgmSource = false
+    private var lastBolusNormalTime: Long = 0
+    private val millsToThePast = T.hours(3).msecs()
     var currentTempParam: String? = null
         private set
     var iobDataParam: String? = null
@@ -260,6 +266,8 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         } else {
             mGlucoseStatus.put("delta", glucoseStatus.delta)
         }
+        bolusMealLinks(now).blockingGet()?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTime = bolus.timestamp }
+
         mGlucoseStatus.put("short_avgdelta", glucoseStatus.shortAvgDelta)
         mGlucoseStatus.put("long_avgdelta", glucoseStatus.longAvgDelta)
         mGlucoseStatus.put("date", glucoseStatus.date)
@@ -268,6 +276,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.mealData.put("slopeFromMaxDeviation", mealData.slopeFromMaxDeviation)
         this.mealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation)
         this.mealData.put("lastBolusTime", mealData.lastBolusTime)
+        this.mealData.put("lastBolusNormalTime", lastBolusNormalTime)
         this.mealData.put("lastCarbTime", mealData.lastCarbTime)
         if (constraintChecker.isAutosensModeEnabled().value()) {
             autosensData.put("ratio", autosensDataRatio)
@@ -288,6 +297,9 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
     private fun makeParamArray(jsonArray: JSONArray?, rhino: Context, scope: Scriptable): Any {
         return NativeJSON.parse(rhino, scope, jsonArray.toString()) { _: Context?, _: Scriptable?, _: Scriptable?, objects: Array<Any?> -> objects[1] }
     }
+
+    private fun bolusMealLinks(now: Long) = repository
+        .getBolusesDataFromTime(now - millsToThePast, false)
 
     @Throws(IOException::class) private fun readFile(filename: String): String {
         val bytes = scriptReader.readFile(filename)
