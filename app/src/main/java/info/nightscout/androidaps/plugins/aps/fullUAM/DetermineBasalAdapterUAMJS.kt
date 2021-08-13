@@ -46,6 +46,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
     @Inject lateinit var activePlugin: ActivePlugin
     @Inject lateinit var repository: AppRepository
     @Inject lateinit var openHumansUploader: OpenHumansUploader
+    //@Inject lateinit var repository: AppRepository
 
     private var profile = JSONObject()
     private var mGlucoseStatus = JSONObject()
@@ -71,6 +72,8 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         private set
     var scriptDebug = ""
         private set
+
+
 
     @Suppress("SpellCheckingInspection")
     operator fun invoke(): DetermineBasalResultUAM? {
@@ -164,6 +167,8 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         return determineBasalResultUAM
     }
 
+
+
     @Suppress("SpellCheckingInspection") fun setData(profile: Profile,
                                                      maxIob: Double,
                                                      maxBasal: Double,
@@ -244,9 +249,9 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.profile.put("UAM_boluscap",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_boluscap,"2.5")))
         this.profile.put("Mealfactor_start",  SafeParse.stringToDouble(sp.getString(R.string.key_Mealfactor_start, "7.0")))
         this.profile.put("Mealfactor_end",  SafeParse.stringToDouble(sp.getString(R.string.key_Mealfactor_end, "23.0")))
-        this.profile.put("UAM_eventualBG",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_eventualBG,"155")))
-        this.profile.put("W2_IOB_threshold",SafeParse.stringToDouble(sp.getString(R.string.key_w2_iob_threshold,"20")))
-        this.profile.put("UAM_hyperBG",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_hyperBG,"220")));
+        //this.profile.put("UAM_eventualBG",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_eventualBG,"155")))
+        //this.profile.put("W2_IOB_threshold",SafeParse.stringToDouble(sp.getString(R.string.key_w2_iob_threshold,"20")))
+        //this.profile.put("UAM_hyperBG",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_hyperBG,"220")));
 //**********************************************************************************************************************************************
         if (profileFunction.getUnits() == GlucoseUnit.MMOL) {
             this.profile.put("out_units", "mmol/L")

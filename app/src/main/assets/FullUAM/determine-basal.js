@@ -1300,18 +1300,23 @@ console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60
             var eCarbs = (((EBX * REBX)-target_bg)/profile.carb_ratio);
             var eInsulin = eCarbs/profile.carb_ratio;
             var roundSMBTo = 1 / profile.bolus_increment;
-            //var iTime = round(( new Date(systemTime).getTime() - iob_data.lastBolusTime ) / 60000,1);
+            var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
             //if (HyperPredBGTest >= 650 && HyperPredBGTest <=1100 && glucose_status.delta > 0 && EBX > 100 && now >= tae_start && now <= tae_end && IOBpredBG > 70){
             console.log("***EBX :"+EBX+";");
+            console.log("#### iTime ##### : "+iTime+" ; ");
+
+
             if (profile.temptargetSet && target_bg >= 80 && target_bg <= 85 && profile.temptarget_duration >= 29 && glucose_status.delta > 0){
             insulinReq = eInsulin ;
             insulinReqPCT = 1;
             maxBolusTT = profile.UAM_boluscap;
             console.log("*** Experimental scale smb ok");
-            }/*else if (HyperPredBGTest > 1100 && EBX > 180 && now >= tae_start && now <= tae_end && iob_data.iob < max_iob && iTime >= 14 && IOBpredBG > 39){
-            insulinReq = eInsulin * 1.3;
-            console.log("*** Experimental scale smb 130% ok");
-            }*/else{
+            }else if (glucose_status.delta > 0 && iTime > 0 && iTime <= 180){
+            insulinReq = eInsulin ;
+            insulinReqPCT = 1;
+            maxBolusTT = profile.UAM_boluscap;
+            console.log("*** Experimental scale smb ok");
+            }else{
             console.log("- hyperpredbgtest > 450 : "+HyperPredBGTest+" <= but no action required");
             }
 
