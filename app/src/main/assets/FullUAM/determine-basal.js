@@ -427,14 +427,33 @@ console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60
        var hyper_target = round(Math.max(80, min_bg - (bg - min_bg)/3 ),0);
        if (target_bg === hyper_target){
        console.log("target_bg unchanged: "+hyper_target+"; ");
-       }else if (iTime <= 60 ) {
-        hyper_target = 80;
-        console.log("target_bg from "+target_bg+" to "+hyper_target+" because iTime <= 60 : "+iTime+" ; ");
        }else{
        console.log("target_bg from "+target_bg+" to "+hyper_target+" because HyperPredBG > 160 : "+HyperPredBG+" ; ");
        }
 
 
+       target_bg = hyper_target;
+       halfBasalTarget = 160;
+       var c = halfBasalTarget - normalTarget;
+       //sensitivityRatio = c/(c+target_bg-normalTarget);
+       sensitivityRatio = REBG;
+        // limit sensitivityRatio to profile.autosens_max (1.2x by default)
+       sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+       sensitivityRatio = round(sensitivityRatio,2);
+       console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
+       basal = profile.current_basal * sensitivityRatio;
+       basal = round_basal(basal, profile);
+            if (basal !== profile_current_basal) {
+            console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
+            } else {
+            console.log("Basal unchanged: "+basal+"; ");
+            }
+
+
+       }else if (iTime <= 60){
+        var hyper_target = 80;
+        console.log("target_bg from "+target_bg+" to "+hyper_target+" because iTime <= 60 : "+iTime+" ; ");
+       }
        target_bg = hyper_target;
        halfBasalTarget = 160;
        var c = halfBasalTarget - normalTarget;
