@@ -182,10 +182,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var min_bg;
     var max_bg;
     if (typeof profile.min_bg !== 'undefined') {
-            min_bg = profile.min_bg;
+        min_bg = profile.min_bg;
     }
     if (typeof profile.max_bg !== 'undefined') {
-            max_bg = profile.max_bg;
+        max_bg = profile.max_bg;
     }
     if (typeof profile.min_bg !== 'undefined' && typeof profile.max_bg !== 'undefined') {
         target_bg = (profile.min_bg + profile.max_bg) / 2;
@@ -275,70 +275,66 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.error("CR:",profile.carb_ratio);
     //MT : TWTT
 
-//var iob_scale = (profile.W2_IOB_threshold/100) * max_iob;
-var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-var HyperPredBGTest = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-var HyperPredBGTest2 = round( bg - (iob_data.iob * sens) ) + round( 180 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-var HyperPredBGTest3 = round( bg - (iob_data.iob * sens) ) + round( 120 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
-var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
-var csf = profile.sens / profile.carb_ratio ;
-//console.log("UAM_IOB_SCALE : " +iob_scale);
-console.log("HyperPredBGTest : "+HyperPredBGTest);
-console.log("HyperPredBGTest2 : "+HyperPredBGTest2);
-console.log("HyperPredBGTest3 : "+HyperPredBGTest3);
-console.log("PredAnalise : "+PredAnalise);
-//############################## MP
-//### ISF SCALING CODE START ### MP
-//############################## MP
-var now = new Date().getHours();
-var scale_ISF_ID; //MP: identifier variable. Each of the different ISF scaling codes below is assigned a number to simplify coupling other blocks of code to the type of ISF scaling applied
-var scale_min = profile.scale_min/100;
-var scale_max = profile.scale_max/100;
+    //var iob_scale = (profile.W2_IOB_threshold/100) * max_iob;
+    var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var HyperPredBGTest = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var HyperPredBGTest2 = round( bg - (iob_data.iob * sens) ) + round( 180 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var HyperPredBGTest3 = round( bg - (iob_data.iob * sens) ) + round( 120 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
+    var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
+    var csf = profile.sens / profile.carb_ratio ;
+    //console.log("UAM_IOB_SCALE : " +iob_scale);
+    console.log("HyperPredBGTest : "+HyperPredBGTest);
+    console.log("HyperPredBGTest2 : "+HyperPredBGTest2);
+    console.log("HyperPredBGTest3 : "+HyperPredBGTest3);
+    console.log("PredAnalise : "+PredAnalise);
+    //############################## MP
+    //### ISF SCALING CODE START ### MP
+    //############################## MP
+    var now = new Date().getHours();
+    var scale_ISF_ID; //MP: identifier variable. Each of the different ISF scaling codes below is assigned a number to simplify coupling other blocks of code to the type of ISF scaling applied
+    var scale_min = profile.scale_min/100;
+    var scale_max = profile.scale_max/100;
 
-//scale_ISF_ID codes:
-// 0 = UAM mode scaling
-// 1 = second wave scaling
-// 2 = Hypo assist
-// 3 = autoISF
-//autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //MP: Keep autoISF running in the bg so it can analyse the development of the glucose curve
-  //  if (profile.temptargetSet && target_bg >= 80 && target_bg <= 85 && profile.temptarget_duration >= 29 && iob_data.iob < 6) { //MT: change isf for a normal meal who will rise slowly
+    //scale_ISF_ID codes:
+    // 0 = UAM mode scaling
+    // 1 = second wave scaling
+    // 2 = Hypo assist
+    // 3 = autoISF
+    //autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //MP: Keep autoISF running in the bg so it can analyse the development of the glucose curve
+    //  if (profile.temptargetSet && target_bg >= 80 && target_bg <= 85 && profile.temptarget_duration >= 29 && iob_data.iob < 6) { //MT: change isf for a normal meal who will rise slowly
     if (profile.temptargetSet && target_bg >= 80 && target_bg <= 85 && profile.temptarget_duration >= 29 && iob_data.iob < 0.8 * max_iob && glucose_status.delta >= 0 && bg >= 80) { //MT: change isf for a normal meal who will rise slowly
     //if (target_bg >= 75 && target_bg <= 85 && iob_data.iob < 0.8 * max_iob && glucose_status.delta >= 4 && bg >= 90) { //MT: change isf for a normal meal who will rise slowly
-
-            sens = scale_min * profile.sens - (((scale_min * profile.sens - (profile.sens * scale_max)) * glucose_status.delta) / ((profile.scale_50/(bg/target_bg)) + glucose_status.delta)); //MP: Fixed model based on Michaelis-Menten kinetic, self limiting at higher values. v0.3: Curve steepness increases with increasing bg.
-            sens = round(sens, 1);
-            //scale_ISF_ID = 0;
+        sens = scale_min * profile.sens - (((scale_min * profile.sens - (profile.sens * scale_max)) * glucose_status.delta) / ((profile.scale_50/(bg/target_bg)) + glucose_status.delta)); //MP: Fixed model based on Michaelis-Menten kinetic, self limiting at higher values. v0.3: Curve steepness increases with increasing bg.
+        sens = round(sens, 1);
+        //scale_ISF_ID = 0;
+        //console.log("Scale_ISF_ID: "+scale_ISF_ID);
+        console.log("Scale_50 adjusted from "+profile.scale_50+" to "+round (profile.scale_50/(bg/target_bg), 2)+"; scale factor: "+bg+"/"+target_bg+" = "+round((bg/target_bg), 2)+";");
+        console.log("W1: Scale ISF from "+profile_sens+" to "+sens);
+    } else if (target_bg >= 75 && target_bg <= 85 && iob_data.iob < 0.8 * max_iob && glucose_status.delta >= 0 && bg >= 90) { //MT: change isf for a normal meal who will rise slowly
+         sens = scale_min * profile.sens - (((scale_min * profile.sens - (profile.sens * scale_max)) * glucose_status.delta) / ((profile.scale_50/(bg/target_bg)) + glucose_status.delta)); //MP: Fixed model based on Michaelis-Menten kinetic, self limiting at higher values. v0.3: Curve steepness increases with increasing bg.
+         sens = round(sens, 1);
+         console.log("Scale_50 adjusted from "+profile.scale_50+" to "+round (profile.scale_50/(bg/target_bg), 2)+"; scale factor: "+bg+"/"+target_bg+" = "+round((bg/target_bg), 2)+";");
+         console.log("W1: Scale ISF from "+profile_sens+" to "+sens);
+    } else if (bg>=110 && glucose_status.delta >= 0 && now >= MealTimeStart && now <= MealTimeEnd ) {
+        sens -= (glucose_status.delta * glucose_status.delta);
+        sens = round (sens,1);
+        csf = (sens / profile.carb_ratio) - (glucose_status.delta / 10);
+        csf = round (csf,1);
+        console.log("CSF change because BG >=110 && Delta >=10, that will scale ISF : "+csf+" ; ");
+        if (csf <= 10 ) {
+            sens = profile.sens / 2;
+            sens = round (sens,1);
+            //scale_ISF_ID = 3.1;
             //console.log("Scale_ISF_ID: "+scale_ISF_ID);
-            console.log("Scale_50 adjusted from "+profile.scale_50+" to "+round (profile.scale_50/(bg/target_bg), 2)+"; scale factor: "+bg+"/"+target_bg+" = "+round((bg/target_bg), 2)+";");
-            console.log("W1: Scale ISF from "+profile_sens+" to "+sens);
-    }else if (target_bg >= 75 && target_bg <= 85 && iob_data.iob < 0.8 * max_iob && glucose_status.delta >= 0 && bg >= 90) { //MT: change isf for a normal meal who will rise slowly
-
-             sens = scale_min * profile.sens - (((scale_min * profile.sens - (profile.sens * scale_max)) * glucose_status.delta) / ((profile.scale_50/(bg/target_bg)) + glucose_status.delta)); //MP: Fixed model based on Michaelis-Menten kinetic, self limiting at higher values. v0.3: Curve steepness increases with increasing bg.
-             sens = round(sens, 1);
-             console.log("Scale_50 adjusted from "+profile.scale_50+" to "+round (profile.scale_50/(bg/target_bg), 2)+"; scale factor: "+bg+"/"+target_bg+" = "+round((bg/target_bg), 2)+";");
-             console.log("W1: Scale ISF from "+profile_sens+" to "+sens);
-         } else if (bg>=110 && glucose_status.delta >= 0 && now >= MealTimeStart && now <= MealTimeEnd ){
-              sens -= (glucose_status.delta * glucose_status.delta);
-              sens = round (sens,1);
-              csf = (sens / profile.carb_ratio) - (glucose_status.delta / 10);
-              csf = round (csf,1);
-              console.log("CSF change because BG >=110 && Delta >=10, that will scale ISF : "+csf+" ; ");
-              if (csf <= 10 ){
-              sens = profile.sens / 2;
-              sens = round (sens,1);
-              //scale_ISF_ID = 3.1;
-              //console.log("Scale_ISF_ID: "+scale_ISF_ID);
-              console.log("Reduce ISF from "+profile_sens+" to "+sens);
-              }else{
-              //scale_ISF_ID = 3;
-              //console.log("Scale_ISF_ID: "+scale_ISF_ID);
-              console.log("Reduce ISF from "+profile_sens+" to "+sens);
-              }
-
-
-        }else if (HypoPredBG < 100 && glucose_status.delta < 0){
+            console.log("Reduce ISF from "+profile_sens+" to "+sens);
+        } else {
+            //scale_ISF_ID = 3;
+            //console.log("Scale_ISF_ID: "+scale_ISF_ID);
+            console.log("Reduce ISF from "+profile_sens+" to "+sens);
+        }
+    } else if (HypoPredBG < 100 && glucose_status.delta < 0) {
         csf = profile.sens / profile.carb_ratio ;
         csf = round (csf,1);
         sens = profile.sens + (bg / 2);
@@ -348,138 +344,129 @@ var scale_max = profile.scale_max/100;
         console.log("Change ISF from "+profile_sens+" to "+sens+" because HypoPredBG "+HypoPredBG+"  < 100 and SMB disable ; ");
         //rT.reason += "The risk to make an hypoglycemia is detected, HypoPredBG :"+HypoPredBG+" < 100 then SMB disabled; ";
         //enableSMB = false;
-        }
-//############################# MP
-//### ISF SCALING CODE END ### MP
-//############################# MP
-//sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
-//================= MT =====================================
-//experimental code for test
-var EBG = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg;
-var EBG180 = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBGTest2;
-var EBG120 = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBGTest3;
-var EBG60 = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBG;
-var REBG = EBG / min_bg;
-var REBG60 = EBG60 / min_bg;
-//var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
-console.log("Experimental test, EBG : "+EBG+" REBG : "+REBG+" iTime : "+iTime+" ; ");
-console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60+" *** REBG60 : "+REBG60+" ; ");
+    }
+    //############################# MP
+    //### ISF SCALING CODE END ### MP
+    //############################# MP
+    //sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
+    //================= MT =====================================
+    //experimental code for test
+    var EBG = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg;
+    var EBG180 = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBGTest2;
+    var EBG120 = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBGTest3;
+    var EBG60 = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBG;
+    var REBG = EBG / min_bg;
+    var REBG60 = EBG60 / min_bg;
+    //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
+    console.log("Experimental test, EBG : "+EBG+" REBG : "+REBG+" iTime : "+iTime+" ; ");
+    console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60+" *** REBG60 : "+REBG60+" ; ");
 
-//Target management
-//var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-//var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-        console.log ("HypoPredBG = "+HypoPredBG+"; HyperPredBG ="+HyperPredBG+"; ");
-       if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target ){//&& glucose_status.delta <= 0
-       /*var hypo_target = round ((target_bg - 60) * profile.autosens_max) + 60;
-       if (glucose_status.delta < 0){
-       hypo_target = hypo_target + 10;
-       }
-       hypo_target = Math.min ( 130, hypo_target);
-       if (now <= MealTimeStart && now >= MealTimeEnd){
-       hypo_target = Math.min(100,hypo_target);
-       }*/
-       var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
-            if (HypoPredBG <= 90 && HypoPredBG >= 80 && hypo_target <= 100 && EBG < 110) {
-           hypo_target += 20;
-           console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 90 : "+HypoPredBG+"; ");
-           }else if (EBG <= 100 && HypoPredBG < 80) {
-           hypo_target = 130;
-           console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 100 and HypoPredBG < 80 : "+EBG+"; ");
-           }else if (EBG <= 85){
-           hypo_target = 130;
-           console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 85 : "+EBG+"; ");
-           }else if (EBG60 <= 90 && EBG60 >0){
-           hypo_target = 100;
-           console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG60 is lesser than 90 : "+EBG60+"; ");
-           }else if (EBG60 <= 0){
-           hypo_target = 130;
-           console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG60 is lesser than 0 : "+EBG60+"; ");
-           }else if (target_bg === hypo_target){
-          console.log("target_bg unchanged: "+hypo_target+"; ");
-          }else{
-          console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+"; ");
-          }
-           target_bg = hypo_target;
-           halfBasalTarget = 160;
-                          var c = halfBasalTarget - normalTarget;
-                          //sensitivityRatio = c/(c+target_bg-normalTarget);
-                          sensitivityRatio = REBG;
-                       // limit sensitivityRatio to profile.autosens_max (1.2x by default)
-                          sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
-                          sensitivityRatio = round(sensitivityRatio,2);
-                          console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
-                          basal = profile.current_basal * sensitivityRatio;
-                          basal = round_basal(basal, profile);
-                          if (basal !== profile_current_basal) {
-                               console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
-                          } else {
-                               console.log("Basal unchanged: "+basal+"; ");
-                          }
-       }else if (iTime > 0 && iTime <= 100){
+    //Target management
+    //var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    //var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    console.log ("HypoPredBG = "+HypoPredBG+"; HyperPredBG ="+HyperPredBG+"; ");
+    if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target ) {//&& glucose_status.delta <= 0
+        /*var hypo_target = round ((target_bg - 60) * profile.autosens_max) + 60;
+        if (glucose_status.delta < 0){
+            hypo_target = hypo_target + 10;
+        }
+        hypo_target = Math.min ( 130, hypo_target);
+        if (now <= MealTimeStart && now >= MealTimeEnd){
+            hypo_target = Math.min(100,hypo_target);
+        }*/
+        var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
+        if (HypoPredBG <= 90 && HypoPredBG >= 80 && hypo_target <= 100 && EBG < 110) {
+            hypo_target += 20;
+            console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 90 : "+HypoPredBG+"; ");
+        }else if (EBG <= 100 && HypoPredBG < 80) {
+            hypo_target = 130;
+            console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 100 and HypoPredBG < 80 : "+EBG+"; ");
+        }else if (EBG <= 85) {
+            hypo_target = 130;
+            console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 85 : "+EBG+"; ");
+        }else if (EBG60 <= 90 && EBG60 >0) {
+            hypo_target = 100;
+            console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG60 is lesser than 90 : "+EBG60+"; ");
+        }else if (EBG60 <= 0) {
+            hypo_target = 130;
+            console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG60 is lesser than 0 : "+EBG60+"; ");
+        }else if (target_bg === hypo_target) {
+            console.log("target_bg unchanged: "+hypo_target+"; ");
+        }else {
+            console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+"; ");
+        }
+        target_bg = hypo_target;
+        halfBasalTarget = 160;
+        var c = halfBasalTarget - normalTarget;
+        //sensitivityRatio = c/(c+target_bg-normalTarget);
+        sensitivityRatio = REBG;
+        // limit sensitivityRatio to profile.autosens_max (1.2x by default)
+        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+        sensitivityRatio = round(sensitivityRatio,2);
+        console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
+        basal = profile.current_basal * sensitivityRatio;
+        basal = round_basal(basal, profile);
+        if (basal !== profile_current_basal) {
+            console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
+        } else {
+            console.log("Basal unchanged: "+basal+"; ");
+        }
+    } else if (iTime > 0 && iTime <= 100) {
         var hyper_target = 80;
         console.log("target_bg from "+target_bg+" to "+hyper_target+" because iTime <= 100 : "+iTime+" ; ");
-
-       target_bg = hyper_target;
-       halfBasalTarget = 160;
-       var c = halfBasalTarget - normalTarget;
-       //sensitivityRatio = c/(c+target_bg-normalTarget);
-       sensitivityRatio = REBG;
+        target_bg = hyper_target;
+        halfBasalTarget = 160;
+        var c = halfBasalTarget - normalTarget;
+        //sensitivityRatio = c/(c+target_bg-normalTarget);
+        sensitivityRatio = REBG;
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
-       sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
-       sensitivityRatio = round(sensitivityRatio,2);
-       console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
-       basal = profile.current_basal * sensitivityRatio;
-       basal = round_basal(basal, profile);
-            if (basal !== profile_current_basal) {
+        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+        sensitivityRatio = round(sensitivityRatio,2);
+        console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
+        basal = profile.current_basal * sensitivityRatio;
+        basal = round_basal(basal, profile);
+        if (basal !== profile_current_basal) {
             console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
-            } else {
+        } else {
             console.log("Basal unchanged: "+basal+"; ");
-            }
+        }
 
 
-       }
-       else if (!profile.temptargetSet && HyperPredBG >= 160 && profile.resistance_lowers_target){
-       /*var hyper_target = round((target_bg - 60)/profile.autosens_max)+60;// if target = 90 then hyper_target = 81 with autosens_min = 0.7
-       if (glucose_status.delta >0 && glucose_status.delta <= 5){
-       hyper_target = hyper_target + glucose_status.delta;
-       }else if (glucose_status.delta >= 10) {
-       hyper_target = hyper_target - glucose_status.delta;
-       }
-       hyper_target = Math.max (75,hyper_target);*/
-       var hyper_target = round(Math.max(80, min_bg - (bg - min_bg)/3 ),0);
-       if (target_bg === hyper_target){
-       console.log("target_bg unchanged: "+hyper_target+"; ");
-       }else{
-       console.log("target_bg from "+target_bg+" to "+hyper_target+" because HyperPredBG > 160 : "+HyperPredBG+" ; ");
-       }
-
-
-       target_bg = hyper_target;
-       halfBasalTarget = 160;
-       var c = halfBasalTarget - normalTarget;
-       //sensitivityRatio = c/(c+target_bg-normalTarget);
-       sensitivityRatio = REBG;
+    } else if (!profile.temptargetSet && HyperPredBG >= 160 && profile.resistance_lowers_target) {
+        /*var hyper_target = round((target_bg - 60)/profile.autosens_max)+60;// if target = 90 then hyper_target = 81 with autosens_min = 0.7
+        if (glucose_status.delta >0 && glucose_status.delta <= 5){
+        hyper_target = hyper_target + glucose_status.delta;
+        }else if (glucose_status.delta >= 10) {
+        hyper_target = hyper_target - glucose_status.delta;
+        }
+        hyper_target = Math.max (75,hyper_target);*/
+        var hyper_target = round(Math.max(80, min_bg - (bg - min_bg)/3 ),0);
+        if (target_bg === hyper_target) {
+            console.log("target_bg unchanged: "+hyper_target+"; ");
+        } else {
+            console.log("target_bg from "+target_bg+" to "+hyper_target+" because HyperPredBG > 160 : "+HyperPredBG+" ; ");
+        }
+        target_bg = hyper_target;
+        halfBasalTarget = 160;
+        var c = halfBasalTarget - normalTarget;
+        //sensitivityRatio = c/(c+target_bg-normalTarget);
+        sensitivityRatio = REBG;
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
-       sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
-       sensitivityRatio = round(sensitivityRatio,2);
-       console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
-       basal = profile.current_basal * sensitivityRatio;
-       basal = round_basal(basal, profile);
-            if (basal !== profile_current_basal) {
+        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+        sensitivityRatio = round(sensitivityRatio,2);
+        console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
+        basal = profile.current_basal * sensitivityRatio;
+        basal = round_basal(basal, profile);
+        if (basal !== profile_current_basal) {
             console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
-            } else {
+        } else {
             console.log("Basal unchanged: "+basal+"; ");
-            }
-
-
-       }
+        }
+    }
 //================= MT =====================================
-
     console.log("***hypo_target : "+hypo_target+" & hyper_target : "+hyper_target);
-
     //MP: autoISF activation (below) was moved into ISF scaling code above to prevent its activation during scaleISF function
     //sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
-
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
     if (typeof iob_data.lastTemp !== 'undefined' ) {
@@ -816,18 +803,18 @@ console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60
             // set minPredBGs starting when currently-dosed insulin activity will peak
             // look ahead 60m (regardless of insulin type) so as to be less aggressive on slower insulins
             var insulinPeakTime = 90;
-            if (HyperPredBGTest >= 800 && HyperPredBGTest <1100){
-            var insulinPeakTime = 35;
-            //console.log("insulinPeakTime because BG rising : "+insulinPeakTime);
-            }else if (HyperPredBGTest >= 1100){
-            var insulinPeakTime = 25;
-            //console.log("insulinPeakTime because BG rising more than expected : "+insulinPeakTime);
-            }else if (HyperPredBGTest < 900 && HyperPredBGTest >= 800){
-            var insulinPeakTime = 90;
-            //console.log("insulinPeakTime because HyperPredBGTest < 1000 : "+insulinPeakTime);
-            }else if (HyperPredBGTest < 800){
-            var insulinPeakTime = 110;
-            //console.log("insulinPeakTime because HyperPredBGTest < 800 : "+insulinPeakTime);
+            if (HyperPredBGTest >= 800 && HyperPredBGTest <1100) {
+                var insulinPeakTime = 35;
+                //console.log("insulinPeakTime because BG rising : "+insulinPeakTime);
+            } else if (HyperPredBGTest >= 1100) {
+                var insulinPeakTime = 25;
+                //console.log("insulinPeakTime because BG rising more than expected : "+insulinPeakTime);
+            } else if (HyperPredBGTest < 900 && HyperPredBGTest >= 800) {
+                var insulinPeakTime = 90;
+                //console.log("insulinPeakTime because HyperPredBGTest < 1000 : "+insulinPeakTime);
+            } else if (HyperPredBGTest < 800) {
+                var insulinPeakTime = 110;
+                //console.log("insulinPeakTime because HyperPredBGTest < 800 : "+insulinPeakTime);
             }
             // add 30m to allow for insulin delivery (SMBs or temps)
             //insulinPeakTime = 90;
@@ -981,7 +968,6 @@ console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60
     //console.error("minUAMPredBG:",minUAMPredBG,"minZTGuardBG:",minZTGuardBG,"minZTUAMPredBG:",minZTUAMPredBG);
     // if any carbs have been entered recently
     if (meal_data.carbs) {
-
         // if UAM is disabled, use max of minIOBPredBG, minCOBPredBG
         if ( ! enableUAM && minCOBPredBG < 999 ) {
             minPredBG = round(Math.max(minIOBPredBG, minCOBPredBG));
@@ -1289,7 +1275,7 @@ console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60
                     console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"basal:",basal);
                     maxBolus = round( basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
 
-                }else {
+                } else {
                     console.error("profile.maxUAMSMBBasalMinutes undefined: defaulting to 30m");
                     maxBolus = round( basal * 30 / 60 ,1);
                 }
@@ -1330,23 +1316,23 @@ console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60
             console.log("#### iTime ##### : "+iTime+" ; ");
 
 
-            if (profile.temptargetSet && target_bg >= 80 && target_bg <= 85 && profile.temptarget_duration >= 29 && glucose_status.delta > 0){
-            insulinReq = eInsulin ;
-            insulinReqPCT = 1;
-            maxBolusTT = profile.UAM_boluscap;
-            console.log("*** Experimental scale smb ok");
-            }else if (glucose_status.delta >= 0 && iTime >= 120 && iTime <= 180 && bg >= 180){
-             insulinReq = eInsulin ;
-             insulinReqPCT = 1.3;
-             maxBolusTT = profile.UAM_boluscap;
-             console.log("*** Experimental scale smb ok :"+eInsulin+";");
-             }else if (glucose_status.delta > 0 && iTime > 0 && iTime <= 180){
-            insulinReq = eInsulin ;
-            insulinReqPCT = 1;
-            maxBolusTT = profile.UAM_boluscap;
-            console.log("*** Experimental scale smb ok :"+eInsulin+";");
-            }else{
-            console.log("- hyperpredbgtest > 450 : "+HyperPredBGTest+" <= but no action required");
+            if (profile.temptargetSet && target_bg >= 80 && target_bg <= 85 && profile.temptarget_duration >= 29 && glucose_status.delta > 0) {
+                insulinReq = eInsulin ;
+                insulinReqPCT = 1;
+                maxBolusTT = profile.UAM_boluscap;
+                console.log("*** Experimental scale smb ok");
+            } else if (glucose_status.delta >= 0 && iTime >= 120 && iTime <= 180 && bg >= 180) {
+                insulinReq = eInsulin ;
+                insulinReqPCT = 1.3;
+                maxBolusTT = profile.UAM_boluscap;
+                console.log("*** Experimental scale smb ok :"+eInsulin+";");
+             } else if (glucose_status.delta > 0 && iTime > 0 && iTime <= 180){
+                insulinReq = eInsulin ;
+                insulinReqPCT = 1;
+                maxBolusTT = profile.UAM_boluscap;
+                console.log("*** Experimental scale smb ok :"+eInsulin+";");
+            } else {
+                console.log("- hyperpredbgtest > 450 : "+HyperPredBGTest+" <= but no action required");
             }
 
 
