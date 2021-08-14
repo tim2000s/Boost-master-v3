@@ -369,7 +369,7 @@ console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60
 //var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
 //var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
         console.log ("HypoPredBG = "+HypoPredBG+"; HyperPredBG ="+HyperPredBG+"; ");
-       if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target ){//&& glucose_status.delta <= 0
+       if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && iTime >= 100 ){//&& glucose_status.delta <= 0
        /*var hypo_target = round ((target_bg - 60) * profile.autosens_max) + 60;
        if (glucose_status.delta < 0){
        hypo_target = hypo_target + 10;
