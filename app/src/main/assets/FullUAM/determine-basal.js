@@ -282,6 +282,7 @@ var HyperPredBGTest = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( m
 var HyperPredBGTest2 = round( bg - (iob_data.iob * sens) ) + round( 180 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
 var HyperPredBGTest3 = round( bg - (iob_data.iob * sens) ) + round( 120 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
 var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
+var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
 var csf = profile.sens / profile.carb_ratio ;
 //console.log("UAM_IOB_SCALE : " +iob_scale);
 console.log("HyperPredBGTest : "+HyperPredBGTest);
@@ -360,7 +361,8 @@ var EBG120 = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * gluc
 var EBG60 = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBG;
 var REBG = EBG / min_bg;
 var REBG60 = EBG60 / min_bg;
-console.log("Experimental test, EBG : "+EBG+" REBG : "+REBG+" ; ");
+//var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
+console.log("Experimental test, EBG : "+EBG+" REBG : "+REBG+" iTime : "+iTime+" ; ");
 console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60+" *** REBG60 : "+REBG60+" ; ");
 
 //Target management
@@ -425,8 +427,11 @@ console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60
        var hyper_target = round(Math.max(80, min_bg - (bg - min_bg)/3 ),0);
        if (target_bg === hyper_target){
        console.log("target_bg unchanged: "+hyper_target+"; ");
+       }else if (iTime <= 60 ) {
+        hyper_target = 80;
+        console.log("target_bg from "+target_bg+" to "+hyper_target+" because iTime <= 60 : "+iTime+" ; ");
        }else{
-        console.log("target_bg from "+target_bg+" to "+hyper_target+" because HyperPredBG is greater than 160 : "+HyperPredBG+"; ");
+       console.log("target_bg from "+target_bg+" to "+hyper_target+" because HyperPredBG > 160 : "+HyperPredBG+" ; ");
        }
 
 
@@ -1300,7 +1305,7 @@ console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60
             var eCarbs = (((EBX * REBX)-target_bg)/profile.carb_ratio);
             var eInsulin = eCarbs/profile.carb_ratio;
             var roundSMBTo = 1 / profile.bolus_increment;
-            var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
+            //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
             //if (HyperPredBGTest >= 650 && HyperPredBGTest <=1100 && glucose_status.delta > 0 && EBX > 100 && now >= tae_start && now <= tae_end && IOBpredBG > 70){
             console.log("***EBX :"+EBX+";");
             console.log("#### iTime ##### : "+iTime+" ; ");
