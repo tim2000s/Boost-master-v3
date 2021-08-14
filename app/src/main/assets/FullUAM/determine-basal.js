@@ -453,7 +453,7 @@ console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60
        }else if (iTime <= 60){
         var hyper_target = 80;
         console.log("target_bg from "+target_bg+" to "+hyper_target+" because iTime <= 60 : "+iTime+" ; ");
-       }
+
        target_bg = hyper_target;
        halfBasalTarget = 160;
        var c = halfBasalTarget - normalTarget;
