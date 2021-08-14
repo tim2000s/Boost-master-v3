@@ -415,22 +415,9 @@ console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60
                           } else {
                                console.log("Basal unchanged: "+basal+"; ");
                           }
-       }
-       else if (!profile.temptargetSet && HyperPredBG >= 160 && profile.resistance_lowers_target){
-       /*var hyper_target = round((target_bg - 60)/profile.autosens_max)+60;// if target = 90 then hyper_target = 81 with autosens_min = 0.7
-       if (glucose_status.delta >0 && glucose_status.delta <= 5){
-       hyper_target = hyper_target + glucose_status.delta;
-       }else if (glucose_status.delta >= 10) {
-       hyper_target = hyper_target - glucose_status.delta;
-       }
-       hyper_target = Math.max (75,hyper_target);*/
-       var hyper_target = round(Math.max(80, min_bg - (bg - min_bg)/3 ),0);
-       if (target_bg === hyper_target){
-       console.log("target_bg unchanged: "+hyper_target+"; ");
-       }else{
-       console.log("target_bg from "+target_bg+" to "+hyper_target+" because HyperPredBG > 160 : "+HyperPredBG+" ; ");
-       }
-
+       }else if (iTime > 0 && iTime <= 100){
+        var hyper_target = 80;
+        console.log("target_bg from "+target_bg+" to "+hyper_target+" because iTime <= 100 : "+iTime+" ; ");
 
        target_bg = hyper_target;
        halfBasalTarget = 160;
@@ -450,9 +437,22 @@ console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60
             }
 
 
-       }else if (iTime <= 60){
-        var hyper_target = 80;
-        console.log("target_bg from "+target_bg+" to "+hyper_target+" because iTime <= 60 : "+iTime+" ; ");
+       }
+       else if (!profile.temptargetSet && HyperPredBG >= 160 && profile.resistance_lowers_target){
+       /*var hyper_target = round((target_bg - 60)/profile.autosens_max)+60;// if target = 90 then hyper_target = 81 with autosens_min = 0.7
+       if (glucose_status.delta >0 && glucose_status.delta <= 5){
+       hyper_target = hyper_target + glucose_status.delta;
+       }else if (glucose_status.delta >= 10) {
+       hyper_target = hyper_target - glucose_status.delta;
+       }
+       hyper_target = Math.max (75,hyper_target);*/
+       var hyper_target = round(Math.max(80, min_bg - (bg - min_bg)/3 ),0);
+       if (target_bg === hyper_target){
+       console.log("target_bg unchanged: "+hyper_target+"; ");
+       }else{
+       console.log("target_bg from "+target_bg+" to "+hyper_target+" because HyperPredBG > 160 : "+HyperPredBG+" ; ");
+       }
+
 
        target_bg = hyper_target;
        halfBasalTarget = 160;
@@ -1335,11 +1335,16 @@ console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60
             insulinReqPCT = 1;
             maxBolusTT = profile.UAM_boluscap;
             console.log("*** Experimental scale smb ok");
-            }else if (glucose_status.delta > 0 && iTime > 0 && iTime <= 180){
+            }else if (glucose_status.delta >= 0 && iTime >= 120 && iTime <= 180 && bg >= 180){
+             insulinReq = eInsulin ;
+             insulinReqPCT = 1.3;
+             maxBolusTT = profile.UAM_boluscap;
+             console.log("*** Experimental scale smb ok :"+eInsulin+";");
+             }else if (glucose_status.delta > 0 && iTime > 0 && iTime <= 180){
             insulinReq = eInsulin ;
             insulinReqPCT = 1;
             maxBolusTT = profile.UAM_boluscap;
-            console.log("*** Experimental scale smb ok");
+            console.log("*** Experimental scale smb ok :"+eInsulin+";");
             }else{
             console.log("- hyperpredbgtest > 450 : "+HyperPredBGTest+" <= but no action required");
             }
