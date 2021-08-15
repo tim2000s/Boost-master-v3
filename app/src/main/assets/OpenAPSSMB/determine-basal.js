@@ -368,6 +368,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
     console.error("; CR:",profile.carb_ratio);
     if (eatingnow) sens = sens * profile.EatingNowISFBoost;
+    console.log("sens: " +profile.sens+ "/"+profile.EatingNowISFBoost+"="+sens);
     sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio);
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
