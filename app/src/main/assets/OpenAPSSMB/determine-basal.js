@@ -356,6 +356,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     var profile_sens = round(profile.sens,1)
     var sens = profile.sens;
+    if (eatingnow) sens = sens * profile.EatingNowISFBoost;
     if (typeof autosens_data !== 'undefined' && autosens_data) {
         sens = profile.sens / sensitivityRatio;
         sens = round(sens, 1);
