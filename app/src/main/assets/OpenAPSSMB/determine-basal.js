@@ -1304,7 +1304,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     //insulinReqBoost = (maxSafeBasal / 60) * 15;
                     //profile.current_basal
                     insulinReqBoost = maxBolus;
-                    EatingNowMaxSMB = maxBolus / 2;
+                    EatingNowMaxSMB = maxBolus;
                 }
 
                 // ============== CORRECTION ==============
