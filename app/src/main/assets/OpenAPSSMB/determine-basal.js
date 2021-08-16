@@ -1306,21 +1306,21 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     SMB_TBR = true;
                     //insulinReqBoost = (maxSafeBasal / 60) * 15;
                     //profile.current_basal
-                    insulinReqBoost = maxBolus;
+                    insulinReqBoost = profile.current_basal;
                     EatingNowMaxSMB = maxBolus;
                 }
 
-                // ============== CORRECTION ==============
-                // If BG is above BGBoost_threshold and rise not slowing allow a correction when autoISF is active
-                if (bg > BGBoost_threshold && UAMBoost >= UAMBoost_threshold && (!UAMBoosted && !BGBoosted) && typeof liftISF !== 'undefined') {
-                    insulinReqBoost = (bg - target_bg) / profile_sens;
-                    UAMBoostReason = " (corr " + round(insulinReqBoost, 2) + ")"; // at this point sens may have autoISF included?
-                    // insulinReqPct = (liftISF == profile.autoisf_max ? 1 : 0);
-                    SMB_TBR = true;
-                    //EatingNowMaxSMB = maxBolus;
-                    // Allow ENMax SMB for BGBoost as maxbolus
-                    EatingNowMaxSMB = (profile.EatingNowBGBoostMaxSMB > 0 ? profile.EatingNowBGBoostMaxSMB : maxBolus);
-                }
+//                // ============== CORRECTION ==============
+//                // If BG is above BGBoost_threshold and rise not slowing allow a correction when autoISF is active
+//                if (bg > BGBoost_threshold && UAMBoost >= UAMBoost_threshold && (!UAMBoosted && !BGBoosted) && typeof liftISF !== 'undefined') {
+//                    insulinReqBoost = (bg - target_bg) / profile_sens;
+//                    UAMBoostReason = " (corr " + round(insulinReqBoost, 2) + ")"; // at this point sens may have autoISF included?
+//                    // insulinReqPct = (liftISF == profile.autoisf_max ? 1 : 0);
+//                    SMB_TBR = true;
+//                    //EatingNowMaxSMB = maxBolus;
+//                    // Allow ENMax SMB for BGBoost as maxbolus
+//                    EatingNowMaxSMB = (profile.EatingNowBGBoostMaxSMB > 0 ? profile.EatingNowBGBoostMaxSMB : maxBolus);
+//                }
 
                 // ============== RISE RESTRICTIONS ==============
                  // if the rise is slowing TBR only
