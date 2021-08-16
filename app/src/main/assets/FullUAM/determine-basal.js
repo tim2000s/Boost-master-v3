@@ -365,7 +365,26 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
     //var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
     console.log ("HypoPredBG = "+HypoPredBG+"; HyperPredBG ="+HyperPredBG+"; ");
-    if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && iTime >= 100 ) {//&& glucose_status.delta <= 0
+    if (iTime > 0 && iTime <= 100 && IOBpredBG > 39) {
+            var hyper_target = 80;
+            console.log("target_bg from "+target_bg+" to "+hyper_target+" because iTime <= 100 : "+iTime+" ; ");
+            target_bg = hyper_target;
+            halfBasalTarget = 160;
+            var c = halfBasalTarget - normalTarget;
+            //sensitivityRatio = c/(c+target_bg-normalTarget);
+            sensitivityRatio = REBG;
+            // limit sensitivityRatio to profile.autosens_max (1.2x by default)
+            sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+            sensitivityRatio = round(sensitivityRatio,2);
+            console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
+            basal = profile.current_basal * sensitivityRatio;
+            basal = round_basal(basal, profile);
+            if (basal !== profile_current_basal) {
+                console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
+            } else {
+                console.log("Basal unchanged: "+basal+"; ");
+            }
+  }else if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target ) {//&& glucose_status.delta <= 0
         /*var hypo_target = round ((target_bg - 60) * profile.autosens_max) + 60;
         if (glucose_status.delta < 0){
             hypo_target = hypo_target + 10;
@@ -411,27 +430,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         } else {
             console.log("Basal unchanged: "+basal+"; ");
         }
-    } else if (iTime > 0 && iTime <= 100) {
-        var hyper_target = 80;
-        console.log("target_bg from "+target_bg+" to "+hyper_target+" because iTime <= 100 : "+iTime+" ; ");
-        target_bg = hyper_target;
-        halfBasalTarget = 160;
-        var c = halfBasalTarget - normalTarget;
-        //sensitivityRatio = c/(c+target_bg-normalTarget);
-        sensitivityRatio = REBG;
-        // limit sensitivityRatio to profile.autosens_max (1.2x by default)
-        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
-        sensitivityRatio = round(sensitivityRatio,2);
-        console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
-        basal = profile.current_basal * sensitivityRatio;
-        basal = round_basal(basal, profile);
-        if (basal !== profile_current_basal) {
-            console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
-        } else {
-            console.log("Basal unchanged: "+basal+"; ");
-        }
-
-
     } else if (!profile.temptargetSet && HyperPredBG >= 160 && profile.resistance_lowers_target) {
         /*var hyper_target = round((target_bg - 60)/profile.autosens_max)+60;// if target = 90 then hyper_target = 81 with autosens_min = 0.7
         if (glucose_status.delta >0 && glucose_status.delta <= 5){
