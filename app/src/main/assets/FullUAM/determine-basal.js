@@ -365,7 +365,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
     //var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
     console.log ("HypoPredBG = "+HypoPredBG+"; HyperPredBG ="+HyperPredBG+"; ");
-    if (iTime > 0 && iTime <= 100 && IOBpredBG > 39) {
+    if (iTime > 0 && iTime <= 100 && EBG60 > 0) {
             var hyper_target = 80;
             console.log("target_bg from "+target_bg+" to "+hyper_target+" because iTime <= 100 : "+iTime+" ; ");
             target_bg = hyper_target;
@@ -1014,7 +1014,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
-    var carbsReqBG = naive_eventualBG;
+    //var carbsReqBG = naive_eventualBG;
+    var carbsReqBG = EBG60;
     if ( carbsReqBG < 40 ) {
         carbsReqBG = Math.min( minGuardBG, carbsReqBG );
     }
