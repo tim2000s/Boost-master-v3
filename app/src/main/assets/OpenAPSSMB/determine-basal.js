@@ -1234,7 +1234,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoost_bolus *= (typeof autosens_data !== 'undefined' && autosens_data ? autosens_data.ratio : 1);
 
                 // ============== UAMBOOST ==============
-                // Sensitive threshold is min normal is max
+                // Sensitive threshold is low normal is high
                 var UAMBoostOK = false, UAMBoost_threshold_low = 1.2, UAMBoost_threshold_high = 2;
                 var UAMBoost_threshold = (iob_data.iob < (UAMBoost_threshold_low * UAMBoost_bolus) ? UAMBoost_threshold_low : UAMBoost_threshold_high);
 
