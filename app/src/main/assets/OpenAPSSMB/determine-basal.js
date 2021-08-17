@@ -335,10 +335,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (target_bg <= profile.normal_target_bg) eatingnow = true;
             // high target disables eating now
             if (target_bg > profile.normal_target_bg) eatingnow = false;
-             // any TT of normal target or below with override will allow eating now to operate outside of hours
-            // if (profile.EatingNowOverride && target_bg < profile.normal_target_bg) eatingnow = true;
          }
-        // enable eating now when there are COB so that a TT isn't required, only works with GhostCOB
+        // disable eating now when there are COB, only works with GhostCOB
         if (meal_data.mealCOB > 0) eatingnow = false;
     }
 
