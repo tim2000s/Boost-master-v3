@@ -1235,22 +1235,22 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== UAMBOOST ==============
                 // Sensitive threshold is min normal is max
-                var UAMBoostOK = false, UAMBoost_threshold_min = 1.2, UAMBoost_threshold_max = 2;
-                var UAMBoost_threshold = (iob_data.iob < (UAMBoost_threshold_min * UAMBoost_bolus) ? UAMBoost_threshold_min : UAMBoost_threshold_max);
+                var UAMBoostOK = false, UAMBoost_threshold_low = 1.2, UAMBoost_threshold_high = 2;
+                var UAMBoost_threshold = (iob_data.iob < (UAMBoost_threshold_low * UAMBoost_bolus) ? UAMBoost_threshold_low : UAMBoost_threshold_high);
 
                 // ****** Temp Target Set <= normal profile target ******
                 if (profile.temptargetSet && target_bg <= profile.normal_target_bg) {
                     // Increase UAMBoost trigger sensitivity
-                    UAMBoost_threshold = UAMBoost_threshold_min;
+                    UAMBoost_threshold = UAMBoost_threshold_low;
                     // Any rise for 45 minutes with avgerage delta over zero triggers UAMBoost
                     if (profile.temptarget_minutesrunning <= 45 && UAM_safedelta >=0 && minAvgDelta >0) UAMBoostOK = true;
                 }
 
                 // ****** No Temp Target Set ******
-                // Minimum Threshold mode
-                if (UAMBoost_threshold == UAMBoost_threshold_min && UAM_safedelta >=7 && minAvgDelta > 0) UAMBoostOK = true;
-                // Maximum Threshold mode
-                if (UAMBoost_threshold == UAMBoost_threshold_max && UAM_safedelta >=7 && minAvgDelta > 0) UAMBoostOK = true;
+                // Low Threshold mode
+                if (UAMBoost_threshold == UAMBoost_threshold_low && UAM_safedelta >=7 && minAvgDelta > 0) UAMBoostOK = true;
+                // High Threshold mode
+                if (UAMBoost_threshold == UAMBoost_threshold_high && UAM_safedelta >=7 && minAvgDelta > 0) UAMBoostOK = true;
                 // BGBoost Combo Mode :)
                 if (UAM_safedelta >=5 && minAvgDelta > 0 && BGBoost_scale >=2) UAMBoostOK = true;
 
@@ -1271,7 +1271,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqBoost += UAMBoost * UAMBoost_bolus;
                     insulinReqPct = 1;
                     // Restrict insulinReqPct if UAMBoosted with no TT, low insulin and BGL bounce
-                    insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_min && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
+                    insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_low && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
                     // Restrict insulinReqPct if UAMBoosted with no TT and low delta
 
                     EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
