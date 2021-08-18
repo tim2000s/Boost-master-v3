@@ -1236,7 +1236,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== UAMBOOST ==============
                 // Sensitive threshold is low normal is high
                 var UAMBoostOK = false, UAMBoost_threshold_low = 1.2, UAMBoost_threshold_high = 2;
-                var UAMBoost_threshold = (iob_data.iob < (UAMBoost_threshold_low * UAMBoost_bolus) ? UAMBoost_threshold_low : UAMBoost_threshold_high);
+                // UAMBoost threshold changes to high when avg of thresholds worth of IOB is exceeded
+                var UAMBoost_threshold = (iob_data.iob < ((UAMBoost_threshold_low + UAMBoost_threshold_high)/2 * UAMBoost_bolus) ? UAMBoost_threshold_low : UAMBoost_threshold_high);
+                //var UAMBoost_threshold = (iob_data.iob < (UAMBoost_threshold_low * UAMBoost_bolus) ? UAMBoost_threshold_low : UAMBoost_threshold_high);
 
                 // ****** Temp Target Set <= normal profile target ******
                 if (profile.temptargetSet && target_bg <= profile.normal_target_bg) {
