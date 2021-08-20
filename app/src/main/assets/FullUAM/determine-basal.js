@@ -152,7 +152,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }*/
     }
     //cherry pick from oref upstream dev cb8e94990301277fb1016c778b4e9efa55a6edbc
-    if (bg <= 10 || bg === 38 || noise >= 3 || minAgo > 12 || minAgo < -5 || ( bg > 60 && glucose_status.delta == 0 && glucose_status.short_avgdelta > -1 && glucose_status.short_avgdelta < 1 && glucose_status.long_avgdelta > -1 && glucose_status.long_avgdelta < 1 ) && !isSaveCgmSource ) {
+    if (bg <= 10 || bg === 38 || noise >= 3 || minAgo > 12 || minAgo < -5  ) {//|| ( bg > 60 && glucose_status.delta == 0 && glucose_status.short_avgdelta > -1 && glucose_status.short_avgdelta < 1 && glucose_status.long_avgdelta > -1 && glucose_status.long_avgdelta < 1 ) && !isSaveCgmSource
         if (currenttemp.rate > basal) { // high temp is running
             rT.reason += ". Replacing high temp basal of "+currenttemp.rate+" with neutral temp of "+basal;
             rT.deliverAt = deliverAt;
@@ -351,12 +351,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
     //================= MT =====================================
     //experimental code for test
-    var EBG = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg;
-    var EBG180 = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBGTest2;
-    var EBG120 = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBGTest3;
-    var EBG60 = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBG;
-    var REBG = EBG / min_bg;
-    var REBG60 = EBG60 / min_bg;
+    var EBG =Math.max(0, round((0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg,2));
+    var EBG180 = Math.max(0,round((0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBGTest2,2));
+    var EBG120 = Math.max(0,round((0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBGTest3,2));
+    var EBG60 = Math.max(0,round((0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBG,2));
+    var REBG = round(EBG / min_bg,2);
+    var REBG60 = round(EBG60 / min_bg,2);
+    var EBX = Math.max(0,round(Math.min(EBG,EBG60),2));
+    var REBX = Math.max(0.5,round(Math.min(REBG60,REBG),2));
     //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
     console.log("Experimental test, EBG : "+EBG+" REBG : "+REBG+" iTime : "+iTime+" ; ");
     console.log("*** EBG180 : "+EBG180+" *** EBG120 : "+EBG120+" *** EBG60 : "+EBG60+" *** REBG60 : "+REBG60+" ; ");
@@ -372,7 +374,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             halfBasalTarget = 160;
             var c = halfBasalTarget - normalTarget;
             //sensitivityRatio = c/(c+target_bg-normalTarget);
-            sensitivityRatio = REBG;
+            sensitivityRatio = REBX;
             // limit sensitivityRatio to profile.autosens_max (1.2x by default)
             sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
             sensitivityRatio = round(sensitivityRatio,2);
@@ -418,7 +420,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         halfBasalTarget = 160;
         var c = halfBasalTarget - normalTarget;
         //sensitivityRatio = c/(c+target_bg-normalTarget);
-        sensitivityRatio = REBG;
+        sensitivityRatio = REBX;
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
         sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
         sensitivityRatio = round(sensitivityRatio,2);
@@ -448,7 +450,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         halfBasalTarget = 160;
         var c = halfBasalTarget - normalTarget;
         //sensitivityRatio = c/(c+target_bg-normalTarget);
-        sensitivityRatio = REBG;
+        sensitivityRatio = REBX;
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
         sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
         sensitivityRatio = round(sensitivityRatio,2);
@@ -777,7 +779,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //console.error(predBGI, predCI, predUCI);
             // truncate all BG predictions at 4 hours
             var curvepred = 48;
-            if (HyperPredBGTest >= 450 && IOBpredBG > 85){
+            /*if (HyperPredBGTest >= 450 && IOBpredBG > 85){
             curvepred = 36;
             //console.log("Exp. curvepred is on 2 hours");
             }else if (HyperPredBGTest >= 800 && IOBpredBG > 85){
@@ -786,12 +788,21 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }else{
             curvepred = 48;
             //console.log("Exp. curvepred is on 4 hours");
-            }
+            }*/
+            if (iTime > 0 && iTime <= 180 && EBG60 >= 65){
+
+            if ( IOBpredBGs.length < curvepred) { IOBpredBGs.push(EBG60); }
+            if ( COBpredBGs.length < curvepred) { COBpredBGs.push(EBG60); }
+            if ( aCOBpredBGs.length < curvepred) { aCOBpredBGs.push(EBG60); }
+            if ( UAMpredBGs.length < curvepred) { UAMpredBGs.push(EBG60); }
+            if ( ZTpredBGs.length < curvepred) { ZTpredBGs.push(EBG60); }
+            }else{
             if ( IOBpredBGs.length < curvepred) { IOBpredBGs.push(IOBpredBG); }
             if ( COBpredBGs.length < curvepred) { COBpredBGs.push(COBpredBG); }
             if ( aCOBpredBGs.length < curvepred) { aCOBpredBGs.push(aCOBpredBG); }
             if ( UAMpredBGs.length < curvepred) { UAMpredBGs.push(UAMpredBG); }
             if ( ZTpredBGs.length < curvepred) { ZTpredBGs.push(ZTpredBG); }
+            }
             // calculate minGuardBGs without a wait from COB, UAM, IOB predBGs
             if ( COBpredBG < minCOBGuardBG ) { minCOBGuardBG = round(COBpredBG); }
             if ( UAMpredBG < minUAMGuardBG ) { minUAMGuardBG = round(UAMpredBG); }
@@ -800,8 +811,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             // set minPredBGs starting when currently-dosed insulin activity will peak
             // look ahead 60m (regardless of insulin type) so as to be less aggressive on slower insulins
-            var insulinPeakTime = 90;
-            if (HyperPredBGTest >= 800 && HyperPredBGTest <1100) {
+            var insulinPeakTime = 35;
+            /*if (HyperPredBGTest >= 800 && HyperPredBGTest <1100) {
                 var insulinPeakTime = 35;
                 //console.log("insulinPeakTime because BG rising : "+insulinPeakTime);
             } else if (HyperPredBGTest >= 1100) {
@@ -813,7 +824,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             } else if (HyperPredBGTest < 800) {
                 var insulinPeakTime = 110;
                 //console.log("insulinPeakTime because HyperPredBGTest < 800 : "+insulinPeakTime);
-            }
+            }*/
             // add 30m to allow for insulin delivery (SMBs or temps)
             //insulinPeakTime = 90;
             var insulinPeak5m = (insulinPeakTime/60)*12;
@@ -1304,10 +1315,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             var insulinReqPCT = profile.UAM_InsulinReq/100;
             var maxBolusTT = maxBolus;
-            var EBX = Math.min(EBG,EBG60);
-            var REBX = Math.min(REBG60,REBG);
+            //var EBX = Math.max(0,round(Math.min(EBG,EBG60),2));
+            //var REBX = Math.max(0.5,round(Math.min(REBG60,REBG),2));
             var eCarbs = (((EBX * REBX)-target_bg)/profile.carb_ratio);
-            var eInsulin = eCarbs/profile.carb_ratio;
+            var eInsulin = round(eCarbs/profile.carb_ratio,2);
             var roundSMBTo = 1 / profile.bolus_increment;
             //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
             //if (HyperPredBGTest >= 650 && HyperPredBGTest <=1100 && glucose_status.delta > 0 && EBX > 100 && now >= tae_start && now <= tae_end && IOBpredBG > 70){
@@ -1320,7 +1331,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReqPCT = 1;
                 maxBolusTT = profile.UAM_boluscap;
                 console.log("*** Experimental scale smb ok");
-            } else if (glucose_status.delta >= 0 && iTime >= 120 && iTime <= 180 && bg >= 180) {
+            } else if (glucose_status.delta >= 0 && iTime >= 100 && iTime <= 180 && bg >= 160) {
                 insulinReq = eInsulin ;
                 insulinReqPCT = 1.3;
                 maxBolusTT = profile.UAM_boluscap;
