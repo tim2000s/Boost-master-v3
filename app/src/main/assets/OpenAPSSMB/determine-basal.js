@@ -1394,7 +1394,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 Minimum SMB size would then be rounded _down_ to nearest bolus step.
                 Anything less would become TB instead. */
 //                var minBolus =  Math.round(maxTbrDose*roundSMBTo)/roundSMBTo;
-                var minBolus =  Math.round(maxTbrDose*roundSMBTo)/roundSMBTo * insulinReqPct;
+                var minBolus =  Math.round(maxTbrDose*insulinReqPct*roundSMBTo)/roundSMBTo;
                 console.error("Minimum microbolus size determined to",minBolus,"U. ");
                 rT.reason +=  "minBolus " + minBolus + ", ";
                 if (microBolus < minBolus) {
