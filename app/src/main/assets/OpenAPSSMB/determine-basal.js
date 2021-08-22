@@ -1274,7 +1274,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
                     insulinReqBoost += UAMBoost * UAMBoost_bolus;
-                    insulinReqPct = 1;
+                    insulinReqPct = (profile.temptargetSet ? 1 : 0.6);
                     // Restrict insulinReqPct if UAMBoosted with no TT, low insulin and BGL bounce
                     insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_low && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
                     if (insulinReqPct == 0) UAMBoostReason +="; BGL bounce no TT";
