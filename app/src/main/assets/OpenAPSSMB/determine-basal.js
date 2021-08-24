@@ -339,21 +339,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // disable eating now when there are COB, only works with GhostCOB
         if (meal_data.mealCOB > 0) eatingnow = false;
     }
-
-    // ********* EXPERIMENTAL ************
-    // we are in a TT that is long enough and just started to allow a prebolus
-    if (eatingnow && profile.temptarget_duration > 60 && profile.temptarget_minutesrunning == 0) {
-//        enableSMB = true;
-        var preBolus = profile.EatingNowUAMBoostBolus; //Math.min((profile.temptarget_duration - 180)/10,1.5);;
-        // allow 150% more prebolus for low TT
-        if (target_bg < profile.normal_target_bg) preBolus *= 1.5;
-        rT.units = preBolus;
-        rT.insulinReq = preBolus;
-        rT.reason += "EN: " + profile.temptarget_duration + "m, prebolusing " + preBolus + "U. ";
-        return rT;
-    }
-
-    // ********* EXPERIMENTAL ************
     // patches ===== END
 
     var tick;
@@ -533,6 +518,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // enable UAM (if enabled in preferences)
     var enableUAM=(profile.enableUAM);
 
+    // ********* EXPERIMENTAL ************
+    // we are in a TT that is long enough and just started to allow a prebolus
+    if (eatingnow && profile.temptarget_duration > 60 && profile.temptarget_minutesrunning == 0) {
+        enableSMB = true;
+        var preBolus = profile.EatingNowUAMBoostBolus; //Math.min((profile.temptarget_duration - 180)/10,1.5);;
+        // allow 150% more prebolus for low TT
+        if (target_bg < profile.normal_target_bg) preBolus *= 1.5;
+        rT.units = preBolus;
+        rT.insulinReq = preBolus;
+        rT.reason += "EN: " + profile.temptarget_duration + "m, prebolusing " + preBolus + "U. ";
+        return rT;
+    }
+    // ********* EXPERIMENTAL ************
 
     //console.error(meal_data);
     // carb impact and duration are 0 unless changed below
@@ -968,20 +966,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.reason += "maxDelta "+convert_bg(maxDelta, profile)+" > 30% of BG "+convert_bg(bg, profile)+": SMB disabled; ";
         enableSMB = false;
     }
-
-//    // ********* EXPERIMENTAL ************
-//    // we are in a TT that is long enough and just started to allow a prebolus
-//    if (eatingnow && profile.temptarget_duration > 60 && profile.temptarget_minutesrunning == 0) {
-//        enableSMB = true;
-//        var preBolus = profile.EatingNowUAMBoostBolus; //Math.min((profile.temptarget_duration - 180)/10,1.5);;
-//        // allow 150% more prebolus for low TT
-//        if (target_bg < profile.normal_target_bg) preBolus *= 1.5;
-//        rT.units = preBolus;
-//        rT.insulinReq = preBolus;
-//        rT.reason += "EN: " + profile.temptarget_duration + "m, prebolusing " + preBolus + "U. ";
-//        return rT;
-//    }
-//    // ********* EXPERIMENTAL ************
 
     console.error("BG projected to remain above",convert_bg(min_bg, profile),"for",minutesAboveMinBG,"minutes");
     if ( minutesAboveThreshold < 240 || minutesAboveMinBG < 60 ) {
