@@ -527,7 +527,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (target_bg < profile.normal_target_bg) preBolus *= 1.5;
         rT.units = preBolus;
         rT.insulinReq = preBolus;
-        rT.reason = "EN: " + profile.temptarget_duration + "m, prebolusing " + preBolus + "U. ";
+        rT.reason = "EN: " + convert_bg(target_bg, profile) + " Temp Target for " + profile.temptarget_duration + " mins, prebolusing " + preBolus + "U. ";
         return rT;
     }
     // ********* EXPERIMENTAL ************
