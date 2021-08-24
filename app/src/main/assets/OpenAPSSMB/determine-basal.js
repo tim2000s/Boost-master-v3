@@ -1188,7 +1188,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // ============  UAMBoost for Eating Now mode  ==================== START
             // variables for deltas and defaults
             var UAM_safedelta = 0, UAM_deltaShortRise = 0, UAM_deltaLongRise = 0, UAM_deltaAvgRise = 0, UAMBoost = 1;
-            var insulinReqPctDefault = 0.7; // this is the default insulinReqPct and maxBolus is respected outside of eating now
+            var insulinReqPctDefault = 0.6; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var insulinReqPct = insulinReqPctDefault; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
@@ -1273,7 +1273,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
                     insulinReqBoost += UAMBoost * UAMBoost_bolus;
-                    insulinReqPct = (profile.temptargetSet ? 1 : 0.6);
+                    // 100% insulinReqPct with a temp target else default
+                    insulinReqPct = (profile.temptargetSet ? 1 : insulinReqPctDefault);
                     // Restrict insulinReqPct if UAMBoosted with no TT, low insulin and BGL bounce
                     insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_low && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
                     if (insulinReqPct == 0) UAMBoostReason +="; BGL bounce no TT";
