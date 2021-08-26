@@ -1337,8 +1337,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else {
                     // Restrict insulinReq when above BGBoost_threshold
                     // insulinReqPct = ( bg > BGBoost_threshold ? 0.6 : insulinReqPct );
-                    // Restrict insulinReq when above BGBoost_threshold using delta if its not zero
-                    insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > 0 ? round(Math.max(Math.min(UAM_safedelta/18,1),insulinReqPctDefault),2) : insulinReqPct );
+                    // Restrict insulinReq when above BGBoost_threshold using delta if its not zero and no TT
+                    insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > 0 && !profile.temptargetSet ? round(Math.max(Math.min(UAM_safedelta/18,1),insulinReqPctDefault),2) : insulinReqPct );
                     // if BG above threshold with autoISF active and using BGBoost not BGBoost+ then allow 100%
                     if (bg > BGBoost_threshold && typeof liftISF !== 'undefined' && BGBoosted && !UAMBoosted) insulinReqPct = 1.0;
                     SMB_TBR = ( insulinReqPct < 1 ? true : SMB_TBR );
