@@ -1210,11 +1210,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + (profile.temptargetSet ? "(" + Math.max(Math.min(0, profile.temptarget_duration)-profile.temptarget_minutesrunning,0) + ")" : "") + ":";
 
             }
-            console.log("UAM_safedelta: " +UAM_safedelta);
-            console.log("UAM_deltaShortRise: " + UAM_deltaShortRise);
-            console.log("UAM_deltaLongRise: " + UAM_deltaLongRise);
-            console.log("UAM_deltaAvgRise: " + UAM_deltaAvgRise);
-            console.log("UAMBoost: " + UAMBoost);
+            //console.log("UAM_safedelta: " +UAM_safedelta);
+            //console.log("UAM_deltaShortRise: " + UAM_deltaShortRise);
+            //console.log("UAM_deltaLongRise: " + UAM_deltaLongRise);
+            //console.log("UAM_deltaAvgRise: " + UAM_deltaAvgRise);
+            //console.log("UAMBoost: " + UAMBoost);
 
             // if autoISF is active and insulinReq is less than normal maxbolus then allow 100%
             if (typeof liftISF !== 'undefined' && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
