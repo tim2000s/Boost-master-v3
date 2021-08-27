@@ -1305,7 +1305,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (BGBoost_scale >=1.5 && minDelta > expectedDelta && insulinReqBoost <=0) {
                     // Need to let this flow into the code and not just return basal
                     insulinReqPct = insulinReqPctDefault;
-                    SMB_TBR = true;
+                    SMB_TBR = false; //TBR seems to overdo it?
                     //insulinReqBoost = (maxSafeBasal / 60) * 15;
                     //profile.current_basal
                     insulinReqBoost = profile.current_basal;
