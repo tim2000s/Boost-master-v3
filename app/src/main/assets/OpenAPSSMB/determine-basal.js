@@ -1205,7 +1205,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (glucose_status.short_avgdelta !=0) UAM_deltaShortRise = round((glucose_status.delta - glucose_status.short_avgdelta) / Math.abs(glucose_status.short_avgdelta),2);
                 UAM_deltaAvgRise = round(((UAM_deltaShortRise + UAM_deltaLongRise)/2),2); // pct changes combined
                  // set the UAMBoost factor that is the avg delta rise combined minimum of zero + 1 to allow multiply
-                UAMBoost = round(1 + Math.max(UAM_deltaAvgRise,0),2);
+                //UAMBoost = round(1 + Math.max(UAM_deltaAvgRise,0),2);
+                UAMBoost = round(1+UAM_deltaAvgRise,2);
                 rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + (profile.temptargetSet ? "(" + Math.max(Math.min(30, profile.temptarget_duration)-profile.temptarget_minutesrunning,0) + ")" : "") + ":";
 
             }
