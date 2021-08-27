@@ -525,7 +525,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var preBolus = profile.EatingNowUAMBoostBolus; //Math.min((profile.temptarget_duration - 180)/10,1.5);;
         // allow 150% more prebolus for low TT
         if (target_bg < profile.normal_target_bg) preBolus *= 1.5;
-        rT.units = preBolus;
+        rT.units = (preBolus*roundSMBTo)/roundSMBTo;
         rT.insulinReq = preBolus;
         rT.reason = "EN: " + convert_bg(target_bg, profile) + " Temp Target for " + profile.temptarget_duration + " mins, prebolusing " + preBolus + "U. ";
         return rT;
