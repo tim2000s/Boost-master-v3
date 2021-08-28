@@ -1207,7 +1207,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  // set the UAMBoost factor that is the avg delta rise combined minimum of zero + 1 to allow multiply
                 //UAMBoost = round(1 + Math.max(UAM_deltaAvgRise,0),2);
                 UAMBoost = round(1+UAM_deltaAvgRise,2);
-                rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + (profile.temptargetSet ? "(" + Math.max(Math.min(30, profile.temptarget_duration)-profile.temptarget_minutesrunning,0) + ")" : "") + ":";
+                rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + (profile.temptargetSet ? "(" + Math.max(Math.min(45, profile.temptarget_duration)-profile.temptarget_minutesrunning,0) + ")" : "") + ":";
 
             }
             //console.log("UAM_safedelta: " +UAM_safedelta);
@@ -1244,13 +1244,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ****** Temp Target Set <= normal profile target ******
                 if (profile.temptargetSet && target_bg <= profile.normal_target_bg) {
                     // Increase UAMBoost trigger sensitivity if there is more IOB as its probably second wave
-//                    if (profile.temptarget_minutesrunning <= 30 && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) UAMBoost_threshold = UAMBoost_threshold_low;
+                    if (profile.temptarget_minutesrunning <= 45 && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) UAMBoost_threshold = UAMBoost_threshold_low;
                     // Any rise for 30 minutes triggers UAMBoost
-//                    if (profile.temptarget_minutesrunning <= 30 && UAM_safedelta >=0) UAMBoostOK = true;
-//                    if (UAMBoostOK) UAMBoostReason += "; delta >0";
+                    if (profile.temptarget_minutesrunning <= 45 && UAM_safedelta >=0) UAMBoostOK = true;
+                    if (UAMBoostOK) UAMBoostReason += "; delta >0";
                     // just try this?
-                    UAMBoost_threshold = UAMBoost_threshold_low;
-                    UAMBoostOK = true;
+//                    UAMBoost_threshold = UAMBoost_threshold_low;
+//                    UAMBoostOK = true;
                 }
 
                 // ****** No Temp Target Set ******
