@@ -1266,7 +1266,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // default is to not allow further boost
                     UAMBoostOK = false;
                     // No IOB limit for 45 minutes with a TT, allowing UAMBoost
-                    if (profile.temptargetSet && profile.temptarget_minutesrunning <= 45) UAMBoostOK = true;
+//                    if (profile.temptargetSet && profile.temptarget_minutesrunning <= 45) UAMBoostOK = true;
+                    if (profile.temptargetSet) UAMBoostOK = true;
                     // BGBoost Combo Mode :)
                     //if (UAM_safedelta >=5 && BGBoost_scale >=2) UAMBoostOK = true;
                 }
