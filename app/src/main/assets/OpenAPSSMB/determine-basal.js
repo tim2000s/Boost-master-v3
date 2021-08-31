@@ -1202,7 +1202,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // Calculate percentage change in deltas, long to short and short to now
                 if (glucose_status.long_avgdelta !=0) UAM_deltaLongRise = round((glucose_status.short_avgdelta - glucose_status.long_avgdelta) / Math.abs(glucose_status.long_avgdelta),2);
                 if (glucose_status.short_avgdelta !=0) UAM_deltaShortRise = round((glucose_status.delta - glucose_status.short_avgdelta) / Math.abs(glucose_status.short_avgdelta),2);
-                UAM_deltaAvgRise = round(((UAM_deltaShortRise + UAM_deltaLongRise)/2),2); // pct changes combined
+                //UAM_deltaAvgRise = round(((UAM_deltaShortRise + UAM_deltaLongRise)/2),2); // pct changes combined
+                UAM_deltaAvgRise = UAM_deltaShortRise;
                  // set the UAMBoost factor that is the avg delta rise combined minimum of zero + 1 to allow multiply
                 //UAMBoost = round(1 + Math.max(UAM_deltaAvgRise,0),2);
                 //UAMBoost = round(1+UAM_deltaAvgRise,2);
@@ -1330,7 +1331,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== RISE RESTRICTIONS ==============
                  // if the rise is slowing TBR only
-                if (UAM_deltaAvgRise < 0) {
+                if (UAM_deltaAvgRise < -0.10) {
                     insulinReqPct = (typeof liftISF !== 'undefined'? insulinReqPct : 0); // TBR only if no autoISF
                     SMB_TBR = true;
                     EatingNowMaxSMB = maxBolus;
