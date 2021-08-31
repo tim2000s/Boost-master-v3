@@ -518,7 +518,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // enable UAM (if enabled in preferences)
     var enableUAM=(profile.enableUAM);
 
-    // ********* EXPERIMENTAL ************
     // we are in a TT that is long enough and just started to allow a prebolus
     if (eatingnow && profile.temptarget_duration > 60 && profile.temptarget_minutesrunning == 0) {
         enableSMB = true;
@@ -531,7 +530,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.reason = "EN: " + convert_bg(target_bg, profile) + " Temp Target for " + profile.temptarget_duration + " mins, prebolusing " + rT.units + "U. ";
         return rT;
     }
-    // ********* EXPERIMENTAL ************
 
     //console.error(meal_data);
     // carb impact and duration are 0 unless changed below
