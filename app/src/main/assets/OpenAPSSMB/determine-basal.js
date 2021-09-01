@@ -1297,7 +1297,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     BGBoost_bolus = Math.max(insulinReq, BGBoost_bolus); // use insulinReq if it is more
                     //BGBoost_scale *= Math.min(Math.max(UAM_safedelta/9,1),3); // boost for delta test min 1x max 3x
                     insulinReqBoost += BGBoost_scale * BGBoost_bolus;
-                    insulinReqPct = 1; // allow all insulin up to maxBolus
+                    insulinReqPct = (profile.temptargetSet ? 1 : insulinReqPctDefault);
                     EatingNowMaxSMB = (profile.EatingNowBGBoostMaxSMB > 0 ? profile.EatingNowBGBoostMaxSMB : maxBolus);
                     // when predicted to go to twice the BG_threshold allow TBR
                     //SMB_TBR = ( BGBoost_scale >=1.5 ? true :false );
@@ -1309,7 +1309,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // If we are predicted to exceed BGBoost_threshold allow BGBoost TBR when no insulin required
                 if (BGBoost_scale >=1.5 && minDelta > expectedDelta && insulinReqBoost <=0) {
                     // Need to let this flow into the code and not just return basal
-                    insulinReqPct = insulinReqPctDefault;
+                    insulinReqPct = (profile.temptargetSet ? 1 : insulinReqPctDefault);
                     SMB_TBR = false; //TBR seems to overdo it?
                     //insulinReqBoost = (maxSafeBasal / 60) * 15;
                     //profile.current_basal
