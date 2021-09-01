@@ -1187,7 +1187,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // ============  UAMBoost for Eating Now mode  ==================== START
             // variables for deltas and defaults
             var UAM_safedelta = 0, UAM_deltaShortRise = 0, UAM_deltaLongRise = 0, UAM_deltaAvgRise = 0, UAMBoost = 1;
-            var insulinReqPctDefault = 0.6; // this is the default insulinReqPct and maxBolus is respected outside of eating now
+            var insulinReqPctDefault = 0.65; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var insulinReqPct = insulinReqPctDefault; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
@@ -1344,7 +1344,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // Restrict insulinReq when above BGBoost_threshold
                     // insulinReqPct = ( bg > BGBoost_threshold ? 0.6 : insulinReqPct );
                     // Restrict insulinReq when above BGBoost_threshold using delta if its not zero and no TT
-                    insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > 0 && !profile.temptargetSet ? round(Math.max(Math.min(UAM_safedelta/18,1),insulinReqPctDefault),2) : insulinReqPct );
+                    //insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > 0 && !profile.temptargetSet ? round(Math.max(Math.min(UAM_safedelta/18,1),insulinReqPctDefault),2) : insulinReqPct );
                     // if BG above threshold with autoISF active and using BGBoost not BGBoost+ then allow 100%
                     if (bg > BGBoost_threshold && typeof liftISF !== 'undefined' && BGBoosted && !UAMBoosted) insulinReqPct = 1.0;
                     SMB_TBR = ( insulinReqPct < 1 ? true : SMB_TBR );
