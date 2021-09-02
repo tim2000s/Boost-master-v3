@@ -521,13 +521,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // we are in a TT that is long enough and just started to allow a prebolus
     if (eatingnow && profile.temptarget_duration > 60 && profile.temptarget_minutesrunning == 0) {
         enableSMB = true;
-        //var preBolus = profile.EatingNowUAMBoostBolus; //Math.min((profile.temptarget_duration - 180)/10,1.5);;
-        var preBolus = round(profile.EatingNowUAMBoostMaxSMB * 0.8,1);
-        // allow 150% more prebolus for low TT
-        //if (target_bg < profile.normal_target_bg) preBolus *= 1.5;
+        // allow all of maxSMB for low TT else 80%
+        var preBolus = round(profile.EatingNowUAMBoostMaxSMB * (target_bg < profile.normal_target_bg ? 1: 0.8),1);
         rT.units = preBolus;
         rT.insulinReq = rT.units;
-        rT.reason = "EN: " + convert_bg(target_bg, profile) + " Temp Target for " + profile.temptarget_duration + " mins, prebolusing " + rT.units + "U. ";
+        rT.reason = "EN: " + convert_bg(target_bg, profile) + " Temp Target for " + profile.temptarget_duration + " mins, prebolusing " + rT.units + "/" + profile.EatingNowUAMBoostMaxSMB + "U.";
         return rT;
     }
 
