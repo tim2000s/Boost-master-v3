@@ -1363,7 +1363,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     SMB_TBR = SMB_TBR;
                 } else if (profile.EatingNowOverride && profile.temptargetSet) {
                     // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus
-                    maxBolus = (target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
+                    //maxBolus = (target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
+                    maxBolus = maxBolus;
                     //insulinReqPct = (insulinReqPct == 0 ? 0 : insulinReqPctDefault); // need this for safety as testing
                     // Allow inherited insulinReqPct with maxBolus restriction
                     insulinReqPct = (target_bg < profile.normal_target_bg ? insulinReqPctDefault : insulinReqPct);
