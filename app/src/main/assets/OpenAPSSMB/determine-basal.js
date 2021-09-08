@@ -1241,14 +1241,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 //var UAMBoost_threshold = (iob_data.iob < (UAMBoost_threshold_low * UAMBoost_bolus) ? UAMBoost_threshold_low : UAMBoost_threshold_high);
 
                 // ****** Temp Target Set <= normal profile target ******
-                if (profile.temptargetSet && target_bg <= profile.normal_target_bg) {
+                if (profile.temptargetSet && target_bg <= profile.normal_target_bg && UAM_safedelta >0) {
                     // Increase UAMBoost trigger sensitivity if there is more IOB as its probably second wave
 //                    if (profile.temptarget_minutesrunning <= 45 && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) UAMBoost_threshold = UAMBoost_threshold_low;
                     // Any rise for 30 minutes triggers UAMBoost
 //                    if (profile.temptarget_minutesrunning <= 45 && UAM_safedelta >=0) UAMBoostOK = true;
                     // just try this?
                     UAMBoost_threshold = UAMBoost_threshold_low;
-                    if (UAM_safedelta >0) UAMBoostOK = true;
+                    UAMBoostOK = true;
                     if (UAMBoostOK) UAMBoostReason += "; delta >0";
                 }
 
