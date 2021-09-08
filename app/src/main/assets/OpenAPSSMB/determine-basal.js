@@ -1248,7 +1248,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //                    if (profile.temptarget_minutesrunning <= 45 && UAM_safedelta >=0) UAMBoostOK = true;
                     // just try this?
                     UAMBoost_threshold = UAMBoost_threshold_low;
-                    UAMBoostOK = true;
+                    if (UAM_safedelta >0) UAMBoostOK = true;
                     if (UAMBoostOK) UAMBoostReason += "; delta >0";
                 }
 
