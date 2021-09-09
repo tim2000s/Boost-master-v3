@@ -525,6 +525,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var preBolus = round(profile.EatingNowUAMBoostMaxSMB * (target_bg < profile.normal_target_bg ? 1: 0.8),1);
         rT.units = preBolus;
         rT.insulinReq = rT.units;
+        rT.boostType = "Prebolus";
         rT.reason = "EN: " + convert_bg(target_bg, profile) + " Temp Target for " + profile.temptarget_duration + " mins, prebolusing " + rT.units + "/" + profile.EatingNowUAMBoostMaxSMB + "U.";
         return rT;
     }
