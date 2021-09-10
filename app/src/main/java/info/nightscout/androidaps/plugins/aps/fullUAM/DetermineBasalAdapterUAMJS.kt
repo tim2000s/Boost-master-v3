@@ -19,7 +19,6 @@ import info.nightscout.androidaps.logging.LTag
 import info.nightscout.androidaps.plugins.aps.logger.LoggerCallback
 import info.nightscout.androidaps.plugins.aps.loop.ScriptReader
 import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker
-import info.nightscout.androidaps.plugins.general.openhumans.OpenHumansUploader
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.GlucoseStatus
 import info.nightscout.androidaps.utils.SafeParse
 import info.nightscout.androidaps.utils.T
@@ -45,7 +44,6 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
     @Inject lateinit var iobCobCalculator: IobCobCalculator
     @Inject lateinit var activePlugin: ActivePlugin
     @Inject lateinit var repository: AppRepository
-    @Inject lateinit var openHumansUploader: OpenHumansUploader
 
     private var profile = JSONObject()
     private var mGlucoseStatus = JSONObject()
@@ -137,7 +135,6 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
                 aapsLogger.debug(LTag.APS, "Result: $result")
                 try {
                     val resultJson = JSONObject(result)
-                    openHumansUploader.enqueueSMBData(profile, mGlucoseStatus, iobData, mealData, currentTemp, autosensData, microBolusAllowed, smbAlwaysAllowed, resultJson)
                     determineBasalResultUAM = DetermineBasalResultUAM(injector, resultJson)
                 } catch (e: JSONException) {
                     aapsLogger.error(LTag.APS, "Unhandled exception", e)
