@@ -1245,7 +1245,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (profile.temptargetSet && target_bg < profile.normal_target_bg && UAM_safedelta >0) {
                     UAMBoost_threshold = UAMBoost_threshold_low;
                     UAMBoostOK = true;
-                    // if (UAMBoostOK) UAMBoostReason += "; delta >0";
+                    if (UAMBoostOK) UAMBoostReason += "; delta >0";
                 }
 
                 // ****** Temp Target Set = normal profile target == NORMAL UAM MODE ******
@@ -1253,7 +1253,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // Any rise for 30 minutes triggers UAMBoost
                     UAMBoost_threshold = UAMBoost_threshold_low;
                     UAMBoostOK = true;
-                    // if (UAMBoostOK) UAMBoostReason += "; delta >0";
+                    if (UAMBoostOK) UAMBoostReason += "; delta >0";
                 }
 
                 // ****** No Temp Target Set ******
