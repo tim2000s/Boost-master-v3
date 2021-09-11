@@ -1241,16 +1241,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var UAMBoost_threshold = (iob_data.iob >= (UAMBoost_threshold_high * UAMBoost_bolus) ? UAMBoost_threshold_high : UAMBoost_threshold_low);
                 //var UAMBoost_threshold = (iob_data.iob < (UAMBoost_threshold_low * UAMBoost_bolus) ? UAMBoost_threshold_low : UAMBoost_threshold_high);
 
-                // ****** Temp Target Set <= normal profile target ******
-                if (profile.temptargetSet && target_bg <= profile.normal_target_bg && UAM_safedelta >0) {
-                    // Increase UAMBoost trigger sensitivity if there is more IOB as its probably second wave
-//                    if (profile.temptarget_minutesrunning <= 45 && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) UAMBoost_threshold = UAMBoost_threshold_low;
-                    // Any rise for 30 minutes triggers UAMBoost
-//                    if (profile.temptarget_minutesrunning <= 45 && UAM_safedelta >=0) UAMBoostOK = true;
-                    // just try this?
+                // ****** Temp Target Set < normal profile target == MAX UAM MODE ******
+                if (profile.temptargetSet && target_bg < profile.normal_target_bg && UAM_safedelta >0) {
                     UAMBoost_threshold = UAMBoost_threshold_low;
                     UAMBoostOK = true;
-                    if (UAMBoostOK) UAMBoostReason += "; delta >0";
+                    // if (UAMBoostOK) UAMBoostReason += "; delta >0";
+                }
+
+                // ****** Temp Target Set = normal profile target == NORMAL UAM MODE ******
+                if (profile.temptargetSet && target_bg == profile.normal_target_bg && UAM_safedelta >0 && profile.temptarget_minutesrunning <= 30) {
+                    // Any rise for 30 minutes triggers UAMBoost
+                    UAMBoost_threshold = UAMBoost_threshold_low;
+                    UAMBoostOK = true;
+                    // if (UAMBoostOK) UAMBoostReason += "; delta >0";
                 }
 
                 // ****** No Temp Target Set ******
@@ -1273,7 +1276,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // If there is a sudden delta change allow UAMBoost
-                if (UAMBoostOK && UAMBoost >= UAMBoost_threshold) {
+                if (UAMBoostOK && UAMBoost > UAMBoost_threshold) {
                     // boost the insulin further
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
                     insulinReqBoost += UAMBoost * UAMBoost_bolus;
