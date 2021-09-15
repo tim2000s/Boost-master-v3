@@ -1253,7 +1253,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // Any rise for 30 minutes triggers UAMBoost
                     UAMBoost_threshold = UAMBoost_threshold_low;
                     UAMBoostOK = true;
-                    if (UAMBoostOK) UAMBoostReason += "; delta >0";
+                    if (UAMBoostOK) UAMBoostReason += "; delta >0, <30m runtime";
                 }
 
                 // ****** No Temp Target Set ******
@@ -1261,18 +1261,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAMBoost_threshold == UAMBoost_threshold_low && UAM_safedelta >=8 && minAvgDelta > 0) UAMBoostOK = true;
                 // High Threshold mode
                 if (UAMBoost_threshold == UAMBoost_threshold_high && UAM_safedelta >=8 && minAvgDelta > 0) UAMBoostOK = true;
-                // BGBoost Combo Mode :)
-                //if (UAM_safedelta >=5 && minAvgDelta > 0 && BGBoost_scale >=2) UAMBoostOK = true;
 
                 // Check IOB for UAMBoost, when IOB is less than UAMBoost MaxSMB without a TT
                 if (UAMBoostOK && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) {
                     // default is to not allow further boost
                     UAMBoostOK = false;
                     // No IOB limit for 45 minutes with a TT, allowing UAMBoost
-//                    if (profile.temptargetSet && profile.temptarget_minutesrunning <= 45) UAMBoostOK = true;
+                    // if (profile.temptargetSet && profile.temptarget_minutesrunning <= 45) UAMBoostOK = true;
                     if (profile.temptargetSet) UAMBoostOK = true;
-                    // BGBoost Combo Mode :)
-                    //if (UAM_safedelta >=5 && BGBoost_scale >=2) UAMBoostOK = true;
+                    UAMBoostReason += (UAMBoostOK ? "; iob>maxSMB +TT" : "; iob>maxSMB no TT");
                 }
 
                 // If there is a sudden delta change allow UAMBoost
@@ -1360,6 +1357,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  if (minAgo > 1) {
                      insulinReqPct = 0;
                      SMB_TBR = true;
+                     UAMBoostReason +=";minAgo >1";
                  }
 
                 if (eatingnowtimeOK) {
