@@ -1276,7 +1276,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAMBoostOK && UAMBoost > UAMBoost_threshold) {
                     // boost the insulin further
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
-                    insulinReqBoost += UAMBoost * UAMBoost_bolus;
+                    insulinReqBoost = UAMBoost * UAMBoost_bolus;
                     // 100% insulinReqPct with a temp target else default
                     insulinReqPct = (profile.temptargetSet ? 1 : insulinReqPctDefault);
                     // 80% insulinReqPct with a temp target that has a prebolus
@@ -1297,7 +1297,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     BGBoost_bolus = Math.max(insulinReq, BGBoost_bolus); // use insulinReq if it is more
                     //BGBoost_scale *= Math.min(Math.max(UAM_safedelta/9,1),3); // boost for delta test min 1x max 3x
-                    insulinReqBoost += BGBoost_scale * BGBoost_bolus;
+                    insulinReqBoost = (profile.EatingNowISFBoost < 1 ? 0 : BGBoost_scale * BGBoost_bolus);
                     insulinReqPct = (profile.temptargetSet ? 1 : insulinReqPctDefault);
                     EatingNowMaxSMB = (profile.EatingNowBGBoostMaxSMB > 0 ? profile.EatingNowBGBoostMaxSMB : maxBolus);
                     // when predicted to go to twice the BG_threshold allow TBR
@@ -1308,7 +1308,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== BGBOOST TBR ==============
                 // If we are predicted to exceed BGBoost_threshold allow BGBoost TBR when no insulin required
-                if (BGBoost_scale >=1.5 && minDelta > expectedDelta && insulinReqBoost <=0) {
+                if (BGBoost_scale >=1.5 && minDelta > expectedDelta && insulinReqBoost <0) {
                     // Need to let this flow into the code and not just return basal
                     insulinReqPct = (profile.temptargetSet ? 1 : insulinReqPctDefault);
                     SMB_TBR = false; //TBR seems to overdo it?
