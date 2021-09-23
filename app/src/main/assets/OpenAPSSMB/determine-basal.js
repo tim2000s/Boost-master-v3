@@ -1375,7 +1375,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== INSULIN BOOST  ==============
-                UAMBoostReason = ", Boost: UAM>" + round(UAMBoost_threshold,1) + ": " + UAMBoost + (UAMBoosted ? "*" + round (UAMBoost_bolus,2) :"") + ", BG>" + convert_bg(BGBoost_threshold, profile) + ": " + round(BGBoost_scale,1) + (BGBoosted ? "*" + round(BGBoost_bolus,2) :"") + UAMBoostReason;
+                UAMBoostReason = ", Boost: UAM>" + round(UAMBoost_threshold,1) + ": " + UAMBoost + (UAMBoosted ? "*" + round (UAMBoost_bolus,2) :"") + ", BG>" + convert_bg(BGBoost_threshold, profile) + ": " + round(BGBoost_scale,1) + (BGBoosted && insulinReqBoost >0 ? "*" + round(BGBoost_bolus,2) :"") + UAMBoostReason;
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
