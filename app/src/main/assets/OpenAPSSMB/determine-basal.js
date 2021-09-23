@@ -1245,7 +1245,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (profile.temptargetSet && target_bg < profile.normal_target_bg && UAM_safedelta >0) {
                     UAMBoost_threshold = UAMBoost_threshold_low;
                     UAMBoostOK = true;
-                    if (UAMBoostOK) UAMBoostReason += "; delta >0";
+//                    if (UAMBoostOK) UAMBoostReason += "; delta >0";
                 }
 
                 // ****** Temp Target Set = normal profile target == NORMAL UAM MODE ******
@@ -1253,7 +1253,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // Any rise for 30 minutes triggers UAMBoost
                     UAMBoost_threshold = UAMBoost_threshold_low;
                     UAMBoostOK = true;
-                    if (UAMBoostOK) UAMBoostReason += "; delta >0, <30m runtime";
+//                    if (UAMBoostOK) UAMBoostReason += "; delta >0, <30m runtime";
                 }
 
                 // ****** No Temp Target Set ******
@@ -1269,7 +1269,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // No IOB limit for 45 minutes with a TT, allowing UAMBoost
                     // if (profile.temptargetSet && profile.temptarget_minutesrunning <= 45) UAMBoostOK = true;
                     if (profile.temptargetSet) UAMBoostOK = true;
-                    UAMBoostReason += (UAMBoostOK ? "; iob>maxSMB +TT" : "; iob>maxSMB no TT");
+//                    UAMBoostReason += (UAMBoostOK ? "; iob>maxSMB +TT" : "; iob>maxSMB no TT");
                 }
 
                 // If there is a sudden delta change allow UAMBoost
@@ -1336,7 +1336,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = (typeof liftISF !== 'undefined'? insulinReqPct : 0); // TBR only if no autoISF
                     SMB_TBR = true;
                     EatingNowMaxSMB = maxBolus;
-                    UAMBoostReason += "; delta slowing";
+                    UAMBoostReason = "; delta slowing";
                     // Restrict insulinReq when above BGBoost_threshold
                     insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > insulinReqPctDefault ? insulinReqPctDefault : insulinReqPct );
                     // this may help after sensor errors
@@ -1357,7 +1357,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  if (minAgo > 1) {
                      insulinReqPct = 0;
                      SMB_TBR = true;
-                     UAMBoostReason +=";minAgo >1";
+                     UAMBoostReason =";minAgo>1";
                  }
 
                 if (eatingnowtimeOK) {
