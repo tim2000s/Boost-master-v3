@@ -366,8 +366,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
     console.error("; CR:",profile.carb_ratio);
+    // ISFBoost START
     // Allow ISFBoost if EN rising more than expected and no autoISF
-    if (eatingnow && eatingnowtimeOK && glucose_status.delta > 6 && typeof liftISF === 'undefined') sens = sens * profile.EatingNowISFBoost;
+    var ISFBoost = 1; // default is no ISFBoost
+    if (eatingnow && eatingnowtimeOK && glucose_status.delta > 6 && typeof liftISF === 'undefined') ISFBoost = profile.EatingNowISFBoost;
+    sens = sens * ISFBoost;
+    // ISFBoost END
     console.log("sens: " +profile.sens+ "/"+profile.EatingNowISFBoost+"="+sens);
     sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio);
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
@@ -902,7 +906,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + "/" + glucose_status.long_avgdelta + ", ISF: " + convert_bg(sens, profile) + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + "/" + glucose_status.long_avgdelta + ", ISF: " + convert_bg(sens, profile) + (ISFBoost <1 ? "(" + round(ISFBoost*100,0) + "%)" : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
     rT.reason += ", AS: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     if (typeof liftISF !== 'undefined') rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     if (lastCOBpredBG > 0) {
