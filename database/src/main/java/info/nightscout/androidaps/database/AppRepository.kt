@@ -1,5 +1,6 @@
 package info.nightscout.androidaps.database
 
+import info.nightscout.androidaps.annotations.OpenForTesting
 import info.nightscout.androidaps.database.data.NewEntries
 import info.nightscout.androidaps.database.entities.*
 import info.nightscout.androidaps.database.interfaces.DBEntry
@@ -15,6 +16,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.roundToInt
 
+@OpenForTesting
 @Singleton
 open class AppRepository @Inject internal constructor(
     internal val database: AppDatabase
@@ -342,8 +344,8 @@ open class AppRepository @Inject internal constructor(
     fun deleteAllTherapyEventsEntries() =
         database.therapyEventDao.deleteAllEntries()
 
-    fun getLastTherapyRecord(type: TherapyEvent.Type): Single<ValueWrapper<TherapyEvent>> =
-        database.therapyEventDao.getLastTherapyRecord(type).toWrappedSingle()
+    fun getLastTherapyRecordUpToNow(type: TherapyEvent.Type): Single<ValueWrapper<TherapyEvent>> =
+        database.therapyEventDao.getLastTherapyRecord(type, System.currentTimeMillis()).toWrappedSingle()
             .subscribeOn(Schedulers.io())
 
     fun getTherapyEventByTimestamp(type: TherapyEvent.Type, timestamp: Long): TherapyEvent? =
