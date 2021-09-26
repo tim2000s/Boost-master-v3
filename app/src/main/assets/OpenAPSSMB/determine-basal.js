@@ -1337,7 +1337,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // If target is just above normal target restrict maxBolus
                 EatingNowMaxSMB = ( profile.temptargetSet && target_bg == profile.normal + 1 ? maxBolus : EatingNowMaxSMB );
 
-
                 // ============== RISE RESTRICTIONS ==============
                  // if the rise is slowing TBR only
                 if (UAM_deltaAvgRise < -0.10) {
