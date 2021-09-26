@@ -64,7 +64,7 @@ function enable_smb(
     if (! microBolusAllowed) {
         console.error("SMB disabled (!microBolusAllowed)");
         return false;
-    } else if (! profile.allowSMB_with_high_temptarget && profile.temptargetSet && target_bg > profile.normal_target_bg) {
+    } else if (! profile.allowSMB_with_high_temptarget && profile.temptargetSet && target_bg > profile.normal_target_bg+1) {
         console.error("SMB disabled due to high temptarget of",target_bg);
         return false;
     } else if (meal_data.bwFound === true && profile.A52_risk_enable === false) {
@@ -334,7 +334,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // normal target or less enables eating now
             if (target_bg <= profile.normal_target_bg) eatingnow = true;
             // high target disables eating now
-            if (target_bg > profile.normal_target_bg) eatingnow = false;
+            if (target_bg > profile.normal_target_bg+1) eatingnow = false;
          }
         // disable eating now when there are COB, only works with GhostCOB
         if (meal_data.mealCOB > 0) eatingnow = false;
@@ -1253,7 +1253,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ****** Temp Target Set = normal profile target == NORMAL UAM MODE ******
-                if (profile.temptargetSet && target_bg == profile.normal_target_bg && UAM_safedelta >0 && profile.temptarget_minutesrunning <= 30) {
+                if (profile.temptargetSet && (target_bg == profile.normal_target_bg || target_bg == profile.normal + 1) && UAM_safedelta >0 && profile.temptarget_minutesrunning <= 30) {
                     // Any rise for 30 minutes triggers UAMBoost
                     UAMBoost_threshold = UAMBoost_threshold_low;
                     UAMBoostOK = true;
@@ -1333,6 +1333,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //                    // Allow ENMax SMB for BGBoost as maxbolus
 //                    EatingNowMaxSMB = (profile.EatingNowBGBoostMaxSMB > 0 ? profile.EatingNowBGBoostMaxSMB : maxBolus);
 //                }
+
+                // If target is just above normal target restrict maxBolus
+                EatingNowMaxSMB = ( profile.temptargetSet && target_bg == profile.normal + 1 ? maxBolus : EatingNowMaxSMB );
+
 
                 // ============== RISE RESTRICTIONS ==============
                  // if the rise is slowing TBR only
