@@ -523,7 +523,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var enableUAM=(profile.enableUAM);
 
     // we are in a TT that is long enough and just started to allow a prebolus
-    if (eatingnow && profile.temptarget_duration > 60 && profile.temptarget_minutesrunning == 0) {
+    if (eatingnow && profile.temptarget_duration > 60 && target_bg < profile.normal_target_bg + 1 && profile.temptarget_minutesrunning == 0) {
         enableSMB = true;
         // allow all of maxSMB for low TT else 80%
         var preBolus = round(profile.EatingNowUAMBoostMaxSMB * (target_bg < profile.normal_target_bg ? 1: 0.8),1);
