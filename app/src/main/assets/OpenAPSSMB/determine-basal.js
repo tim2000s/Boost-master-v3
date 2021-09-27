@@ -332,9 +332,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
         if (profile.temptargetSet) {  // tt duration prevents immediate SMB
             // normal target or less enables eating now
-            if (target_bg <= profile.normal_target_bg) eatingnow = true;
+            if (target_bg <= profile.normal_target_bg + 1) eatingnow = true;
             // high target disables eating now
-            if (target_bg > profile.normal_target_bg+1) eatingnow = false;
+            if (target_bg > profile.normal_target_bg + 1) eatingnow = false;
          }
         // disable eating now when there are COB, only works with GhostCOB
         if (meal_data.mealCOB > 0) eatingnow = false;
@@ -369,7 +369,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // ISFBoost START
     // Allow ISFBoost if EN rising more than expected and no autoISF
     var ISFBoost = 1; // default is no ISFBoost
-    if (eatingnow && eatingnowtimeOK && glucose_status.delta > 6 && typeof liftISF === 'undefined') ISFBoost = profile.EatingNowISFBoost;
+    if (eatingnow && glucose_status.delta > 6 && typeof liftISF === 'undefined') ISFBoost = profile.EatingNowISFBoost;
     sens = sens * ISFBoost;
     // ISFBoost END
     console.log("sens: " +profile.sens+ "/"+profile.EatingNowISFBoost+"="+sens);
