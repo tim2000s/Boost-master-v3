@@ -367,14 +367,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
     console.error("; CR:",profile.carb_ratio);
+    console.log("sens: " +profile.sens+ "/"+profile.EatingNowISFBoost+"="+sens);
+    sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio);
     // ISFBoost START
     // Allow ISFBoost if EN rising more than expected and no autoISF
     var ISFBoost = 1; // default is no ISFBoost
     if (eatingnow && glucose_status.delta > 6 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
     sens = sens * ISFBoost;
     // ISFBoost END
-    console.log("sens: " +profile.sens+ "/"+profile.EatingNowISFBoost+"="+sens);
-    sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio);
+
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
     if (typeof iob_data.lastTemp !== 'undefined' ) {
