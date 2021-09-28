@@ -119,6 +119,7 @@ function enable_smb(
 
 function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio)
 {   // #### mod 7e: added switch fr autoISF ON/OFF
+    liftISF = 1; // start with no adjustment
     if ( !profile.use_autoisf ) {
         console.error("autoISF disabled in Preferences");
         return sens;
@@ -369,7 +370,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // ISFBoost START
     // Allow ISFBoost if EN rising more than expected and no autoISF
     var ISFBoost = 1; // default is no ISFBoost
-    if (eatingnow && glucose_status.delta > 6 && typeof liftISF === 'undefined') ISFBoost = profile.EatingNowISFBoost;
+    if (eatingnow && glucose_status.delta > 6 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
     sens = sens * ISFBoost;
     // ISFBoost END
     console.log("sens: " +profile.sens+ "/"+profile.EatingNowISFBoost+"="+sens);
@@ -908,7 +909,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     rT.IOB=iob_data.iob;
     rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + "/" + glucose_status.long_avgdelta + ", ISF: " + convert_bg(sens, profile) + (ISFBoost <1 ? "(" + round(ISFBoost*100,0) + "%)" : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
     rT.reason += ", AS: " + sensitivityRatio; //MD Add AS to openaps reason for the app
-    if (typeof liftISF !== 'undefined') rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
+    if (liftISF > 1) rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     if (lastCOBpredBG > 0) {
         rT.reason += ", COBpredBG " + convert_bg(lastCOBpredBG, profile);
     }
@@ -1221,7 +1222,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //console.log("UAMBoost: " + UAMBoost);
 
             // if autoISF is active and insulinReq is less than normal maxbolus then allow 100%
-            if (typeof liftISF !== 'undefined' && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
+            if (liftISF > 1 && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
 
             // START === if we are eating now and BGL prediction is higher than target ===
             if (eatingnow && eventualBG > target_bg) {
@@ -1234,7 +1235,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 var UAMBoost_bolus = profile.EatingNowUAMBoostBolus;
                 // apply any resistance
-                UAMBoost_bolus *= (typeof liftISF !== 'undefined' ? liftISF : 1);
+                UAMBoost_bolus *= (liftISF > 1 ? liftISF : 1);
                 // apply any autosens
                 UAMBoost_bolus *= (typeof autosens_data !== 'undefined' && autosens_data ? autosens_data.ratio : 1);
 
@@ -1340,7 +1341,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== RISE RESTRICTIONS ==============
                  // if the rise is slowing TBR only
                 if (UAM_deltaAvgRise < -0.10) {
-                    insulinReqPct = (typeof liftISF !== 'undefined'? insulinReqPct : 0); // TBR only if no autoISF
+                    insulinReqPct = (liftISF > 1 ? insulinReqPct : 0); // TBR only if no autoISF
                     SMB_TBR = true;
                     EatingNowMaxSMB = maxBolus;
                     UAMBoostReason = "; delta slowing";
@@ -1354,7 +1355,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // Restrict insulinReq when above BGBoost_threshold using delta if its not zero and no TT
                     //insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > 0 && !profile.temptargetSet ? round(Math.max(Math.min(UAM_safedelta/18,1),insulinReqPctDefault),2) : insulinReqPct );
                     // if BG above threshold with autoISF active and using BGBoost not BGBoost+ then allow 100%
-                    if (bg > BGBoost_threshold && typeof liftISF !== 'undefined' && BGBoosted && !UAMBoosted) insulinReqPct = 1.0;
+                    if (bg > BGBoost_threshold && liftISF > 1 && BGBoosted && !UAMBoosted) insulinReqPct = 1.0;
                     SMB_TBR = ( insulinReqPct < 1 ? true : SMB_TBR );
                     EatingNowMaxSMB = round(EatingNowMaxSMB,1);
                 }
@@ -1403,7 +1404,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             durationReq = round(60*worstCaseInsulinReq / profile.current_basal);
 
             //MD: Only use minBolus if not eating now and night time and no resistance
-            if (!eatingnow && !eatingnowtimeOK && typeof liftISF === 'undefined') {
+            if (!eatingnow && !eatingnowtimeOK && liftISF > 1.1) {
                 // Mackwe: If SMB dose < 500% TBR would deliver within 15 mins, use TBR instead of SMB
                 var maxTbrDoseMins = 15; // minutes for the TBR
                 var maxTbrDose = round((4*profile.current_basal)*(maxTbrDoseMins/60),4); //rounding this
