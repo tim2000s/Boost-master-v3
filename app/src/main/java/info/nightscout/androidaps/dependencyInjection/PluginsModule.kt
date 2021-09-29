@@ -189,6 +189,12 @@ abstract class PluginsModule {
     @Binds
     @APS
     @IntoMap
+    @IntKey(215)
+    abstract fun bindAIMIPlugin(plugin: AIMIPlugin): PluginBase
+
+    @Binds
+    @APS
+    @IntoMap
     @IntKey(220)
     abstract fun bindOpenAPSSMBPlugin(plugin: OpenAPSSMBPlugin): PluginBase
 

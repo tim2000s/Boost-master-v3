@@ -52,6 +52,7 @@
     <string name="description_ns_client">Synchronizes your data with Nightscout</string>
     <string name="description_ama">State of the algorithm in 2017</string>
     <string name="description_smb">Most recent algorithm for advanced users</string>
+    <string name="description_AIMI">Automated Insulin Management Interface</string>
     <string name="description_overview">Displays the current state of your loop and buttons for most common actions</string>
     <string name="description_persistent_notification">Shows an ongoing notification with a short overview of what your loop is doing</string>
     <string name="description_profile_local">Define a profile which is available offline.</string>
@@ -560,6 +561,7 @@
     <string name="ns_localbroadcasts_title">Enable local Broadcasts.</string>
     <string name="careportal_newnstreatment_duration_min_label">Duration [min]</string>
     <string name="openapssmb">OpenAPS SMB</string>
+    <string name="AIMI">AIMI</string>
     <string name="key_use_smb" translatable="false">use_smb</string>
     <string name="key_use_uam" translatable="false">use_uam</string>
     <string name="key_smb_enable_carbs_suggestions_threshold" translatable="false">smb_enable_carbs_suggestions_threshold</string>
@@ -1380,5 +1382,11 @@
     <string name="timetoeat">Time to eat</string>
     <string name="fabric_upload_disabled">Crash logs upload disabled!</string>
     <string name="graph_menu_divider_header">Graph</string>
+    <string name="key_UAM_boluscap" translatable="false">UAM_boluscap</string>
+    <string name="UAM_UAM_boluscap_title">UAM bolus cap [U]</string>
+    <string name="UAM_boluscap_summary">max SMB size deliverable by UAM meal assists.</string>
+    <string name="key_UAM_InsulinReq" translatable="false">UAM_InsulinReq</string>
+    <string name="UAM_InsulinReq_title">insulinReq delivery percentage [%]</string>
+    <string name="UAM_InsulinReq_summary">Reduces the calculated required SMB size to the specified percentage. Example: If calculated insulin required is 1 U and fraction size is 50%, 0.5 U will be delivered.</string>
 
 </resources>

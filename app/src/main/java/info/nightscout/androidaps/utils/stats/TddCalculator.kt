@@ -83,8 +83,48 @@ class TddCalculator @Inject constructor(
         aapsLogger.debug(LTag.CORE, result.toString())
         return result
     }
+    fun calculateDaily():TDD {
+        //val range = T.days(days + 1).msecs()
+        val startTime = MidnightTime.calc(DateUtil.now() )
+        val endTime = DateUtil.now()
+        //initializeData(range)
+        val result = LongSparseArray<TDD>()
+        val tdd = result[startTime] ?: TDD(startTime, 0.0, 0.0, 0.0)
 
-    private fun averageTDD(tdds: LongSparseArray<TDD>): TDD {
+        for (t in treatmentsFromHistory) {
+            if (!t.isValid) continue
+            if (t.date < startTime || t.date > endTime) continue
+            //val midnight = MidnightTime.calc(t.date)
+            //val tdd = result[midnight] ?: TDD(midnight, 0.0, 0.0, 0.0)
+            tdd.bolus += t.insulin
+            tdd.carbs += t.carbs
+            //result.put(midnight, tdd)
+        }
+
+        for (t in startTime until endTime step T.mins(5).msecs()) {
+            //val midnight = MidnightTime.calc(t)
+            //val tdd = result[midnight] ?: TDD(midnight, 0.0, 0.0, 0.0)
+            val tbr = getTempBasalFromHistory(t)
+            val profile = profileFunction.getProfile(t, this) ?: continue
+            val absoluteRate = tbr?.tempBasalConvertedToAbsolute(t, profile) ?: profile.getBasal(t)
+            tdd.basal += absoluteRate / 60.0 * 5.0
+
+            if (!activePlugin.activePump.isFakingTempsByExtendedBoluses) {
+                // they are not included in TBRs
+                val eb = getExtendedBolusFromHistory(t)
+                val absoluteEbRate = eb?.absoluteRate() ?: 0.0
+                tdd.bolus += absoluteEbRate / 60.0 * 5.0
+            }
+            //result.put(midnight, tdd)
+        }
+        //for (i in 0 until result.size()) {
+        //  val tdd = result.valueAt(i)
+        tdd.total = tdd.bolus + tdd.basal
+        //}
+        aapsLogger.debug(LTag.CORE, result.toString())
+        return tdd
+    }
+    fun averageTDD(tdds: LongSparseArray<TDD>): TDD {
         val totalTdd = TDD()
         for (i in 0 until tdds.size()) {
             val tdd = tdds.valueAt(i)
