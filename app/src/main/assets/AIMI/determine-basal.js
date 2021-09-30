@@ -859,7 +859,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg);
                 console.log("Adjusting basal from "+profile_current_basal+" to "+basal);
                 console.log("Future state sensitivity is " +future_sens+" based on eventual bg");
-        console.log("------------------------------");
+
 
     //console.error(insulinPeakTime, insulinPeak5m, profile.insulinPeakTime, profile.curve);
     //console.log("curve prediction : "+curvepred);
@@ -1254,6 +1254,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             var microBolus = Math.floor(Math.min(insulinReq * insulinReqPCT,maxBolusTT)*roundSMBTo)/roundSMBTo;
             // calculate a long enough zero temp to eventually correct back up to target
+            if (HyperPredBGTest > 450){
+            console.log("--- SMB if HyperPredBGTest > 450 -----");
+                            console.log("maxBolusTT : "+maxBolusTT);
+                            console.log("InsulinReqPCT : "+(insulinReqPCT * 100)+"%");
+                            console.log("insulinReq : "+insulinReq);
+                            console.log("microBolus : " +microBolus);
+        console.log("------------------------------");
+        }
+
+
             var smbTarget = target_bg;
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
             durationReq = round(60*worstCaseInsulinReq / basal);
