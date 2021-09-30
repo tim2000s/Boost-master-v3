@@ -1404,7 +1404,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             durationReq = round(60*worstCaseInsulinReq / profile.current_basal);
 
             //MD: Only use minBolus if not eating now and night time and no resistance
-            if (!eatingnow && !eatingnowtimeOK && liftISF > 1.1) {
+            if (!eatingnow && !eatingnowtimeOK) {
                 // Mackwe: If SMB dose < 500% TBR would deliver within 15 mins, use TBR instead of SMB
                 var maxTbrDoseMins = 15; // minutes for the TBR
                 var maxTbrDose = round((4*profile.current_basal)*(maxTbrDoseMins/60),4); //rounding this
@@ -1415,10 +1415,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //                var minBolus =  Math.round(maxTbrDose*roundSMBTo)/roundSMBTo;
                 var minBolus = Math.floor((maxTbrDose*insulinReqPct)*roundSMBTo)/roundSMBTo;
                 console.error("Minimum microbolus size determined to",minBolus,"U. ");
-                rT.reason +=  "minBolus " + minBolus + ", ";
-                if (microBolus < minBolus) {
+                //rT.reason +=  "minBolus " + minBolus + ", ";
+                if (microBolus < minBolus && liftISF < 1.2) {
                     console.error("insulinReq ",insulinReq,"U will be handled by basal modulation.");
+                    rT.reason +=  "minBolus " + minBolus + ", ";
                     microBolus = 0;
+                } else {
+                    rT.reason +=  "minBolus disabled, ";
                 }
              }
 
