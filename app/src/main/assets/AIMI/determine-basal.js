@@ -859,6 +859,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg);
                 console.log("Adjusting basal from "+profile_current_basal+" to "+basal);
                 console.log("Future state sensitivity is " +future_sens+" based on eventual bg");
+                console.log("-------------");
 
 
     //console.error(insulinPeakTime, insulinPeak5m, profile.insulinPeakTime, profile.curve);
