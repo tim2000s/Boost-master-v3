@@ -33,13 +33,12 @@ public class GlucoseStatus {
     public double long_avgdelta = 0d;
     public long date = 0L;
 
-
     public String log() {
         return "Glucose: " + DecimalFormatter.to0Decimal(glucose) + " mg/dl " +
                 "Noise: " + DecimalFormatter.to0Decimal(noise) + " " +
-                "Delta: " + DecimalFormatter.to0Decimal(delta) + " mg/dl" +
+                "Delta: " + DecimalFormatter.to0Decimal(delta) + " mg/dl " +
                 "Short avg. delta: " + " " + DecimalFormatter.to2Decimal(short_avgdelta) + " mg/dl " +
-                "Long avg. delta: " + DecimalFormatter.to2Decimal(long_avgdelta) + " mg/dl";
+                "Long avg. delta: " + DecimalFormatter.to2Decimal(long_avgdelta) + " mg/dl ";
     }
 
     public GlucoseStatus(HasAndroidInjector injector) {
@@ -102,6 +101,8 @@ public class GlucoseStatus {
                 status.long_avgdelta = 0d;
                 status.avgdelta = 0d; // for OpenAPS MA
                 status.date = now_date;
+
+
                 aapsLogger.debug(LTag.GLUCOSE, "sizeRecords==1");
                 return status.round();
             }
@@ -166,6 +167,28 @@ public class GlucoseStatus {
 
             status.long_avgdelta = average(long_deltas);
             status.avgdelta = status.short_avgdelta; // for OpenAPS MA
+
+
+            double bw = 0.05d;             // used for Eversense; may be lower for Dexcom
+            double sumBG = now.value;
+            double oldavg = now.value;
+            long minutesdur = Math.round((0L) / (1000d * 60));
+            for (int i = 1; i < sizeRecords; i++) {
+                BgReading then = data.get(i);
+                long then_date = then.date;
+                //  GZ mod 7c: stop the series if there was a CGM gap greater than 13 minutes, i.e. 2 regular readings
+                if (Math.round((now_date - then_date) / (1000d * 60)) - minutesdur > 13) {
+                    break;
+                }
+                if (then.value > oldavg*(1-bw) && then.value < oldavg*(1+bw)) {
+                    sumBG += then.value;
+                    oldavg = sumBG / (i+1);
+                    minutesdur = Math.round((now_date - then_date) / (1000d * 60));
+                } else {
+                    break;
+                }
+            }
+
 
             aapsLogger.debug(LTag.GLUCOSE, status.log());
             return status.round();

@@ -21,6 +21,7 @@ import info.nightscout.androidaps.interfaces.PumpInterface;
 import info.nightscout.androidaps.logging.AAPSLogger;
 import info.nightscout.androidaps.plugins.aps.openAPSAMA.OpenAPSAMAPlugin;
 import info.nightscout.androidaps.plugins.aps.openAPSSMB.OpenAPSSMBPlugin;
+import info.nightscout.androidaps.plugins.aps.AIMI.AIMIPlugin;
 import info.nightscout.androidaps.plugins.bus.RxBusWrapper;
 import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker;
 import info.nightscout.androidaps.plugins.general.overview.events.EventNewNotification;
@@ -42,6 +43,7 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
     private final ConstraintChecker constraintChecker;
     private final OpenAPSAMAPlugin openAPSAMAPlugin;
     private final OpenAPSSMBPlugin openAPSSMBPlugin;
+    private final AIMIPlugin AIMIPlugin;
     private final SensitivityOref1Plugin sensitivityOref1Plugin;
     private final ActivePluginProvider activePlugin;
     private final HardLimits hardLimits;
@@ -59,6 +61,7 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
             ConstraintChecker constraintChecker,
             OpenAPSAMAPlugin openAPSAMAPlugin,
             OpenAPSSMBPlugin openAPSSMBPlugin,
+            AIMIPlugin AIMIPlugin,
             SensitivityOref1Plugin sensitivityOref1Plugin,
             ActivePluginProvider activePlugin,
             HardLimits hardLimits,
@@ -80,6 +83,7 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
         this.constraintChecker = constraintChecker;
         this.openAPSAMAPlugin = openAPSAMAPlugin;
         this.openAPSSMBPlugin = openAPSSMBPlugin;
+        this.AIMIPlugin = AIMIPlugin;
         this.sensitivityOref1Plugin = sensitivityOref1Plugin;
         this.activePlugin = activePlugin;
         this.hardLimits = hardLimits;

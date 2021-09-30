@@ -326,6 +326,7 @@
     <string name="openapsma_autosensdata_label">Autosens data</string>
     <string name="openapsma_scriptdebugdata_label">Script debug</string>
     <string name="openapsama_useautosens">Use Autosens feature</string>
+    <string name="openapsama_useautoisf">Use Autoisf feature</string>
     <string name="refresheventsfromnightscout">Refresh events from NS</string>
     <string name="deletefuturetreatments">Delete treatments in the future</string>
     <string name="eatingsoon">Eating Soon</string>
@@ -354,6 +355,34 @@
     <string name="openapsama_autosens_max_summary">Default value: 1.2\nThis is a multiplier cap for autosens (and soon autotune) to set a 20%% max limit on how high the autosens ratio can be, which in turn determines how high autosens can adjust basals, how low it can adjust ISF, and how low it can set the BG target.</string>
     <string name="key_openapsama_autosens_min" translatable="false">autosens_min</string>
     <string name="openapsama_autosens_min_summary">Default value: 0.7\nThe other side of the autosens safety limits, putting a cap on how low autosens can adjust basals, and how high it can adjust ISF and BG targets.</string>
+    <string name="key_openapsama_autoisf_max" translatable="false">autoisf_max</string>
+    <string name="openapsama_autoisf_max_summary">Default value: 1.2\nThis is a multiplier cap for autoISF to set a limit on how high the autoISF ratio can be, which in turn determines how low it can adjust ISF.</string>
+    <string name="key_openapsama_high_divisor" translatable="false">High glucose correction divisor</string>
+    <string name="openapsama_high_divisor_summary">High glucose correction divisor. 1 = all insulin required, >1 reduces amount</string>
+    <string name="openapsama_high_divisor_Title">High glucose correction divisor</string>
+    <string name="key_openapsama_AIMI_bolus" translatable="false">AIMI bolus cap</string>
+    <string name="openapsama_AIMI_bolus_title">AIMI bolus cap</string>
+    <string name="openapsama_AIMI_bolus_summary">Default value: 0.1\nThis is the cap on the AIMI bolus given when glucose levels start to climb quickly after a meal.</string>
+    <string name="key_openapsama_TDD" translatable="false">7 day average Total Daily Dose</string>
+    <string name="openapsama_TDD_title">7 day average Total daily dose</string>
+    <string name="openapsama_TDD_summary">Default value: 5.0\nThis is the average total daily dose over the past 7 days, used in the ISF calculation.</string>
+    <string name="key_openapsama_AIMI_max_iob" translatable="false">UAM AIMI max IOB</string>
+    <string name="key_openapsama_AIMI_scale" translatable="false">AIMI scale value</string>
+    <string name="openapsama_AIMI_scale_title">AIMI scale value</string>
+    <string name="openapsama_AIMI_scale_summary">Default value: 1.0\nThis is the numerical value by which you can multiply (eventualBG/targetbg) for AIMI.</string>
+    <string name="key_openapsama_prebolus" translatable="false">Prebolus value</string>
+    <string name="openapsama_prebolus_title">Prebolus value</string>
+    <string name="openapsama_prebolus_summary">Default value: 0.1\nThis is the size of the preBolus that can be manually triggered.</string>
+    <string name="openapsama_AIMI_max_iob_title">UAM AIMI max IOB</string>
+    <string name="openapsama_AIMI_max_iob_summary">Default value: 0.1\nThis is the max IOB allowed for AIMI and accelerated bolusing to be allowed.</string>
+    <string name="key_openapsama_AIMI_start" translatable="false">UAM AIMI start time</string>
+    <string name="openapsama_AIMI_start_summary">Default value: 7\nThis is the start time for the period in which AIMI is active.</string>
+    <string name="openapsama_AIMI_start_title">UAM AIMI start time</string>
+    <string name="key_openapsama_AIMI_end" translatable="false">UAM AIMI end time</string>
+    <string name="openapsama_AIMI_end_summary">Default value: 8\nThis is the end time for the period in which AIMI is active.</string>
+    <string name="openapsama_AIMI_end_title">UAM AIMI end time</string>
+    <string name="key_openapsama_autoisf_hourlychange" translatable="false">autoisf_hourlychange</string>
+    <string name="openapsama_autoisf_hourlychange_summary">Default value: 0.2\nThis is the rate at which autoISF grows per hour assuming bg is twice the target. With a value of 1.0 it will have reduced ISF to 50% after 1 hour of bg at twice the target.\nWith 0.0 the effect of autoISF is effectively disabled.</string>
     <string name="key_openapsama_autosens_adjusttargets" translatable="false">autosens_adjust_targets</string>
     <string name="openapsama_autosens_adjusttargets">Autosens adjust targets, too</string>
     <string name="openapsama_autosens_adjusttargets_summary">Default value: true\nThis is used to allow autosens to adjust BG targets, in addition to ISF and basals.</string>
@@ -803,6 +832,7 @@
     <string name="key_treatmentssafety_maxcarbs" translatable="false">treatmentssafety_maxcarbs</string>
     <string name="unsafeusage">unsafe usage</string>
     <string name="key_openapsama_useautosens" translatable="false">openapsama_useautosens</string>
+    <string name="key_openapsama_useautoisf" translatable="false">openapsama_useautoisf</string>
     <string name="readstatusfailed">Read status failed</string>
     <string name="record_pump_site_change">Record pump site change</string>
     <string name="record_insulin_cartridge_change">Record insulin cartridge change</string>
@@ -847,6 +877,13 @@
     <string name="key_always_use_shortavg" translatable="false">always_use_shortavg</string>
     <string name="openapsama_autosens_max">Max autosens ratio</string>
     <string name="openapsama_autosens_min">Min autosens ratio</string>
+    <string name="openapsama_autoisf_max">Max autoisf ratio</string>
+    <string name="openapsama_AIMI_max_iob">Max IOB allowed from accelerated bolusing</string>
+    <string name="openapsama_AIMI_bolus">AIMI bolus in iu</string>
+    <string name="openapsama_AIMI_start">AIMI start time in hours</string>
+    <string name="openapsama_AIMI_end">AIMI end time</string>
+    <string name="openapsama_high_divisor">Divisor for reducing high correction insulin required</string>
+    <string name="openapsama_autoisf_hourlychange">autoisf hourly increment</string>
     <string name="openapsama_bolussnooze_dia_divisor">Bolus snooze dia divisor</string>
     <string name="openapsama_max_daily_safety_multiplier">Max daily safety multiplier</string>
     <string name="openapsama_current_basal_safety_multiplier">Current basal safety multiplier</string>
