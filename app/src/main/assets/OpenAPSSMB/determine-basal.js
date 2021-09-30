@@ -326,8 +326,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // If we have Eating Now enabled and rising we will enable eating now mode
     if (eatingnowPatch && profile.enableUAM && ignoreCOBPatch && eatingnowMaxIOBOK) {
+        // enable eatingnow if no TT and within safe hours **EXPERIMENT**
+        if (!profile.temptargetSet && eatingnowtimeOK) eatingnow = true;
         // enable eatingnow if no TT and safe IOB within safe hours
-        if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && eatingnowtimeOK) eatingnow = true;
+        //if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && eatingnowtimeOK) eatingnow = true;
         // High delta enable eating now
         //if (glucose_status.delta >=15 && iob_data.iob <= profile.EatingNowIOB && eatingnowtimeOK && now >10) eatingnow = true;
         // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
@@ -1369,6 +1371,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  }
 
                 if (eatingnowtimeOK) {
+                    // when IOB is less than trigger restrict SMB size to usual AAPS limits **EXPERIMENT**
+                    if (iob_data.iob < profile.EatingNowIOB) EatingNowMaxSMB = maxBolus;
                     // increase maxbolus if we are within the hours specified
                     maxBolus = EatingNowMaxSMB;
                     insulinReqPct = insulinReqPct;
