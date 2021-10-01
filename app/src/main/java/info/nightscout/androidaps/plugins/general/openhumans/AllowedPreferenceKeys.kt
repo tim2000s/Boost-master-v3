@@ -113,6 +113,7 @@ private val allowedKeys = """
     openapssmb
     AIMI
     AIMI
+    Boost
     openapsma_max_basal
     openapsmb_max_iob
     openapsama_useautosens
