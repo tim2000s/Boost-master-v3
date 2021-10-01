@@ -1295,7 +1295,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
                  //give 100% of insulin requirement if prediction is a high delta and eventual BG is higher than 108
-                 else if ( glucose_status.delta > 8  && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end && eventualBG > 108 /*|| eventualBG > 180 && bg > 162 && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end*/) {
+                 else if ( glucose_status.delta > 8  && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end && eventualBG > 108 ) { /*|| eventualBG > 180 && bg > 162 && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end*/
                     if (insulinReq > boostMaxIOB-iob_data.iob) {
                        insulinReq = boostMaxIOB-iob_data.iob;
                        }
