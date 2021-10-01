@@ -38,7 +38,7 @@ class HardLimits @Inject constructor(
     val VERY_HARD_LIMIT_TEMP_MAX_BG = intArrayOf(72, 270)
     val VERY_HARD_LIMIT_TEMP_TARGET_BG = intArrayOf(72, 200)
     val MINDIA = doubleArrayOf(5.0, 5.0, 5.0, 5.0, 5.0)
-    val MAXDIA = doubleArrayOf(7.0, 7.0, 7.0, 7.0, 10.0)
+    val MAXDIA = doubleArrayOf(10.0, 10.0, 10.0, 10.0, 10.0)
     val MINIC = doubleArrayOf(2.0, 2.0, 2.0, 2.0, 0.3)
     val MAXIC = doubleArrayOf(100.0, 100.0, 100.0, 100.0, 100.0)
     val MINISF = 2.0 // mgdl
@@ -46,6 +46,7 @@ class HardLimits @Inject constructor(
     val MAXIOB_AMA = doubleArrayOf(3.0, 5.0, 7.0, 12.0, 25.0)
     val MAXIOB_SMB = doubleArrayOf(3.0, 7.0, 12.0, 25.0, 40.0)
     val MAXIOB_AIMI = doubleArrayOf(3.0, 7.0, 12.0, 25.0, 40.0)
+    val MAXIOB_BOOST = doubleArrayOf(3.0, 7.0, 12.0, 25.0, 40.0)
     val MAXBASAL = doubleArrayOf(2.0, 5.0, 10.0, 12.0, 25.0)
 
     //LGS Hard limits
@@ -77,6 +78,10 @@ class HardLimits @Inject constructor(
     }
     fun maxIobAIMI(): Double {
         return MAXIOB_AIMI[loadAge()]
+    }
+
+    fun maxIobBoost(): Double {
+        return MAXIOB_BOOST[loadAge()]
     }
 
     fun maxBasal(): Double {
