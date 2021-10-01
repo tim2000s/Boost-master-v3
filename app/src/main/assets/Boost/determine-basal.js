@@ -1265,7 +1265,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var boost_end = profile.boost_end;
                 var boost_max = profile.boost_bolus;
                 console.error("Max automated bolus is "+boost_max+"; ");
-                var boost_scale = (profile.boost_scale * (eventualBG / target_bg));
+                var boost_scale = profile.boost_scale;
 
                 console.error("Boost start time is "+(boost_start+1)+"hrs and boost end time is "+(boost_end-1)+"hrs; ");
                 //console.error("Expected delta is "+expectedDelta+". current delta is
@@ -1281,7 +1281,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      console.error("Insulin required pre-boost is "+insulinReq+": ");
                      //set a boost insulin required variable
                      var boostInsulinReq = insulinReq;
-                     boostInsulinReq = Math.min((scaleSMB * insulinReq),boost_max);
+                     boostInsulinReq = Math.min((boost_scale*(scaleSMB * insulinReq)),boost_max);
                         if (boostInsulinReq > boostMaxIOB-iob_data.iob) {
                             boostInsulinReq = boostMaxIOB-iob_data.iob;
                         }
@@ -1294,8 +1294,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  }
 
 
-                 //give 100% of insulin requirement if prediction is > 180 or there is a high delta
-                 else if ( glucose_status.delta > 7  && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end && eventualBG > 108 || eventualBG > 180 && bg > 162 && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end) {
+                 //give 100% of insulin requirement if prediction is a high delta and eventual BG is higher than 108
+                 else if ( glucose_status.delta > 8  && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end && eventualBG > 108 /*|| eventualBG > 180 && bg > 162 && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end*/) {
                     if (insulinReq > boostMaxIOB-iob_data.iob) {
                        insulinReq = boostMaxIOB-iob_data.iob;
                        }
