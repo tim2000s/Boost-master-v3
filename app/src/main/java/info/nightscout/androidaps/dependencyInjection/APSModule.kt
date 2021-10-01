@@ -10,6 +10,8 @@ import info.nightscout.androidaps.plugins.aps.openAPSSMB.DetermineBasalAdapterSM
 import info.nightscout.androidaps.plugins.aps.openAPSSMB.DetermineBasalResultSMB
 import info.nightscout.androidaps.plugins.aps.AIMI.DetermineBasalAdapterAIMIJS
 import info.nightscout.androidaps.plugins.aps.AIMI.DetermineBasalResultAIMI
+import info.nightscout.androidaps.plugins.aps.Boost.DetermineBasalAdapterBoostJS
+import info.nightscout.androidaps.plugins.aps.Boost.DetermineBasalResultBoost
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.data.AutosensData
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.IobCobOref1Thread
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.IobCobThread
