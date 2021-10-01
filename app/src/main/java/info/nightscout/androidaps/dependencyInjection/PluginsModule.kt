@@ -201,6 +201,12 @@ abstract class PluginsModule {
     abstract fun bindOpenAPSSMBPlugin(plugin: OpenAPSSMBPlugin): PluginBase
 
     @Binds
+    @APS
+    @IntoMap
+    @IntKey(225)
+    abstract fun bindBoostPlugin(plugin: BoostPlugin): PluginBase
+
+    @Binds
     @AllConfigs
     @IntoMap
     @IntKey(230)
