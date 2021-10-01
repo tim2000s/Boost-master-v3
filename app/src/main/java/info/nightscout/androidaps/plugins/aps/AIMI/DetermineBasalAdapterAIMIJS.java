@@ -365,7 +365,7 @@ public class DetermineBasalAdapterAIMIJS {
         mMealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation);
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
-
+        mMealData.put("lastBolusCorr",treatmentsPlugin.getLastBolusTime(true));
         tddAIMI = new TddCalculator(hasAndroidInjector,aapsLogger,rxBusWrapper,resourceHelper,mainApp,sp,activePluginProvider,profileFunction,fabricPrivacy,nsUpload,dateUtil,uploadQueue);
         mMealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).total);
         mMealData.put("TDDAIMI1",tddAIMI.averageTDD(tddAIMI.calculate(1)).total);

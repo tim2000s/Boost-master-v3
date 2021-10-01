@@ -308,18 +308,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //var iob_scale = (profile.W2_IOB_threshold/100) * max_iob;
     var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
     var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-    var HyperPredBGTest = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-    //var HyperPredBGTest2 = round( bg - (iob_data.iob * sens) ) + round( 180 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-    //var HyperPredBGTest3 = round( bg - (iob_data.iob * sens) ) + round( 120 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-    //var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
+    var TriggerPredSMB = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+
     //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
+    var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
+    //var iTime = round(( meal_data.lastBolusCorr ) ,1);
 
     var csf = profile.sens / profile.carb_ratio ;
-    //console.log("UAM_IOB_SCALE : " +iob_scale);
-    //console.log("HyperPredBGTest : "+HyperPredBGTest);
-    //console.log("HyperPredBGTest2 : "+HyperPredBGTest2);
-    //console.log("HyperPredBGTest3 : "+HyperPredBGTest3);
-    //console.log("PredAnalise : "+PredAnalise);
 
     var EBG =Math.max(0, round((0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg,2));
     //var EBG180 = Math.max(0,round((0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + HyperPredBGTest2,2));
@@ -329,13 +324,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var REBG60 = round(EBG60 / min_bg,2);
     var EBX = Math.max(0,round(Math.min(EBG,EBG60),2));
     var REBX = Math.max(0.5,round(Math.min(REBG60,REBG),2));
-    //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
-    //console.log("Experimental test, EBG : "+EBG+" REBG : "+REBG+" ; ");
-    //console.log(" *** EBG60 : "+EBG60+" *** REBG60 : "+REBG60+" ; ");
-    //console.log ("HypoPredBG = "+HypoPredBG+"; HyperPredBG ="+HyperPredBG+"; ");
-    if (HyperPredBGTest > 450) {
+    //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastboluscorr ) / 60000,1);
+
+
+    if (iTime < 180 && glucose_status.delta > 2) {
             var hyper_target = 80;
-            console.log("target_bg from "+target_bg+" to "+hyper_target+" because HyperPredBGTest > 450 : "+HyperPredBGTest+" ; ");
+            //console.log("target_bg from "+target_bg+" to "+hyper_target+" because TriggerPredSMB > 450 : "+TriggerPredSMB+" ; ");
             target_bg = hyper_target;
             halfBasalTarget = 160;
             var c = halfBasalTarget - normalTarget;
@@ -850,7 +844,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("Current sensitivity is " +variable_sens+" based on current bg");
                 console.log("eRatio: "+eRatio);
                 console.log("-------------");
-                console.log("HyperPredBGTest : "+HyperPredBGTest);
+                console.log("TriggerPredSMB : "+TriggerPredSMB);
                 console.log("EBG : "+EBG+" ; REBG : "+REBG);
                 console.log("EBG60 : "+EBG60+" ; REBG60 : "+REBG60);
                 console.log("HypoPredBG : "+HypoPredBG+" ; HyperPredBG : "+HyperPredBG);
@@ -1231,7 +1225,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("IOB",iob_data.iob,"> COB",meal_data.mealCOB+"; mealInsulinReq =",mealInsulinReq);
                 if (profile.maxUAMSMBBasalMinutes) {
                     console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"basal:",basal);
-                    if (HyperPredBGTest > 450){
+                    if (TriggerPredSMB >= 950 || iTime < 180){
                     maxBolus = round(basal * 200 / 60 ,1);
                     }else{
                     maxBolus = round( basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
@@ -1248,15 +1242,20 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var insulinReqPCT = profile.UAM_InsulinReq/100;
             var maxBolusTT = maxBolus;
             var roundSMBTo = 1 / profile.bolus_increment;
-            //console.log("#### iTime ##### : "+iTime+" ; ");
-            if (HyperPredBGTest > 450){
+
+            if (TriggerPredSMB >= 950 || iTime < 180){
             insulinReqPCT = 1;
             //maxBolusTT = profile.UAM_boluscap;
             }
             var microBolus = Math.floor(Math.min(insulinReq * insulinReqPCT,maxBolusTT)*roundSMBTo)/roundSMBTo;
             // calculate a long enough zero temp to eventually correct back up to target
-            if (HyperPredBGTest > 450){
-            console.log("--- SMB if HyperPredBGTest > 450 -----");
+            if (TriggerPredSMB >= 950 || iTime < 180 ){
+            console.log("--- if TriggerPredSMB >= 950 ou iTime < 180 -----");
+                            console.log("TriggerPredSMB : "+TriggerPredSMB);
+                            console.log("iTime : "+iTime);
+                            console.log("target_bg from "+target_bg+" to "+hyper_target);
+                            console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg);
+                            console.log("Adjusting basal from "+profile_current_basal+" to "+basal);
                             console.log("maxBolusTT : "+maxBolusTT);
                             console.log("InsulinReqPCT : "+(insulinReqPCT * 100)+"%");
                             console.log("insulinReq : "+insulinReq);
