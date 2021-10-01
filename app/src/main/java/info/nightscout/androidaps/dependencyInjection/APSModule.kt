@@ -24,9 +24,11 @@ abstract class APSModule {
     @ContributesAndroidInjector abstract fun determineBasalResultSMBInjector(): DetermineBasalResultSMB
     @ContributesAndroidInjector abstract fun determineBasalResultAIMIInjector(): DetermineBasalResultAIMI
     @ContributesAndroidInjector abstract fun determineBasalResultAMAInjector(): DetermineBasalResultAMA
+    @ContributesAndroidInjector abstract fun determineBasalResultBoostInjector(): DetermineBasalResultBoost
     @ContributesAndroidInjector abstract fun determineBasalAdapterAMAJSInjector(): DetermineBasalAdapterAMAJS
     @ContributesAndroidInjector abstract fun determineBasalAdapterSMBJSInjector(): DetermineBasalAdapterSMBJS
     @ContributesAndroidInjector abstract fun determineBasalAdapterAIMIJSInjector(): DetermineBasalAdapterAIMIJS
+    @ContributesAndroidInjector abstract fun determineBasalAdapterBoostInjector(): DetermineBasalAdapterBoostJS
     @ContributesAndroidInjector abstract fun iobCobThreadInjector(): IobCobThread
     @ContributesAndroidInjector abstract fun iobCobOref1ThreadInjector(): IobCobOref1Thread
 }
