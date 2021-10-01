@@ -32,13 +32,17 @@ public class GlucoseStatus {
     public double short_avgdelta = 0d;
     public double long_avgdelta = 0d;
     public long date = 0L;
-
+    // mod 7: append 2 variables for 5% range
+    public double autoISF_duration = 0d;
+    public double autoISF_average = 0d;
     public String log() {
         return "Glucose: " + DecimalFormatter.to0Decimal(glucose) + " mg/dl " +
                 "Noise: " + DecimalFormatter.to0Decimal(noise) + " " +
                 "Delta: " + DecimalFormatter.to0Decimal(delta) + " mg/dl " +
                 "Short avg. delta: " + " " + DecimalFormatter.to2Decimal(short_avgdelta) + " mg/dl " +
-                "Long avg. delta: " + DecimalFormatter.to2Decimal(long_avgdelta) + " mg/dl ";
+                "Long avg. delta: " + DecimalFormatter.to2Decimal(long_avgdelta) + " mg/dl " +
+                "Range length: " + DecimalFormatter.to0Decimal(autoISF_duration) + " min " +
+                "Range average: " + DecimalFormatter.to2Decimal(autoISF_average) + " mg/dl";
     }
 
     public GlucoseStatus(HasAndroidInjector injector) {
@@ -53,6 +57,9 @@ public class GlucoseStatus {
         this.avgdelta = Round.roundTo(this.avgdelta, 0.01);
         this.short_avgdelta = Round.roundTo(this.short_avgdelta, 0.01);
         this.long_avgdelta = Round.roundTo(this.long_avgdelta, 0.01);
+        // mod 7: append 2 variables for 5% range
+        this.autoISF_duration = Round.roundTo(this.autoISF_duration, 0.1);
+        this.autoISF_average = Round.roundTo(this.autoISF_average, 0.1);
         return this;
     }
 
@@ -101,8 +108,9 @@ public class GlucoseStatus {
                 status.long_avgdelta = 0d;
                 status.avgdelta = 0d; // for OpenAPS MA
                 status.date = now_date;
-
-
+                // mod 7: append 2 variables for 5% range
+                status.autoISF_duration = 0d;
+                status.autoISF_average = now.value;
                 aapsLogger.debug(LTag.GLUCOSE, "sizeRecords==1");
                 return status.round();
             }
@@ -168,7 +176,11 @@ public class GlucoseStatus {
             status.long_avgdelta = average(long_deltas);
             status.avgdelta = status.short_avgdelta; // for OpenAPS MA
 
-
+            // mod 7: calculate 2 variables for 5% range
+            //  initially just test the handling of arguments
+            // status.dura05 = 11d;
+            // status.avg05 = 47.11d;
+            //  mod 7a: now do the real maths
             double bw = 0.05d;             // used for Eversense; may be lower for Dexcom
             double sumBG = now.value;
             double oldavg = now.value;
@@ -189,6 +201,8 @@ public class GlucoseStatus {
                 }
             }
 
+            status.autoISF_average = oldavg;
+            status.autoISF_duration = minutesdur;
 
             aapsLogger.debug(LTag.GLUCOSE, status.log());
             return status.round();

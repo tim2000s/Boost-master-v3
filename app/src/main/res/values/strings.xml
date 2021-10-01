@@ -73,9 +73,7 @@
     <string name="description_wear">Monitor and control AndroidAPS using your WearOS watch.</string>
     <string name="description_xdrip_status_line">Show information about your loop on your xDrip+ watchface.</string>
     <string name="description_sms_communicator">Remote control AndroidAPS using SMS commands.</string>
-    <string name="key_UAM_InsulinReq" translatable="false">UAM_InsulinReq</string>
-    <string name="UAM_InsulinReq_title">insulinReq delivery percentage [%]</string>
-    <string name="UAM_InsulinReq_summary">Reduces the calculated required SMB size to the specified percentage. Example: If calculated insulin required is 1 U and fraction size is 50%, 0.5 U will be delivered.</string>
+
 
 
     <string name="treatments_insulin_label_string">Insulin:</string>
