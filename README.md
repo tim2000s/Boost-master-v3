@@ -15,6 +15,11 @@ dev: [![codecov](https://codecov.io/gh/MilosKozak/AndroidAPS/branch/dev/graph/ba
 
 ########################################
 This version of AAPS contain two plugins, AIMI and Boost.
+
+Both new plugins use Total Daily dose from the AAPS database to determine ISF.
+
+If you change from U100 to U200 insulin, you *MUST* reset the databases, otherwise the calculations will produce a too strong sensitivity value that will have too low a number, which may cause hypos, and run on the OpenapsSMB plugin for a couple of days to gather the correct TDD data.
+
 About AIMI :
 Prebolus is necessary.
 Here the part of the log who explain how it's working.
