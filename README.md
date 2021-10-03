@@ -16,7 +16,9 @@ dev: [![codecov](https://codecov.io/gh/MilosKozak/AndroidAPS/branch/dev/graph/ba
 ########################################
 This version of AAPS contain two plugins, AIMI and Boost.
 About AIMI :
-Prebolus is necessary.
+Manual Bolus is necessary.
+If you change your insulin from U100 for U200 concentration, you need to reset database and use openapsplugin for several days before to come back in AIMI, TDD calculation is looking the quantity of insulin on 7 days and the current day.
+It's true too U200 to U100 concentration.
 Here the part of the log who explain how it's working.
 
      console.log("Pump extrapolated TDD = "+tdd_pump);
