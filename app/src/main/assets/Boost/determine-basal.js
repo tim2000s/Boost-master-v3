@@ -1248,7 +1248,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 //Create the time variable to be used to allow the Boost function only profile specified hours.
                 var now1 = new Date().getHours();
 
-                if (now1 > profile.boost_start && now1 < profile.boost_end) {
+                if (now1 >= profile.boost_start && now1 =< profile.boost_end) {
                     console.error("Hours are now "+now1+", so UAM Boost is enabled;");
                     } else {
                     console.error("Hours are now "+now1+", so UAM Boost is disabled;");
@@ -1274,7 +1274,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
     //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
-                 if (glucose_status.delta >= 5 && glucose_status.short_avgdelta >= 3 && uamBoost1 > 1.2 && uamBoost2 > 2 && now1 > boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 5 && eventualBG > target_bg && bg > 80 && insulinReq > 0 /*&& target_bg < 82*/) {
+                 if (glucose_status.delta >= 5 && glucose_status.short_avgdelta >= 3 && uamBoost1 > 1.2 && uamBoost2 > 2 && now1 >= boost_start && now1 =< boost_end && iob_data.iob < boostMaxIOB && boost_scale < 5 && eventualBG > target_bg && bg > 80 && insulinReq > 0 /*&& target_bg < 82*/) {
                      console.error("Profile Boost Scale value is "+boost_scale+": ");
                      console.error("Automated Boost Scale value is "+scaleSMB+": ");
                      //document the pre-boost insulin required recommendation
@@ -1295,7 +1295,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
                  //give 100% of insulin requirement if prediction is a high delta and eventual BG is higher than 108
-                 else if ( glucose_status.delta > 8  && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end && eventualBG > 108 ) { /*|| eventualBG > 180 && bg > 162 && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end*/
+                 else if ( glucose_status.delta > 8  && iob_data.iob < boostMaxIOB && now1 >= boost_start && now1 =< boost_end && eventualBG > 108 ) { /*|| eventualBG > 180 && bg > 162 && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end*/
                     if (insulinReq > boostMaxIOB-iob_data.iob) {
                        insulinReq = boostMaxIOB-iob_data.iob;
                        }
@@ -1307,7 +1307,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.reason += "100% of insulinRequired "+insulinReq;
                  }
                  //If no other criteria are met, and delta is positive, scale microbolus size up to 1.0x insulin required from bg > 108 to bg = 180.
-                 else if (bg > 108 && glucose_status.delta > 3 && eventualBG > target_bg && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end ) {
+                 else if (bg > 108 && glucose_status.delta > 3 && eventualBG > target_bg && iob_data.iob < boostMaxIOB && now1 >= boost_start && now1 =< boost_end ) {
                       if (insulinReq > boostMaxIOB-iob_data.iob) {
                           insulinReq = boostMaxIOB-iob_data.iob;
                       }
