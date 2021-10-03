@@ -326,7 +326,7 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("EatingNowBGBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_bgboostmaxsmb, 0.1) * profile.getPercentage() / 100);
 
         //set UAMBoost Max SMB based upon TT
-        if (tempTarget != null && Math.round(targetBg) <= Math.round(normal_target_bg)) {
+        if (tempTarget != null && Math.round(targetBg) < Math.round(normal_target_bg)) {
             mProfile.put("EatingNowUAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus_tt, 0) * profile.getPercentage()/100);
             mProfile.put("EatingNowUAMBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_uamboostmaxsmb_tt, 0.1) * profile.getPercentage() / 100);
         } else {
