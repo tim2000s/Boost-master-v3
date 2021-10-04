@@ -1287,7 +1287,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqBoost = UAMBoost * UAMBoost_bolus;
                     // 100% insulinReqPct with a temp target else EN insulinReqPct
                     insulinReqPct = (profile.temptargetSet ? 1 : ENinsulinReqPct);
-                    // 80% insulinReqPct with a temp target that has a prebolus
+                    // Not 100% insulinReqPct with a temp target that has a prebolus
                     insulinReqPct = (profile.temptargetSet && profile.temptarget_duration > 60 ? ENinsulinReqPct : insulinReqPct);
                     // Restrict insulinReqPct if UAMBoosted with no TT, low insulin and BGL bounce
                     insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_low && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
