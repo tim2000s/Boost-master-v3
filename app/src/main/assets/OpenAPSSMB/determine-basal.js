@@ -1284,8 +1284,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
                     insulinReqBoost = UAMBoost * UAMBoost_bolus;
-                    // 100% insulinReqPct with a temp target else default
-                    insulinReqPct = (profile.temptargetSet ? 1 : insulinReqPctDefault);
+                    // 100% insulinReqPct with a temp target else 75%
+                    insulinReqPct = (profile.temptargetSet ? 1 : 0.75);
                     // 80% insulinReqPct with a temp target that has a prebolus
                     insulinReqPct = (profile.temptargetSet && profile.temptarget_duration > 60 ? 0.8 : insulinReqPct);
                     // Restrict insulinReqPct if UAMBoosted with no TT, low insulin and BGL bounce
