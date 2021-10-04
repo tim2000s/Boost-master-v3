@@ -1215,7 +1215,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //                UAMBoost = round(1+UAM_deltaAvgRise,2);
                 UAMBoost = round(1+UAM_deltaShortRise,2); //try this without long avg
                 rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + (profile.temptargetSet ? "(" + (profile.temptarget_minutesrunning) + ")" : "") + ":";
-
+                // EN insulinReqPct is at least 75%
+                var ENinsulinReqPct = 0.75;
             }
             //console.log("UAM_safedelta: " +UAM_safedelta);
             //console.log("UAM_deltaShortRise: " + UAM_deltaShortRise);
@@ -1284,10 +1285,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
                     insulinReqBoost = UAMBoost * UAMBoost_bolus;
-                    // 100% insulinReqPct with a temp target else 75%
-                    insulinReqPct = (profile.temptargetSet ? 1 : 0.75);
+                    // 100% insulinReqPct with a temp target else EN insulinReqPct
+                    insulinReqPct = (profile.temptargetSet ? 1 : ENinsulinReqPct);
                     // 80% insulinReqPct with a temp target that has a prebolus
-                    insulinReqPct = (profile.temptargetSet && profile.temptarget_duration > 60 ? 0.8 : insulinReqPct);
+                    insulinReqPct = (profile.temptargetSet && profile.temptarget_duration > 60 ? ENinsulinReqPct : insulinReqPct);
                     // Restrict insulinReqPct if UAMBoosted with no TT, low insulin and BGL bounce
                     insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_low && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
                     if (insulinReqPct == 0) UAMBoostReason +="; BGL bounce no TT";
@@ -1305,7 +1306,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     BGBoost_bolus = Math.max(insulinReq, BGBoost_bolus); // use insulinReq if it is more
                     //BGBoost_scale *= Math.min(Math.max(UAM_safedelta/9,1),3); // boost for delta test min 1x max 3x
                     insulinReqBoost = (profile.EatingNowISFBoost < 1 ? 0 : BGBoost_scale * BGBoost_bolus);
-                    insulinReqPct = (profile.temptargetSet ? 1 : insulinReqPctDefault);
+                    insulinReqPct = (profile.temptargetSet ? 1 : ENinsulinReqPct);
                     EatingNowMaxSMB = (profile.EatingNowBGBoostMaxSMB > 0 ? profile.EatingNowBGBoostMaxSMB : maxBolus);
                     // when predicted to go to twice the BG_threshold allow TBR
                     //SMB_TBR = ( BGBoost_scale >=1.5 ? true :false );
@@ -1317,7 +1318,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // If we are predicted to exceed BGBoost_threshold allow BGBoost TBR when no insulin required
                 if (BGBoost_scale >=1.5 && minDelta > expectedDelta && insulinReqBoost <0) {
                     // Need to let this flow into the code and not just return basal
-                    insulinReqPct = (profile.temptargetSet ? 1 : insulinReqPctDefault);
+                    insulinReqPct = (profile.temptargetSet ? 1 : ENinsulinReqPct);
                     SMB_TBR = false; //TBR seems to overdo it?
                     //insulinReqBoost = (maxSafeBasal / 60) * 15;
                     //profile.current_basal
@@ -1348,7 +1349,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = maxBolus;
                     UAMBoostReason = "; delta slowing";
                     // Restrict insulinReq when above BGBoost_threshold
-                    insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > insulinReqPctDefault ? insulinReqPctDefault : insulinReqPct );
+                    //insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > insulinReqPctDefault ? insulinReqPctDefault : insulinReqPct );
                     // this may help after sensor errors
                     insulinReqPct = (UAM_safedelta == 0 && glucose_status.short_avgdelta == 0 ? 0 : insulinReqPct);
                 } else {
@@ -1383,7 +1384,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     maxBolus = maxBolus;
                     //insulinReqPct = (insulinReqPct == 0 ? 0 : insulinReqPctDefault); // need this for safety as testing
                     // Allow inherited insulinReqPct with maxBolus restriction
-                    insulinReqPct = (target_bg < profile.normal_target_bg ? insulinReqPctDefault : insulinReqPct);
+                    //insulinReqPct = (target_bg < profile.normal_target_bg ? insulinReqPctDefault : insulinReqPct);
+                    // Default insulinReqPct at night
+                    insulinReqPct = insulinReqPctDefault;
                 }
 
                 // ============== INSULIN BOOST  ==============
