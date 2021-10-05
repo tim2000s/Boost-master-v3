@@ -1245,8 +1245,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== UAMBOOST ==============
                 // Sensitive threshold is low normal is high
                 var UAMBoostOK = false, UAMBoost_threshold_low = 1.2, UAMBoost_threshold_high = 2;
+                // lets try keeping it on low threshold ** EXPERIMENTAL **
+                var UAMBoost_threshold = UAMBoost_threshold_low;
                 // UAMBoost threshold changes to high when high thresholds worth of IOB is exceeded
-                var UAMBoost_threshold = (iob_data.iob >= (UAMBoost_threshold_high * UAMBoost_bolus) ? UAMBoost_threshold_high : UAMBoost_threshold_low);
+                // var UAMBoost_threshold = (iob_data.iob >= (UAMBoost_threshold_high * UAMBoost_bolus) ? UAMBoost_threshold_high : UAMBoost_threshold_low);
                 //var UAMBoost_threshold = (iob_data.iob < (UAMBoost_threshold_low * UAMBoost_bolus) ? UAMBoost_threshold_low : UAMBoost_threshold_high);
 
                 // ****** Temp Target Set < normal profile target == MAX UAM MODE ******
@@ -1273,15 +1275,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAMBoost_threshold == UAMBoost_threshold_high && UAM_safedelta >=8 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
                 // if (UAMBoost_threshold == UAMBoost_threshold_high && UAM_safedelta >=8 && minAvgDelta > 0) UAMBoostOK = true;
 
-                // Check IOB for UAMBoost, when IOB is less than UAMBoost MaxSMB without a TT
-                if (UAMBoostOK && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) {
-                    // default is to not allow further boost
-                    UAMBoostOK = false;
-                    // No IOB limit for 45 minutes with a TT, allowing UAMBoost
-                    // if (profile.temptargetSet && profile.temptarget_minutesrunning <= 45) UAMBoostOK = true;
-                    if (profile.temptargetSet) UAMBoostOK = true;
-//                    UAMBoostReason += (UAMBoostOK ? "; iob>maxSMB +TT" : "; iob>maxSMB no TT");
-                }
+                // lets try removing the IOB limit for UAMBoost ** EXPERIMENTAL **
+//                // Check IOB for UAMBoost, when IOB is less than UAMBoost MaxSMB without a TT
+//                if (UAMBoostOK && iob_data.iob > profile.EatingNowUAMBoostMaxSMB) {
+//                    // default is to not allow further boost
+//                    UAMBoostOK = false;
+//                    // No IOB limit for 45 minutes with a TT, allowing UAMBoost
+//                    // if (profile.temptargetSet && profile.temptarget_minutesrunning <= 45) UAMBoostOK = true;
+//                    if (profile.temptargetSet) UAMBoostOK = true;
+////                    UAMBoostReason += (UAMBoostOK ? "; iob>maxSMB +TT" : "; iob>maxSMB no TT");
+//                }
 
                 // If there is a sudden delta change allow UAMBoost
                 if (UAMBoostOK && UAMBoost > UAMBoost_threshold) {
