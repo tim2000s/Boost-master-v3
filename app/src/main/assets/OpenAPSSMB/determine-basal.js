@@ -1314,30 +1314,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     BGBoosted = true;
                 }
 
-                // ============== BGBOOST TBR ==============
-                // If we are predicted to exceed BGBoost_threshold allow BGBoost TBR when no insulin required
-                if (BGBoost_scale >=1.5 && minDelta > expectedDelta && insulinReqBoost <0) {
-                    // Need to let this flow into the code and not just return basal
-                    insulinReqPct = (profile.temptargetSet ? 1 : ENinsulinReqPct);
-                    SMB_TBR = false; //TBR seems to overdo it?
-                    //insulinReqBoost = (maxSafeBasal / 60) * 15;
-                    //profile.current_basal
-                    insulinReqBoost = profile.current_basal;
-                    EatingNowMaxSMB = maxBolus;
-                }
-
-//                // ============== CORRECTION ==============
-//                // If BG is above BGBoost_threshold and rise not slowing allow a correction when autoISF is active
-//                if (bg > BGBoost_threshold && UAMBoost >= UAMBoost_threshold && (!UAMBoosted && !BGBoosted) && typeof liftISF !== 'undefined') {
-//                    insulinReqBoost = (bg - target_bg) / profile_sens;
-//                    UAMBoostReason = " (corr " + round(insulinReqBoost, 2) + ")"; // at this point sens may have autoISF included?
-//                    // insulinReqPct = (liftISF == profile.autoisf_max ? 1 : 0);
-//                    SMB_TBR = true;
-//                    //EatingNowMaxSMB = maxBolus;
-//                    // Allow ENMax SMB for BGBoost as maxbolus
-//                    EatingNowMaxSMB = (profile.EatingNowBGBoostMaxSMB > 0 ? profile.EatingNowBGBoostMaxSMB : maxBolus);
-//                }
-
                 // If target is just above normal target restrict maxBolus
                 EatingNowMaxSMB = ( profile.temptargetSet && target_bg == profile.normal_target_bg + 1 ? maxBolus : EatingNowMaxSMB );
 
@@ -1423,7 +1399,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.reason +=  "minBolus " + minBolus + ", ";
                     microBolus = 0;
                 } else {
-                    rT.reason +=  "minBolus disabled, ";
+                    rT.reason +=  "minBolus off, ";
                 }
              }
 
@@ -1470,9 +1446,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.reason += "Microbolusing " + microBolus + "/" + maxBolus + "U. ";
                     // add the boost type if applicable
                     if ( BGBoosted || UAMBoosted ) {
+                        //rT.boostType = ( "SMB" );
                         rT.boostType = ( BGBoosted ? "BG" : rT.boostType );
                         rT.boostType = ( UAMBoosted ? "UAM" : rT.boostType );
-                        rT.boostType = ( BGBoosted && UAMBoosted ? "BG+" : rT.boostType );
                     }
                 }
             } else {
