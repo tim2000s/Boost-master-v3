@@ -1290,8 +1290,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // Not 100% insulinReqPct with a temp target that has a prebolus
                     insulinReqPct = (profile.temptargetSet && profile.temptarget_duration > 60 ? ENinsulinReqPct : insulinReqPct);
                     // Restrict insulinReqPct if UAMBoosted with no TT, low insulin and BGL bounce
-                    insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_low && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
-                    if (insulinReqPct == 0) UAMBoostReason +="; BGL bounce no TT";
+                    // insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_low && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
+                    // if (insulinReqPct == 0) UAMBoostReason +="; BGL bounce no TT";
                     EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
                     // with a low TT allow scaling of EatingNowMaxSMB
                     //EatingNowMaxSMB *= ( profile.temptargetSet ? profile.normal_target_bg / target_bg : 1 );
