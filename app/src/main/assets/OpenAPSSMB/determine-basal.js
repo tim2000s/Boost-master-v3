@@ -1215,8 +1215,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //                UAMBoost = round(1+UAM_deltaAvgRise,2);
                 UAMBoost = round(1+UAM_deltaShortRise,2); //try this without long avg
                 rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + (profile.temptargetSet ? "(" + (profile.temptarget_minutesrunning) + ")" : "") + ":";
-                // EN insulinReqPct is at least 75%
-                var ENinsulinReqPct = 0.75;
+                // EN insulinReqPct is at least 85%
+                var ENinsulinReqPct = 0.85;
             }
             //console.log("UAM_safedelta: " +UAM_safedelta);
             //console.log("UAM_deltaShortRise: " + UAM_deltaShortRise);
@@ -1372,21 +1372,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  }
 
                 if (eatingnowtimeOK) {
-                    // when IOB is less than trigger restrict SMB size to usual AAPS limits **EXPERIMENT**
+                    // when IOB is less than trigger restrict SMB size to usual AAPS limits
                     if (iob_data.iob < profile.EatingNowIOB) EatingNowMaxSMB = maxBolus;
                     // increase maxbolus if we are within the hours specified
                     maxBolus = EatingNowMaxSMB;
                     insulinReqPct = insulinReqPct;
                     SMB_TBR = SMB_TBR;
-                } else if (profile.EatingNowOverride && profile.temptargetSet) {
-                    // increase maxbolus outside of hours specified with a low TT and override enabled, otherwise use maxBolus
-                    //maxBolus = (target_bg < profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
-                    maxBolus = maxBolus;
-                    //insulinReqPct = (insulinReqPct == 0 ? 0 : insulinReqPctDefault); // need this for safety as testing
-                    // Allow inherited insulinReqPct with maxBolus restriction
-                    //insulinReqPct = (target_bg < profile.normal_target_bg ? insulinReqPctDefault : insulinReqPct);
-                    // Default insulinReqPct at night
+                } else {
+                    // Default insulinReqPct and maxBolus at night
                     insulinReqPct = insulinReqPctDefault;
+                    maxBolus = maxBolus;
                 }
 
                 // ============== INSULIN BOOST  ==============
