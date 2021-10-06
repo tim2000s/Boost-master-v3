@@ -1266,8 +1266,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var boost_max = profile.boost_bolus;
                 console.error("Max automated bolus is "+boost_max+"; ");
                 var boost_scale = profile.boost_scale;
+                var boostInsulinReq = ((TDD * 0.4) / 24 );
 
-                console.error("Boost start time is "+(boost_start+1)+"hrs and boost end time is "+(boost_end-1)+"hrs; ");
+                console.error("Boost start time is "+(boost_start)+"hrs and boost end time is "+(boost_end)+"hrs; ");
+                console.error("Base boost insulin is "+boostInsulinReq+" iu; ");
                 //console.error("Expected delta is "+expectedDelta+". current delta is
                 //"+glucose_status.delta+" and min delta is "+minDelta+". ");
 
@@ -1280,7 +1282,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      //document the pre-boost insulin required recommendation
                      console.error("Insulin required pre-boost is "+insulinReq+": ");
                      //Boost insulin required variable set to 1 hour of insulin based on TDD, and possible to scale using profile scaling factor.
-                     var boostInsulinReq = ((TDD * 0.4) / 24 );
                      boostInsulinReq = Math.min((boost_scale * boostInsulinReq)),boost_max);
                         if (boostInsulinReq > boostMaxIOB-iob_data.iob) {
                             boostInsulinReq = boostMaxIOB-iob_data.iob;
