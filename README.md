@@ -47,7 +47,7 @@ Here the part of the log who explain how it's working.
 If some bugs or new function were required, open an issue in the project on gitlab and describe it.
 enjoy :-)
 
-BOOST Plugin:
+**BOOST Plugin:**
 
 This code is designed to be used with a Circadian profile and variable ISF rates throughout the day that align with the circadian profile.
 
