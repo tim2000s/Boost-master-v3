@@ -81,6 +81,9 @@ import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
+import java.util.Date
+import info.nightscout.androidaps.utils.T
+import info.nightscout.androidaps.utils.DateUtil
 
 class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickListener {
 
@@ -128,8 +131,13 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     private val secondaryGraphsLabel = ArrayList<TextView>()
 
     private var carbAnimation: AnimationDrawable? = null
+    public var insulinAnimation: AnimationDrawable? = null
+
 
     private val graphLock = Object()
+    val now = System.currentTimeMillis()
+
+    private fun iTimeForOverview(now: Long) = (now - treatmentsPlugin.getLastBolusTime(true)) / 60000
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -166,6 +174,10 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         carbAnimation = overview_carbs_icon?.background as AnimationDrawable?
         carbAnimation?.setEnterFadeDuration(1200)
         carbAnimation?.setExitFadeDuration(1200)
+
+        insulinAnimation = overview_insulin_icon?.background as AnimationDrawable?
+        insulinAnimation?.setEnterFadeDuration(1200)
+        insulinAnimation?.setExitFadeDuration(1200)
 
         rangeToDisplay = sp.getInt(R.string.key_rangetodisplay, 6)
 
@@ -734,14 +746,26 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         val bolusIob = treatmentsPlugin.lastCalculationTreatments.round()
         val basalIob = treatmentsPlugin.lastCalculationTempBasals.round()
         overview_iob?.text = resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob)
-
-        overview_iob_llayout?.setOnClickListener {
-            activity?.let {
-                OKDialog.show(it, resourceHelper.gs(R.string.iob),
-                    resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
-                        resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
-                        resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob)
-                )
+        if (iTimeForOverview(now) < 180) {
+            overview_iob_llayout?.setOnClickListener {
+                activity?.let {
+                    OKDialog.show(it, resourceHelper.gs(R.string.iob),
+                        resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
+                            resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
+                            resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob) + "\n" +
+                            "iTime : " + iTimeForOverview(now)
+                    )
+                }
+            }
+        }else{
+            overview_iob_llayout?.setOnClickListener {
+                activity?.let {
+                    OKDialog.show(it, resourceHelper.gs(R.string.iob),
+                        resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
+                            resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
+                            resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob)
+                    )
+                }
             }
         }
 
@@ -756,7 +780,11 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             cobText = resourceHelper.gs(R.string.format_carbs, cobInfo.displayCob.toInt())
             if (cobInfo.futureCarbs > 0) cobText += "(" + DecimalFormatter.to0Decimal(cobInfo.futureCarbs) + ")"
         }
-
+        if (iTimeForOverview(now) < 180) {
+            insulinAnimation?.start()
+        }else{
+            insulinAnimation?.stop()
+        }
         if (config.APS && lastRun?.constraintsProcessed != null) {
             if (lastRun.constraintsProcessed!!.carbsReq > 0) {
                 //only display carbsreq when carbs have not been entered recently

@@ -229,10 +229,11 @@
         app:layout_constraintTop_toBottomOf="@+id/overview_bg">
 
         <ImageView
+            android:id="@+id/overview_insulin_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_bolus" />
+            android:background="@drawable/anim_insulin"/>
 
         <TextView
             android:id="@+id/overview_iob"

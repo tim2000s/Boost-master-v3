@@ -16,6 +16,7 @@ import org.mozilla.javascript.Undefined;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -54,6 +55,8 @@ import info.nightscout.androidaps.plugins.general.nsclient.NSUpload;
 import info.nightscout.androidaps.plugins.general.nsclient.UploadQueue;
 
 
+
+
 public class DetermineBasalAdapterAIMIJS {
     private final HasAndroidInjector injector;
     @Inject AAPSLogger aapsLogger;
@@ -71,6 +74,7 @@ public class DetermineBasalAdapterAIMIJS {
     @Inject FabricPrivacy fabricPrivacy;
     @Inject NSUpload nsUpload;
     @Inject UploadQueue uploadQueue;
+    
 
 
     private final ScriptReader mScriptReader;
@@ -94,6 +98,9 @@ public class DetermineBasalAdapterAIMIJS {
     private String storedMeal_data = null;
 
     private String scriptDebug = "";
+
+
+
 
     /**
      * Main code

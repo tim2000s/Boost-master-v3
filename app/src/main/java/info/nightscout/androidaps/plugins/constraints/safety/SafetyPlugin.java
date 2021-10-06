@@ -160,8 +160,9 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
     public Constraint<Boolean> isAdvancedFilteringEnabled(@NonNull Constraint<Boolean> value) {
         BgSourceInterface bgSource = activePlugin.getActiveBgSource();
 
-        if (!bgSource.advancedFilteringSupported())
-            value.set(getAapsLogger(), false, getResourceHelper().gs(R.string.smbalwaysdisabled), this);
+        /*if (!bgSource.advancedFilteringSupported())
+            value.set(getAapsLogger(), false, getResourceHelper().gs(R.string.smbalwaysdisabled), this);*/
+        value.set(getAapsLogger(), true, getResourceHelper().gs(R.string.disable_Libre_smb_restrictions), this);
         return value;
     }
 

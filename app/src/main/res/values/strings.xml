@@ -1454,5 +1454,6 @@
     <string name="key_UAM_InsulinReq" translatable="false">UAM_InsulinReq</string>
     <string name="UAM_InsulinReq_title">insulinReq delivery percentage [%]</string>
     <string name="UAM_InsulinReq_summary">Reduces the calculated required SMB size to the specified percentage. Example: If calculated insulin required is 1 U and fraction size is 50%, 0.5 U will be delivered.</string>
+    <string name="disable_Libre_smb_restrictions">Filtering active for every sensor, Go SMB!</string>
 
 </resources>

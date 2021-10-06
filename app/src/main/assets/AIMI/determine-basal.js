@@ -283,16 +283,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var tdd7 = meal_data.TDDAIMI7;
         var tdd_pump_now = meal_data.TDDPUMP;
         var tdd_pump = ( tdd_pump_now / (now / 24));
+        var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
         console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
-        if (tdd7 < 20){
-            tdd7 = meal_data.TDDAIMI1;
-            //console.error("tdd7 using previous day's value "+tdd7+"; ");
+        if (tdd_pump < (0.5 * tdd7)){
+            TDD = (tdd7 * 0.2) + (tdd_pump * 0.8);
+            console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
+        }else{
+
+            console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
         }
-        else{
-            //console.error("tdd7 using 7-day average "+tdd7+"; ");
-        }
-        var TDD = (tdd7 * 0.5) + (tdd_pump * 0.5);
-        console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
 
     var variable_sens = (277700 / (TDD * bg));
     variable_sens = round(variable_sens,1);
@@ -753,7 +752,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // wait 85-105m before setting COB and 60m for UAM minPredBGs
             if ( (cid || remainingCIpeak > 0) && COBpredBGs.length > insulinPeak5m && (COBpredBG < minCOBPredBG) ) { minCOBPredBG = round(COBpredBG); }
             if ( (cid || remainingCIpeak > 0) && COBpredBG > maxIOBPredBG ) { maxCOBPredBG = COBpredBG; }
-            if ( enableUAM && UAMpredBGs.length > 12 && (UAMpredBG < minUAMPredBG) ) { minUAMPredBG = round(UAMpredBG); }
+            if ( enableUAM && UAMpredBGs.length > 6 && (UAMpredBG < minUAMPredBG) ) { minUAMPredBG = round(UAMpredBG); }
             if ( enableUAM && UAMpredBG > maxIOBPredBG ) { maxUAMPredBG = UAMpredBG; }
             //console.log("insulinPeakTime : "+insulinPeakTime+" and insulinPeak5m : "+insulinPeak5m+" prediction : "+curvepred * 5+" minutes");
         });
@@ -1225,7 +1224,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("IOB",iob_data.iob,"> COB",meal_data.mealCOB+"; mealInsulinReq =",mealInsulinReq);
                 if (profile.maxUAMSMBBasalMinutes) {
                     console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"basal:",basal);
-                    if (TriggerPredSMB >= 950 || iTime < 180){
+                    if (iTime < 120 ){
+                    maxBolus = round(basal * 250 / 60 ,1);
+                    }else if (TriggerPredSMB >= 950 || iTime < 180){
                     maxBolus = round(basal * 200 / 60 ,1);
                     }else{
                     maxBolus = round( basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
@@ -1240,13 +1241,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
 
             var insulinReqPCT = profile.UAM_InsulinReq/100;
+            var InsulinTDD = (TDD * 0.4) / 24;
             var maxBolusTT = maxBolus;
             var roundSMBTo = 1 / profile.bolus_increment;
-
-            if (TriggerPredSMB >= 950 || iTime < 180){
+            if (iTime < 120){
+            insulinReq = insulinReq + InsulinTDD;
             insulinReqPCT = 1;
-            //maxBolusTT = profile.UAM_boluscap;
+            }else if (TriggerPredSMB >= 950 || iTime < 180){
+            insulinReqPCT = 1;
             }
+
             var microBolus = Math.floor(Math.min(insulinReq * insulinReqPCT,maxBolusTT)*roundSMBTo)/roundSMBTo;
             // calculate a long enough zero temp to eventually correct back up to target
             if (TriggerPredSMB >= 950 || iTime < 180 ){
@@ -1266,7 +1270,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             var smbTarget = target_bg;
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
-            durationReq = round(60*worstCaseInsulinReq / basal);
+            durationReq = round(30*worstCaseInsulinReq / basal);
 
             // if insulinReq > 0 but not enough for a microBolus, don't set an SMB zero temp
             if (insulinReq > 0 && microBolus < profile.bolus_increment) {
