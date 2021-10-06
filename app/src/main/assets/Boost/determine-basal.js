@@ -329,16 +329,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var tdd7 = meal_data.TDDAIMI7;
         var tdd_pump_now = meal_data.TDDPUMP;
         var tdd_pump = ( tdd_pump_now / (now / 24));
+        var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
         console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
-        if (tdd7 < 20){
-            tdd7 = meal_data.TDDAIMI1;
-            console.error("tdd7 using previous day's value "+tdd7+"; ");
+        if (tdd_pump < (0.5 * tdd7)){
+            TDD = (tdd7 * 0.2) + (tdd_pump * 0.8);
+            console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
         }
         else{
-            console.error("tdd7 using 7-day average "+tdd7+"; ");
+            console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
         }
-        var TDD = (tdd7 * 0.5) + (tdd_pump * 0.5);
-        console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
+
 
     var variable_sens = (277700 / (TDD * bg));
     variable_sens = round(variable_sens,1);
