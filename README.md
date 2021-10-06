@@ -75,6 +75,7 @@ UAM Boost Start Time (in hours) - defaults to 7
 UAM Boost end time (in hours) - defaults to 8
 
 **Recommended Settings**
+
 Boost Bolus Cap - Start at 2.5% of TDD and increase to no more than 5% of total daily dose.
 UAM Boost max IOB - Start at 5% of TDD and increase to no more than 10% of total daily dose.
 UAMSMBBasalMinutes - 60 mins. This is only used overnight when IOB is large enough to trigger UAM, so it doesn't need to be a large value. 
