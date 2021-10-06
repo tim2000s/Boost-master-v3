@@ -1282,7 +1282,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      //document the pre-boost insulin required recommendation
                      console.error("Insulin required pre-boost is "+insulinReq+": ");
                      //Boost insulin required variable set to 1 hour of insulin based on TDD, and possible to scale using profile scaling factor.
-                     boostInsulinReq = Math.min((boost_scale * boostInsulinReq)),boost_max);
+                     boostInsulinReq = Math.min(boost_scale * boostInsulinReq,boost_max);
                         if (boostInsulinReq > boostMaxIOB-iob_data.iob) {
                             boostInsulinReq = boostMaxIOB-iob_data.iob;
                         }
