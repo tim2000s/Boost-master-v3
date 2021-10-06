@@ -172,9 +172,19 @@
                 android:defaultValue="5"
                 android:inputType="numberDecimal"
                 android:key="@string/key_eatingnow_iob"
-                android:dialogMessage="This is the minimum amount of IOB required to trigger Eating Now with a delta of +0.3 and above."
-                android:title="IOB Trigger"
+                android:dialogMessage="IOB required to allow larger Eating Now SMB"
+                android:title="IOB for EN SMB"
                 validate:floatmaxNumber="25.0"
+                validate:floatminNumber="0.1"
+                validate:testType="floatNumericRange"/>
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="0.3"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnow_iobmax"
+                android:dialogMessage="This will use a percentage of max-iob and suspend EatingNow until IOB limit is lower."
+                android:title="Max IOB Percentage"
+                validate:floatmaxNumber="1"
                 validate:floatminNumber="0.1"
                 validate:testType="floatNumericRange"/>
 
@@ -256,16 +266,6 @@
                 android:title="ISF Boost Percentage"
                 validate:floatmaxNumber="1"
                 validate:floatminNumber="0.5"
-                validate:testType="floatNumericRange"/>
-
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0.3"
-                android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_iobmax"
-                android:dialogMessage="This will use a percentage of max-iob and suspend EatingNow until IOB limit is lower."
-                android:title="Max IOB Percentage"
-                validate:floatmaxNumber="1"
-                validate:floatminNumber="0.1"
                 validate:testType="floatNumericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
