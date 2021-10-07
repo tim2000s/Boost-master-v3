@@ -1237,8 +1237,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //                var BGBoost_scale = round(eventualBG / BGBoost_threshold,2);
 //                var BGBoost_bolus = profile.EatingNowBGBoostBolus;
 
-                // 100% insulinReqPct with a temp target else EN insulinReqPct
+                // 100% insulinReqPct and larger SMB with a temp target else EN insulinReqPct and maxBolus
                 insulinReqPct = (profile.temptargetSet ? 1 : ENinsulinReqPct);
+                EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
+
 
                 var UAMBoost_bolus = profile.EatingNowUAMBoostBolus;
                 // apply any resistance
