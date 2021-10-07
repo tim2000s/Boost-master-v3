@@ -173,7 +173,7 @@
                 android:inputType="numberDecimal"
                 android:key="@string/key_eatingnow_iob"
                 android:dialogMessage="IOB required to allow larger Eating Now SMB"
-                android:title="IOB for EN SMB"
+                android:title="IOB for larger SMB"
                 validate:floatmaxNumber="25.0"
                 validate:floatminNumber="0.1"
                 validate:testType="floatNumericRange"/>
