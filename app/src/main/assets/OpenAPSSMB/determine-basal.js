@@ -1295,7 +1295,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // If there is a sudden delta change allow UAMBoost
                 if (UAMBoostOK && UAMBoost > UAMBoost_threshold) {
                     // boost the insulin further
-                    UAMBoost_bolus = Math.max(insulinReq, UAMBoost_bolus); // use insulinReq if it is more
                     insulinReqBoost = UAMBoost * UAMBoost_bolus;
                     // Not 100% insulinReqPct with a temp target that has a prebolus
                     insulinReqPct = (profile.temptargetSet && profile.temptarget_duration > 60 ? ENinsulinReqPct : insulinReqPct);
