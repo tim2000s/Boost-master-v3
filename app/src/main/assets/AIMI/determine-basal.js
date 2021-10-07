@@ -1247,8 +1247,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (iTime < 120){
             insulinReq = insulinReq + InsulinTDD;
             insulinReqPCT = 1;
-            }else if (TriggerPredSMB >= 950 || iTime < 180){
+            }else if ( iTime < 180){
             insulinReqPCT = 1;
+            }else if(TriggerPredSMB > 950){
+            insulinReqPCT = 0.8;
             }
 
             var microBolus = Math.floor(Math.min(insulinReq * insulinReqPCT,maxBolusTT)*roundSMBTo)/roundSMBTo;
