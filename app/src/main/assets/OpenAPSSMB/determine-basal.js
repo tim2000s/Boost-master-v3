@@ -1250,7 +1250,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== UAMBOOST ==============
                 // Sensitive threshold is low normal is high
-                var UAMBoostOK = false, UAMBoost_threshold_low = 1.2, UAMBoost_threshold_high = 2;
+                var UAMBoostOK = false, UAMBoost_threshold_low = 1.1, UAMBoost_threshold_high = 2;
                 // lets try keeping it on low threshold ** EXPERIMENTAL **
                 var UAMBoost_threshold = UAMBoost_threshold_low;
                 // UAMBoost threshold changes to high when high thresholds worth of IOB is exceeded
@@ -1274,11 +1274,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ****** No Temp Target Set ******
                 // Low Threshold mode
-                if (UAMBoost_threshold == UAMBoost_threshold_low && UAM_safedelta >=8 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
+                if (UAMBoost_threshold == UAMBoost_threshold_low && UAM_safedelta >=9 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
                 // if (UAMBoost_threshold == UAMBoost_threshold_low && UAM_safedelta >=8 && minAvgDelta > 0) UAMBoostOK = true;
 
                 // High Threshold mode
-                if (UAMBoost_threshold == UAMBoost_threshold_high && UAM_safedelta >=8 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
+                if (UAMBoost_threshold == UAMBoost_threshold_high && UAM_safedelta >=9 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
                 // if (UAMBoost_threshold == UAMBoost_threshold_high && UAM_safedelta >=8 && minAvgDelta > 0) UAMBoostOK = true;
 
                 // lets try removing the IOB limit for UAMBoost ** EXPERIMENTAL **
