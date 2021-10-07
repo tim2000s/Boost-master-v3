@@ -745,6 +745,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         treatmentsPlugin.updateTotalIOBTempBasals()
         val bolusIob = treatmentsPlugin.lastCalculationTreatments.round()
         val basalIob = treatmentsPlugin.lastCalculationTempBasals.round()
+        val iTimeUpdate = iTimeForOverview(now)
         overview_iob?.text = resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob)
         if (iTimeForOverview(now) < 180) {
             overview_iob_llayout?.setOnClickListener {
@@ -753,7 +754,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                         resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
                             resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
                             resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob) + "\n" +
-                            "iTime : " + iTimeForOverview(now)
+                            "iTime : " + iTimeUpdate
                     )
                 }
             }
@@ -780,7 +781,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             cobText = resourceHelper.gs(R.string.format_carbs, cobInfo.displayCob.toInt())
             if (cobInfo.futureCarbs > 0) cobText += "(" + DecimalFormatter.to0Decimal(cobInfo.futureCarbs) + ")"
         }
-        if (iTimeForOverview(now) < 180) {
+        if (iTimeUpdate < 180) {
             insulinAnimation?.start()
         }else{
             insulinAnimation?.stop()
