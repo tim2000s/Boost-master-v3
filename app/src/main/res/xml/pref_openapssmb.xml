@@ -228,35 +228,35 @@
                 validate:floatminNumber="0.0"
                 validate:testType="floatNumericRange"/>
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0"
-                android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_bgboostbg"
-                android:title="BGBoost Threshold"
-                android:dialogMessage="When BG is predicted to exceed this, BGBoost is used for insulinReq."
-                validate:floatmaxNumber="270.0"
-                validate:floatminNumber="7.0"
-                validate:testType="floatNumericRange" />
+<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
+<!--                android:defaultValue="0"-->
+<!--                android:inputType="numberDecimal"-->
+<!--                android:key="@string/key_eatingnow_bgboostbg"-->
+<!--                android:title="BGBoost Threshold"-->
+<!--                android:dialogMessage="When BG is predicted to exceed this, BGBoost is used for insulinReq."-->
+<!--                validate:floatmaxNumber="270.0"-->
+<!--                validate:floatminNumber="7.0"-->
+<!--                validate:testType="floatNumericRange" />-->
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0"
-                android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_bgboostbolus"
-                android:title="BGBoost Bolus"
-                android:dialogMessage="Minimum bolus to boost for BG predicted to exceed the BGBoost Threshold\n0 will use insulinReq as the minimum"
-                validate:floatmaxNumber="5.0"
-                validate:floatminNumber="0"
-                validate:testType="floatNumericRange"/>
+<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
+<!--                android:defaultValue="0"-->
+<!--                android:inputType="numberDecimal"-->
+<!--                android:key="@string/key_eatingnow_bgboostbolus"-->
+<!--                android:title="BGBoost Bolus"-->
+<!--                android:dialogMessage="Minimum bolus to boost for BG predicted to exceed the BGBoost Threshold\n0 will use insulinReq as the minimum"-->
+<!--                validate:floatmaxNumber="5.0"-->
+<!--                validate:floatminNumber="0"-->
+<!--                validate:testType="floatNumericRange"/>-->
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0.1"
-                android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_bgboostmaxsmb"
-                android:title="BGBoost Max SMB"
-                android:dialogMessage="BGBoost Max SMB for BGL rises\n0 will use UAM SMB Minutes"
-                validate:floatmaxNumber="5.0"
-                validate:floatminNumber="0.0"
-                validate:testType="floatNumericRange"/>
+<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
+<!--                android:defaultValue="0.1"-->
+<!--                android:inputType="numberDecimal"-->
+<!--                android:key="@string/key_eatingnow_bgboostmaxsmb"-->
+<!--                android:title="BGBoost Max SMB"-->
+<!--                android:dialogMessage="BGBoost Max SMB for BGL rises\n0 will use UAM SMB Minutes"-->
+<!--                validate:floatmaxNumber="5.0"-->
+<!--                validate:floatminNumber="0.0"-->
+<!--                validate:testType="floatNumericRange"/>-->
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="1.0"
