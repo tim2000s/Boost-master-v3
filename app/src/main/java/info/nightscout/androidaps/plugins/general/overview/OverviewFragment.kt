@@ -135,9 +135,9 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
 
 
     private val graphLock = Object()
-    val now = System.currentTimeMillis()
+   // val now = System.currentTimeMillis()
 
-    private fun iTimeForOverview(now: Long) = (now - treatmentsPlugin.getLastBolusTime(true)) / 60000
+   // private fun iTimeForOverview(now: Long) = (now - treatmentsPlugin.getLastBolusTime(true)) / 60000
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -745,16 +745,19 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         treatmentsPlugin.updateTotalIOBTempBasals()
         val bolusIob = treatmentsPlugin.lastCalculationTreatments.round()
         val basalIob = treatmentsPlugin.lastCalculationTempBasals.round()
-        val iTimeUpdate = iTimeForOverview(now)
+        //val now = System.currentTimeMillis()
+
+        //(System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
+        val iTimeUpdate = (System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
         overview_iob?.text = resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob)
-        if (iTimeForOverview(now) < 180) {
+        if (iTimeUpdate < 180) {
             overview_iob_llayout?.setOnClickListener {
                 activity?.let {
                     OKDialog.show(it, resourceHelper.gs(R.string.iob),
                         resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
                             resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
                             resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob) + "\n" +
-                            "iTime : " + iTimeUpdate
+                            resourceHelper.gs(R.string.iTime) + ": " + resourceHelper.gs(R.string.format_mins,iTimeUpdate)
                     )
                 }
             }

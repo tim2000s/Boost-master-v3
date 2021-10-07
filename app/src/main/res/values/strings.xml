@@ -148,6 +148,7 @@
     <string name="constraintapllied">Constraint applied!</string>
     <string name="sms_bolus">Bolus:</string>
     <string name="basal">Basal</string>
+    <string name="iTime">iTime</string>
     <string name="sms_basal">Basal:</string>
     <string name="changeyourinput">Change your input!</string>
     <string name="configbuilder_bgsource">BG Source</string>
