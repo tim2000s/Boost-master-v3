@@ -832,7 +832,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.error("UAM Impact:",uci,"mg/dL per 5m; UAM Duration:",UAMduration,"hours");
     console.log("EventualBG is" +eventualBG+" ;");
 
-        var future_sens = ( 277700 / (TDD * eventualBG));
+        if( glucose_status.delta >= 0 ) {
+                var future_sens = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
+                console.log("Future state sensitivity is " +future_sens+" based on a weighted average of bg & eventual bg");
+                }
+           else {
+                var future_sens = ( 277700 / (TDD * eventualBG));
+                console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
+                }
         var future_sens = round(future_sens,1);
 
         console.log("------------------------------");
