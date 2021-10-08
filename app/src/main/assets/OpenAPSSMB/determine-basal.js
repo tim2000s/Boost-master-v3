@@ -374,7 +374,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // ISFBoost START
     // Allow ISFBoost if EN rising more than expected and no autoISF
     var ISFBoost = 1; // default is no ISFBoost
-    if (eatingnow && glucose_status.delta > 6 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
+    if (eatingnow && glucose_status.delta >=9 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
     sens = sens * ISFBoost;
     // ISFBoost END
 
