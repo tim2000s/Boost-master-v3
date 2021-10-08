@@ -356,14 +356,14 @@ if (isMaster() && !allCommitted()) {
 //    throw new GradleException('There are uncommitted changes. Clone sources again as described in wiki and do not allow gradle update')
 }
 
-// Sync to Google Drive
-task CopytoGoogleDrive {
-    doLast {
-        println 'Running Google Drive script'
-        exec {
-            commandLine 'sh', '/home/dicko/sync.sh'
-        }
-        println 'Finished Running Google Drive script'
-    }
-}
+//// Sync to Google Drive
+//task CopytoGoogleDrive {
+//    doLast {
+//        println 'Running Google Drive script'
+//        exec {
+//            commandLine 'sh', '/home/dicko/sync.sh'
+//        }
+//        println 'Finished Running Google Drive script'
+//    }
+//}
 
