@@ -179,6 +179,16 @@ android {
                         output.outputFileName  = newName
                 }
         }
+        // Sync to Google Drive
+        task CopytoGoogleDrive {
+            doLast {
+                println 'Running Google Drive script'
+                exec {
+                    commandLine 'sh', '/home/dicko/sync.sh'
+                }
+                println 'Finished Running Google Drive script'
+            }
+        }
     }
     productFlavors {
         flavorDimensions "standard"
