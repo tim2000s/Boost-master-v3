@@ -1250,7 +1250,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== UAMBOOST ==============
                 // Sensitive threshold is low normal is high
-                var UAMBoostOK = false, UAMBoost_threshold_low = 1.1, UAMBoost_threshold_high = 2;
+                var UAMBoostOK = false, UAMBoost_threshold_low = 1.2, UAMBoost_threshold_high = 2;
                 // lets try keeping it on low threshold ** EXPERIMENTAL **
                 var UAMBoost_threshold = UAMBoost_threshold_low;
                 // UAMBoost threshold changes to high when high thresholds worth of IOB is exceeded
