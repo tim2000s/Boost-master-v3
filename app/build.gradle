@@ -349,8 +349,11 @@ if (isMaster() && !allCommitted()) {
 // Sync to Google Drive
 task CopytoGoogleDrive {
     doLast {
+        println 'Running Google Drive script'
         exec {
             commandLine 'sh', '/home/dicko/Documents/AAPS-BUILD/sync.sh'
         }
+        println 'Finished Running Google Drive script'
     }
 }
+
