@@ -832,9 +832,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         console.log("EventualBG is" +eventualBG+" ;");
 
+        if( glucose_status.delta >= 0 ) {
+            var future_sens = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
+            console.log("Future state sensitivity is " +future_sens+" based on a weighted average of bg & eventual bg");
+            }
+        else {
         var future_sens = ( 277700 / (TDD * eventualBG));
-        var future_sens = round(future_sens,1);
         console.log("Future state sensitivity is " +future_sens+" based on eventual bg");
+        }
+        var future_sens = round(future_sens,1);
+
 
         minIOBPredBG = Math.max(39,minIOBPredBG);
         minCOBPredBG = Math.max(39,minCOBPredBG);
