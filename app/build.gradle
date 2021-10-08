@@ -179,16 +179,6 @@ android {
                         output.outputFileName  = newName
                 }
         }
-        // Sync to Google Drive
-        task CopytoGoogleDrive {
-            doLast {
-                println 'Running Google Drive script'
-                exec {
-                    commandLine 'sh', '/home/dicko/sync.sh'
-                }
-                println 'Finished Running Google Drive script'
-            }
-        }
     }
     productFlavors {
         flavorDimensions "standard"
@@ -343,6 +333,16 @@ tasks.whenTaskAdded { task ->
     }
 }
 */
+// Sync to Google Drive
+task CopytoGoogleDrive {
+    doLast {
+        println 'Running Google Drive script'
+        exec {
+            commandLine 'sh', '/home/dicko/sync.sh'
+        }
+        println 'Finished Running Google Drive script'
+    }
+}
 
 printf('--------------\n')
 printf('isMaster: %s\n', isMaster().toString())
@@ -356,14 +356,5 @@ if (isMaster() && !allCommitted()) {
 //    throw new GradleException('There are uncommitted changes. Clone sources again as described in wiki and do not allow gradle update')
 }
 
-//// Sync to Google Drive
-//task CopytoGoogleDrive {
-//    doLast {
-//        println 'Running Google Drive script'
-//        exec {
-//            commandLine 'sh', '/home/dicko/sync.sh'
-//        }
-//        println 'Finished Running Google Drive script'
-//    }
-//}
+
 
