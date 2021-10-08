@@ -1459,6 +1459,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     if ( UAMBoosted ) {
                         //rT.boostType = ( "SMB" );
 //                        rT.boostType = ( BGBoosted ? "BG" : rT.boostType );
+                        rT.boostType = ( ISFBoost < 1 ? "BG" : rT.boostType );
                         rT.boostType = ( UAMBoosted ? "UAM" : rT.boostType );
                     }
                 }
