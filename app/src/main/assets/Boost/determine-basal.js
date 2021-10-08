@@ -838,7 +838,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
         else {
         var future_sens = ( 277700 / (TDD * eventualBG));
-        console.log("Future state sensitivity is " +future_sens+" based on eventual bg");
+        console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
         }
         var future_sens = round(future_sens,1);
 
