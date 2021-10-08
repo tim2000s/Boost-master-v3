@@ -333,16 +333,6 @@ tasks.whenTaskAdded { task ->
     }
 }
 */
-// Sync to Google Drive
-task CopytoGoogleDrive {
-    doLast {
-        println 'Running Google Drive script'
-        exec {
-            commandLine 'sh', '/home/dicko/sync.sh'
-        }
-        println 'Finished Running Google Drive script'
-    }
-}
 
 printf('--------------\n')
 printf('isMaster: %s\n', isMaster().toString())
