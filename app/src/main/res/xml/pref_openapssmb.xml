@@ -210,14 +210,14 @@
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="0"
-                android:dialogMessage="UAMBoost Max SMB for BGL rises\n0 will use UAM SMB Minutes"
+                android:dialogMessage="UAMBoost Max SMB Minutes for BGL rises\n0 will use UAM SMB Minutes"
                 android:digits="0123456789"
                 android:inputType="number"
                 android:key="@string/key_eatingnow_uamboostmaxsmb"
                 android:maxLines="20"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
-                android:title="UAMBoost Max SMB (No TT)"
+                android:title="UAMBoost Max SMB Minutes (No TT)"
                 validate:maxNumber="360"
                 validate:minNumber="0"
                 validate:testType="numericRange" />
@@ -244,14 +244,14 @@
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="0"
-                android:dialogMessage="UAMBoost Max SMB for BGL rises with low temp target\n0 will use UAM SMB Minutes"
+                android:dialogMessage="UAMBoost Max SMB Minutes for BGL rises with low temp target\n0 will use UAM SMB Minutes"
                 android:digits="0123456789"
                 android:inputType="number"
                 android:key="@string/key_eatingnow_uamboostmaxsmb_tt"
                 android:maxLines="20"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
-                android:title="UAMBoost Max SMB (Low TT)"
+                android:title="UAMBoost Max SMB Minutes (Low TT)"
                 validate:maxNumber="360"
                 validate:minNumber="0"
                 validate:testType="numericRange" />
