@@ -1239,8 +1239,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // 100% insulinReqPct and larger SMB with a temp target else EN insulinReqPct and maxBolus
                 insulinReqPct = (profile.temptargetSet ? 1 : ENinsulinReqPct);
-                EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
-
+                EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? round( profile.current_basal * profile.EatingNowUAMBoostMaxSMB / 60 ,1) : maxBolus );
 
                 var UAMBoost_bolus = profile.EatingNowUAMBoostBolus;
                 // apply any resistance
@@ -1348,7 +1347,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // if BG above threshold with autoISF active and using BGBoost not BGBoost+ then allow 100%
 //                    if (bg > BGBoost_threshold && liftISF > 1 && BGBoosted && !UAMBoosted) insulinReqPct = 1.0;
                     SMB_TBR = ( insulinReqPct < 1 ? true : SMB_TBR );
-                    EatingNowMaxSMB = round(EatingNowMaxSMB,1);
+                    EatingNowMaxSMB = EatingNowMaxSMB;
                 }
 
                 // ============== TIME RESTRICTIONS ==============
