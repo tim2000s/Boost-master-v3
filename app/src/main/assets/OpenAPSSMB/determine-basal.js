@@ -340,7 +340,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (target_bg > profile.normal_target_bg + 1) eatingnow = false;
          }
         // disable eating now when there are COB, only works with GhostCOB
-        if (meal_data.mealCOB > 0) eatingnow = false;
+        // if (meal_data.mealCOB > 0) eatingnow = false;
     }
     // patches ===== END
 
