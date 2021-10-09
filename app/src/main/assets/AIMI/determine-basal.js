@@ -1233,10 +1233,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("IOB",iob_data.iob,"> COB",meal_data.mealCOB+"; mealInsulinReq =",mealInsulinReq);
                 if (profile.maxUAMSMBBasalMinutes) {
                     console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"basal:",basal);
-                    if (iTime < 120 && !profile.temptargetSet && target_bg > normalTarget ){
+                    if (iTime < 120 && target_bg < normalTarget && TriggerPredSMB > 450 ){
                     maxBolus = round(basal * 250 / 60 ,1);
-                    }else if (TriggerPredSMB >= 950 || iTime < 240){
+                    }else if (TriggerPredSMB >= 950 || iTime < 240 && TriggerPredSMB > 450){
                     maxBolus = round(basal * 200 / 60 ,1);
+                    }else if (iTime < 240 && TriggerPredSMB < 450){
+                    maxBolus = round(basal * 120 / 60 ,1);
                     }else{
                     maxBolus = round( basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
                     }
@@ -1248,12 +1250,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("profile.maxSMBBasalMinutes:",profile.maxSMBBasalMinutes,"basal:",basal);
                 maxBolus = round( basal * profile.maxSMBBasalMinutes / 60 ,1);
             }
-
+            var insulinQ = insulinReq;
             var insulinReqPCT = profile.UAM_InsulinReq/100;
             var InsulinTDD = (TDD * 0.4) / 24;
             var maxBolusTT = maxBolus;
             var roundSMBTo = 1 / profile.bolus_increment;
-            if (iTime < 120 && !profile.temptargetSet){
+            if (iTime < 120 && target_bg < normalTarget && TriggerPredSMB > 450){
             insulinReq = insulinReq + InsulinTDD;
             insulinReqPCT = 1;
             }else if ( iTime < 240 && !profile.temptargetSet){
@@ -1274,6 +1276,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                             console.log("maxBolusTT : "+maxBolusTT);
                             console.log("InsulinReqPCT : "+(insulinReqPCT * 100)+"%");
                             console.log("insulinReq : "+insulinReq);
+                            console.log("insulinQ : "+insulinQ);
                             console.log("InsulinTDD : "+InsulinTDD);
                             console.log("microBolus : "+microBolus);
         console.log("------------------------------");
