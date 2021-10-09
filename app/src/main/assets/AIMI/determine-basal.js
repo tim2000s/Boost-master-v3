@@ -1267,7 +1267,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var microBolus = Math.floor(Math.min(insulinReq * insulinReqPCT,maxBolusTT)*roundSMBTo)/roundSMBTo;
             // calculate a long enough zero temp to eventually correct back up to target
             if (TriggerPredSMB >= 950 || iTime < 180 ){
-            console.log("--- if TriggerPredSMB >= 950 ou iTime < 180 -----");
+            console.log("--- if TriggerPredSMB >= 950 ou iTime < 240 -----");
                             console.log("TriggerPredSMB : "+TriggerPredSMB);
                             console.log("iTime : "+iTime);
                             console.log("target_bg from "+target_bg+" to "+hyper_target);
