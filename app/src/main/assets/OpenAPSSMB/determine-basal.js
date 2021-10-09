@@ -374,7 +374,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // ISFBoost START
     // Allow ISFBoost if EN rising more than expected and no autoISF
     var ISFBoost = 1; // default is no ISFBoost
-    if (eatingnow && glucose_status.delta >=9 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
+    if (eatingnow && glucose_status.delta >=8 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
     sens = sens * ISFBoost;
     // ISFBoost END
 
@@ -1273,11 +1273,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ****** No Temp Target Set ******
                 // Low Threshold mode
-                if (UAMBoost_threshold == UAMBoost_threshold_low && UAM_safedelta >=9 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
+                if (UAMBoost_threshold == UAMBoost_threshold_low && UAM_safedelta >=8 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
                 // if (UAMBoost_threshold == UAMBoost_threshold_low && UAM_safedelta >=8 && minAvgDelta > 0) UAMBoostOK = true;
 
                 // High Threshold mode
-                if (UAMBoost_threshold == UAMBoost_threshold_high && UAM_safedelta >=9 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
+                if (UAMBoost_threshold == UAMBoost_threshold_high && UAM_safedelta >=8 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
                 // if (UAMBoost_threshold == UAMBoost_threshold_high && UAM_safedelta >=8 && minAvgDelta > 0) UAMBoostOK = true;
 
                 // lets try removing the IOB limit for UAMBoost ** EXPERIMENTAL **
