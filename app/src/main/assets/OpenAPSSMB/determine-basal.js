@@ -1300,7 +1300,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // Restrict insulinReqPct if UAMBoosted with no TT, low insulin and BGL bounce
                     // insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_low && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
                     // if (insulinReqPct == 0) UAMBoostReason +="; BGL bounce no TT";
-                    // EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
+//                    EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
                     // with a low TT allow scaling of EatingNowMaxSMB
                     //EatingNowMaxSMB *= ( profile.temptargetSet ? profile.normal_target_bg / target_bg : 1 );
                     SMB_TBR = true;
@@ -1366,7 +1366,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else {
                     // Default insulinReqPct and maxBolus at night
                     insulinReqPct = insulinReqPctDefault;
-                    maxBolus = maxBolus;
+                    // maxBolus can be larger if the TT is low
+                    maxBolus = ( profile.temptargetSet && target_bg <= profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
                 }
 
                 // ============== INSULIN BOOST  ==============
