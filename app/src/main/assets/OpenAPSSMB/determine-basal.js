@@ -530,7 +530,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (eatingnow && profile.temptarget_duration > 60 && target_bg < profile.normal_target_bg + 1 && profile.temptarget_minutesrunning == 0) {
         enableSMB = true;
         // allow all of maxSMB for low TT else 80%
-        var preBolus = round( (profile.current_basal * profile.EatingNowUAMBoostMaxSMB / 60 ,1) * (target_bg < profile.normal_target_bg ? 1: 0.8),1);
+        var preBolus = round( (profile.current_basal * profile.EatingNowUAMBoostMaxSMB / 60) * (target_bg < profile.normal_target_bg ? 1: 0.8),1);
         rT.units = preBolus;
         rT.insulinReq = rT.units;
         rT.boostType = "Prebolus";
