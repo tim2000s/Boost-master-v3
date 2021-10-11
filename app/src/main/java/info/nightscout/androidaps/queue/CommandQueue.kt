@@ -20,7 +20,6 @@ import info.nightscout.androidaps.database.entities.ProfileSwitch
 import info.nightscout.androidaps.database.interfaces.end
 import info.nightscout.androidaps.dialogs.BolusProgressDialog
 import info.nightscout.androidaps.events.EventBolusRequested
-import info.nightscout.androidaps.events.EventNewBasalProfile
 import info.nightscout.androidaps.events.EventProfileSwitchChanged
 import info.nightscout.androidaps.extensions.getCustomizedName
 import info.nightscout.androidaps.interfaces.*
@@ -64,7 +63,8 @@ class CommandQueue @Inject constructor(
     private val buildHelper: BuildHelper,
     private val dateUtil: DateUtil,
     private val repository: AppRepository,
-    private val fabricPrivacy: FabricPrivacy
+    private val fabricPrivacy: FabricPrivacy,
+    private val config: Config
 ) : CommandQueueProvider {
 
     private val disposable = CompositeDisposable()
@@ -79,6 +79,9 @@ class CommandQueue @Inject constructor(
             .toObservable(EventProfileSwitchChanged::class.java)
             .observeOn(aapsSchedulers.io)
             .subscribe({
+                if (config.NSCLIENT) { // Effective profileswitch should be synced over NS, do not create EffectiveProfileSwitch here
+                    return@subscribe
+                }
                 aapsLogger.debug(LTag.PROFILE, "onProfileSwitch")
                 profileFunction.getRequestedProfile()?.let {
                     val nonCustomized = ProfileSealed.PS(it).convertToNonCustomizedProfile(dateUtil)
@@ -105,7 +108,6 @@ class CommandQueue @Inject constructor(
                                         insulinConfiguration = it.insulinConfiguration
                                     )
                                 )
-                                rxBus.send(EventNewBasalProfile())
                             }
                         }
                     })
@@ -172,8 +174,7 @@ class CommandQueue @Inject constructor(
 
     // After new command added to the queue
     // start thread again if not already running
-    @Synchronized
-    open fun notifyAboutNewCommand() {
+    @Synchronized fun notifyAboutNewCommand() {
         waitForFinishedThread()
         if (thread == null || thread!!.state == Thread.State.TERMINATED) {
             thread = QueueThread(this, context, aapsLogger, rxBus, activePlugin, resourceHelper, sp)
@@ -195,7 +196,9 @@ class CommandQueue @Inject constructor(
 
     override fun independentConnect(reason: String, callback: Callback?) {
         aapsLogger.debug(LTag.PUMPQUEUE, "Starting new queue")
-        val tempCommandQueue = CommandQueue(injector, aapsLogger, rxBus, aapsSchedulers, resourceHelper, constraintChecker, profileFunction, activePlugin, context, sp, buildHelper, dateUtil, repository, fabricPrivacy)
+        val tempCommandQueue = CommandQueue(injector, aapsLogger, rxBus, aapsSchedulers, resourceHelper,
+                                            constraintChecker, profileFunction, activePlugin, context, sp,
+                                            buildHelper, dateUtil, repository, fabricPrivacy, config)
         tempCommandQueue.readStatus(reason, callback)
         tempCommandQueue.disposable.clear()
     }
@@ -392,14 +395,6 @@ class CommandQueue @Inject constructor(
             callback?.result(PumpEnactResult(injector).success(true).enacted(false))?.run()
             return false
         }
-        /* this is breaking setting of profile at all if not engineering mode
-        if (!buildHelper.isEngineeringModeOrRelease()) {
-            val notification = Notification(Notification.NOT_ENG_MODE_OR_RELEASE, resourceHelper.gs(R.string.not_eng_mode_or_release), Notification.URGENT)
-            rxBus.send(EventNewNotification(notification))
-            callback?.result(PumpEnactResult(injector).success(false).enacted(false).comment(R.string.not_eng_mode_or_release)))?.run()
-            return false
-        }
-        */
         // Compare with pump limits
         val basalValues = profile.getBasalValues()
         for (basalValue in basalValues) {
