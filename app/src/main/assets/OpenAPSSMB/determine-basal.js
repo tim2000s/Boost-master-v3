@@ -534,7 +534,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.units = preBolus;
         rT.insulinReq = rT.units;
         rT.boostType = "Prebolus";
-        rT.reason = "EN: " + convert_bg(target_bg, profile) + " Temp Target for " + profile.temptarget_duration + " mins, prebolusing " + rT.units + "/" + profile.EatingNowUAMBoostMaxSMB + "U.";
+        rT.reason = "EN: " + convert_bg(target_bg, profile) + " Temp Target for " + profile.temptarget_duration + " mins, prebolusing " + rT.units + "/" + (profile.current_basal * profile.EatingNowUAMBoostMaxSMB / 60) + "U.";
         return rT;
     }
 
