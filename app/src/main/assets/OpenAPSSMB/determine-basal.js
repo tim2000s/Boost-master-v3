@@ -1325,8 +1325,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== MAXBOLUS RESTRICTIONS ==============
                 // If target is just above normal target restrict maxBolus
                 EatingNowMaxSMB = ( profile.temptargetSet && target_bg == profile.normal_target_bg + 1 ? maxBolus : EatingNowMaxSMB );
-                // If no TT and low insulin restrict maxBolus
-                EatingNowMaxSMB = ( !profile.temptargetSet && iob_data.iob < profile.EatingNowIOB ? maxBolus : EatingNowMaxSMB );
+                // If no TT and low insulin restrict maxBolus only when no COB
+                EatingNowMaxSMB = ( !profile.temptargetSet && iob_data.iob < profile.EatingNowIOB && meal_data.mealCOB == 0 ? maxBolus : EatingNowMaxSMB );
 
                 // ============== RISE RESTRICTIONS ==============
                  // if the rise is slowing TBR only
