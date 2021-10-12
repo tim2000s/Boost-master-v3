@@ -317,7 +317,7 @@ public class DetermineBasalAdapterAIMIJS {
         mProfile.put("temptargetSet", tempTargetSet);
         mProfile.put("autosens_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_max, "1.2")));
         mProfile.put("UAM_InsulinReq",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_InsulinReq,"65")));
-        //mProfile.put("UAM_boluscap",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_boluscap,"2.5")));
+        mProfile.put("iTime",SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")));
 
 
         if (profileFunction.getUnits().equals(Constants.MMOL)) {
