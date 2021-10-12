@@ -326,7 +326,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastboluscorr ) / 60000,1);
 
 
-    if (iTime < 180 && glucose_status.delta > 2) {
+    if (iTime < profile.iTime && glucose_status.delta > 2) {
             var hyper_target = 80;
             //console.log("target_bg from "+target_bg+" to "+hyper_target+" because TriggerPredSMB > 450 : "+TriggerPredSMB+" ; ");
             target_bg = hyper_target;
@@ -843,6 +843,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                         }
                 var future_sens = round(future_sens,1);
 
+var TriggerPredSMB_future_sens_60 = round( bg - (iob_data.iob * future_sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
+var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) + round( 45 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
+var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
+
         console.log("------------------------------");
                 console.log("AIMI");
                 console.log("------------------------------");
@@ -853,6 +857,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("eRatio: "+eRatio);
                 console.log("-------------");
                 console.log("TriggerPredSMB : "+TriggerPredSMB);
+                console.log("TriggerPredSMB_future_sens_60 : "+TriggerPredSMB_future_sens_60);
+                console.log("TriggerPredSMB_future_sens_45 : "+TriggerPredSMB_future_sens_45);
+                console.log("TriggerPredSMB_future_sens_35 : "+TriggerPredSMB_future_sens_35);
                 console.log("EBG : "+EBG+" ; REBG : "+REBG);
                 console.log("EBG60 : "+EBG60+" ; REBG60 : "+REBG60);
                 console.log("HypoPredBG : "+HypoPredBG+" ; HyperPredBG : "+HyperPredBG);
@@ -1235,9 +1242,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"basal:",basal);
                     if (iTime < 120 && target_bg < normalTarget && TriggerPredSMB > 450 ){
                     maxBolus = round(basal * 250 / 60 ,1);
-                    }else if (TriggerPredSMB >= 950 || iTime < 240 && TriggerPredSMB > 450){
+                    }else if (iTime < profile.iTime && TriggerPredSMB > 450){
                     maxBolus = round(basal * 200 / 60 ,1);
-                    }else if (iTime < 240 && TriggerPredSMB < 450){
+                    }else if (iTime < profile.iTime && TriggerPredSMB < 450){
                     maxBolus = round(basal * 120 / 60 ,1);
                     }else{
                     maxBolus = round( basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
@@ -1258,16 +1265,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (iTime < 120 && target_bg < normalTarget && TriggerPredSMB > 450){
             insulinReq = insulinReq + InsulinTDD;
             insulinReqPCT = 1;
-            }else if ( iTime < 240 && !profile.temptargetSet){
+            }else if ( iTime < profile.iTime && !profile.temptargetSet){
             insulinReqPCT = 1;
-            }else if(TriggerPredSMB > 950 || profile.temptargetSet && target_bg > normalTarget && iTime < 240 ){
+            }else if(iTime > 120 && iTime < profile.iTime && TriggerPredSMB > 950 || profile.temptargetSet && target_bg > normalTarget && iTime < profile.iTime ){
             insulinReqPCT = 0.8;
             }
 
             var microBolus = Math.floor(Math.min(insulinReq * insulinReqPCT,maxBolusTT)*roundSMBTo)/roundSMBTo;
             // calculate a long enough zero temp to eventually correct back up to target
-            if (TriggerPredSMB >= 950 || iTime < 180 ){
-            console.log("--- if TriggerPredSMB >= 950 ou iTime < 240 -----");
+            if (iTime < profile.iTime ){
+            console.log("--- if iTime < 240 -----");
                             console.log("TriggerPredSMB : "+TriggerPredSMB);
                             console.log("iTime : "+iTime);
                             console.log("target_bg from "+target_bg+" to "+hyper_target);
