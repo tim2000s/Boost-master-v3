@@ -318,6 +318,7 @@ public class DetermineBasalAdapterAIMIJS {
         mProfile.put("autosens_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_max, "1.2")));
         mProfile.put("UAM_InsulinReq",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_InsulinReq,"65")));
         mProfile.put("iTime",SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")));
+        mProfile.put("iTime_MaxBolus_minutes",SafeParse.stringToDouble(sp.getString(R.string.key_iTime_MaxBolus_minutes,"200")));
 
 
         if (profileFunction.getUnits().equals(Constants.MMOL)) {

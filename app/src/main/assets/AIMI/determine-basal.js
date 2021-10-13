@@ -1240,12 +1240,12 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 console.error("IOB",iob_data.iob,"> COB",meal_data.mealCOB+"; mealInsulinReq =",mealInsulinReq);
                 if (profile.maxUAMSMBBasalMinutes) {
                     console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"basal:",basal);
-                    if (iTime < 120 && target_bg < normalTarget && TriggerPredSMB > 450 ){
-                    maxBolus = round(basal * 250 / 60 ,1);
-                    }else if (iTime < profile.iTime && TriggerPredSMB > 450){
-                    maxBolus = round(basal * 200 / 60 ,1);
+                    if (iTime < profile.iTime && target_bg < normalTarget && TriggerPredSMB > 450){
+                    maxBolus = round(basal * profile.iTime_MaxBolus_minutes / 60 ,1);
                     }else if (iTime < profile.iTime && TriggerPredSMB < 450){
-                    maxBolus = round(basal * 120 / 60 ,1);
+                    maxBolus = round(basal * (profile.iTime_MaxBolus_minutes/2) / 60 ,1);
+                    }else if (TriggerPredSMB > 450 && glucose_status.delta > 7{
+                    maxBolus = round ((basal * profile.maxUAMSMBBasalMinutes * Math.min(1.5,TriggerPredSMB_future_sens_60/TriggerPredSMB_future_sens_35))/60,1);
                     }else{
                     maxBolus = round( basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
                     }
