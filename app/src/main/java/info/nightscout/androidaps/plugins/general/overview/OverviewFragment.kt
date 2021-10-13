@@ -84,7 +84,7 @@ import kotlin.math.min
 import java.util.Date
 import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.DateUtil
-import info.nightscout.androidaps.interfaces.Profile
+
 import org.json.JSONObject
 
 class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickListener {
@@ -753,7 +753,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         //(System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
         val iTimeUpdate = (System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
         overview_iob?.text = resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob)
-        //val iTimeSettings = (SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")))
+        val iTimeSettings = (SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")))
         if (iTimeUpdate < iTimeSettings) {
             overview_iob_llayout?.setOnClickListener {
                 activity?.let {
