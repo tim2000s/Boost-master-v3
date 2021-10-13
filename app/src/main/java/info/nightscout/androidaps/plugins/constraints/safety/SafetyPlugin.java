@@ -283,6 +283,8 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
             maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
         if (BoostPlugin.isEnabled(PluginType.APS))
             maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
+        if (AIMIPlugin.isEnabled(PluginType.APS))
+            maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
         else
             maxIobPref = sp.getDouble(R.string.key_openapsma_max_iob, 1.5d);
         maxIob.setIfSmaller(getAapsLogger(), maxIobPref, String.format(getResourceHelper().gs(R.string.limitingiob), maxIobPref, getResourceHelper().gs(R.string.maxvalueinpreferences)), this);
