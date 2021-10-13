@@ -1262,12 +1262,12 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var InsulinTDD = (TDD * 0.4) / 24;
             var maxBolusTT = maxBolus;
             var roundSMBTo = 1 / profile.bolus_increment;
-            if (iTime < 120 && target_bg < normalTarget && TriggerPredSMB > 450){
+            if (iTime < profile.iTime/2 && target_bg < normalTarget && TriggerPredSMB > 450){
             insulinReq = insulinReq + InsulinTDD;
             insulinReqPCT = 1;
             }else if ( iTime < profile.iTime && !profile.temptargetSet){
             insulinReqPCT = 1;
-            }else if(iTime > 120 && iTime < profile.iTime && TriggerPredSMB > 950 || profile.temptargetSet && target_bg > normalTarget && iTime < profile.iTime ){
+            }else if(iTime > profile.iTime/2 && iTime < profile.iTime && TriggerPredSMB > 950 || profile.temptargetSet && target_bg > normalTarget && iTime < profile.iTime ){
             insulinReqPCT = 0.8;
             }
 
