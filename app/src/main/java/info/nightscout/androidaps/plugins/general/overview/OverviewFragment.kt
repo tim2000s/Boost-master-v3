@@ -84,6 +84,8 @@ import kotlin.math.min
 import java.util.Date
 import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.DateUtil
+import info.nightscout.androidaps.interfaces.Profile
+import org.json.JSONObject
 
 class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickListener {
 
@@ -118,7 +120,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     @Inject lateinit var databaseHelper: DatabaseHelperInterface
 
     private val disposable = CompositeDisposable()
-
+    private var profile = JSONObject()
     private var smallWidth = false
     private var smallHeight = false
     private lateinit var dm: DisplayMetrics
@@ -564,6 +566,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         val lastRun = loopPlugin.lastRun
         val predictionsAvailable = if (config.APS) lastRun?.request?.hasPredictions == true else config.NSCLIENT
 
+
         try {
             updateGraph(lastRun, predictionsAvailable, lowLine, highLine, pump, profile)
         } catch (e: IllegalStateException) {
@@ -750,7 +753,8 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         //(System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
         val iTimeUpdate = (System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
         overview_iob?.text = resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob)
-        if (iTimeUpdate < 240) {
+        //val iTimeSettings = (SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")))
+        if (iTimeUpdate < iTimeSettings) {
             overview_iob_llayout?.setOnClickListener {
                 activity?.let {
                     OKDialog.show(it, resourceHelper.gs(R.string.iob),
@@ -784,7 +788,8 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             cobText = resourceHelper.gs(R.string.format_carbs, cobInfo.displayCob.toInt())
             if (cobInfo.futureCarbs > 0) cobText += "(" + DecimalFormatter.to0Decimal(cobInfo.futureCarbs) + ")"
         }
-        if (iTimeUpdate < 240) {
+
+        if (iTimeUpdate < iTimeSettings) {
             insulinAnimation?.start()
         }else{
             insulinAnimation?.stop()
