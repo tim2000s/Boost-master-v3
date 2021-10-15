@@ -281,9 +281,9 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
         String apsmode = sp.getString(R.string.key_aps_mode, "open");
         if (openAPSSMBPlugin.isEnabled(PluginType.APS))
             maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
-        if (BoostPlugin.isEnabled(PluginType.APS))
+        else if (BoostPlugin.isEnabled(PluginType.APS))
             maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
-        if (AIMIPlugin.isEnabled(PluginType.APS))
+        else if (AIMIPlugin.isEnabled(PluginType.APS))
             maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
         else
             maxIobPref = sp.getDouble(R.string.key_openapsma_max_iob, 1.5d);
