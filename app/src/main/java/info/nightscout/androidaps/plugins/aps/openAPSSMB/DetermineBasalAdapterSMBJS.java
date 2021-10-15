@@ -41,6 +41,14 @@ import info.nightscout.androidaps.plugins.treatments.TreatmentsPlugin;
 import info.nightscout.androidaps.utils.SafeParse;
 import info.nightscout.androidaps.utils.resources.ResourceHelper;
 import info.nightscout.androidaps.utils.sharedPreferences.SP;
+import info.nightscout.androidaps.utils.stats.TddCalculator;
+import info.nightscout.androidaps.utils.DateUtil;
+import dagger.android.HasAndroidInjector;
+import info.nightscout.androidaps.MainApp;
+import info.nightscout.androidaps.plugins.bus.RxBusWrapper;
+import info.nightscout.androidaps.utils.FabricPrivacy;
+import info.nightscout.androidaps.plugins.general.nsclient.NSUpload;
+import info.nightscout.androidaps.plugins.general.nsclient.UploadQueue;
 
 
 public class DetermineBasalAdapterSMBJS {
@@ -53,11 +61,20 @@ public class DetermineBasalAdapterSMBJS {
     @Inject TreatmentsPlugin treatmentsPlugin;
     @Inject ActivePluginProvider activePluginProvider;
     @Inject OpenHumansUploader openHumansUploader;
+    @Inject DateUtil dateUtil;
+    @Inject HasAndroidInjector hasAndroidInjector;
+    @Inject MainApp mainApp;
+    @Inject RxBusWrapper rxBusWrapper;
+    @Inject FabricPrivacy fabricPrivacy;
+    @Inject NSUpload nsUpload;
+    @Inject UploadQueue uploadQueue;
+
 
 
     private final ScriptReader mScriptReader;
     private JSONObject mProfile;
     private JSONObject mGlucoseStatus;
+    private TddCalculator tddAIMI;
     private JSONArray mIobData;
     private JSONObject mMealData;
     private JSONObject mCurrentTemp;
@@ -331,6 +348,12 @@ public class DetermineBasalAdapterSMBJS {
         mMealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation);
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
+
+        tddAIMI = new TddCalculator(hasAndroidInjector,aapsLogger,rxBusWrapper,resourceHelper,mainApp,sp,activePluginProvider,profileFunction,fabricPrivacy,nsUpload,dateUtil,uploadQueue);
+        mMealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).total);
+        mMealData.put("TDDAIMI1",tddAIMI.averageTDD(tddAIMI.calculate(1)).total);
+        mMealData.put("TDDPUMP",tddAIMI.calculateDaily().total);
+
 
 
         if (constraintChecker.isAutosensModeEnabled().value()) {
