@@ -4,7 +4,7 @@
     xmlns:validate="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        android:title="@string/Boost"
+        android:title="@string/EN"
         app:initialExpandedChildrenCount="0">
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
@@ -209,86 +209,86 @@
                 validate:floatminNumber="1"
                 validate:testType="floatNumericRange" />
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0.1"
-                android:dialogMessage="@string/openapsama_boost_bolus_summary"
-                android:digits="0123456789.,"
-                android:inputType="numberDecimal"
-                android:key="@string/key_openapsama_boost_bolus"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:title="@string/openapsama_boost_bolus_title"
-                validate:floatmaxNumber="10"
-                validate:floatminNumber="0.1"
-                validate:testType="floatNumericRange" />
+<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
+<!--                android:defaultValue="0.1"-->
+<!--                android:dialogMessage="@string/openapsama_boost_bolus_summary"-->
+<!--                android:digits="0123456789.,"-->
+<!--                android:inputType="numberDecimal"-->
+<!--                android:key="@string/key_openapsama_boost_bolus"-->
+<!--                android:maxLines="20"-->
+<!--                android:selectAllOnFocus="true"-->
+<!--                android:singleLine="true"-->
+<!--                android:title="@string/openapsama_boost_bolus_title"-->
+<!--                validate:floatmaxNumber="10"-->
+<!--                validate:floatminNumber="0.1"-->
+<!--                validate:testType="floatNumericRange" />-->
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="1.0"
-                android:dialogMessage="@string/openapsama_boost_scale_summary"
-                android:digits="0123456789.,"
-                android:inputType="numberDecimal"
-                android:key="@string/key_openapsama_boost_scale"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:title="@string/openapsama_boost_scale_title"
-                validate:floatmaxNumber="3"
-                validate:floatminNumber="0.1"
-                validate:testType="floatNumericRange" />
+<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
+<!--                android:defaultValue="1.0"-->
+<!--                android:dialogMessage="@string/openapsama_boost_scale_summary"-->
+<!--                android:digits="0123456789.,"-->
+<!--                android:inputType="numberDecimal"-->
+<!--                android:key="@string/key_openapsama_boost_scale"-->
+<!--                android:maxLines="20"-->
+<!--                android:selectAllOnFocus="true"-->
+<!--                android:singleLine="true"-->
+<!--                android:title="@string/openapsama_boost_scale_title"-->
+<!--                validate:floatmaxNumber="3"-->
+<!--                validate:floatminNumber="0.1"-->
+<!--                validate:testType="floatNumericRange" />-->
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="65"
-                android:enabled="true"
-                android:dialogMessage="@string/UAM_InsulinReq_summary"
-                android:inputType="numberDecimal"
-                android:key="@string/key_UAM_InsulinReq"
-                android:title="@string/UAM_InsulinReq_title"
-                validate:floatmaxNumber="100"
-                validate:floatminNumber="50"
-                validate:testType="floatNumericRange" />
+<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
+<!--                android:defaultValue="65"-->
+<!--                android:enabled="true"-->
+<!--                android:dialogMessage="@string/UAM_InsulinReq_summary"-->
+<!--                android:inputType="numberDecimal"-->
+<!--                android:key="@string/key_UAM_InsulinReq"-->
+<!--                android:title="@string/UAM_InsulinReq_title"-->
+<!--                validate:floatmaxNumber="100"-->
+<!--                validate:floatminNumber="50"-->
+<!--                validate:testType="floatNumericRange" />-->
 
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0.1"
-                android:dialogMessage="@string/openapsama_boost_max_iob_summary"
-                android:digits="0123456789.,"
-                android:inputType="numberDecimal"
-                android:key="@string/key_openapsama_boost_max_iob"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:title="@string/openapsama_boost_max_iob_title"
-                validate:floatmaxNumber="12"
-                validate:floatminNumber="0.1"
-                validate:testType="floatNumericRange" />
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="7"
-                android:dialogMessage="@string/openapsama_boost_start_summary"
-                android:digits="0123456789.,"
-                android:inputType="number"
-                android:key="@string/key_openapsama_boost_start"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:title="@string/openapsama_boost_start_title"
-                validate:floatmaxNumber="24"
-                validate:floatminNumber="0"
-                validate:testType="floatNumericRange" />
+<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
+<!--                android:defaultValue="0.1"-->
+<!--                android:dialogMessage="@string/openapsama_boost_max_iob_summary"-->
+<!--                android:digits="0123456789.,"-->
+<!--                android:inputType="numberDecimal"-->
+<!--                android:key="@string/key_openapsama_boost_max_iob"-->
+<!--                android:maxLines="20"-->
+<!--                android:selectAllOnFocus="true"-->
+<!--                android:singleLine="true"-->
+<!--                android:title="@string/openapsama_boost_max_iob_title"-->
+<!--                validate:floatmaxNumber="12"-->
+<!--                validate:floatminNumber="0.1"-->
+<!--                validate:testType="floatNumericRange" />-->
+<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
+<!--                android:defaultValue="7"-->
+<!--                android:dialogMessage="@string/openapsama_boost_start_summary"-->
+<!--                android:digits="0123456789.,"-->
+<!--                android:inputType="number"-->
+<!--                android:key="@string/key_openapsama_boost_start"-->
+<!--                android:maxLines="20"-->
+<!--                android:selectAllOnFocus="true"-->
+<!--                android:singleLine="true"-->
+<!--                android:title="@string/openapsama_boost_start_title"-->
+<!--                validate:floatmaxNumber="24"-->
+<!--                validate:floatminNumber="0"-->
+<!--                validate:testType="floatNumericRange" />-->
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="8"
-                android:dialogMessage="@string/openapsama_boost_end_summary"
-                android:digits="0123456789.,"
-                android:inputType="number"
-                android:key="@string/key_openapsama_boost_end"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:title="@string/openapsama_boost_end_title"
-                validate:floatmaxNumber="24"
-                validate:floatminNumber="0"
-                validate:testType="floatNumericRange" />
+<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
+<!--                android:defaultValue="8"-->
+<!--                android:dialogMessage="@string/openapsama_boost_end_summary"-->
+<!--                android:digits="0123456789.,"-->
+<!--                android:inputType="number"-->
+<!--                android:key="@string/key_openapsama_boost_end"-->
+<!--                android:maxLines="20"-->
+<!--                android:selectAllOnFocus="true"-->
+<!--                android:singleLine="true"-->
+<!--                android:title="@string/openapsama_boost_end_title"-->
+<!--                validate:floatmaxNumber="24"-->
+<!--                validate:floatminNumber="0"-->
+<!--                validate:testType="floatNumericRange" />-->
 
         <androidx.preference.PreferenceScreen
             android:key="eatingnow_options"
