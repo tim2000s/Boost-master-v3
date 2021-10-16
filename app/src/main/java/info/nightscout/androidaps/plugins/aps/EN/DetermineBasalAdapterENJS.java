@@ -43,6 +43,14 @@ import info.nightscout.androidaps.plugins.treatments.TreatmentsPlugin;
 import info.nightscout.androidaps.utils.SafeParse;
 import info.nightscout.androidaps.utils.resources.ResourceHelper;
 import info.nightscout.androidaps.utils.sharedPreferences.SP;
+import info.nightscout.androidaps.utils.stats.TddCalculator;
+import info.nightscout.androidaps.utils.DateUtil;
+import dagger.android.HasAndroidInjector;
+import info.nightscout.androidaps.MainApp;
+import info.nightscout.androidaps.plugins.bus.RxBusWrapper;
+import info.nightscout.androidaps.utils.FabricPrivacy;
+import info.nightscout.androidaps.plugins.general.nsclient.NSUpload;
+import info.nightscout.androidaps.plugins.general.nsclient.UploadQueue;
 
 
 public class DetermineBasalAdapterENJS {
@@ -55,11 +63,20 @@ public class DetermineBasalAdapterENJS {
     @Inject TreatmentsPlugin treatmentsPlugin;
     @Inject ActivePluginProvider activePluginProvider;
     @Inject OpenHumansUploader openHumansUploader;
+    @Inject DateUtil dateUtil;
+    @Inject HasAndroidInjector hasAndroidInjector;
+    @Inject MainApp mainApp;
+    @Inject RxBusWrapper rxBusWrapper;
+    @Inject FabricPrivacy fabricPrivacy;
+    @Inject NSUpload nsUpload;
+    @Inject UploadQueue uploadQueue;
+
 
 
     private final ScriptReader mScriptReader;
     private JSONObject mProfile;
     private JSONObject mGlucoseStatus;
+    private TddCalculator tddAIMI;
     private JSONArray mIobData;
     private JSONObject mMealData;
     private JSONObject mCurrentTemp;
@@ -90,7 +107,7 @@ public class DetermineBasalAdapterENJS {
 
 
     @Nullable
-    public info.nightscout.androidaps.plugins.aps.EN.DetermineBasalResultEN invoke() {
+    public DetermineBasalResultEN invoke() {
 
 
         aapsLogger.debug(LTag.APS, ">>> Invoking detemine_basal <<<");
@@ -110,7 +127,7 @@ public class DetermineBasalAdapterENJS {
         aapsLogger.debug(LTag.APS, "isSaveCgmSource: " + mIsSaveCgmSource);
 
 
-        info.nightscout.androidaps.plugins.aps.EN.DetermineBasalResultEN determineBasalResultEN = null;
+        DetermineBasalResultEN determineBasalResultEN = null;
 
         Context rhino = Context.enter();
         Scriptable scope = rhino.initStandardObjects();
@@ -165,7 +182,7 @@ public class DetermineBasalAdapterENJS {
                 try {
                     JSONObject resultJson = new JSONObject(result);
                     openHumansUploader.enqueueSMBData(mProfile, mGlucoseStatus, mIobData, mMealData, mCurrentTemp, mAutosensData, mMicrobolusAllowed, mSMBAlwaysAllowed, resultJson);
-                    determineBasalResultEN = new info.nightscout.androidaps.plugins.aps.EN.DetermineBasalResultEN(injector, resultJson);
+                    determineBasalResultEN = new DetermineBasalResultEN(injector, resultJson);
                 } catch (JSONException e) {
                     aapsLogger.error(LTag.APS, "Unhandled exception", e);
                 }
@@ -261,20 +278,18 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("max_daily_safety_multiplier", sp.getInt(R.string.key_openapsama_max_daily_safety_multiplier, 3));
         mProfile.put("current_basal_safety_multiplier", sp.getDouble(R.string.key_openapsama_current_basal_safety_multiplier, 4d));
 
-        //mProfile.put("high_temptarget_raises_sensitivity", SP.getBoolean(R.string.key_high_temptarget_raises_sensitivity, ENDefaults.high_temptarget_raises_sensitivity));
-        mProfile.put("high_temptarget_raises_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_high_temptarget_raises_sensitivity), info.nightscout.androidaps.plugins.aps.EN.ENDefaults.high_temptarget_raises_sensitivity));
-        //mProfile.put("high_temptarget_raises_sensitivity", false);
-        mProfile.put("low_temptarget_lowers_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_low_temptarget_lowers_sensitivity), info.nightscout.androidaps.plugins.aps.EN.ENDefaults.low_temptarget_lowers_sensitivity));
-        //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, ENDefaults.low_temptarget_lowers_sensitivity));
-        //mProfile.put("low_temptarget_lowers_sensitivity", false);
+        //mProfile.put("high_temptarget_raises_sensitivity", SP.getBoolean(R.string.key_high_temptarget_raises_sensitivity, BoostDefaults.high_temptarget_raises_sensitivity));
+        mProfile.put("high_temptarget_raises_sensitivity", true);
+        //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, BoostDefaults.low_temptarget_lowers_sensitivity));
+        mProfile.put("low_temptarget_lowers_sensitivity", true);
 
 
-        mProfile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.sensitivity_raises_target));
-        mProfile.put("resistance_lowers_target", sp.getBoolean(R.string.key_resistance_lowers_target, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.resistance_lowers_target));
-        mProfile.put("adv_target_adjustments", info.nightscout.androidaps.plugins.aps.EN.ENDefaults.adv_target_adjustments);
-        mProfile.put("exercise_mode", info.nightscout.androidaps.plugins.aps.EN.ENDefaults.exercise_mode);
-        mProfile.put("half_basal_exercise_target", info.nightscout.androidaps.plugins.aps.EN.ENDefaults.half_basal_exercise_target);
-        mProfile.put("maxCOB", info.nightscout.androidaps.plugins.aps.EN.ENDefaults.maxCOB);
+        mProfile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, ENDefaults.sensitivity_raises_target));
+        mProfile.put("resistance_lowers_target", sp.getBoolean(R.string.key_resistance_lowers_target, ENDefaults.resistance_lowers_target));
+        mProfile.put("adv_target_adjustments", ENDefaults.adv_target_adjustments);
+        mProfile.put("exercise_mode", ENDefaults.exercise_mode);
+        mProfile.put("half_basal_exercise_target", ENDefaults.half_basal_exercise_target);
+        mProfile.put("maxCOB", ENDefaults.maxCOB);
         mProfile.put("skip_neutral_temps", pump.setNeutralTempAtFullHour());
         // min_5m_carbimpact is not used within SMB determinebasal
         //if (mealData.usedMinCarbsImpact > 0) {
@@ -282,22 +297,22 @@ public class DetermineBasalAdapterENJS {
         //} else {
         //    mProfile.put("min_5m_carbimpact", SP.getDouble(R.string.key_openapsama_min_5m_carbimpact, ENDefaults.min_5m_carbimpact));
         //}
-        mProfile.put("remainingCarbsCap", info.nightscout.androidaps.plugins.aps.EN.ENDefaults.remainingCarbsCap);
+        mProfile.put("remainingCarbsCap", ENDefaults.remainingCarbsCap);
         mProfile.put("enableUAM", uamAllowed);
-        mProfile.put("A52_risk_enable", info.nightscout.androidaps.plugins.aps.EN.ENDefaults.A52_risk_enable);
+        mProfile.put("A52_risk_enable", ENDefaults.A52_risk_enable);
 
         boolean smbEnabled = sp.getBoolean(R.string.key_use_smb, false);
-        mProfile.put("SMBInterval", sp.getInt(R.string.key_smbinterval, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.SMBInterval));
+        mProfile.put("SMBInterval", sp.getInt(R.string.key_smbinterval, ENDefaults.SMBInterval));
         mProfile.put("enableSMB_with_COB", smbEnabled && sp.getBoolean(R.string.key_enableSMB_with_COB, false));
         mProfile.put("enableSMB_with_temptarget", smbEnabled && sp.getBoolean(R.string.key_enableSMB_with_temptarget, false));
         mProfile.put("allowSMB_with_high_temptarget", smbEnabled && sp.getBoolean(R.string.key_allowSMB_with_high_temptarget, false));
         mProfile.put("enableSMB_always", smbEnabled && sp.getBoolean(R.string.key_enableSMB_always, false) && advancedFiltering);
         mProfile.put("enableSMB_after_carbs", smbEnabled && sp.getBoolean(R.string.key_enableSMB_after_carbs, false) && advancedFiltering);
-        mProfile.put("maxSMBBasalMinutes", sp.getInt(R.string.key_smbmaxminutes, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.maxSMBBasalMinutes));
-        mProfile.put("maxUAMSMBBasalMinutes", sp.getInt(R.string.key_uamsmbmaxminutes, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.maxUAMSMBBasalMinutes));
+        mProfile.put("maxSMBBasalMinutes", sp.getInt(R.string.key_smbmaxminutes, ENDefaults.maxSMBBasalMinutes));
+        mProfile.put("maxUAMSMBBasalMinutes", sp.getInt(R.string.key_uamsmbmaxminutes, ENDefaults.maxUAMSMBBasalMinutes));
         //set the min SMB amount to be the amount set by the pump.
         mProfile.put("bolus_increment", pumpbolusstep);
-        mProfile.put("carbsReqThreshold", sp.getInt(R.string.key_carbsReqThreshold, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.carbsReqThreshold));
+        mProfile.put("carbsReqThreshold", sp.getInt(R.string.key_carbsReqThreshold, ENDefaults.carbsReqThreshold));
         mProfile.put("insulinPeakTime", insulinPT);
         mProfile.put("current_basal", basalrate);
         mProfile.put("temptargetSet", tempTargetSet);
@@ -337,6 +352,8 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3) * profile.getPercentage()/100);
         mProfile.put("EatingNowTimeStart", sp.getDouble(R.string.key_eatingnow_timestart, 9));
         mProfile.put("EatingNowTimeEnd", sp.getDouble(R.string.key_eatingnow_timeend, 17));
+        mProfile.put("TDD",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_TDD, "5.0")));
+        mProfile.put("UAM_InsulinReq",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_InsulinReq,"65")));
         // patches ==== END
 
 
@@ -385,6 +402,12 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation);
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
+
+        tddAIMI = new TddCalculator(hasAndroidInjector,aapsLogger,rxBusWrapper,resourceHelper,mainApp,sp,activePluginProvider,profileFunction,fabricPrivacy,nsUpload,dateUtil,uploadQueue);
+        mMealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).total);
+        mMealData.put("TDDAIMI1",tddAIMI.averageTDD(tddAIMI.calculate(1)).total);
+        mMealData.put("TDDPUMP",tddAIMI.calculateDaily().total);
+
 
 
         if (constraintChecker.isAutosensModeEnabled().value()) {

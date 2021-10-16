@@ -376,8 +376,6 @@ public class DetermineBasalAdapterBoostJS {
         mMealData.put("TDDAIMI1",tddAIMI.averageTDD(tddAIMI.calculate(1)).total);
         mMealData.put("TDDPUMP",tddAIMI.calculateDaily().total);
 
-
-
         if (constraintChecker.isAutosensModeEnabled().value()) {
             mAutosensData = new JSONObject();
             mAutosensData.put("ratio", autosensDataRatio);
