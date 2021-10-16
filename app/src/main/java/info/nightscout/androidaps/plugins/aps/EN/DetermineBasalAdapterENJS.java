@@ -262,19 +262,19 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("current_basal_safety_multiplier", sp.getDouble(R.string.key_openapsama_current_basal_safety_multiplier, 4d));
 
         //mProfile.put("high_temptarget_raises_sensitivity", SP.getBoolean(R.string.key_high_temptarget_raises_sensitivity, ENDefaults.high_temptarget_raises_sensitivity));
-        mProfile.put("high_temptarget_raises_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_high_temptarget_raises_sensitivity), info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.high_temptarget_raises_sensitivity));
+        mProfile.put("high_temptarget_raises_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_high_temptarget_raises_sensitivity), info.nightscout.androidaps.plugins.aps.EN.ENDefaults.high_temptarget_raises_sensitivity));
         //mProfile.put("high_temptarget_raises_sensitivity", false);
-        mProfile.put("low_temptarget_lowers_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_low_temptarget_lowers_sensitivity), info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.low_temptarget_lowers_sensitivity));
+        mProfile.put("low_temptarget_lowers_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_low_temptarget_lowers_sensitivity), info.nightscout.androidaps.plugins.aps.EN.ENDefaults.low_temptarget_lowers_sensitivity));
         //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, ENDefaults.low_temptarget_lowers_sensitivity));
         //mProfile.put("low_temptarget_lowers_sensitivity", false);
 
 
-        mProfile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.sensitivity_raises_target));
-        mProfile.put("resistance_lowers_target", sp.getBoolean(R.string.key_resistance_lowers_target, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.resistance_lowers_target));
-        mProfile.put("adv_target_adjustments", info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.adv_target_adjustments);
-        mProfile.put("exercise_mode", info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.exercise_mode);
-        mProfile.put("half_basal_exercise_target", info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.half_basal_exercise_target);
-        mProfile.put("maxCOB", info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.maxCOB);
+        mProfile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.sensitivity_raises_target));
+        mProfile.put("resistance_lowers_target", sp.getBoolean(R.string.key_resistance_lowers_target, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.resistance_lowers_target));
+        mProfile.put("adv_target_adjustments", info.nightscout.androidaps.plugins.aps.EN.ENDefaults.adv_target_adjustments);
+        mProfile.put("exercise_mode", info.nightscout.androidaps.plugins.aps.EN.ENDefaults.exercise_mode);
+        mProfile.put("half_basal_exercise_target", info.nightscout.androidaps.plugins.aps.EN.ENDefaults.half_basal_exercise_target);
+        mProfile.put("maxCOB", info.nightscout.androidaps.plugins.aps.EN.ENDefaults.maxCOB);
         mProfile.put("skip_neutral_temps", pump.setNeutralTempAtFullHour());
         // min_5m_carbimpact is not used within SMB determinebasal
         //if (mealData.usedMinCarbsImpact > 0) {
@@ -282,22 +282,22 @@ public class DetermineBasalAdapterENJS {
         //} else {
         //    mProfile.put("min_5m_carbimpact", SP.getDouble(R.string.key_openapsama_min_5m_carbimpact, ENDefaults.min_5m_carbimpact));
         //}
-        mProfile.put("remainingCarbsCap", info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.remainingCarbsCap);
+        mProfile.put("remainingCarbsCap", info.nightscout.androidaps.plugins.aps.EN.ENDefaults.remainingCarbsCap);
         mProfile.put("enableUAM", uamAllowed);
-        mProfile.put("A52_risk_enable", info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.A52_risk_enable);
+        mProfile.put("A52_risk_enable", info.nightscout.androidaps.plugins.aps.EN.ENDefaults.A52_risk_enable);
 
         boolean smbEnabled = sp.getBoolean(R.string.key_use_smb, false);
-        mProfile.put("SMBInterval", sp.getInt(R.string.key_smbinterval, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.SMBInterval));
+        mProfile.put("SMBInterval", sp.getInt(R.string.key_smbinterval, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.SMBInterval));
         mProfile.put("enableSMB_with_COB", smbEnabled && sp.getBoolean(R.string.key_enableSMB_with_COB, false));
         mProfile.put("enableSMB_with_temptarget", smbEnabled && sp.getBoolean(R.string.key_enableSMB_with_temptarget, false));
         mProfile.put("allowSMB_with_high_temptarget", smbEnabled && sp.getBoolean(R.string.key_allowSMB_with_high_temptarget, false));
         mProfile.put("enableSMB_always", smbEnabled && sp.getBoolean(R.string.key_enableSMB_always, false) && advancedFiltering);
         mProfile.put("enableSMB_after_carbs", smbEnabled && sp.getBoolean(R.string.key_enableSMB_after_carbs, false) && advancedFiltering);
-        mProfile.put("maxSMBBasalMinutes", sp.getInt(R.string.key_smbmaxminutes, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.maxSMBBasalMinutes));
-        mProfile.put("maxUAMSMBBasalMinutes", sp.getInt(R.string.key_uamsmbmaxminutes, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.maxUAMSMBBasalMinutes));
+        mProfile.put("maxSMBBasalMinutes", sp.getInt(R.string.key_smbmaxminutes, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.maxSMBBasalMinutes));
+        mProfile.put("maxUAMSMBBasalMinutes", sp.getInt(R.string.key_uamsmbmaxminutes, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.maxUAMSMBBasalMinutes));
         //set the min SMB amount to be the amount set by the pump.
         mProfile.put("bolus_increment", pumpbolusstep);
-        mProfile.put("carbsReqThreshold", sp.getInt(R.string.key_carbsReqThreshold, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.carbsReqThreshold));
+        mProfile.put("carbsReqThreshold", sp.getInt(R.string.key_carbsReqThreshold, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.carbsReqThreshold));
         mProfile.put("insulinPeakTime", insulinPT);
         mProfile.put("current_basal", basalrate);
         mProfile.put("temptargetSet", tempTargetSet);
