@@ -612,7 +612,6 @@
     <string name="openapssmb">OpenAPS SMB</string>
     <string name="AIMI">AIMI</string>
     <string name="Boost">Boost</string>
-    <string name="EN">Eating Now</string>
     <string name="key_use_smb" translatable="false">use_smb</string>
     <string name="key_use_uam" translatable="false">use_uam</string>
     <string name="key_smb_enable_carbs_suggestions_threshold" translatable="false">smb_enable_carbs_suggestions_threshold</string>
@@ -1459,6 +1458,11 @@
     <string name="key_iTime_MaxBolus_minutes" translatable="false">iTime_MaxBolus_minutes</string>
     <string name="iTime_MaxBolus_minutes_title">iTime_MaxBolus_minutes</string>
     <string name="iTime_MaxBolus_minutes_summary">iTime give a duration of the meal who allow larger smb and maxbolus. this variable give the higher maxbolus (basal * iTime_MaxBolus_minutes / 60)</string>
+
+    <!-- Eating Now-->
+    <string name="EN">Eating Now</string>
+    <string name="EN_shortname">EN</string>
+    <string name="pref_en">EN</string>
     <string name="key_use_ghostcob" translatable="false">key_use_ghostcob</string>
     <string name="key_use_eatingnow">key_use_eatingnow</string>
     <string name="key_eatingnow_iob">key_eatingnow_iob</string>
