@@ -294,12 +294,6 @@
             android:key="eatingnow_options"
             android:title="Eating Now mode">
 
-            <SwitchPreference
-                android:defaultValue="false"
-                android:key="@string/key_use_eatingnow"
-                android:summary="Eating Now mode will be always on within the active time range specified."
-                android:title="Eating Now Mode"/>
-
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="5"
                 android:inputType="numberDecimal"

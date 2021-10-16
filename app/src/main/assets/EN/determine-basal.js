@@ -314,7 +314,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // patches ==== START
     var ignoreCOBPatch = profile.enableGhostCOB; //MD#01: Ignore any COB and rely purely on UAM
-    var eatingnowPatch = profile.enableEatingNow;
 
     // Eating Now Variables
     var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false; // nah not eating yet
@@ -324,7 +323,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
 
     // If we have Eating Now enabled and rising we will enable eating now mode
-    if (eatingnowPatch && profile.enableUAM && ignoreCOBPatch && eatingnowMaxIOBOK) {
+    if (profile.enableUAM && ignoreCOBPatch && eatingnowMaxIOBOK) {
         // enable eatingnow if no TT and within safe hours **EXPERIMENT**
         if (!profile.temptargetSet && eatingnowtimeOK) eatingnow = true;
         // enable eatingnow if no TT and safe IOB within safe hours
