@@ -322,15 +322,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.log("eatingnowtimeOK: " + eatingnowtimeOK);
     if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
 
-    // If we have Eating Now enabled and rising we will enable eating now mode
+    // If we have UAM and GhostCOB enabled with low enough IOB we will enable eating now mode
     if (profile.enableUAM && ignoreCOBPatch && eatingnowMaxIOBOK) {
-        // enable eatingnow if no TT and within safe hours **EXPERIMENT**
+        // enable eatingnow if no TT and within safe hours
         if (!profile.temptargetSet && eatingnowtimeOK) eatingnow = true;
-        // enable eatingnow if no TT and safe IOB within safe hours
-        //if (!profile.temptargetSet && iob_data.iob >= profile.EatingNowIOB && eatingnowtimeOK) eatingnow = true;
-        // High delta enable eating now
-        //if (glucose_status.delta >=15 && iob_data.iob <= profile.EatingNowIOB && eatingnowtimeOK && now >10) eatingnow = true;
-        // Force eatingnow mode by setting a 5.5 temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
+
+        // Force eatingnow mode by setting a temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
         if (profile.temptargetSet) {  // tt duration prevents immediate SMB
             // normal target or less enables eating now
             if (target_bg <= profile.normal_target_bg + 1) eatingnow = true;
