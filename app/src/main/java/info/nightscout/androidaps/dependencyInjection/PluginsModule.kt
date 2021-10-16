@@ -210,7 +210,7 @@ abstract class PluginsModule {
     @Binds
     @APS
     @IntoMap
-    @IntKey(225)
+    @IntKey(235)
     abstract fun bindENPlugin(plugin: ENPlugin): PluginBase
 
     @Binds
