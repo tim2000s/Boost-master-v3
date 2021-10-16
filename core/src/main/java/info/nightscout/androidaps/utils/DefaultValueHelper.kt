@@ -49,10 +49,9 @@ open class DefaultValueHelper @Inject constructor(
      *
      * @return
      */
-    fun determineEatingSoonTT(key: Int =R.string.key_eatingsoon_target): Double {
+    fun determineEatingSoonTT(): Double {
         val units = profileFunction.getUnits()
-        var value = sp.getDouble(key, getDefaultEatingSoonTT(units))
-        // var value = sp.getDouble(R.string.key_eatingsoon_target, getDefaultEatingSoonTT(units))
+        var value = sp.getDouble(R.string.key_eatingsoon_target, getDefaultEatingSoonTT(units))
         value = Profile.toCurrentUnits(profileFunction, value)
         return if (value > 0) value else getDefaultEatingSoonTT(units)
     }
@@ -60,10 +59,6 @@ open class DefaultValueHelper @Inject constructor(
     fun determineEatingSoonTTDuration(): Int {
         val value = sp.getInt(R.string.key_eatingsoon_duration, Constants.defaultEatingSoonTTDuration)
         return if (value > 0) value else Constants.defaultEatingSoonTTDuration
-    }
-
-    fun determineEatingSoonTTPrebolus(key:Int): Double {
-        return (sp.getDouble(key, 0.0)*10) + 180
     }
 
     /**

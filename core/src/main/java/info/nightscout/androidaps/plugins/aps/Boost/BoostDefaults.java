@@ -1,10 +1,10 @@
-package info.nightscout.androidaps.plugins.aps.openAPSSMB;
+package info.nightscout.androidaps.plugins.aps.Boost;
 
 /**
  * Created by mike on 10.12.2017.
  */
 
-public class SMBDefaults {
+public class BoostDefaults {
     // CALCULATED OR FROM PREFS
 
     // max_iob: 0 // if max_iob is not provided, will default to zero

@@ -84,7 +84,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/duration_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -209,56 +208,7 @@
                 android:textSize="11sp" />
 
         </LinearLayout>
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal">-->
 
-<!--            <info.nightscout.androidaps.utils.ui.SingleClickButton-->
-<!--                android:id="@+id/eating_soon_small"-->
-<!--                style="?android:attr/buttonStyle"-->
-<!--                android:layout_width="157dp"-->
-<!--                android:layout_height="fill_parent"-->
-<!--                android:layout_marginEnd="-4dp"-->
-<!--                android:layout_weight="0.5"-->
-<!--                android:drawableTop="@drawable/ic_target_eatingsoon"-->
-<!--                android:paddingLeft="5dp"-->
-<!--                android:paddingRight="5dp"-->
-<!--                android:text="@string/eatingsoon_small"-->
-<!--                android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
-<!--                android:textColor="@color/carbs"-->
-<!--                android:textSize="11sp" />-->
-
-<!--            <info.nightscout.androidaps.utils.ui.SingleClickButton-->
-<!--                android:id="@+id/eating_soon_medium"-->
-<!--                style="?android:attr/buttonStyle"-->
-<!--                android:layout_width="154dp"-->
-<!--                android:layout_height="fill_parent"-->
-<!--                android:layout_marginEnd="-4dp"-->
-<!--                android:layout_weight="0.5"-->
-<!--                android:drawableTop="@drawable/ic_target_eatingsoon"-->
-<!--                android:paddingLeft="5dp"-->
-<!--                android:paddingRight="5dp"-->
-<!--                android:text="@string/eatingsoon_medium"-->
-<!--                android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
-<!--                android:textColor="@color/carbs"-->
-<!--                android:textSize="11sp" />-->
-
-<!--            <info.nightscout.androidaps.utils.ui.SingleClickButton-->
-<!--                android:id="@+id/eating_soon_large"-->
-<!--                style="?android:attr/buttonStyle"-->
-<!--                android:layout_width="157dp"-->
-<!--                android:layout_height="fill_parent"-->
-<!--                android:layout_marginEnd="-4dp"-->
-<!--                android:layout_weight="0.5"-->
-<!--                android:drawableTop="@drawable/ic_target_eatingsoon"-->
-<!--                android:paddingLeft="5dp"-->
-<!--                android:paddingRight="5dp"-->
-<!--                android:text="@string/eatingsoon_large"-->
-<!--                android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
-<!--                android:textColor="@color/carbs"-->
-<!--                android:textSize="11sp" />-->
-<!--        </LinearLayout>-->
         <include
             android:id="@+id/okcancel"
             layout="@layout/okcancel" />

@@ -1,4 +1,4 @@
-package info.nightscout.androidaps.plugins.aps.openAPSSMB;
+package info.nightscout.androidaps.plugins.aps.EN;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,23 +7,22 @@ import javax.inject.Inject;
 
 import dagger.android.HasAndroidInjector;
 import info.nightscout.androidaps.logging.LTag;
-import info.nightscout.androidaps.R;
 import info.nightscout.androidaps.plugins.aps.loop.APSResult;
 import info.nightscout.androidaps.utils.DateUtil;
 import info.nightscout.androidaps.utils.sharedPreferences.SP;
 
-public class DetermineBasalResultSMB extends APSResult {
+public class DetermineBasalResultEN extends APSResult {
     @Inject SP sp;
 
     private double eventualBG;
     private double snoozeBG;
 
-    private DetermineBasalResultSMB(HasAndroidInjector injector) {
+    private DetermineBasalResultEN(HasAndroidInjector injector) {
         super(injector);
         hasPredictions = true;
     }
 
-    DetermineBasalResultSMB(HasAndroidInjector injector, JSONObject result) {
+    DetermineBasalResultEN(HasAndroidInjector injector, JSONObject result) {
         this(injector);
         date = DateUtil.now();
         json = result;
@@ -70,14 +69,19 @@ public class DetermineBasalResultSMB extends APSResult {
                     aapsLogger.error(LTag.APS, "Error parsing 'deliverAt' date: " + date, e);
                 }
             }
+
+            if (result.has("boostType")) {
+                boostType = result.getString("boostType");
+            }
+
         } catch (JSONException e) {
             aapsLogger.error(LTag.APS, "Error parsing determine-basal result JSON", e);
         }
     }
 
     @Override
-    public DetermineBasalResultSMB newAndClone(HasAndroidInjector injector) {
-        DetermineBasalResultSMB newResult = new DetermineBasalResultSMB(injector);
+    public DetermineBasalResultEN newAndClone(HasAndroidInjector injector) {
+        DetermineBasalResultEN newResult = new DetermineBasalResultEN(injector);
         doClone(newResult);
 
         newResult.eventualBG = eventualBG;

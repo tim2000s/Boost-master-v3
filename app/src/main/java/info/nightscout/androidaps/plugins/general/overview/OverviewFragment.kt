@@ -81,6 +81,11 @@ import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
+import java.util.Date
+import info.nightscout.androidaps.utils.T
+import info.nightscout.androidaps.utils.DateUtil
+
+import org.json.JSONObject
 
 class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickListener {
 
@@ -115,7 +120,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     @Inject lateinit var databaseHelper: DatabaseHelperInterface
 
     private val disposable = CompositeDisposable()
-
+    private var profile = JSONObject()
     private var smallWidth = false
     private var smallHeight = false
     private lateinit var dm: DisplayMetrics
@@ -128,8 +133,13 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     private val secondaryGraphsLabel = ArrayList<TextView>()
 
     private var carbAnimation: AnimationDrawable? = null
+    public var insulinAnimation: AnimationDrawable? = null
+
 
     private val graphLock = Object()
+   // val now = System.currentTimeMillis()
+
+   // private fun iTimeForOverview(now: Long) = (now - treatmentsPlugin.getLastBolusTime(true)) / 60000
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -166,6 +176,10 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         carbAnimation = overview_carbs_icon?.background as AnimationDrawable?
         carbAnimation?.setEnterFadeDuration(1200)
         carbAnimation?.setExitFadeDuration(1200)
+
+        insulinAnimation = overview_insulin_icon?.background as AnimationDrawable?
+        insulinAnimation?.setEnterFadeDuration(1200)
+        insulinAnimation?.setExitFadeDuration(1200)
 
         rangeToDisplay = sp.getInt(R.string.key_rangetodisplay, 6)
 
@@ -552,6 +566,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         val lastRun = loopPlugin.lastRun
         val predictionsAvailable = if (config.APS) lastRun?.request?.hasPredictions == true else config.NSCLIENT
 
+
         try {
             updateGraph(lastRun, predictionsAvailable, lowLine, highLine, pump, profile)
         } catch (e: IllegalStateException) {
@@ -733,15 +748,32 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         treatmentsPlugin.updateTotalIOBTempBasals()
         val bolusIob = treatmentsPlugin.lastCalculationTreatments.round()
         val basalIob = treatmentsPlugin.lastCalculationTempBasals.round()
-        overview_iob?.text = resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob)
+        //val now = System.currentTimeMillis()
 
-        overview_iob_llayout?.setOnClickListener {
-            activity?.let {
-                OKDialog.show(it, resourceHelper.gs(R.string.iob),
-                    resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
-                        resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
-                        resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob)
-                )
+        //(System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
+        val iTimeUpdate = (System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
+        overview_iob?.text = resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob)
+        val iTimeSettings = (SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")))
+        if (iTimeUpdate < iTimeSettings) {
+            overview_iob_llayout?.setOnClickListener {
+                activity?.let {
+                    OKDialog.show(it, resourceHelper.gs(R.string.iob),
+                        resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
+                            resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
+                            resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob) + "\n" +
+                            resourceHelper.gs(R.string.iTime) + ": " + resourceHelper.gs(R.string.format_mins,iTimeUpdate)
+                    )
+                }
+            }
+        }else{
+            overview_iob_llayout?.setOnClickListener {
+                activity?.let {
+                    OKDialog.show(it, resourceHelper.gs(R.string.iob),
+                        resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
+                            resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
+                            resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob)
+                    )
+                }
             }
         }
 
@@ -757,6 +789,11 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             if (cobInfo.futureCarbs > 0) cobText += "(" + DecimalFormatter.to0Decimal(cobInfo.futureCarbs) + ")"
         }
 
+        if (iTimeUpdate < iTimeSettings) {
+            insulinAnimation?.start()
+        }else{
+            insulinAnimation?.stop()
+        }
         if (config.APS && lastRun?.constraintsProcessed != null) {
             if (lastRun.constraintsProcessed!!.carbsReq > 0) {
                 //only display carbsreq when carbs have not been entered recently

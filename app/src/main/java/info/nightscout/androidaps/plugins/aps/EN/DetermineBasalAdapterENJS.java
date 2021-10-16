@@ -1,4 +1,4 @@
-package info.nightscout.androidaps.plugins.aps.openAPSSMB;
+package info.nightscout.androidaps.plugins.aps.EN;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,8 +25,10 @@ import info.nightscout.androidaps.R;
 import info.nightscout.androidaps.data.IobTotal;
 import info.nightscout.androidaps.data.MealData;
 import info.nightscout.androidaps.data.Profile;
+import info.nightscout.androidaps.db.TempTarget;
 import info.nightscout.androidaps.db.TemporaryBasal;
 import info.nightscout.androidaps.interfaces.ActivePluginProvider;
+import info.nightscout.androidaps.interfaces.InsulinInterface;
 import info.nightscout.androidaps.interfaces.ProfileFunction;
 import info.nightscout.androidaps.interfaces.PumpInterface;
 import info.nightscout.androidaps.logging.AAPSLogger;
@@ -43,7 +45,7 @@ import info.nightscout.androidaps.utils.resources.ResourceHelper;
 import info.nightscout.androidaps.utils.sharedPreferences.SP;
 
 
-public class DetermineBasalAdapterSMBJS {
+public class DetermineBasalAdapterENJS {
     private final HasAndroidInjector injector;
     @Inject AAPSLogger aapsLogger;
     @Inject ConstraintChecker constraintChecker;
@@ -80,7 +82,7 @@ public class DetermineBasalAdapterSMBJS {
      * Main code
      */
 
-    DetermineBasalAdapterSMBJS(ScriptReader scriptReader, HasAndroidInjector injector) {
+    DetermineBasalAdapterENJS(ScriptReader scriptReader, HasAndroidInjector injector) {
         mScriptReader = scriptReader;
         this.injector = injector;
         injector.androidInjector().inject(this);
@@ -88,7 +90,7 @@ public class DetermineBasalAdapterSMBJS {
 
 
     @Nullable
-    public DetermineBasalResultSMB invoke() {
+    public info.nightscout.androidaps.plugins.aps.EN.DetermineBasalResultEN invoke() {
 
 
         aapsLogger.debug(LTag.APS, ">>> Invoking detemine_basal <<<");
@@ -108,7 +110,7 @@ public class DetermineBasalAdapterSMBJS {
         aapsLogger.debug(LTag.APS, "isSaveCgmSource: " + mIsSaveCgmSource);
 
 
-        DetermineBasalResultSMB determineBasalResultSMB = null;
+        info.nightscout.androidaps.plugins.aps.EN.DetermineBasalResultEN determineBasalResultEN = null;
 
         Context rhino = Context.enter();
         Scriptable scope = rhino.initStandardObjects();
@@ -129,8 +131,8 @@ public class DetermineBasalAdapterSMBJS {
             rhino.evaluateString(scope, "require = function() {return round_basal;};", "JavaScript", 0, null);
 
             //generate functions "determine_basal" and "setTempBasal"
-            rhino.evaluateString(scope, readFile("OpenAPSSMB/determine-basal.js"), "JavaScript", 0, null);
-            rhino.evaluateString(scope, readFile("OpenAPSSMB/basal-set-temp.js"), "setTempBasal.js", 0, null);
+            rhino.evaluateString(scope, readFile("EN/determine-basal.js"), "JavaScript", 0, null);
+            rhino.evaluateString(scope, readFile("EN/basal-set-temp.js"), "setTempBasal.js", 0, null);
             Object determineBasalObj = scope.get("determine_basal", scope);
             Object setTempBasalFunctionsObj = scope.get("tempBasalFunctions", scope);
 
@@ -163,7 +165,7 @@ public class DetermineBasalAdapterSMBJS {
                 try {
                     JSONObject resultJson = new JSONObject(result);
                     openHumansUploader.enqueueSMBData(mProfile, mGlucoseStatus, mIobData, mMealData, mCurrentTemp, mAutosensData, mMicrobolusAllowed, mSMBAlwaysAllowed, resultJson);
-                    determineBasalResultSMB = new DetermineBasalResultSMB(injector, resultJson);
+                    determineBasalResultEN = new info.nightscout.androidaps.plugins.aps.EN.DetermineBasalResultEN(injector, resultJson);
                 } catch (JSONException e) {
                     aapsLogger.error(LTag.APS, "Unhandled exception", e);
                 }
@@ -186,7 +188,7 @@ public class DetermineBasalAdapterSMBJS {
         storedProfile = mProfile.toString();
         storedMeal_data = mMealData.toString();
 
-        return determineBasalResultSMB;
+        return determineBasalResultEN;
 
     }
 
@@ -232,62 +234,112 @@ public class DetermineBasalAdapterSMBJS {
                         boolean isSaveCgmSource
     ) throws JSONException {
 
+        advancedFiltering = true; //MD **** FOR DEV HANDSET ONLY ****
+
         PumpInterface pump = activePluginProvider.getActivePump();
         Double pumpbolusstep = pump.getPumpDescription().bolusStep;
-        mProfile = new JSONObject();
 
+        InsulinInterface insulinInterface = activePluginProvider.getActiveInsulin();
+        int insulinPT = insulinInterface.getPeak();
+
+        mProfile = new JSONObject();
         mProfile.put("max_iob", maxIob);
         //mProfile.put("dia", profile.getDia());
+        mProfile.put("percentage", profile.getPercentage());
         mProfile.put("type", "current");
         mProfile.put("max_daily_basal", profile.getMaxDailyBasal());
         mProfile.put("max_basal", maxBasal);
-        mProfile.put("min_bg", minBg);
-        mProfile.put("max_bg", maxBg);
-        mProfile.put("target_bg", targetBg);
+        mProfile.put("min_bg", Math.round(minBg));
+        mProfile.put("max_bg", Math.round(maxBg));
+        mProfile.put("target_bg", Math.round(targetBg));
+//        double normal_target_bg = profile.getTargetMgdl(Profile.secondsFromMidnight(mCurrentTime));
+        double normal_target_bg = profile.getTargetMgdl();
+        mProfile.put("normal_target_bg",Math.round(normal_target_bg));
+
         mProfile.put("carb_ratio", profile.getIc());
         mProfile.put("sens", profile.getIsfMgdl());
         mProfile.put("max_daily_safety_multiplier", sp.getInt(R.string.key_openapsama_max_daily_safety_multiplier, 3));
         mProfile.put("current_basal_safety_multiplier", sp.getDouble(R.string.key_openapsama_current_basal_safety_multiplier, 4d));
 
-        //mProfile.put("high_temptarget_raises_sensitivity", SP.getBoolean(R.string.key_high_temptarget_raises_sensitivity, SMBDefaults.high_temptarget_raises_sensitivity));
-        mProfile.put("high_temptarget_raises_sensitivity", false);
-        //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, SMBDefaults.low_temptarget_lowers_sensitivity));
-        mProfile.put("low_temptarget_lowers_sensitivity", false);
+        //mProfile.put("high_temptarget_raises_sensitivity", SP.getBoolean(R.string.key_high_temptarget_raises_sensitivity, ENDefaults.high_temptarget_raises_sensitivity));
+        mProfile.put("high_temptarget_raises_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_high_temptarget_raises_sensitivity), info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.high_temptarget_raises_sensitivity));
+        //mProfile.put("high_temptarget_raises_sensitivity", false);
+        mProfile.put("low_temptarget_lowers_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_low_temptarget_lowers_sensitivity), info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.low_temptarget_lowers_sensitivity));
+        //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, ENDefaults.low_temptarget_lowers_sensitivity));
+        //mProfile.put("low_temptarget_lowers_sensitivity", false);
 
 
-        mProfile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, SMBDefaults.sensitivity_raises_target));
-        mProfile.put("resistance_lowers_target", sp.getBoolean(R.string.key_resistance_lowers_target, SMBDefaults.resistance_lowers_target));
-        mProfile.put("adv_target_adjustments", SMBDefaults.adv_target_adjustments);
-        mProfile.put("exercise_mode", SMBDefaults.exercise_mode);
-        mProfile.put("half_basal_exercise_target", SMBDefaults.half_basal_exercise_target);
-        mProfile.put("maxCOB", SMBDefaults.maxCOB);
+        mProfile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.sensitivity_raises_target));
+        mProfile.put("resistance_lowers_target", sp.getBoolean(R.string.key_resistance_lowers_target, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.resistance_lowers_target));
+        mProfile.put("adv_target_adjustments", info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.adv_target_adjustments);
+        mProfile.put("exercise_mode", info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.exercise_mode);
+        mProfile.put("half_basal_exercise_target", info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.half_basal_exercise_target);
+        mProfile.put("maxCOB", info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.maxCOB);
         mProfile.put("skip_neutral_temps", pump.setNeutralTempAtFullHour());
         // min_5m_carbimpact is not used within SMB determinebasal
         //if (mealData.usedMinCarbsImpact > 0) {
         //    mProfile.put("min_5m_carbimpact", mealData.usedMinCarbsImpact);
         //} else {
-        //    mProfile.put("min_5m_carbimpact", SP.getDouble(R.string.key_openapsama_min_5m_carbimpact, SMBDefaults.min_5m_carbimpact));
+        //    mProfile.put("min_5m_carbimpact", SP.getDouble(R.string.key_openapsama_min_5m_carbimpact, ENDefaults.min_5m_carbimpact));
         //}
-        mProfile.put("remainingCarbsCap", SMBDefaults.remainingCarbsCap);
+        mProfile.put("remainingCarbsCap", info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.remainingCarbsCap);
         mProfile.put("enableUAM", uamAllowed);
-        mProfile.put("A52_risk_enable", SMBDefaults.A52_risk_enable);
+        mProfile.put("A52_risk_enable", info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.A52_risk_enable);
 
         boolean smbEnabled = sp.getBoolean(R.string.key_use_smb, false);
-        mProfile.put("SMBInterval", sp.getInt(R.string.key_smbinterval, SMBDefaults.SMBInterval));
+        mProfile.put("SMBInterval", sp.getInt(R.string.key_smbinterval, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.SMBInterval));
         mProfile.put("enableSMB_with_COB", smbEnabled && sp.getBoolean(R.string.key_enableSMB_with_COB, false));
         mProfile.put("enableSMB_with_temptarget", smbEnabled && sp.getBoolean(R.string.key_enableSMB_with_temptarget, false));
         mProfile.put("allowSMB_with_high_temptarget", smbEnabled && sp.getBoolean(R.string.key_allowSMB_with_high_temptarget, false));
         mProfile.put("enableSMB_always", smbEnabled && sp.getBoolean(R.string.key_enableSMB_always, false) && advancedFiltering);
         mProfile.put("enableSMB_after_carbs", smbEnabled && sp.getBoolean(R.string.key_enableSMB_after_carbs, false) && advancedFiltering);
-        mProfile.put("maxSMBBasalMinutes", sp.getInt(R.string.key_smbmaxminutes, SMBDefaults.maxSMBBasalMinutes));
-        mProfile.put("maxUAMSMBBasalMinutes", sp.getInt(R.string.key_uamsmbmaxminutes, SMBDefaults.maxUAMSMBBasalMinutes));
+        mProfile.put("maxSMBBasalMinutes", sp.getInt(R.string.key_smbmaxminutes, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.maxSMBBasalMinutes));
+        mProfile.put("maxUAMSMBBasalMinutes", sp.getInt(R.string.key_uamsmbmaxminutes, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.maxUAMSMBBasalMinutes));
         //set the min SMB amount to be the amount set by the pump.
         mProfile.put("bolus_increment", pumpbolusstep);
-        mProfile.put("carbsReqThreshold", sp.getInt(R.string.key_carbsReqThreshold, SMBDefaults.carbsReqThreshold));
-
+        mProfile.put("carbsReqThreshold", sp.getInt(R.string.key_carbsReqThreshold, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.carbsReqThreshold));
+        mProfile.put("insulinPeakTime", insulinPT);
         mProfile.put("current_basal", basalrate);
         mProfile.put("temptargetSet", tempTargetSet);
         mProfile.put("autosens_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_max, "1.2")));
+        // mod 7e: can I add use autoisf here?
+        mProfile.put("use_autoisf", sp.getBoolean(R.string.key_openapsama_useautoisf, false));
+        // mod 7d: can I add autosens_min here?
+        mProfile.put("autoisf_max",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autoisf_max, "1.2")));
+        mProfile.put("autoisf_hourlychange",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autoisf_hourlychange, "0.2")));
+
+        //MD: TempTarget Info ==== START
+        TempTarget tempTarget = treatmentsPlugin.getTempTargetFromHistory(System.currentTimeMillis());
+
+        if (tempTarget != null) {
+            mProfile.put("temptarget_duration", tempTarget.durationInMinutes);
+            mProfile.put("temptarget_minutesrunning", tempTarget.getRealTTDuration());
+        }
+        //MD: TempTarget Info ==== END
+
+        // patches ==== START
+        mProfile.put("enableGhostCOB", sp.getBoolean(R.string.key_use_ghostcob, false));
+        mProfile.put("enableEatingNow", sp.getBoolean(R.string.key_use_eatingnow, false));
+        mProfile.put("EatingNowIOB", sp.getDouble(R.string.key_eatingnow_iob, 5));
+//        mProfile.put("EatingNowBGBoostBG", sp.getDouble(R.string.key_eatingnow_bgboostbg, 0));
+//        mProfile.put("EatingNowBGBoostBolus", sp.getDouble(R.string.key_eatingnow_bgboostbolus, 0) * profile.getPercentage()/100);
+//        mProfile.put("EatingNowBGBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_bgboostmaxsmb, 0.1) * profile.getPercentage() / 100);
+
+        //set UAMBoost Max SMB based upon TT
+        if (tempTarget != null && Math.round(targetBg) < Math.round(normal_target_bg)) {
+            mProfile.put("EatingNowUAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus_tt, 0) * profile.getPercentage()/100);
+            mProfile.put("EatingNowUAMBoostMaxSMB", sp.getInt(R.string.key_eatingnow_uamboostmaxsmb_tt, 0));
+        } else {
+            mProfile.put("EatingNowUAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus, 0) * profile.getPercentage()/100);
+            mProfile.put("EatingNowUAMBoostMaxSMB", sp.getInt(R.string.key_eatingnow_uamboostmaxsmb, 0));
+        }
+        mProfile.put("EatingNowISFBoost", sp.getDouble(R.string.key_eatingnow_isfboost, 1));
+        mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3) * profile.getPercentage()/100);
+        mProfile.put("EatingNowTimeStart", sp.getDouble(R.string.key_eatingnow_timestart, 9));
+        mProfile.put("EatingNowTimeEnd", sp.getDouble(R.string.key_eatingnow_timeend, 17));
+        // patches ==== END
+
+
 
         if (profileFunction.getUnits().equals(Constants.MMOL)) {
             mProfile.put("out_units", "mmol/L");
@@ -322,7 +374,9 @@ public class DetermineBasalAdapterSMBJS {
         mGlucoseStatus.put("short_avgdelta", glucoseStatus.short_avgdelta);
         mGlucoseStatus.put("long_avgdelta", glucoseStatus.long_avgdelta);
         mGlucoseStatus.put("date", glucoseStatus.date);
-
+        // mod 7: append 2 variables for 5% range
+        mGlucoseStatus.put("autoISF_duration", glucoseStatus.autoISF_duration);
+        mGlucoseStatus.put("autoISF_average", glucoseStatus.autoISF_average);
         mMealData = new JSONObject();
         mMealData.put("carbs", mealData.carbs);
         mMealData.put("boluses", mealData.boluses);

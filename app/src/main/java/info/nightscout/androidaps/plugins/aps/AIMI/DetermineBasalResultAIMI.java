@@ -1,4 +1,4 @@
-package info.nightscout.androidaps.plugins.aps.openAPSSMB;
+package info.nightscout.androidaps.plugins.aps.AIMI;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,18 +12,18 @@ import info.nightscout.androidaps.plugins.aps.loop.APSResult;
 import info.nightscout.androidaps.utils.DateUtil;
 import info.nightscout.androidaps.utils.sharedPreferences.SP;
 
-public class DetermineBasalResultSMB extends APSResult {
+public class DetermineBasalResultAIMI extends APSResult {
     @Inject SP sp;
 
     private double eventualBG;
     private double snoozeBG;
 
-    private DetermineBasalResultSMB(HasAndroidInjector injector) {
+    private DetermineBasalResultAIMI(HasAndroidInjector injector) {
         super(injector);
         hasPredictions = true;
     }
 
-    DetermineBasalResultSMB(HasAndroidInjector injector, JSONObject result) {
+    DetermineBasalResultAIMI(HasAndroidInjector injector, JSONObject result) {
         this(injector);
         date = DateUtil.now();
         json = result;
@@ -76,8 +76,8 @@ public class DetermineBasalResultSMB extends APSResult {
     }
 
     @Override
-    public DetermineBasalResultSMB newAndClone(HasAndroidInjector injector) {
-        DetermineBasalResultSMB newResult = new DetermineBasalResultSMB(injector);
+    public DetermineBasalResultAIMI newAndClone(HasAndroidInjector injector) {
+        DetermineBasalResultAIMI newResult = new DetermineBasalResultAIMI(injector);
         doClone(newResult);
 
         newResult.eventualBG = eventualBG;

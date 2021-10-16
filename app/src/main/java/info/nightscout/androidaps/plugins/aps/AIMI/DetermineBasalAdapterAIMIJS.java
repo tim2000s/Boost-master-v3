@@ -1,10 +1,11 @@
-package info.nightscout.androidaps.plugins.aps.openAPSSMB;
+package info.nightscout.androidaps.plugins.aps.AIMI;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
+
 import org.mozilla.javascript.NativeJSON;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.RhinoException;
@@ -15,6 +16,7 @@ import org.mozilla.javascript.Undefined;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -25,8 +27,10 @@ import info.nightscout.androidaps.R;
 import info.nightscout.androidaps.data.IobTotal;
 import info.nightscout.androidaps.data.MealData;
 import info.nightscout.androidaps.data.Profile;
+import info.nightscout.androidaps.db.TempTarget;
 import info.nightscout.androidaps.db.TemporaryBasal;
 import info.nightscout.androidaps.interfaces.ActivePluginProvider;
+
 import info.nightscout.androidaps.interfaces.ProfileFunction;
 import info.nightscout.androidaps.interfaces.PumpInterface;
 import info.nightscout.androidaps.logging.AAPSLogger;
@@ -41,9 +45,19 @@ import info.nightscout.androidaps.plugins.treatments.TreatmentsPlugin;
 import info.nightscout.androidaps.utils.SafeParse;
 import info.nightscout.androidaps.utils.resources.ResourceHelper;
 import info.nightscout.androidaps.utils.sharedPreferences.SP;
+import info.nightscout.androidaps.utils.stats.TddCalculator;
+import info.nightscout.androidaps.utils.DateUtil;
+import dagger.android.HasAndroidInjector;
+import info.nightscout.androidaps.MainApp;
+import info.nightscout.androidaps.plugins.bus.RxBusWrapper;
+import info.nightscout.androidaps.utils.FabricPrivacy;
+import info.nightscout.androidaps.plugins.general.nsclient.NSUpload;
+import info.nightscout.androidaps.plugins.general.nsclient.UploadQueue;
 
 
-public class DetermineBasalAdapterSMBJS {
+
+
+public class DetermineBasalAdapterAIMIJS {
     private final HasAndroidInjector injector;
     @Inject AAPSLogger aapsLogger;
     @Inject ConstraintChecker constraintChecker;
@@ -53,11 +67,20 @@ public class DetermineBasalAdapterSMBJS {
     @Inject TreatmentsPlugin treatmentsPlugin;
     @Inject ActivePluginProvider activePluginProvider;
     @Inject OpenHumansUploader openHumansUploader;
+    @Inject DateUtil dateUtil;
+    @Inject HasAndroidInjector hasAndroidInjector;
+    @Inject MainApp mainApp;
+    @Inject RxBusWrapper rxBusWrapper;
+    @Inject FabricPrivacy fabricPrivacy;
+    @Inject NSUpload nsUpload;
+    @Inject UploadQueue uploadQueue;
+    
 
 
     private final ScriptReader mScriptReader;
     private JSONObject mProfile;
     private JSONObject mGlucoseStatus;
+    private TddCalculator tddAIMI;
     private JSONArray mIobData;
     private JSONObject mMealData;
     private JSONObject mCurrentTemp;
@@ -76,11 +99,14 @@ public class DetermineBasalAdapterSMBJS {
 
     private String scriptDebug = "";
 
+
+
+
     /**
      * Main code
      */
 
-    DetermineBasalAdapterSMBJS(ScriptReader scriptReader, HasAndroidInjector injector) {
+    DetermineBasalAdapterAIMIJS(ScriptReader scriptReader, HasAndroidInjector injector) {
         mScriptReader = scriptReader;
         this.injector = injector;
         injector.androidInjector().inject(this);
@@ -88,7 +114,7 @@ public class DetermineBasalAdapterSMBJS {
 
 
     @Nullable
-    public DetermineBasalResultSMB invoke() {
+    public DetermineBasalResultAIMI invoke() {
 
 
         aapsLogger.debug(LTag.APS, ">>> Invoking detemine_basal <<<");
@@ -108,7 +134,7 @@ public class DetermineBasalAdapterSMBJS {
         aapsLogger.debug(LTag.APS, "isSaveCgmSource: " + mIsSaveCgmSource);
 
 
-        DetermineBasalResultSMB determineBasalResultSMB = null;
+        DetermineBasalResultAIMI determineBasalResultAIMI = null;
 
         Context rhino = Context.enter();
         Scriptable scope = rhino.initStandardObjects();
@@ -129,8 +155,8 @@ public class DetermineBasalAdapterSMBJS {
             rhino.evaluateString(scope, "require = function() {return round_basal;};", "JavaScript", 0, null);
 
             //generate functions "determine_basal" and "setTempBasal"
-            rhino.evaluateString(scope, readFile("OpenAPSSMB/determine-basal.js"), "JavaScript", 0, null);
-            rhino.evaluateString(scope, readFile("OpenAPSSMB/basal-set-temp.js"), "setTempBasal.js", 0, null);
+            rhino.evaluateString(scope, readFile("AIMI/determine-basal.js"), "JavaScript", 0, null);
+            rhino.evaluateString(scope, readFile("AIMI/basal-set-temp.js"), "setTempBasal.js", 0, null);
             Object determineBasalObj = scope.get("determine_basal", scope);
             Object setTempBasalFunctionsObj = scope.get("tempBasalFunctions", scope);
 
@@ -163,7 +189,7 @@ public class DetermineBasalAdapterSMBJS {
                 try {
                     JSONObject resultJson = new JSONObject(result);
                     openHumansUploader.enqueueSMBData(mProfile, mGlucoseStatus, mIobData, mMealData, mCurrentTemp, mAutosensData, mMicrobolusAllowed, mSMBAlwaysAllowed, resultJson);
-                    determineBasalResultSMB = new DetermineBasalResultSMB(injector, resultJson);
+                    determineBasalResultAIMI = new DetermineBasalResultAIMI(injector, resultJson);
                 } catch (JSONException e) {
                     aapsLogger.error(LTag.APS, "Unhandled exception", e);
                 }
@@ -186,7 +212,7 @@ public class DetermineBasalAdapterSMBJS {
         storedProfile = mProfile.toString();
         storedMeal_data = mMealData.toString();
 
-        return determineBasalResultSMB;
+        return determineBasalResultAIMI;
 
     }
 
@@ -250,17 +276,19 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("current_basal_safety_multiplier", sp.getDouble(R.string.key_openapsama_current_basal_safety_multiplier, 4d));
 
         //mProfile.put("high_temptarget_raises_sensitivity", SP.getBoolean(R.string.key_high_temptarget_raises_sensitivity, SMBDefaults.high_temptarget_raises_sensitivity));
-        mProfile.put("high_temptarget_raises_sensitivity", false);
+        mProfile.put("high_temptarget_raises_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_high_temptarget_raises_sensitivity), AIMIDefaults.high_temptarget_raises_sensitivity));
+        //mProfile.put("high_temptarget_raises_sensitivity", false);
+        mProfile.put("low_temptarget_lowers_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_low_temptarget_lowers_sensitivity),AIMIDefaults.low_temptarget_lowers_sensitivity));
         //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, SMBDefaults.low_temptarget_lowers_sensitivity));
-        mProfile.put("low_temptarget_lowers_sensitivity", false);
+        //mProfile.put("low_temptarget_lowers_sensitivity", false);
 
 
-        mProfile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, SMBDefaults.sensitivity_raises_target));
-        mProfile.put("resistance_lowers_target", sp.getBoolean(R.string.key_resistance_lowers_target, SMBDefaults.resistance_lowers_target));
-        mProfile.put("adv_target_adjustments", SMBDefaults.adv_target_adjustments);
-        mProfile.put("exercise_mode", SMBDefaults.exercise_mode);
-        mProfile.put("half_basal_exercise_target", SMBDefaults.half_basal_exercise_target);
-        mProfile.put("maxCOB", SMBDefaults.maxCOB);
+        mProfile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, AIMIDefaults.sensitivity_raises_target));
+        mProfile.put("resistance_lowers_target", sp.getBoolean(R.string.key_resistance_lowers_target, AIMIDefaults.resistance_lowers_target));
+        mProfile.put("adv_target_adjustments", AIMIDefaults.adv_target_adjustments);
+        mProfile.put("exercise_mode", AIMIDefaults.exercise_mode);
+        mProfile.put("half_basal_exercise_target", AIMIDefaults.half_basal_exercise_target);
+        mProfile.put("maxCOB", AIMIDefaults.maxCOB);
         mProfile.put("skip_neutral_temps", pump.setNeutralTempAtFullHour());
         // min_5m_carbimpact is not used within SMB determinebasal
         //if (mealData.usedMinCarbsImpact > 0) {
@@ -268,26 +296,30 @@ public class DetermineBasalAdapterSMBJS {
         //} else {
         //    mProfile.put("min_5m_carbimpact", SP.getDouble(R.string.key_openapsama_min_5m_carbimpact, SMBDefaults.min_5m_carbimpact));
         //}
-        mProfile.put("remainingCarbsCap", SMBDefaults.remainingCarbsCap);
+        mProfile.put("remainingCarbsCap", AIMIDefaults.remainingCarbsCap);
         mProfile.put("enableUAM", uamAllowed);
-        mProfile.put("A52_risk_enable", SMBDefaults.A52_risk_enable);
+        mProfile.put("A52_risk_enable", AIMIDefaults.A52_risk_enable);
 
         boolean smbEnabled = sp.getBoolean(R.string.key_use_smb, false);
-        mProfile.put("SMBInterval", sp.getInt(R.string.key_smbinterval, SMBDefaults.SMBInterval));
+        mProfile.put("SMBInterval", sp.getInt(R.string.key_smbinterval, AIMIDefaults.SMBInterval));
         mProfile.put("enableSMB_with_COB", smbEnabled && sp.getBoolean(R.string.key_enableSMB_with_COB, false));
         mProfile.put("enableSMB_with_temptarget", smbEnabled && sp.getBoolean(R.string.key_enableSMB_with_temptarget, false));
         mProfile.put("allowSMB_with_high_temptarget", smbEnabled && sp.getBoolean(R.string.key_allowSMB_with_high_temptarget, false));
         mProfile.put("enableSMB_always", smbEnabled && sp.getBoolean(R.string.key_enableSMB_always, false) && advancedFiltering);
         mProfile.put("enableSMB_after_carbs", smbEnabled && sp.getBoolean(R.string.key_enableSMB_after_carbs, false) && advancedFiltering);
-        mProfile.put("maxSMBBasalMinutes", sp.getInt(R.string.key_smbmaxminutes, SMBDefaults.maxSMBBasalMinutes));
-        mProfile.put("maxUAMSMBBasalMinutes", sp.getInt(R.string.key_uamsmbmaxminutes, SMBDefaults.maxUAMSMBBasalMinutes));
+        mProfile.put("maxSMBBasalMinutes", sp.getInt(R.string.key_smbmaxminutes, AIMIDefaults.maxSMBBasalMinutes));
+        mProfile.put("maxUAMSMBBasalMinutes", sp.getInt(R.string.key_uamsmbmaxminutes, AIMIDefaults.maxUAMSMBBasalMinutes));
         //set the min SMB amount to be the amount set by the pump.
         mProfile.put("bolus_increment", pumpbolusstep);
-        mProfile.put("carbsReqThreshold", sp.getInt(R.string.key_carbsReqThreshold, SMBDefaults.carbsReqThreshold));
+        mProfile.put("carbsReqThreshold", sp.getInt(R.string.key_carbsReqThreshold, AIMIDefaults.carbsReqThreshold));
 
         mProfile.put("current_basal", basalrate);
         mProfile.put("temptargetSet", tempTargetSet);
         mProfile.put("autosens_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_max, "1.2")));
+        mProfile.put("UAM_InsulinReq",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_InsulinReq,"65")));
+        mProfile.put("iTime",SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")));
+        mProfile.put("iTime_MaxBolus_minutes",SafeParse.stringToDouble(sp.getString(R.string.key_iTime_MaxBolus_minutes,"200")));
+
 
         if (profileFunction.getUnits().equals(Constants.MMOL)) {
             mProfile.put("out_units", "mmol/L");
@@ -308,10 +340,21 @@ public class DetermineBasalAdapterSMBJS {
             mCurrentTemp.put("minutesrunning", tempBasal.getRealDuration());
         }
 
+        //MD: TempTarget Info ==== START
+        TempTarget tempTarget = treatmentsPlugin.getTempTargetFromHistory(System.currentTimeMillis());
+
+        if (tempTarget != null) {
+            mProfile.put("temptarget_duration", tempTarget.durationInMinutes);
+            //mProfile.put("temptarget_minutesrunning", tempTarget.getRealTTDuration());
+        }
+        //MD: TempTarget Info ==== END
+
+
         mIobData = IobCobCalculatorPlugin.convertToJSONArray(iobArray);
 
         mGlucoseStatus = new JSONObject();
         mGlucoseStatus.put("glucose", glucoseStatus.glucose);
+
         mGlucoseStatus.put("noise", glucoseStatus.noise);
 
         if (sp.getBoolean(R.string.key_always_use_shortavg, false)) {
@@ -322,7 +365,6 @@ public class DetermineBasalAdapterSMBJS {
         mGlucoseStatus.put("short_avgdelta", glucoseStatus.short_avgdelta);
         mGlucoseStatus.put("long_avgdelta", glucoseStatus.long_avgdelta);
         mGlucoseStatus.put("date", glucoseStatus.date);
-
         mMealData = new JSONObject();
         mMealData.put("carbs", mealData.carbs);
         mMealData.put("boluses", mealData.boluses);
@@ -331,7 +373,11 @@ public class DetermineBasalAdapterSMBJS {
         mMealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation);
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
-
+        mMealData.put("lastBolusCorr",treatmentsPlugin.getLastBolusTime(true));
+        tddAIMI = new TddCalculator(hasAndroidInjector,aapsLogger,rxBusWrapper,resourceHelper,mainApp,sp,activePluginProvider,profileFunction,fabricPrivacy,nsUpload,dateUtil,uploadQueue);
+        mMealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).total);
+        mMealData.put("TDDAIMI1",tddAIMI.averageTDD(tddAIMI.calculate(1)).total);
+        mMealData.put("TDDPUMP",tddAIMI.calculateDaily().total);
 
         if (constraintChecker.isAutosensModeEnabled().value()) {
             mAutosensData = new JSONObject();

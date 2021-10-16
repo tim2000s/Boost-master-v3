@@ -22,6 +22,9 @@ import info.nightscout.androidaps.interfaces.ProfileFunction
 import info.nightscout.androidaps.plugins.aps.loop.LoopPlugin
 import info.nightscout.androidaps.plugins.aps.openAPSAMA.OpenAPSAMAPlugin
 import info.nightscout.androidaps.plugins.aps.openAPSSMB.OpenAPSSMBPlugin
+import info.nightscout.androidaps.plugins.aps.AIMI.AIMIPlugin
+import info.nightscout.androidaps.plugins.aps.Boost.BoostPlugin
+import info.nightscout.androidaps.plugins.aps.EN.ENPlugin
 import info.nightscout.androidaps.plugins.bus.RxBusWrapper
 import info.nightscout.androidaps.plugins.configBuilder.PluginStore
 import info.nightscout.androidaps.plugins.constraints.safety.SafetyPlugin
@@ -80,6 +83,9 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
     @Inject lateinit var nsClientPlugin: NSClientPlugin
     @Inject lateinit var openAPSAMAPlugin: OpenAPSAMAPlugin
     @Inject lateinit var openAPSSMBPlugin: OpenAPSSMBPlugin
+    @Inject lateinit var AIMIPlugin: AIMIPlugin
+    @Inject lateinit var BoostPlugin: BoostPlugin
+    @Inject lateinit var ENPlugin: ENPlugin
     @Inject lateinit var safetyPlugin: SafetyPlugin
     @Inject lateinit var sensitivityAAPSPlugin: SensitivityAAPSPlugin
     @Inject lateinit var sensitivityOref1Plugin: SensitivityOref1Plugin
@@ -163,6 +169,9 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
             addPreferencesFromResourceIfEnabled(loopPlugin, rootKey, config.APS)
             addPreferencesFromResourceIfEnabled(openAPSAMAPlugin, rootKey, config.APS)
             addPreferencesFromResourceIfEnabled(openAPSSMBPlugin, rootKey, config.APS)
+            addPreferencesFromResourceIfEnabled(AIMIPlugin, rootKey, config.APS)
+            addPreferencesFromResourceIfEnabled(BoostPlugin, rootKey, config.APS)
+            addPreferencesFromResourceIfEnabled(ENPlugin, rootKey, config.APS)
             addPreferencesFromResourceIfEnabled(sensitivityAAPSPlugin, rootKey)
             addPreferencesFromResourceIfEnabled(sensitivityWeightedAveragePlugin, rootKey)
             addPreferencesFromResourceIfEnabled(sensitivityOref1Plugin, rootKey)
@@ -278,9 +287,6 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
             resourceHelper.gs(R.string.key_hypo_target),
             resourceHelper.gs(R.string.key_activity_target),
             resourceHelper.gs(R.string.key_eatingsoon_target),
-            resourceHelper.gs(R.string.key_eatingsoon_small_target),
-            resourceHelper.gs(R.string.key_eatingsoon_medium_target),
-            resourceHelper.gs(R.string.key_eatingsoon_large_target),
             resourceHelper.gs(R.string.key_high_mark),
             resourceHelper.gs(R.string.key_low_mark)
         )
