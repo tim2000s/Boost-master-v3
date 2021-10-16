@@ -292,7 +292,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
         }
-
+        var statTirBelow = meal_data.StatLow7;
+        var statinrange = meal_data.StatInRange7;
+        if (statinrange <= 95 && statTirBelow >= 4){
+        TDD*=0.7;
+        console.log("TDD new value because TIR show hypo on the last 7 days :"+TDD);
+        }
+        //console.log("stat Tir : "+StatLow7);
     var variable_sens = (277700 / (TDD * bg));
     variable_sens = round(variable_sens,1);
     //var TDDnow = meal_data.TDDAIMI1;
@@ -348,21 +354,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
   }else if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target ) {//&& glucose_status.delta <= 0
 
         var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
-        if (HypoPredBG <= 90 && HypoPredBG >= 80 && hypo_target <= 100 && EBG < 110) {
-            hypo_target += 20;
-            //console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 90 : "+HypoPredBG+"; ");
-        }else if (EBG <= 100 && HypoPredBG < 80) {
+        if (EBG <= 100 && HypoPredBG < 80) {
             hypo_target = 130;
-            //console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 100 and HypoPredBG < 80 : "+EBG+"; ");
-        }else if (EBG <= 85) {
-            hypo_target = 130;
-            //console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 85 : "+EBG+"; ");
+            console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 100 and HypoPredBG < 80 : "+EBG+"; ");
         }else if (EBG60 <= 90 && EBG60 >0) {
             hypo_target = 100;
-            //console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG60 is lesser than 90 : "+EBG60+"; ");
-        }else if (EBG60 <= 0) {
-            hypo_target = 130;
-            //console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG60 is lesser than 0 : "+EBG60+"; ");
+            console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG60 is lesser than 90 : "+EBG60+"; ");
         }else if (target_bg === hypo_target) {
             console.log("target_bg unchanged: "+hypo_target+"; ");
         }else {
@@ -384,7 +381,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         } else {
             console.log("Basal unchanged: "+basal+"; ");
         }
-    } else if (!profile.temptargetSet && HyperPredBG >= 180 && profile.resistance_lowers_target) {
+    } else if (!profile.temptargetSet && HyperPredBG >= 220 && profile.resistance_lowers_target) {
 
         var hyper_target = round(Math.max(80, min_bg - (bg - min_bg)/3 ),0);
         if (target_bg === hyper_target) {

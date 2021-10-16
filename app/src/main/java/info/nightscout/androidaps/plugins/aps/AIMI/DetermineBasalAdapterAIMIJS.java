@@ -45,6 +45,7 @@ import info.nightscout.androidaps.plugins.treatments.TreatmentsPlugin;
 import info.nightscout.androidaps.utils.SafeParse;
 import info.nightscout.androidaps.utils.resources.ResourceHelper;
 import info.nightscout.androidaps.utils.sharedPreferences.SP;
+import info.nightscout.androidaps.utils.stats.TIR;
 import info.nightscout.androidaps.utils.stats.TddCalculator;
 import info.nightscout.androidaps.utils.DateUtil;
 import dagger.android.HasAndroidInjector;
@@ -53,9 +54,8 @@ import info.nightscout.androidaps.plugins.bus.RxBusWrapper;
 import info.nightscout.androidaps.utils.FabricPrivacy;
 import info.nightscout.androidaps.plugins.general.nsclient.NSUpload;
 import info.nightscout.androidaps.plugins.general.nsclient.UploadQueue;
-
-
-
+import info.nightscout.androidaps.utils.stats.TirCalculator;
+import android.util.LongSparseArray;
 
 public class DetermineBasalAdapterAIMIJS {
     private final HasAndroidInjector injector;
@@ -81,6 +81,7 @@ public class DetermineBasalAdapterAIMIJS {
     private JSONObject mProfile;
     private JSONObject mGlucoseStatus;
     private TddCalculator tddAIMI;
+    private TirCalculator StatTIR;
     private JSONArray mIobData;
     private JSONObject mMealData;
     private JSONObject mCurrentTemp;
@@ -378,6 +379,11 @@ public class DetermineBasalAdapterAIMIJS {
         mMealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).total);
         mMealData.put("TDDAIMI1",tddAIMI.averageTDD(tddAIMI.calculate(1)).total);
         mMealData.put("TDDPUMP",tddAIMI.calculateDaily().total);
+        StatTIR = new TirCalculator(resourceHelper,profileFunction,dateUtil);
+        mMealData.put("StatLow7",StatTIR.averageTIR(StatTIR.calculate(7,70,180)).belowPct());
+        mMealData.put("StatInRange7",StatTIR.averageTIR(StatTIR.calculate(7,70,180)).inRangePct());
+        mMealData.put("StatAbove7",StatTIR.averageTIR(StatTIR.calculate(7,70,180)).abovePct());
+
 
         if (constraintChecker.isAutosensModeEnabled().value()) {
             mAutosensData = new JSONObject();
