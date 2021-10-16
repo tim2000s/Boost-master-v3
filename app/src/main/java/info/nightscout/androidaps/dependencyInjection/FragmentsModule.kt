@@ -7,6 +7,9 @@ import info.nightscout.androidaps.dialogs.*
 import info.nightscout.androidaps.plugins.aps.loop.LoopFragment
 import info.nightscout.androidaps.plugins.aps.openAPSAMA.OpenAPSAMAFragment
 import info.nightscout.androidaps.plugins.aps.openAPSSMB.OpenAPSSMBFragment
+import info.nightscout.androidaps.plugins.aps.AIMI.AIMIFragment
+import info.nightscout.androidaps.plugins.aps.Boost.BoostFragment
+import info.nightscout.androidaps.plugins.aps.EN.ENFragment
 import info.nightscout.androidaps.plugins.configBuilder.ConfigBuilderFragment
 import info.nightscout.androidaps.plugins.constraints.objectives.ObjectivesFragment
 import info.nightscout.androidaps.plugins.constraints.objectives.activities.ObjectivesExamDialog
@@ -63,6 +66,9 @@ abstract class FragmentsModule {
     @ContributesAndroidInjector abstract fun contributesObjectivesFragment(): ObjectivesFragment
     @ContributesAndroidInjector abstract fun contributesOpenAPSAMAFragment(): OpenAPSAMAFragment
     @ContributesAndroidInjector abstract fun contributesOpenAPSSMBFragment(): OpenAPSSMBFragment
+    @ContributesAndroidInjector abstract fun contributesAIMIFragment(): AIMIFragment
+    @ContributesAndroidInjector abstract fun contributesBoostFragment(): BoostFragment
+    @ContributesAndroidInjector abstract fun contributesENFragment(): ENFragment
     @ContributesAndroidInjector abstract fun contributesOverviewFragment(): OverviewFragment
     @ContributesAndroidInjector abstract fun contributesLocalInsightFragment(): LocalInsightFragment
     @ContributesAndroidInjector abstract fun contributesLoopFragment(): LoopFragment

@@ -61,11 +61,6 @@ class TempTargetDialog : DialogFragmentWithDate() {
         binding.duration.setParams(savedInstanceState?.getDouble("duration")
             ?: 0.0, 0.0, Constants.MAX_PROFILE_SWITCH_DURATION, 10.0, DecimalFormat("0"), false, binding.okcancel.ok)
 
-        // (resourceHelper.gs(R.string.eatingsoon_small)+" "+(defaultValueHelper.determineEatingSoonTTPrebolus(R.string.key_eatingsoon_small_prebolus)-180)/10+"U").also { binding.eatingSoonSmall.text = it }
-        // (resourceHelper.gs(R.string.eatingsoon_medium)+" "+(defaultValueHelper.determineEatingSoonTTPrebolus(R.string.key_eatingsoon_medium_prebolus)-180)/10+"U").also { binding.eatingSoonMedium.text = it }
-        // (resourceHelper.gs(R.string.eatingsoon_large)+" "+(defaultValueHelper.determineEatingSoonTTPrebolus(R.string.key_eatingsoon_large_prebolus)-180)/10+"U").also { binding.eatingSoonLarge.text = it }
-
-
         if (profileFunction.getUnits() == Constants.MMOL)
             binding.temptarget.setParams(
                 savedInstanceState?.getDouble("temptarget")
@@ -92,49 +87,25 @@ class TempTargetDialog : DialogFragmentWithDate() {
                 resourceHelper.gs(R.string.eatingsoon),
                 resourceHelper.gs(R.string.activity),
                 resourceHelper.gs(R.string.hypo)
-                // resourceHelper.gs(R.string.eatingsoon_small)+" "+(defaultValueHelper.determineEatingSoonTTPrebolus(R.string.key_eatingsoon_small_prebolus)-180)/10+"U",
-                // resourceHelper.gs(R.string.eatingsoon_medium)+" "+(defaultValueHelper.determineEatingSoonTTPrebolus(R.string.key_eatingsoon_medium_prebolus)-180)/10+"U",
-                // resourceHelper.gs(R.string.eatingsoon_large)+" "+(defaultValueHelper.determineEatingSoonTTPrebolus(R.string.key_eatingsoon_large_prebolus)-180)/10+"U"
             )
             val adapterReason = ArrayAdapter(context, R.layout.spinner_centered, reasonList)
             binding.reason.adapter = adapterReason
 
             binding.targetCancel.setOnClickListener { shortClick(it) }
             binding.eatingSoon.setOnClickListener { shortClick(it) }
-            // binding.eatingSoonSmall.setOnClickListener { shortClick(it) }
-            // binding.eatingSoonMedium.setOnClickListener { shortClick(it) }
-            // binding.eatingSoonLarge.setOnClickListener { shortClick(it) }
             binding.activity.setOnClickListener { shortClick(it) }
             binding.hypo.setOnClickListener { shortClick(it) }
 
             binding.eatingSoon.setOnLongClickListener {
                 longClick(it)
-                // binding.durationRow.visibility = View.VISIBLE
                 return@setOnLongClickListener true
             }
-            // binding.eatingSoonSmall.setOnLongClickListener {
-            //     longClick(it)
-            //     binding.durationRow.visibility = View.INVISIBLE
-            //     return@setOnLongClickListener true
-            // }
-            // binding.eatingSoonMedium.setOnLongClickListener {
-            //     longClick(it)
-            //     binding.durationRow.visibility = View.INVISIBLE
-            //     return@setOnLongClickListener true
-            // }
-            // binding.eatingSoonLarge.setOnLongClickListener {
-            //     longClick(it)
-            //     binding.durationRow.visibility = View.INVISIBLE
-            //     return@setOnLongClickListener true
-            // }
             binding.activity.setOnLongClickListener {
                 longClick(it)
-                // binding.durationRow.visibility = View.VISIBLE
                 return@setOnLongClickListener true
             }
             binding.hypo.setOnLongClickListener {
                 longClick(it)
-                // binding.durationRow.visibility = View.VISIBLE
                 return@setOnLongClickListener true
             }
         }
@@ -152,24 +123,6 @@ class TempTargetDialog : DialogFragmentWithDate() {
                 binding.duration.value = defaultValueHelper.determineEatingSoonTTDuration().toDouble()
                 binding.reason.setSelection(reasonList.indexOf(resourceHelper.gs(R.string.eatingsoon)))
             }
-
-            // R.id.eating_soon_small -> {
-            //     binding.temptarget.value = defaultValueHelper.determineEatingSoonTT(R.string.key_eatingsoon_small_target)
-            //     binding.duration.value = defaultValueHelper.determineEatingSoonTTPrebolus(R.string.key_eatingsoon_small_prebolus)
-            //     binding.reason.setSelection(reasonList.indexOf(resourceHelper.gs(R.string.eatingsoon_small)+" "+(binding.duration.value-180)/10+"U"))
-            // }
-            //
-            // R.id.eating_soon_medium -> {
-            //     binding.temptarget.value = defaultValueHelper.determineEatingSoonTT(R.string.key_eatingsoon_medium_target)
-            //     binding.duration.value = defaultValueHelper.determineEatingSoonTTPrebolus(R.string.key_eatingsoon_medium_prebolus)
-            //     binding.reason.setSelection(reasonList.indexOf(resourceHelper.gs(R.string.eatingsoon_medium)+" "+(binding.duration.value-180)/10+"U"))
-            // }
-            //
-            // R.id.eating_soon_large -> {
-            //     binding.temptarget.value = defaultValueHelper.determineEatingSoonTT(R.string.key_eatingsoon_large_target)
-            //     binding.duration.value = defaultValueHelper.determineEatingSoonTTPrebolus(R.string.key_eatingsoon_large_prebolus)
-            //     binding.reason.setSelection(reasonList.indexOf(resourceHelper.gs(R.string.eatingsoon_large)+" "+(binding.duration.value-180)/10+"U"))
-            // }
 
             R.id.activity -> {
                 binding.temptarget.value = defaultValueHelper.determineActivityTT()

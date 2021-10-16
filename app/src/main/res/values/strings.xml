@@ -52,6 +52,9 @@
     <string name="description_ns_client">Synchronizes your data with Nightscout</string>
     <string name="description_ama">State of the algorithm in 2017</string>
     <string name="description_smb">Most recent algorithm for advanced users</string>
+    <string name="description_AIMI">Automated Insulin Management Interface</string>
+    <string name="description_Boost">Boost based accelerated bolusing</string>
+    <string name="description_EN">Eating Now bolusing method</string>
     <string name="description_overview">Displays the current state of your loop and buttons for most common actions</string>
     <string name="description_persistent_notification">Shows an ongoing notification with a short overview of what your loop is doing</string>
     <string name="description_profile_local">Define a profile which is available offline.</string>
@@ -356,6 +359,48 @@
     <string name="openapsama_autosens_min_summary">Default value: 0.7\nThe other side of the autosens safety limits, putting a cap on how low autosens can adjust basals, and how high it can adjust ISF and BG targets.</string>
     <string name="key_openapsama_autoisf_max" translatable="false">autoisf_max</string>
     <string name="openapsama_autoisf_max_summary">Default value: 1.2\nThis is a multiplier cap for autoISF to set a limit on how high the autoISF ratio can be, which in turn determines how low it can adjust ISF.</string>
+    <string name="key_openapsama_high_divisor" translatable="false">High glucose correction divisor</string>
+    <string name="openapsama_high_divisor_summary">High glucose correction divisor. 1 = all insulin required, >1 reduces amount</string>
+    <string name="openapsama_high_divisor_Title">High glucose correction divisor</string>
+    <string name="key_openapsama_AIMI_bolus" translatable="false">AIMI bolus cap</string>
+    <string name="openapsama_AIMI_bolus_title">AIMI bolus cap</string>
+    <string name="openapsama_AIMI_bolus_summary">Default value: 0.1\nThis is the cap on the AIMI bolus given when glucose levels start to climb quickly after a meal.</string>
+    <string name="key_openapsama_boost_bolus" translatable="false">Boost bolus cap</string>
+    <string name="openapsama_boost_bolus_title">Boost bolus cap</string>
+    <string name="openapsama_boost_bolus_summary">Default value: 0.1\nThis is the cap on the boost bolus given when glucose levels start to climb quickly after a meal.</string>
+
+    <string name="key_openapsama_TDD" translatable="false">7 day average Total Daily Dose</string>
+    <string name="openapsama_TDD_title">7 day average Total daily dose</string>
+    <string name="openapsama_TDD_summary">Default value: 5.0\nThis is the average total daily dose over the past 7 days, used in the ISF calculation.</string>
+    <string name="key_openapsama_AIMI_max_iob" translatable="false">UAM AIMI max IOB</string>
+    <string name="key_openapsama_AIMI_scale" translatable="false">AIMI scale value</string>
+    <string name="openapsama_AIMI_scale_title">AIMI scale value</string>
+    <string name="openapsama_AIMI_scale_summary">Default value: 1.0\nThis is the numerical value by which you can multiply (eventualBG/targetbg) for AIMI.</string>
+    <string name="key_openapsama_boost_max_iob" translatable="false">UAM Boost max IOB</string>
+    <string name="key_openapsama_boost_scale" translatable="false">Boost scale value</string>
+    <string name="openapsama_boost_scale_title">Boost scale value</string>
+    <string name="openapsama_boost_scale_summary">Default value: 1.0\nThis is the numerical value by which you can multiply (eventualBG/targetbg) for boost.</string>
+
+    <string name="key_openapsama_prebolus" translatable="false">Prebolus value</string>
+    <string name="openapsama_prebolus_title">Prebolus value</string>
+    <string name="openapsama_prebolus_summary">Default value: 0.1\nThis is the size of the preBolus that can be manually triggered.</string>
+    <string name="openapsama_AIMI_max_iob_title">UAM AIMI max IOB</string>
+    <string name="openapsama_AIMI_max_iob_summary">Default value: 0.1\nThis is the max IOB allowed for AIMI and accelerated bolusing to be allowed.</string>
+    <string name="key_openapsama_AIMI_start" translatable="false">UAM AIMI start time</string>
+    <string name="openapsama_AIMI_start_summary">Default value: 7\nThis is the start time for the period in which AIMI is active.</string>
+    <string name="openapsama_AIMI_start_title">UAM AIMI start time</string>
+    <string name="key_openapsama_AIMI_end" translatable="false">UAM AIMI end time</string>
+    <string name="openapsama_AIMI_end_summary">Default value: 8\nThis is the end time for the period in which AIMI is active.</string>
+    <string name="openapsama_AIMI_end_title">UAM AIMI end time</string>
+    <string name="openapsama_boost_max_iob_title">UAM Boost max IOB</string>
+    <string name="openapsama_boost_max_iob_summary">Default value: 0.1\nThis is the max IOB allowed for boost and accelerated bolusing to be allowed.</string>
+    <string name="key_openapsama_boost_start" translatable="false">UAM Boost start time</string>
+    <string name="openapsama_boost_start_summary">Default value: 7\nThis is the start time for the period in which boost is active.</string>
+    <string name="openapsama_boost_start_title">UAM Boost start time</string>
+    <string name="key_openapsama_boost_end" translatable="false">UAM Boost end time</string>
+    <string name="openapsama_boost_end_summary">Default value: 8\nThis is the end time for the period in which boost is active.</string>
+    <string name="openapsama_boost_end_title">UAM Boost end time</string>
+
     <string name="key_openapsama_autoisf_hourlychange" translatable="false">autoisf_hourlychange</string>
     <string name="openapsama_autoisf_hourlychange_summary">Default value: 0.2\nThis is the rate at which autoISF grows per hour assuming bg is twice the target. With a value of 1.0 it will have reduced ISF to 50% after 1 hour of bg at twice the target.\nWith 0.0 the effect of autoISF is effectively disabled.</string>
     <string name="key_openapsama_autosens_adjusttargets" translatable="false">autosens_adjust_targets</string>
@@ -565,6 +610,8 @@
     <string name="ns_localbroadcasts_title">Enable local Broadcasts.</string>
     <string name="careportal_newnstreatment_duration_min_label">Duration [min]</string>
     <string name="openapssmb">OpenAPS SMB</string>
+    <string name="AIMI">AIMI</string>
+    <string name="Boost">Boost</string>
     <string name="key_use_smb" translatable="false">use_smb</string>
     <string name="key_use_uam" translatable="false">use_uam</string>
     <string name="key_smb_enable_carbs_suggestions_threshold" translatable="false">smb_enable_carbs_suggestions_threshold</string>
@@ -818,6 +865,9 @@
     <string name="key_openapssmb_max_iob" translatable="false">openapsmb_max_iob</string>
     <string name="openapssmb_maxiob_title">Maximum total IOB OpenAPS can\'t go over [U]</string>
     <string name="openapssmb_maxiob_summary">This value is called Max IOB in OpenAPS context\nOpenAPS will not add more insulin if current IOB is greater than this value</string>
+    <string name="key_boost_max_iob" translatable="false">openapsmb_max_iob</string>
+    <string name="boost_maxiob_title">Maximum total IOB OpenAPS can\'t go over [U]</string>
+    <string name="boost_maxiob_summary">This value is called Max IOB in OpenAPS context\nOpenAPS will not add more insulin if current IOB is greater than this value</string>
     <string name="pump_stopped">Pump stopped</string>
     <string name="pump_started">Pump started</string>
     <string name="pump_paused">Pump paused</string>
@@ -852,6 +902,15 @@
     <string name="openapsama_autosens_max">Max autosens ratio</string>
     <string name="openapsama_autosens_min">Min autosens ratio</string>
     <string name="openapsama_autoisf_max">Max autoisf ratio</string>
+    <string name="openapsama_AIMI_max_iob">Max IOB allowed from accelerated bolusing</string>
+    <string name="openapsama_AIMI_bolus">AIMI bolus in iu</string>
+    <string name="openapsama_AIMI_start">AIMI start time in hours</string>
+    <string name="openapsama_AIMI_end">AIMI end time</string>
+    <string name="openapsama_boost_max_iob">Max IOB allowed from accelerated bolusing</string>
+    <string name="openapsama_boost_bolus">Boost bolus in iu</string>
+    <string name="openapsama_boost_start">Boost start time in hours</string>
+    <string name="openapsama_boost_end">Boost end time</string>
+    <string name="openapsama_high_divisor">Divisor for reducing high correction insulin required</string>
     <string name="openapsama_autoisf_hourlychange">autoisf hourly increment</string>
     <string name="openapsama_bolussnooze_dia_divisor">Bolus snooze dia divisor</string>
     <string name="openapsama_max_daily_safety_multiplier">Max daily safety multiplier</string>
@@ -1388,22 +1447,23 @@
     <string name="timetoeat">Time to eat</string>
     <string name="fabric_upload_disabled">Crash logs upload disabled!</string>
     <string name="graph_menu_divider_header">Graph</string>
+    <string name="key_UAM_InsulinReq" translatable="false">UAM_InsulinReq</string>
+    <string name="UAM_InsulinReq_title">insulinReq delivery percentage [%]</string>
+    <string name="UAM_InsulinReq_summary">Reduces the calculated required SMB size to the specified percentage. Example: If calculated insulin required is 1 U and fraction size is 50%, 0.5 U will be delivered.</string>
+    <string name="disable_Libre_smb_restrictions">Filtering active for every sensor, Go SMB!</string>
+    <string name="iTime">iTime</string>
+    <string name="key_iTime" translatable="false">iTime</string>
+    <string name="iTime_title">iTime</string>
+    <string name="iTime_summary">iTime is the duration in minutes of the meal who authorize larger SMB. This variable was created to let child/teenager adapt this value</string>
+    <string name="key_iTime_MaxBolus_minutes" translatable="false">iTime_MaxBolus_minutes</string>
+    <string name="iTime_MaxBolus_minutes_title">iTime_MaxBolus_minutes</string>
+    <string name="iTime_MaxBolus_minutes_summary">iTime give a duration of the meal who allow larger smb and maxbolus. this variable give the higher maxbolus (basal * iTime_MaxBolus_minutes / 60)</string>
+
+    <!-- Eating Now-->
+    <string name="EN">Eating Now</string>
+    <string name="EN_shortname">EN</string>
+    <string name="pref_en">EN</string>
     <string name="key_use_ghostcob" translatable="false">key_use_ghostcob</string>
-    <string name="key_eatingsoon_small_target">key_eatingsoon_small_target</string>
-    <string name="key_eatingsoon_small_prebolus">key_eatingsoon_small_prebolus</string>
-    <string name="key_eatingsoon_medium_prebolus">key_eatingsoon_medium_prebolus</string>
-    <string name="key_eatingsoon_medium_target">key_eatingsoon_medium_target</string>
-    <string name="key_eatingsoon_large_prebolus">key_eatingsoon_large_prebolus</string>
-    <string name="key_eatingsoon_large_target">key_eatingsoon_large_target</string>
-    <string name="eatingsoon_small">Small</string>
-    <string name="eatingsoon_small_prebolus">eatingsoon small prebolus</string>
-    <string name="eatingsoon_small_target">eatingsoon small target</string>
-    <string name="eatingsoon_medium">Medium</string>
-    <string name="eatingsoon_medium_prebolus">eatingsoon medium prebolus</string>
-    <string name="eatingsoon_medium_target">eatingsoon medium target</string>
-    <string name="eatingsoon_large">Large</string>
-    <string name="eatingsoon_large_prebolus">eatingsoon large prebolus</string>
-    <string name="eatingsoon_large_target">eatingsoon large target</string>
     <string name="key_use_eatingnow">key_use_eatingnow</string>
     <string name="key_eatingnow_iob">key_eatingnow_iob</string>
     <string name="key_eatingnow_insulinreq">key_eatingnow_insulinreq</string>

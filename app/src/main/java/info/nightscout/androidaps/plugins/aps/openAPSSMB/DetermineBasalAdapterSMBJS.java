@@ -25,10 +25,8 @@ import info.nightscout.androidaps.R;
 import info.nightscout.androidaps.data.IobTotal;
 import info.nightscout.androidaps.data.MealData;
 import info.nightscout.androidaps.data.Profile;
-import info.nightscout.androidaps.db.TempTarget;
 import info.nightscout.androidaps.db.TemporaryBasal;
 import info.nightscout.androidaps.interfaces.ActivePluginProvider;
-import info.nightscout.androidaps.interfaces.InsulinInterface;
 import info.nightscout.androidaps.interfaces.ProfileFunction;
 import info.nightscout.androidaps.interfaces.PumpInterface;
 import info.nightscout.androidaps.logging.AAPSLogger;
@@ -234,39 +232,27 @@ public class DetermineBasalAdapterSMBJS {
                         boolean isSaveCgmSource
     ) throws JSONException {
 
-        advancedFiltering = true; //MD **** FOR DEV HANDSET ONLY ****
-
         PumpInterface pump = activePluginProvider.getActivePump();
         Double pumpbolusstep = pump.getPumpDescription().bolusStep;
-
-        InsulinInterface insulinInterface = activePluginProvider.getActiveInsulin();
-        int insulinPT = insulinInterface.getPeak();
-
         mProfile = new JSONObject();
+
         mProfile.put("max_iob", maxIob);
         //mProfile.put("dia", profile.getDia());
-        mProfile.put("percentage", profile.getPercentage());
         mProfile.put("type", "current");
         mProfile.put("max_daily_basal", profile.getMaxDailyBasal());
         mProfile.put("max_basal", maxBasal);
-        mProfile.put("min_bg", Math.round(minBg));
-        mProfile.put("max_bg", Math.round(maxBg));
-        mProfile.put("target_bg", Math.round(targetBg));
-//        double normal_target_bg = profile.getTargetMgdl(Profile.secondsFromMidnight(mCurrentTime));
-        double normal_target_bg = profile.getTargetMgdl();
-        mProfile.put("normal_target_bg",Math.round(normal_target_bg));
-
+        mProfile.put("min_bg", minBg);
+        mProfile.put("max_bg", maxBg);
+        mProfile.put("target_bg", targetBg);
         mProfile.put("carb_ratio", profile.getIc());
         mProfile.put("sens", profile.getIsfMgdl());
         mProfile.put("max_daily_safety_multiplier", sp.getInt(R.string.key_openapsama_max_daily_safety_multiplier, 3));
         mProfile.put("current_basal_safety_multiplier", sp.getDouble(R.string.key_openapsama_current_basal_safety_multiplier, 4d));
 
         //mProfile.put("high_temptarget_raises_sensitivity", SP.getBoolean(R.string.key_high_temptarget_raises_sensitivity, SMBDefaults.high_temptarget_raises_sensitivity));
-        mProfile.put("high_temptarget_raises_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_high_temptarget_raises_sensitivity),SMBDefaults.high_temptarget_raises_sensitivity));
-        //mProfile.put("high_temptarget_raises_sensitivity", false);
-        mProfile.put("low_temptarget_lowers_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_low_temptarget_lowers_sensitivity),SMBDefaults.low_temptarget_lowers_sensitivity));
+        mProfile.put("high_temptarget_raises_sensitivity", false);
         //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, SMBDefaults.low_temptarget_lowers_sensitivity));
-        //mProfile.put("low_temptarget_lowers_sensitivity", false);
+        mProfile.put("low_temptarget_lowers_sensitivity", false);
 
 
         mProfile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, SMBDefaults.sensitivity_raises_target));
@@ -298,48 +284,10 @@ public class DetermineBasalAdapterSMBJS {
         //set the min SMB amount to be the amount set by the pump.
         mProfile.put("bolus_increment", pumpbolusstep);
         mProfile.put("carbsReqThreshold", sp.getInt(R.string.key_carbsReqThreshold, SMBDefaults.carbsReqThreshold));
-        mProfile.put("insulinPeakTime", insulinPT);
+
         mProfile.put("current_basal", basalrate);
         mProfile.put("temptargetSet", tempTargetSet);
         mProfile.put("autosens_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_max, "1.2")));
-        // mod 7e: can I add use autoisf here?
-        mProfile.put("use_autoisf", sp.getBoolean(R.string.key_openapsama_useautoisf, false));
-        // mod 7d: can I add autosens_min here?
-        mProfile.put("autoisf_max",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autoisf_max, "1.2")));
-        mProfile.put("autoisf_hourlychange",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autoisf_hourlychange, "0.2")));
-
-        //MD: TempTarget Info ==== START
-        TempTarget tempTarget = treatmentsPlugin.getTempTargetFromHistory(System.currentTimeMillis());
-
-        if (tempTarget != null) {
-            mProfile.put("temptarget_duration", tempTarget.durationInMinutes);
-            mProfile.put("temptarget_minutesrunning", tempTarget.getRealTTDuration());
-        }
-        //MD: TempTarget Info ==== END
-
-        // patches ==== START
-        mProfile.put("enableGhostCOB", sp.getBoolean(R.string.key_use_ghostcob, false));
-        mProfile.put("enableEatingNow", sp.getBoolean(R.string.key_use_eatingnow, false));
-        mProfile.put("EatingNowIOB", sp.getDouble(R.string.key_eatingnow_iob, 5));
-//        mProfile.put("EatingNowBGBoostBG", sp.getDouble(R.string.key_eatingnow_bgboostbg, 0));
-//        mProfile.put("EatingNowBGBoostBolus", sp.getDouble(R.string.key_eatingnow_bgboostbolus, 0) * profile.getPercentage()/100);
-//        mProfile.put("EatingNowBGBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_bgboostmaxsmb, 0.1) * profile.getPercentage() / 100);
-
-        //set UAMBoost Max SMB based upon TT
-        if (tempTarget != null && Math.round(targetBg) < Math.round(normal_target_bg)) {
-            mProfile.put("EatingNowUAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus_tt, 0) * profile.getPercentage()/100);
-            mProfile.put("EatingNowUAMBoostMaxSMB", sp.getInt(R.string.key_eatingnow_uamboostmaxsmb_tt, 0));
-        } else {
-            mProfile.put("EatingNowUAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus, 0) * profile.getPercentage()/100);
-            mProfile.put("EatingNowUAMBoostMaxSMB", sp.getInt(R.string.key_eatingnow_uamboostmaxsmb, 0));
-        }
-        mProfile.put("EatingNowISFBoost", sp.getDouble(R.string.key_eatingnow_isfboost, 1));
-        mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3) * profile.getPercentage()/100);
-        mProfile.put("EatingNowTimeStart", sp.getDouble(R.string.key_eatingnow_timestart, 9));
-        mProfile.put("EatingNowTimeEnd", sp.getDouble(R.string.key_eatingnow_timeend, 17));
-        // patches ==== END
-
-
 
         if (profileFunction.getUnits().equals(Constants.MMOL)) {
             mProfile.put("out_units", "mmol/L");
@@ -374,9 +322,7 @@ public class DetermineBasalAdapterSMBJS {
         mGlucoseStatus.put("short_avgdelta", glucoseStatus.short_avgdelta);
         mGlucoseStatus.put("long_avgdelta", glucoseStatus.long_avgdelta);
         mGlucoseStatus.put("date", glucoseStatus.date);
-        // mod 7: append 2 variables for 5% range
-        mGlucoseStatus.put("autoISF_duration", glucoseStatus.autoISF_duration);
-        mGlucoseStatus.put("autoISF_average", glucoseStatus.autoISF_average);
+
         mMealData = new JSONObject();
         mMealData.put("carbs", mealData.carbs);
         mMealData.put("boluses", mealData.boluses);
