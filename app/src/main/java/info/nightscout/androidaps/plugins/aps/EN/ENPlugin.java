@@ -245,7 +245,7 @@ public class ENPlugin extends PluginBase implements APSInterface, ConstraintsInt
             lastAutosensResult.sensResult = "autosens disabled";
         }
 
-        IobTotal[] iobArray = iobCobCalculatorPlugin.calculateIobArrayForSMB(lastAutosensResult, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.exercise_mode, info.nightscout.androidaps.plugins.aps.EN.AIMIDefaults.half_basal_exercise_target, isTempTarget);
+        IobTotal[] iobArray = iobCobCalculatorPlugin.calculateIobArrayForSMB(lastAutosensResult, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.exercise_mode, info.nightscout.androidaps.plugins.aps.EN.ENDefaults.half_basal_exercise_target, isTempTarget);
         profiler.log(LTag.APS, "calculateIobArrayInDia()", startPart);
 
         startPart = System.currentTimeMillis();
