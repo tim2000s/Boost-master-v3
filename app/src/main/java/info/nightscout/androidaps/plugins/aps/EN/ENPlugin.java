@@ -91,7 +91,7 @@ public class ENPlugin extends PluginBase implements APSInterface, ConstraintsInt
                         .pluginIcon(R.drawable.ic_generic_icon)
                         .pluginName(R.string.EN)
                         .shortName(R.string.EN_shortname)
-                        .preferencesId(R.xml.pref_en)
+                        .preferencesId(R.xml.pref_eatingnow)
                         .description(R.string.description_EN)
                         .setDefault(),
                 aapsLogger, resourceHelper, injector
