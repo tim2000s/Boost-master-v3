@@ -352,8 +352,6 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3) * profile.getPercentage()/100);
         mProfile.put("EatingNowTimeStart", sp.getDouble(R.string.key_eatingnow_timestart, 9));
         mProfile.put("EatingNowTimeEnd", sp.getDouble(R.string.key_eatingnow_timeend, 17));
-        mProfile.put("TDD",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_TDD, "5.0")));
-        mProfile.put("EatingNowinsulinReqPct",SafeParse.stringToDouble(sp.getString(R.string.key_eatingnow_insulinreqpct,"65")));
         // patches ==== END
 
 
@@ -402,12 +400,6 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation);
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
-
-        tddAIMI = new TddCalculator(hasAndroidInjector,aapsLogger,rxBusWrapper,resourceHelper,mainApp,sp,activePluginProvider,profileFunction,fabricPrivacy,nsUpload,dateUtil,uploadQueue);
-        mMealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).total);
-        mMealData.put("TDDAIMI1",tddAIMI.averageTDD(tddAIMI.calculate(1)).total);
-        mMealData.put("TDDPUMP",tddAIMI.calculateDaily().total);
-
 
 
         if (constraintChecker.isAutosensModeEnabled().value()) {

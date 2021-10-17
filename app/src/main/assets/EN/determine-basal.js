@@ -1304,7 +1304,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoost = round(1+UAM_deltaShortRise,2); //try this without long avg
                 rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + (profile.temptargetSet ? "(" + (profile.temptarget_minutesrunning) + ")" : "") + ":";
                 // EN insulinReqPct is at least 80%
-                var ENinsulinReqPct = (100/profile.EatingNowinsulinReqPct);
+                var ENinsulinReqPct = (profile.EatingNowinsulinReqPct/100);
             }
             //console.log("UAM_safedelta: " +UAM_safedelta);
             //console.log("UAM_deltaShortRise: " + UAM_deltaShortRise);
