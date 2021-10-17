@@ -1328,7 +1328,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // apply any resistance
                 UAMBoost_bolus *= (liftISF > 1 ? liftISF : 1);
                 // apply any autosens
-                UAMBoost_bolus *= (typeof autosens_data !== 'undefined' && autosens_data ? autosens_data.ratio : 1);
+                // UAMBoost_bolus *= (typeof autosens_data !== 'undefined' && autosens_data ? autosens_data.ratio : 1);
 
                 // ============== UAMBOOST ==============
                 // Sensitive threshold is low normal is high
