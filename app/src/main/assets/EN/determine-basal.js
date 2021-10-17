@@ -103,7 +103,7 @@ function enable_smb(
     }
 
     // enable SMB/UAM (if enabled in preferences) if a low temptarget is set
-    if (profile.enableSMB_with_temptarget === true && (profile.temptargetSet && target_bg < 100)) {
+    if (profile.enableSMB_with_temptarget === true && (profile.temptargetSet && target_bg < profile.normal_target_bg)) {
         if (meal_data.bwFound) {
             console.error("Warning: SMB enabled within 6h of using Bolus Wizard: be sure to easy bolus 30s before using Bolus Wizard");
         } else {
