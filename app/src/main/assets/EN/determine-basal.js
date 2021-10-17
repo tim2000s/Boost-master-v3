@@ -410,6 +410,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // **********************************************************************************************
 
     var ISFBoost = 1; // default is no ISFBoost
+    var csf = profile.sens / profile.carb_ratio; // DO WE NEED THIS?
+
 //    if (eatingnow) {
         ISFBoost = (variable_sens/sens);
         //if (eatingnow && glucose_status.delta >=8 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
@@ -427,7 +429,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
 
-        var csf = profile.sens / profile.carb_ratio ;
 
         sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
         //Target adjustment with HypoPredBG - TS
