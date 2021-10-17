@@ -410,7 +410,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // **********************************************************************************************
 
     var ISFBoost = 1; // default is no ISFBoost
-    var csf = profile.sens / profile.carb_ratio; // DO WE NEED THIS?
 
     if (eatingnow) {
         ISFBoost = (variable_sens/sens);
@@ -429,6 +428,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
 
+        var csf = profile.sens / profile.carb_ratio; // DO WE NEED THIS?
 
         sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
         //Target adjustment with HypoPredBG - TS
@@ -656,7 +656,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // use autosens-adjusted sens to counteract autosens meal insulin dosing adjustments so that
     // autotuned CR is still in effect even when basals and ISF are being adjusted by TT or autosens
     // this avoids overdosing insulin for large meals when low temp targets are active
-    csf = sens / profile.carb_ratio;
+    var csf = sens / profile.carb_ratio;
     console.error("profile.sens:",profile.sens,"sens:",sens,"CSF:",csf);
 
     var maxCarbAbsorptionRate = 30; // g/h; maximum rate to assume carbs will absorb if no CI observed
