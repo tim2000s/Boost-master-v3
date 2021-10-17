@@ -411,7 +411,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     var ISFBoost = 1; // default is no ISFBoost
 
-    if (eatingnow) {
+//    if (eatingnow) {
         ISFBoost = (variable_sens/sens);
         //if (eatingnow && glucose_status.delta >=8 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
         sens = variable_sens;
@@ -473,7 +473,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("Basal unchanged: "+basal+"; ");
             }
         }
-    }
+//    }
         // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
         var lastTempAge;
         if (typeof iob_data.lastTemp !== 'undefined' ) {
@@ -656,7 +656,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // use autosens-adjusted sens to counteract autosens meal insulin dosing adjustments so that
     // autotuned CR is still in effect even when basals and ISF are being adjusted by TT or autosens
     // this avoids overdosing insulin for large meals when low temp targets are active
-    var csf = sens / profile.carb_ratio;
+    csf = sens / profile.carb_ratio;
     console.error("profile.sens:",profile.sens,"sens:",sens,"CSF:",csf);
 
     var maxCarbAbsorptionRate = 30; // g/h; maximum rate to assume carbs will absorb if no CI observed
