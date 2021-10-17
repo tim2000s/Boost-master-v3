@@ -326,7 +326,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (profile.enableUAM && ignoreCOBPatch && eatingnowMaxIOBOK) {
         // enable eatingnow if no TT and within safe hours
         if (!profile.temptargetSet && eatingnowtimeOK) eatingnow = true;
-
+        // If there are COB enable eating now
+        if (meal_data.mealCOB >0) eatingnow = true;
         // Force eatingnow mode by setting a temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
         if (profile.temptargetSet) {  // tt duration prevents immediate SMB
             // normal target or less enables eating now
@@ -409,7 +410,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // **********************************************************************************************
 
     var ISFBoost = 1; // default is no ISFBoost
-    if (eatingnowtimeOK) {
+    if (eatingnow) {
         ISFBoost = (variable_sens/sens);
         //if (eatingnow && glucose_status.delta >=8 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
         sens = variable_sens;
