@@ -383,6 +383,9 @@ public class DetermineBasalAdapterAIMIJS {
         mMealData.put("StatLow7",StatTIR.averageTIR(StatTIR.calculate(7,70,180)).belowPct());
         mMealData.put("StatInRange7",StatTIR.averageTIR(StatTIR.calculate(7,70,180)).inRangePct());
         mMealData.put("StatAbove7",StatTIR.averageTIR(StatTIR.calculate(7,70,180)).abovePct());
+        mMealData.put("currentTIRLow",StatTIR.averageTIR(StatTIR.calculateDaily(70,180)).belowPct());
+        mMealData.put("currentTIRRange",StatTIR.averageTIR(StatTIR.calculateDaily(70,180)).inRangePct());
+        mMealData.put("currentTIRAbove",StatTIR.averageTIR(StatTIR.calculateDaily(70,180)).abovePct());
 
 
         if (constraintChecker.isAutosensModeEnabled().value()) {
