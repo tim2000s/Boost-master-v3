@@ -455,6 +455,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             } else {
                 console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+"; ");
             }
+
             target_bg = hypo_target;
             halfBasalTarget = 160;
             var c = halfBasalTarget - normalTarget;
