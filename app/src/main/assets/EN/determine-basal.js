@@ -1003,7 +1003,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
     rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + "/" + glucose_status.long_avgdelta + ", ISF: " + convert_bg(sens, profile) + (ISFBoost <1 ? "(" + round(ISFBoost*100,0) + "%)" : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
-    rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     if (liftISF > 1) rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     if (lastCOBpredBG > 0) {
         rT.reason += ", COBpredBG " + convert_bg(lastCOBpredBG, profile);
@@ -1011,6 +1010,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (lastUAMpredBG > 0) {
         rT.reason += ", UAMpredBG " + convert_bg(lastUAMpredBG, profile); //MD Missing ;
     }
+    rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     rT.reason += ", TDD: " + round(TDD, 2);
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
