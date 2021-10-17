@@ -412,7 +412,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var ISFBoost = 1; // default is no ISFBoost
     var csf = profile.sens / profile.carb_ratio; // DO WE NEED THIS?
 
-//    if (eatingnow) {
+    if (eatingnow) {
         ISFBoost = (variable_sens/sens);
         //if (eatingnow && glucose_status.delta >=8 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
         sens = variable_sens;
@@ -473,7 +473,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("Basal unchanged: "+basal+"; ");
             }
         }
-//    }
+    }
         // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
         var lastTempAge;
         if (typeof iob_data.lastTemp !== 'undefined' ) {
@@ -758,10 +758,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var insulinPeakTime = profile.insulinPeakTime;
     // add 30m to allow for insulin delivery (SMBs or temps)
     var insulinPeak5m = (insulinPeakTime/60)*12;
-
-    var predBGslengthDefault = Math.max(round((2*insulinPeak5m)+3),35); // minimum of 2h 30 mins
-    var predBGslength = predBGslengthDefault; // Set prediction length to default
-
     try {
         iobArray.forEach(function(iobTick) {
             //console.error(iobTick);
@@ -803,11 +799,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             UAMpredBG = UAMpredBGs[UAMpredBGs.length-1] + predBGI + Math.min(0, predDev) + predUCI;
             //console.error(predBGI, predCI, predUCI);
-            if ( IOBpredBGs.length <= predBGslength) { IOBpredBGs.push(IOBpredBG); }
-            if ( COBpredBGs.length <= predBGslength) { COBpredBGs.push(COBpredBG); }
-            if ( aCOBpredBGs.length <= predBGslength) { aCOBpredBGs.push(aCOBpredBG); }
-            if ( UAMpredBGs.length <= predBGslength) { UAMpredBGs.push(UAMpredBG); }
-            if ( ZTpredBGs.length <= predBGslength) { ZTpredBGs.push(ZTpredBG); }
+            if ( IOBpredBGs.length < 42) { IOBpredBGs.push(IOBpredBG); }
+            if ( COBpredBGs.length < 42) { COBpredBGs.push(COBpredBG); }
+            if ( aCOBpredBGs.length < 42) { aCOBpredBGs.push(aCOBpredBG); }
+            if ( UAMpredBGs.length < 42) { UAMpredBGs.push(UAMpredBG); }
+            if ( ZTpredBGs.length < 42) { ZTpredBGs.push(ZTpredBG); }
             // calculate minGuardBGs without a wait from COB, UAM, IOB predBGs
             if ( COBpredBG < minCOBGuardBG ) { minCOBGuardBG = round(COBpredBG); }
             if ( UAMpredBG < minUAMGuardBG ) { minUAMGuardBG = round(UAMpredBG); }
@@ -989,7 +985,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // make sure minPredBG isn't higher than avgPredBG
     minPredBG = Math.min( minPredBG, avgPredBG );
-    console.log("predBGslength: "+predBGslength + " ");
     console.log("minPredBG: "+minPredBG+" minIOBPredBG: "+minIOBPredBG+" minZTGuardBG: "+minZTGuardBG);
     if (minCOBPredBG < 999) {
         console.log(" minCOBPredBG: "+minCOBPredBG);
@@ -1015,7 +1010,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (lastUAMpredBG > 0) {
         rT.reason += ", UAMpredBG " + convert_bg(lastUAMpredBG, profile); //MD Missing ;
     }
-    // rT.reason +=", predBGslength: " + predBGslength;
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
     var carbsReqBG = naive_eventualBG;
