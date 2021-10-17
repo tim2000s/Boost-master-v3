@@ -410,7 +410,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // **********************************************************************************************
 
     var ISFBoost = 1; // default is no ISFBoost
-    if (eatingnow) {
+//    if (eatingnow) {
         ISFBoost = (variable_sens/sens);
         //if (eatingnow && glucose_status.delta >=8 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
         sens = variable_sens;
@@ -436,6 +436,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var REBG = EBG / min_bg;
         console.log("Experimental test, EBG : "+EBG+" REBG : "+REBG+" ; ");
         console.log ("HypoPredBG = "+HypoPredBG+"; ");
+
         if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target ) {//&& glucose_status.delta <= 0
            /*var hypo_target = round ((target_bg - 60) * profile.autosens_max) + 60;
            if (glucose_status.delta < 0){
@@ -471,7 +472,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("Basal unchanged: "+basal+"; ");
             }
         }
-    }
+//    }
         // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
         var lastTempAge;
         if (typeof iob_data.lastTemp !== 'undefined' ) {
