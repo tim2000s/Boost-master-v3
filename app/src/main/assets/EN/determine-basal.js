@@ -367,7 +367,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //console.error("CR:", );
 
     var ISFBoost = 1; // default is no ISFBoost
-    if (eatingnow) {
+    if (eatingnowtimeOK) {
         //MT : TWTT
         /*var tdd7 = meal_data.TDDAIMI7;
         if (tdd7 < 20){
