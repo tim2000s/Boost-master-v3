@@ -375,31 +375,31 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     /* ************************
        ** TS AutoTDD code    **
        ************************ */
-    var now = new Date().getHours();
-        if (now < 1){
-            now = 1;}
-        else {
-            console.error("Time now is "+now+"; ");
-        }
-        var tdd7 = meal_data.TDDAIMI7;
-        var tdd_pump_now = meal_data.TDDPUMP;
-        var tdd_pump = ( tdd_pump_now / (now / 24));
-        var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
-        console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
-        if (tdd_pump < (0.5 * tdd7)){
-            TDD = (tdd7 * 0.2) + (tdd_pump * 0.8);
-            console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
-        }
-        else{
-            console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
-        }
+    // var now = new Date().getHours();
+    if (now < 1){
+        now = 1;}
+    else {
+        console.error("Time now is "+now+"; ");
+    }
+    var tdd7 = meal_data.TDDAIMI7;
+    var tdd_pump_now = meal_data.TDDPUMP;
+    var tdd_pump = ( tdd_pump_now / (now / 24));
+    var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
+    console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
+    if (tdd_pump < (0.5 * tdd7)){
+        TDD = (tdd7 * 0.2) + (tdd_pump * 0.8);
+        console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
+    }
+    else{
+        console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
+    }
 
     var variable_sens = (277700 / (TDD * bg));
     variable_sens = round(variable_sens,1);
     //var TDDnow = meal_data.TDDAIMI1;
     console.log("Current sensitivity is " +variable_sens+" based on current bg");
 
-/* var profile_sens = round(profile.sens,1);
+    /* var profile_sens = round(profile.sens,1);
      var TDD = profile.TDD;
      var variable_sens = (277700 / (TDD * bg));
      var variable_sens = round(variable_sens,1);
@@ -413,70 +413,65 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         ISFBoost = (variable_sens/sens);
         //if (eatingnow && glucose_status.delta >=8 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
         sens = variable_sens;
-    }
 
-    //var eRatio = round((bg/0.16)/sens,2);
-    var eRatio = round(sens / 13.2);
-    console.error("CR:",eRatio);
-    //var iob_scale = (profile.W2_IOB_threshold/100) * max_iob;
-    var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-    var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-    var HyperPredBGTest = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-    var HyperPredBGTest2 = round( bg - (iob_data.iob * sens) ) + round( 180 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-    var HyperPredBGTest3 = round( bg - (iob_data.iob * sens) ) + round( 120 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-    var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
-    var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
+        //var eRatio = round((bg/0.16)/sens,2);
+        var eRatio = round(sens / 13.2);
+        console.error("CR:",eRatio);
+        //var iob_scale = (profile.W2_IOB_threshold/100) * max_iob;
+        var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+        var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+        var HyperPredBGTest = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+        var HyperPredBGTest2 = round( bg - (iob_data.iob * sens) ) + round( 180 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+        var HyperPredBGTest3 = round( bg - (iob_data.iob * sens) ) + round( 120 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+        var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
+        var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
 
-    var csf = profile.sens / profile.carb_ratio ;
-
-    var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+        var csf = profile.sens / profile.carb_ratio ;
 
         sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
-        // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
         //Target adjustment with HypoPredBG - TS
 
         var EBG = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg;
         var REBG = EBG / min_bg;
         console.log("Experimental test, EBG : "+EBG+" REBG : "+REBG+" ; ");
         console.log ("HypoPredBG = "+HypoPredBG+"; ");
-               if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target ){//&& glucose_status.delta <= 0
-               /*var hypo_target = round ((target_bg - 60) * profile.autosens_max) + 60;
-               if (glucose_status.delta < 0){
-               hypo_target = hypo_target + 10;
-               }
-               hypo_target = Math.min ( 130, hypo_target);
-               if (now <= MealTimeStart && now >= MealTimeEnd){
-               hypo_target = Math.min(100,hypo_target);
-               }*/
-               var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
-                   if (hypo_target <= 90) {
-                    hypo_target += 10;
-                    console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+"; ");
-                    }
-
-                   else if (target_bg === hypo_target){
-                   console.log("target_bg unchanged: "+hypo_target+"; ");
-                   }else{
-                   console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+"; ");
-                   }
-                   target_bg = hypo_target;
-                   halfBasalTarget = 160;
-                                  var c = halfBasalTarget - normalTarget;
-                                  //sensitivityRatio = c/(c+target_bg-normalTarget);
-                                  sensitivityRatio = REBG;
-                               // limit sensitivityRatio to profile.autosens_max (1.2x by default)
-                                  sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
-                                  sensitivityRatio = round(sensitivityRatio,2);
-                                  console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
-                                  basal = profile.current_basal * sensitivityRatio;
-                                  basal = round_basal(basal, profile);
-                                  if (basal !== profile_current_basal) {
-                                       console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
-                                  } else {
-                                       console.log("Basal unchanged: "+basal+"; ");
-                                  }
-               }
-
+        if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target ) {//&& glucose_status.delta <= 0
+           /*var hypo_target = round ((target_bg - 60) * profile.autosens_max) + 60;
+           if (glucose_status.delta < 0){
+           hypo_target = hypo_target + 10;
+           }
+           hypo_target = Math.min ( 130, hypo_target);
+           if (now <= MealTimeStart && now >= MealTimeEnd){
+           hypo_target = Math.min(100,hypo_target);
+           }*/
+            var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
+            if (hypo_target <= 90) {
+                hypo_target += 10;
+                console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+"; ");
+            } else if (target_bg === hypo_target) {
+                console.log("target_bg unchanged: "+hypo_target+"; ");
+            } else {
+                console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+"; ");
+            }
+            target_bg = hypo_target;
+            halfBasalTarget = 160;
+            var c = halfBasalTarget - normalTarget;
+            //sensitivityRatio = c/(c+target_bg-normalTarget);
+            sensitivityRatio = REBG;
+            // limit sensitivityRatio to profile.autosens_max (1.2x by default)
+            sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+            sensitivityRatio = round(sensitivityRatio,2);
+            console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
+            basal = profile.current_basal * sensitivityRatio;
+            basal = round_basal(basal, profile);
+            if (basal !== profile_current_basal) {
+                console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
+            } else {
+                console.log("Basal unchanged: "+basal+"; ");
+            }
+        }
+    }
+        // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
         var lastTempAge;
         if (typeof iob_data.lastTemp !== 'undefined' ) {
             lastTempAge = round(( new Date(systemTime).getTime() - iob_data.lastTemp.date ) / 60000); // in minutes
