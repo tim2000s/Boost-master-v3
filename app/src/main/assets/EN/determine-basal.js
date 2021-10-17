@@ -276,25 +276,25 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
     }
 
-    // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
-    if (profile.temptargetSet) {
-        //console.log("Temp Target set, not adjusting with autosens; ");
-    } else if (typeof autosens_data !== 'undefined' && autosens_data) {
-        if ( profile.sensitivity_raises_target && autosens_data.ratio < 1 || profile.resistance_lowers_target && autosens_data.ratio > 1 ) {
-            // with a target of 100, default 0.7-1.2 autosens min/max range would allow a 93-117 target range
-            min_bg = round((min_bg - 60) / autosens_data.ratio) + 60;
-            max_bg = round((max_bg - 60) / autosens_data.ratio) + 60;
-            var new_target_bg = round((target_bg - 60) / autosens_data.ratio) + 60;
-            // don't allow target_bg below 80
-            new_target_bg = Math.max(80, new_target_bg);
-            if (target_bg === new_target_bg) {
-                console.log("target_bg unchanged: "+new_target_bg+"; ");
-            } else {
-                console.log("target_bg from "+target_bg+" to "+new_target_bg+"; ");
-            }
-            target_bg = new_target_bg;
-        }
-    }
+//    // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
+//    if (profile.temptargetSet) {
+//        //console.log("Temp Target set, not adjusting with autosens; ");
+//    } else if (typeof autosens_data !== 'undefined' && autosens_data) {
+//        if ( profile.sensitivity_raises_target && autosens_data.ratio < 1 || profile.resistance_lowers_target && autosens_data.ratio > 1 ) {
+//            // with a target of 100, default 0.7-1.2 autosens min/max range would allow a 93-117 target range
+//            min_bg = round((min_bg - 60) / autosens_data.ratio) + 60;
+//            max_bg = round((max_bg - 60) / autosens_data.ratio) + 60;
+//            var new_target_bg = round((target_bg - 60) / autosens_data.ratio) + 60;
+//            // don't allow target_bg below 80
+//            new_target_bg = Math.max(80, new_target_bg);
+//            if (target_bg === new_target_bg) {
+//                console.log("target_bg unchanged: "+new_target_bg+"; ");
+//            } else {
+//                console.log("target_bg from "+target_bg+" to "+new_target_bg+"; ");
+//            }
+//            target_bg = new_target_bg;
+//        }
+//    }
 
     if (typeof iob_data === 'undefined' ) {
         rT.error ='Error: iob_data undefined. ';
