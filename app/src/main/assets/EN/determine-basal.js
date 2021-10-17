@@ -330,12 +330,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // Force eatingnow mode by setting a temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
         if (profile.temptargetSet) {  // tt duration prevents immediate SMB
             // normal target or less enables eating now
-            if (target_bg <= profile.normal_target_bg + 1) eatingnow = true;
-            // high target disables eating now
-            if (target_bg > profile.normal_target_bg + 1) eatingnow = false;
-         }
-        // disable eating now when there are COB, only works with GhostCOB
-        // if (meal_data.mealCOB > 0) eatingnow = false;
+            if (target_bg <= profile.normal_target_bg + 1) {
+                eatingnow = true;
+            } else {
+                eatingnow = false; // any other target disables eating now
+            }
+        }
     }
     // patches ===== END
 
@@ -393,7 +393,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         else{
             console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
         }
-
 
     var variable_sens = (277700 / (TDD * bg));
     variable_sens = round(variable_sens,1);
