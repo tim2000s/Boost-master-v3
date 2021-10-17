@@ -294,10 +294,18 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
         var statTirBelow = meal_data.StatLow7;
         var statinrange = meal_data.StatInRange7;
-        if (statinrange <= 95 && statTirBelow >= 4){
+        var currentTIRLow = meal_data.currentTIRLow;
+        var CurrentTIRinRange = meal_data.currentTIRRange;
+        var CurrentTIRAbove = meal_data.currentTIRAbove;
+        var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
+        if (statinrange <= 95 && statTirBelow >= 4 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >= 4){
         TDD*=0.7;
-        console.log("TDD new value because TIR show hypo on the last 7 days :"+TDD);
+        console.log("TDD new value because TIR show hypo during the last 7 days and  the curent day too :"+TDD);
+        }else if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95){
+        TDD*=1.2;
+        console.log("TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% :"+TDD);
         }
+
 
         //console.log("stat Tir : "+StatLow7);
     var variable_sens = (277700 / (TDD * bg));
@@ -319,11 +327,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
     var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
     //var iTime = round(( meal_data.lastBolusCorr ) ,1);
-    var CurrentTIRBelow = meal_data.currentTIRLow;
-    var CurrentTIRinRange = meal_data.currentTIRRange;
-    var CurrentTIRAbove = meal_data.currentTIRAbove;
+
     var  iTimeProfile = profile.iTime;
-    if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIRAbove <= 1 && CurrentTIRBelow >=4 ){iTimeProfile *=0.7; }
+    if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4){iTimeProfile *=0.7; }
 
     var csf = profile.sens / profile.carb_ratio ;
 
