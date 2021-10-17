@@ -367,7 +367,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //console.error("CR:", );
 
     var ISFBoost = 1; // default is no ISFBoost
-    if (eatingnowtimeOK) {
+//    if (eatingnow) {
         //MT : TWTT
         /*var tdd7 = meal_data.TDDAIMI7;
         if (tdd7 < 20){
@@ -472,7 +472,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("Basal unchanged: "+basal+"; ");
             }
         }
-    }
+//    }
 
         // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
         var lastTempAge;
