@@ -1258,8 +1258,6 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                     maxBolus = round(basal * profile.iTime_MaxBolus_minutes / 60 ,1);
                     }else if (iTime < iTimeProfile && TriggerPredSMB < 450){
                     maxBolus = round(basal * (profile.iTime_MaxBolus_minutes/2) / 60 ,1);
-                    }else if (TriggerPredSMB > 450 && glucose_status.delta > 7){
-                    maxBolus = round (basal * profile.maxUAMSMBBasalMinutes * (bg/target_bg)/60,1);
                     }else{
                     maxBolus = round( basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
                     }
@@ -1281,7 +1279,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             insulinReqPCT = 1;
             }else if ( iTime < iTimeProfile && !profile.temptargetSet){
             insulinReqPCT = 1;
-            }else if(iTime > iTimeProfile/2 && iTime < profile.iTime && TriggerPredSMB > 950 || profile.temptargetSet && target_bg > normalTarget && iTime < iTimeProfile ){
+            }else if(iTime > iTimeProfile/2 && iTime < iTimeProfile && TriggerPredSMB > 950 || profile.temptargetSet && target_bg > normalTarget && iTime < iTimeProfile ){
             insulinReqPCT = 0.8;
             }
 
