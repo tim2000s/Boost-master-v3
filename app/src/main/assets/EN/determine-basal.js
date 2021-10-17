@@ -1303,7 +1303,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoost = round(1+UAM_deltaShortRise,2); //try this without long avg
                 rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + (profile.temptargetSet ? "(" + (profile.temptarget_minutesrunning) + ")" : "") + ":";
                 // EN insulinReqPct is at least 80%
-                var ENinsulinReqPct = 0.80;
+                var ENinsulinReqPct = (100/profile.EatingNowinsulinReqPct);
             }
             //console.log("UAM_safedelta: " +UAM_safedelta);
             //console.log("UAM_deltaShortRise: " + UAM_deltaShortRise);
@@ -1312,7 +1312,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //console.log("UAMBoost: " + UAMBoost);
 
             // if autoISF is active and insulinReq is less than normal maxbolus then allow 100%
-            if (liftISF > 1 && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
+            //if (liftISF > 1 && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
 
             // START === if we are eating now and BGL prediction is higher than target ===
             if (eatingnow && eventualBG > target_bg) {
@@ -1324,7 +1324,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //                var BGBoost_bolus = profile.EatingNowBGBoostBolus;
 
                 // 100% insulinReqPct and larger SMB with a temp target else EN insulinReqPct and maxBolus
-                insulinReqPct = (profile.temptargetSet ? 1 : ENinsulinReqPct);
+                insulinReqPct = ENinsulinReqPct;
                 EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? round( profile.current_basal * profile.EatingNowUAMBoostMaxSMB / 60 ,1) : maxBolus );
 
                 var UAMBoost_bolus = profile.EatingNowUAMBoostBolus;
@@ -1382,7 +1382,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // boost the insulin further
                     insulinReqBoost = UAMBoost * UAMBoost_bolus;
                     // Not 100% insulinReqPct with a temp target that has a prebolus
-                    insulinReqPct = (profile.temptargetSet && profile.temptarget_duration > 60 ? ENinsulinReqPct : insulinReqPct);
+                    // insulinReqPct = (profile.temptargetSet && profile.temptarget_duration > 60 ? ENinsulinReqPct : insulinReqPct);
                     // Restrict insulinReqPct if UAMBoosted with no TT, low insulin and BGL bounce
                     // insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_low && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
                     // if (insulinReqPct == 0) UAMBoostReason +="; BGL bounce no TT";

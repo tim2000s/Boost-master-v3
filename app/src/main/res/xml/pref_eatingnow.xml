@@ -305,6 +305,17 @@
                 validate:testType="floatNumericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="65"
+                android:enabled="true"
+                android:dialogMessage="Percentage of Insulin Required. When Insulin is required this percentage will be applied. AAPS default is 50%. Setiting to 70 will make this 70%"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnow_insulinreqpct"
+                android:title="InsulinReqPct for EN"
+                validate:floatmaxNumber="100"
+                validate:floatminNumber="50"
+                validate:testType="floatNumericRange" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="0.3"
                 android:inputType="numberDecimal"
                 android:key="@string/key_eatingnow_iobmax"
