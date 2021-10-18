@@ -353,7 +353,7 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("EatingNowTimeEnd", sp.getDouble(R.string.key_eatingnow_timeend, 17));
         mProfile.put("TDD",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_TDD, "5.0")));
         mProfile.put("EatingNowinsulinReqPct",SafeParse.stringToDouble(sp.getString(R.string.key_eatingnow_insulinreqpct,"65")));
-//        mMealData.put("lastISFBoostSMB",treatmentsPlugin.getLastENBolusTime("ISF"));
+        mMealData.put("lastISFBoostSMB",treatmentsPlugin.getLastENBolusTime("ISF"));
 //        mMealData.put("lastUAMBoostSMB",treatmentsPlugin.getLastENBolusTime("UAM"));
 
         // patches ==== END
