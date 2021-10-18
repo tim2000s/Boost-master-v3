@@ -675,6 +675,32 @@ public class TreatmentService extends OrmLiteBaseService<DatabaseHelper> {
     }
 
     /**
+     * Returns the newest record with insulin > 0 and boostype
+     */
+    @Nullable
+    public Treatment getLastENBolus(String boostType) {
+        try {
+            QueryBuilder<Treatment, Long> queryBuilder = getDao().queryBuilder();
+            Where where = queryBuilder.where();
+            where.gt("insulin", 0);
+            where.and().le("date", DateUtil.now());
+            where.and().eq("isValid", true);
+            where.and().eq("isSMB", true);
+            where.and().eq("eventType", boostType);
+            queryBuilder.orderBy("date", false);
+            queryBuilder.limit(1L);
+
+            List<Treatment> result = getDao().query(queryBuilder.prepare());
+            if (result.isEmpty())
+                return null;
+            return result.get(0);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    /**
      * Returns the newest record with carbs > 0
      */
     @Nullable

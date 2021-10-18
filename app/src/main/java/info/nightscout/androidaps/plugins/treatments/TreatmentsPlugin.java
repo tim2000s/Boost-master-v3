@@ -360,6 +360,17 @@ public class TreatmentsPlugin extends PluginBase implements TreatmentsInterface 
         }
     }
 
+    public long getLastENBolusTime(String boostType) {
+        Treatment last = getService().getLastENBolus(boostType);
+        if (last == null) {
+            getAapsLogger().debug(LTag.DATATREATMENTS, "Last EN " + boostType + " bolus time: NOTHING FOUND");
+            return 0;
+        } else {
+            getAapsLogger().debug(LTag.DATATREATMENTS, "Last EN " + boostType + " bolus time: " + dateUtil.dateAndTimeString(last.date));
+            return last.date;
+        }
+    }
+
     public long getLastCarbTime() {
         Treatment last = getService().getLastCarb();
         if (last == null) {
