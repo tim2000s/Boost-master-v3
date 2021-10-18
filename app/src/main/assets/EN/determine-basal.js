@@ -144,8 +144,7 @@ function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_d
             if (maxISFReduction < levelISF) {
                 console.error("autoISF reduction", round(levelISF,2), "limited by autoisf_max", maxISFReduction);
             }
-//            sens = round(profile.sens / liftISF, 1);
-            sens = round(sens / liftISF, 1); // we want to adjust the current sens which could have been changed by advanced targets
+            //sens = round(sens / liftISF, 1); // we want to adjust the current sens which could have been changed by advanced targets
         } else {
             console.error("autoISF by-passed; avg. glucose", avg05, "below target", target_bg);
         }
@@ -1003,13 +1002,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
     rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + "/" + glucose_status.long_avgdelta + ", ISF: " + convert_bg(sens, profile) + (ISFBoost <1 ? "(" + round(ISFBoost*100,0) + "%)" : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
-    if (liftISF > 1) rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     if (lastCOBpredBG > 0) {
         rT.reason += ", COBpredBG " + convert_bg(lastCOBpredBG, profile);
     }
     if (lastUAMpredBG > 0) {
         rT.reason += ", UAMpredBG " + convert_bg(lastUAMpredBG, profile); //MD Missing ;
     }
+    if (liftISF > 1) rT.reason += ", liftISF: " + round(liftISF,2); //autoISF reason
     rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     rT.reason += ", TDD: " + round(TDD, 2);
     rT.reason += "; ";
@@ -1328,7 +1327,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 var UAMBoost_bolus = profile.EatingNowUAMBoostBolus;
                 // apply any resistance
-                UAMBoost_bolus *= (liftISF > 1 ? liftISF : 1);
+                // UAMBoost_bolus *= (liftISF > 1 ? liftISF : 1);
                 // apply any autosens
                 // UAMBoost_bolus *= (typeof autosens_data !== 'undefined' && autosens_data ? autosens_data.ratio : 1);
 
@@ -1416,7 +1415,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== RISE RESTRICTIONS ==============
                  // if the rise is slowing TBR only
                 if (UAM_deltaShortRise < -0.10) {
-                    insulinReqPct = (liftISF > 1 ? insulinReqPct : 0); // TBR only if no autoISF
+                    //insulinReqPct = (liftISF > 1 ? insulinReqPct : 0); // TBR only if no autoISF
+                    insulinReqPct = 0; // TBR only if no autoISF
                     SMB_TBR = true;
                     EatingNowMaxSMB = maxBolus;
                     UAMBoostReason = "; delta slowing";
@@ -1490,12 +1490,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var minBolus = Math.floor((maxTbrDose*insulinReqPct)*roundSMBTo)/roundSMBTo;
                 console.error("Minimum microbolus size determined to",minBolus,"U. ");
                 //rT.reason +=  "minBolus " + minBolus + ", ";
-                if (microBolus < minBolus && liftISF < 1.2) {
+                //if (microBolus < minBolus && liftISF < 1.2) {
+                if (microBolus < minBolus) {
                     console.error("insulinReq ",insulinReq,"U will be handled by basal modulation.");
                     rT.reason +=  "minBolus " + minBolus + ", ";
                     microBolus = 0;
                 } else {
-                    rT.reason +=  "minBolus off, ";
+                    rT.reason +=  "minBolus " + minBolus + " disabled, ";
                 }
              }
 
