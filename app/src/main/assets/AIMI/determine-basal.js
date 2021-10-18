@@ -285,8 +285,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var tdd_pump = ( tdd_pump_now / (now / 24));
         var TDD = (tdd7 * 0.3) + (tdd_pump * 0.7);
         console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
+        var smbTDD = 0;
         if (tdd_pump < (0.5 * tdd7)){
             TDD = (tdd7 * 0.1) + (tdd_pump * 0.9);
+            smbTDD = 1;
             console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
         }else{
 
@@ -301,7 +303,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (statinrange <= 95 && statTirBelow >= 4 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >= 4){
         TDD*=0.7;
         console.log("TDD new value because TIR show hypo during the last 7 days and  the curent day too :"+TDD);
-        }else if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95){
+        }else if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0){
         TDD*=1.2;
         console.log("TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% :"+TDD);
         }
@@ -329,7 +331,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //var iTime = round(( meal_data.lastBolusCorr ) ,1);
 
     var  iTimeProfile = profile.iTime;
-    if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4){iTimeProfile *=0.7; }
+    if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 || smbTDD === 0 ){iTimeProfile *=0.7; }
 
     var csf = profile.sens / profile.carb_ratio ;
 
@@ -881,6 +883,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 if (iTime <= iTimeProfile){
                 console.log("iTime : "+iTime);
                 console.log("iTimeProfile : "+iTimeProfile);
+                console.log("smbTDD : "+smbTDD);
                 console.log("-------------");
                 }
 
@@ -1254,9 +1257,9 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 console.error("IOB",iob_data.iob,"> COB",meal_data.mealCOB+"; mealInsulinReq =",mealInsulinReq);
                 if (profile.maxUAMSMBBasalMinutes) {
                     console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"basal:",basal);
-                    if (iTime < iTimeProfile && target_bg < normalTarget && TriggerPredSMB > 450){
+                    if (iTime < iTimeProfile && target_bg < normalTarget && TriggerPredSMB > 450 && smbTDD === 0){
                     maxBolus = round(basal * profile.iTime_MaxBolus_minutes / 60 ,1);
-                    }else if (iTime < iTimeProfile && TriggerPredSMB < 450){
+                    }else if (iTime < iTimeProfile && TriggerPredSMB < 450 && smbTDD === 0){
                     maxBolus = round(basal * (profile.iTime_MaxBolus_minutes/2) / 60 ,1);
                     }else{
                     maxBolus = round( basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
@@ -1274,12 +1277,12 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var InsulinTDD = (TDD * 0.4) / 24;
             var maxBolusTT = maxBolus;
             var roundSMBTo = 1 / profile.bolus_increment;
-            if (iTime < iTimeProfile/2 && target_bg < normalTarget && TriggerPredSMB > 450){
+            if (iTime < iTimeProfile/2 && target_bg < normalTarget && TriggerPredSMB > 450 && smbTDD === 0){
             insulinReq = insulinReq + InsulinTDD;
             insulinReqPCT = 1;
-            }else if ( iTime < iTimeProfile && !profile.temptargetSet){
+            }else if ( iTime < iTimeProfile && iTime > iTimeProfile/2 && smbTDD ===0 && !profile.temptargetSet){
             insulinReqPCT = 1;
-            }else if(iTime > iTimeProfile/2 && iTime < iTimeProfile && TriggerPredSMB > 950 || profile.temptargetSet && target_bg > normalTarget && iTime < iTimeProfile ){
+            }else if(iTime < iTimeProfile && smbTDD === 1 || profile.temptargetSet && target_bg > normalTarget && iTime < iTimeProfile ){
             insulinReqPCT = 0.8;
             }
 
