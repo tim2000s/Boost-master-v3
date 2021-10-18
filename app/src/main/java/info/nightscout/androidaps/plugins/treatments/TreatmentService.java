@@ -684,9 +684,9 @@ public class TreatmentService extends OrmLiteBaseService<DatabaseHelper> {
             Where where = queryBuilder.where();
             where.gt("insulin", 0);
             where.and().le("date", DateUtil.now());
-            where.and().eq("isValid", true);
-            where.and().eq("isSMB", true);
+//            where.and().eq("isValid", true);
             where.and().eq("eventType", boostType);
+            where.and().eq("isSMB", true);
             queryBuilder.orderBy("date", false);
             queryBuilder.limit(1L);
 
