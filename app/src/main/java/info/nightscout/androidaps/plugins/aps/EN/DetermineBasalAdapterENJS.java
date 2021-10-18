@@ -401,11 +401,14 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation);
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
+//        mMealData.put("lastISFBoostSMB",treatmentsPlugin.getLastENBolusTime());
+//        mMealData.put("lastUAMBoostSMB",treatmentsPlugin.getLastENBolusTime("UAM"));
 
         tddAIMI = new TddCalculator(hasAndroidInjector,aapsLogger,rxBusWrapper,resourceHelper,mainApp,sp,activePluginProvider,profileFunction,fabricPrivacy,nsUpload,dateUtil,uploadQueue);
         mMealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).total);
         mMealData.put("TDDAIMI1",tddAIMI.averageTDD(tddAIMI.calculate(1)).total);
         mMealData.put("TDDPUMP",tddAIMI.calculateDaily().total);
+
 
         if (constraintChecker.isAutosensModeEnabled().value()) {
             mAutosensData = new JSONObject();
