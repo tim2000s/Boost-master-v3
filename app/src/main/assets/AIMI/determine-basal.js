@@ -1298,7 +1298,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                             console.log("maxBolusTT : "+maxBolusTT);
                             console.log("InsulinReqPCT : "+(insulinReqPCT * 100)+"%");
                             console.log("insulinReq : "+insulinReq);
-                            if(iTime < profile.iTime/2){
+                            if(iTime < iTimeProfile/2){
                             console.log("insulinQ : "+insulinQ);
                             console.log("InsulinTDD : "+InsulinTDD);}
                             console.log("microBolus : "+microBolus);
