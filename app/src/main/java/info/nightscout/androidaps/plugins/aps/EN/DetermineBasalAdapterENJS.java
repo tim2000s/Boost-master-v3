@@ -339,14 +339,14 @@ public class DetermineBasalAdapterENJS {
 //        mProfile.put("EatingNowBGBoostBolus", sp.getDouble(R.string.key_eatingnow_bgboostbolus, 0) * profile.getPercentage()/100);
 //        mProfile.put("EatingNowBGBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_bgboostmaxsmb, 0.1) * profile.getPercentage() / 100);
 
-        //set UAMBoost Max SMB based upon TT
-        if (tempTarget != null && Math.round(targetBg) < Math.round(normal_target_bg)) {
-            mProfile.put("EatingNowUAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus_tt, 0) * profile.getPercentage()/100);
-            mProfile.put("EatingNowUAMBoostMaxSMB", sp.getInt(R.string.key_eatingnow_uamboostmaxsmb_tt, 0));
-        } else {
-            mProfile.put("EatingNowUAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus, 0) * profile.getPercentage()/100);
-            mProfile.put("EatingNowUAMBoostMaxSMB", sp.getInt(R.string.key_eatingnow_uamboostmaxsmb, 0));
-        }
+        mProfile.put("EN_UAMBoostBolusLowTT", sp.getDouble(R.string.key_eatingnow_uamboostbolus_tt, 0) * profile.getPercentage()/100);
+        mProfile.put("EN_UAMBoostMaxSMBLowTT", sp.getDouble(R.string.key_eatingnow_uamboostmaxsmb_tt, 0.1));
+
+        mProfile.put("EN_UAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus, 0) * profile.getPercentage()/100);
+        mProfile.put("EN_UAMBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_uamboostmaxsmb, 0.1));
+
+        mProfile.put("EN_ISFBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_isfboostmaxsmb, 0.1));
+
         mProfile.put("EatingNowISFBoost", sp.getDouble(R.string.key_eatingnow_isfboost, 1));
         mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3) * profile.getPercentage()/100);
         mProfile.put("EatingNowTimeStart", sp.getDouble(R.string.key_eatingnow_timestart, 9));
