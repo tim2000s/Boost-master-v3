@@ -401,7 +401,7 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation);
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
-        mMealData.put("lastISFBoostSMB",treatmentsPlugin.getLastENBolusTime());
+//        mMealData.put("lastISFBoostSMB",treatmentsPlugin.getLastENBolusTime());
 //        mMealData.put("lastUAMBoostSMB",treatmentsPlugin.getLastENBolusTime("UAM"));
 
         tddAIMI = new TddCalculator(hasAndroidInjector,aapsLogger,rxBusWrapper,resourceHelper,mainApp,sp,activePluginProvider,profileFunction,fabricPrivacy,nsUpload,dateUtil,uploadQueue);
