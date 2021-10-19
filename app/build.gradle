@@ -120,7 +120,7 @@ android {
         targetSdkVersion 28
         multiDexEnabled true
         versionCode 1500
-        version "ABT with TDD based ISF in OpenAPS SMB - 2.8.2"
+        version "2.8.2.1 - ABT with TDD based ISF in OpenAPS SMB"
         buildConfigField "String", "VERSION", '"' + version + '"'
         buildConfigField "String", "BUILDVERSION", '"' + generateGitBuild() + '-' + generateDate() + '"'
         buildConfigField "String", "REMOTE", '"' + generateGitRemote() + '"'
