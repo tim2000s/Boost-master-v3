@@ -84,6 +84,8 @@ import kotlin.math.min
 import java.util.Date
 import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.DateUtil
+import info.nightscout.androidaps.utils.stats.TirCalculator
+import android.util.LongSparseArray
 
 import org.json.JSONObject
 
@@ -134,6 +136,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
 
     private var carbAnimation: AnimationDrawable? = null
     public var insulinAnimation: AnimationDrawable? = null
+
 
 
     private val graphLock = Object()
@@ -752,8 +755,17 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
 
         //(System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
         val iTimeUpdate = (System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
+        val StatTIR = TirCalculator(resourceHelper, profileFunction, dateUtil)
+        val currentTIRLow = StatTIR.averageTIR(StatTIR.calculateDaily(70.0,180.0)).belowPct()
+        val currentTIRRange = StatTIR.averageTIR(StatTIR.calculateDaily(70.0,180.0)).inRangePct()
+        val currentTIRAbove = StatTIR.averageTIR(StatTIR.calculateDaily(70.0,180.0)).abovePct()
+        var iTimeSettings = (SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")))
+        if (iTimeUpdate < iTimeSettings && currentTIRRange <= 96 && currentTIRAbove <= 1 && currentTIRLow >=4 ){
+            iTimeSettings *=0.7
+        }
+
         overview_iob?.text = resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob)
-        val iTimeSettings = (SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")))
+
         if (iTimeUpdate < iTimeSettings) {
             overview_iob_llayout?.setOnClickListener {
                 activity?.let {

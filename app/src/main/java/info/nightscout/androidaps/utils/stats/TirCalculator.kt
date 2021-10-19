@@ -43,6 +43,28 @@ class TirCalculator @Inject constructor(
         }
         return result
     }
+    fun calculateDaily(lowMgdl: Double, highMgdl: Double): LongSparseArray<TIR> {
+        if (lowMgdl < 39) throw RuntimeException("Low below 39")
+        if (lowMgdl > highMgdl) throw RuntimeException("Low > High")
+        val startTime = MidnightTime.calc(DateUtil.now())
+        val endTime = DateUtil.now()
+
+        val bgReadings = MainApp.getDbHelper().getBgreadingsDataFromTime(startTime, endTime, true)
+        val result = LongSparseArray<TIR>()
+        for (bg in bgReadings) {
+            //val midnight = MidnightTime.calc(bg.date)
+            var tir = result[startTime]
+            if (tir == null) {
+                tir = TIR(startTime, lowMgdl, highMgdl)
+                result.append(startTime, tir)
+            }
+            if (bg.value < 39) tir.error()
+            if (bg.value >= 39 && bg.value < lowMgdl) tir.below()
+            if (bg.value in lowMgdl..highMgdl) tir.inRange()
+            if (bg.value > highMgdl) tir.above()
+        }
+        return result
+    }
 
     fun averageTIR(tirs: LongSparseArray<TIR>): TIR {
         val totalTir = if (tirs.size() > 0) {
@@ -67,6 +89,7 @@ class TirCalculator @Inject constructor(
         val lowTitMgdl = Constants.STATS_TARGET_LOW_MMOL * Constants.MMOLL_TO_MGDL
         val highTitMgdl = Constants.STATS_TARGET_HIGH_MMOL * Constants.MMOLL_TO_MGDL
 
+        //val tirDay0 = calculateDaily(lowTirMgdl,highTirMgdl)
         val tir7 = calculate(7, lowTirMgdl, highTirMgdl)
         val averageTir7 = averageTIR(tir7)
         val tir30 = calculate(30, lowTirMgdl, highTirMgdl)
