@@ -425,11 +425,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var HyperPredBGTest3 = round( bg - (iob_data.iob * sens) ) + round( 120 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
         var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,0);
-//        var BolusedEN = round((new Date().setHours(profile.EatingNowTimeStart) - meal_data.lastBolusCorr )/60000,0);
-        var ENStart = new Date(systemTime).setHours(profile.EatingNowTimeStart,0,0,0);
-        var ENBolused = (meal_data.lastBolusCorr > ENStart);
-        console.log("ENStart: "+ ENStart);
-        console.log("ENBolused: "+ ENBolused);
+        // Has there been a bolus since EN start time?
+//        var ENStart = new Date(systemTime).setHours(profile.EatingNowTimeStart,0,0,0); // today at EN Start
+//        var ENBolused = (meal_data.lastBolusCorr > ENStart); // bolused after EN start?
+//        console.log("ENStart: "+ ENStart);
+//        console.log("ENBolused: "+ ENBolused);
         var csf = profile.sens / profile.carb_ratio; // DO WE NEED THIS?
 
         sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
