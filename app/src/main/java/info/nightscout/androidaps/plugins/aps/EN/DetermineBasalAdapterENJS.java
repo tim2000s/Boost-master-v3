@@ -401,6 +401,8 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation);
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
+        mMealData.put("lastBolusCorr",treatmentsPlugin.getLastBolusTime(true));
+
 //        mMealData.put("lastISFBoostSMB",treatmentsPlugin.getLastENBolusTime());
 //        mMealData.put("lastUAMBoostSMB",treatmentsPlugin.getLastENBolusTime("UAM"));
 
