@@ -427,8 +427,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,0);
 //        var BolusedEN = round((new Date().setHours(profile.EatingNowTimeStart) - meal_data.lastBolusCorr )/60000,0);
         var ENStart = new Date(systemTime).setHours(profile.EatingNowTimeStart,0,0,0);
+        var ENBolused = (meal_data.lastBolusCorr > ENStart);
         console.log("ENStart: "+ ENStart);
-
+        console.log("ENBolused: "+ ENBolused);
         var csf = profile.sens / profile.carb_ratio; // DO WE NEED THIS?
 
         sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
