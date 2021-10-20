@@ -678,7 +678,7 @@ public class TreatmentService extends OrmLiteBaseService<DatabaseHelper> {
      * Returns the newest record with insulin > 0 and boostype
      */
     @Nullable
-    public Treatment getFirstENBolus(double ENStartTime) {
+    public Treatment getFirstENBolus(int ENStartTime) {
         try {
             QueryBuilder<Treatment, Long> queryBuilder = getDao().queryBuilder();
             Where where = queryBuilder.where();
