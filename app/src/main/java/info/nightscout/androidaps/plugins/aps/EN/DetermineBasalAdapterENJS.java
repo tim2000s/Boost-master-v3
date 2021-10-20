@@ -15,6 +15,7 @@ import org.mozilla.javascript.Undefined;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -402,7 +403,10 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
         mMealData.put("lastBolusCorr",treatmentsPlugin.getLastBolusTime(true));
-        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime(1634680800));
+        String test = DateUtil.toISOString(mCurrentTime); // toISOString(timestamp))DateUtil(mCurrentTime)   mCurrentTime.  setHours(9,0,0,0)
+        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime(test));
+//        ENStart = new Date(mCurrentTime).  .setHours(9,0,0,0);
+//        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime(1634680800));
 //        mMealData.put("lastISFBoostSMB",treatmentsPlugin.getLastENBolusTime());
 //        mMealData.put("lastUAMBoostSMB",treatmentsPlugin.getLastENBolusTime("UAM"));
 
