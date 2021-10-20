@@ -426,8 +426,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,0);
 //        var BolusedEN = round((new Date().setHours(profile.EatingNowTimeStart) - meal_data.lastBolusCorr )/60000,0);
-        var BolusedEN = new Date(systemTime).setHours(profile.EatingNowTimeStart,0,0,0);
-        console.log("BolusedEN: "+ BolusedEN);
+        var ENStart = new Date(systemTime).setHours(profile.EatingNowTimeStart,0,0,0);
+        console.log("ENStart: "+ ENStart);
 
         var csf = profile.sens / profile.carb_ratio; // DO WE NEED THIS?
 
