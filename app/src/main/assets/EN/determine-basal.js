@@ -427,7 +427,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,0);
 //        var BolusedEN = round((new Date().setHours(profile.EatingNowTimeStart) - meal_data.lastBolusCorr )/60000,0);
         var BolusedEN = new Date(systemTime);
-        BolusedEN.setHours(7);
+        BolusedEN.setHours(7,0,0);
         console.log("BolusedEN: "+ BolusedEN);
 
         var csf = profile.sens / profile.carb_ratio; // DO WE NEED THIS?
