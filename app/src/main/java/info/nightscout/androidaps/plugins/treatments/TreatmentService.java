@@ -675,7 +675,7 @@ public class TreatmentService extends OrmLiteBaseService<DatabaseHelper> {
     }
 
 //    /**
-//     * Returns the newest record with insulin > 0 and boostype
+//     * Returns the first record with insulin > 0 after Eating Now start
 //     */
 //    @Nullable
 //    public Treatment getFirstENBolus(String ENStartTime) {
