@@ -330,7 +330,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // Force eatingnow mode by setting a temp target EatingNowIOB trigger is ignored, EatingNowIOBMax is respected, max bolus is restricted if outside of allowed hours
         if (profile.temptargetSet) {  // tt duration prevents immediate SMB
             // normal target or less enables eating now
-            if (target_bg <= profile.normal_target_bg + 1) {
+            if (target_bg <= profile.normal_target_bg) {
                 eatingnow = true;
             } else {
                 eatingnow = false; // any other target disables eating now
@@ -627,15 +627,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var enableUAM=(profile.enableUAM);
 
     // we are in a TT that is long enough and just started to allow a prebolus
-    if (eatingnow && profile.temptarget_duration > 60 && target_bg < profile.normal_target_bg + 1 && profile.temptarget_minutesrunning == 0) {
+    if (eatingnow && profile.temptarget_duration > 60 && target_bg <= profile.normal_target_bg && profile.temptarget_minutesrunning == 0) {
         enableSMB = true;
         // allow all of maxSMB for low TT else 80%
-        var preBolus = ( profile.temptargetSet && target_bg < profile.normal_target_bg ? profile.EN_UAMBoostMaxSMBLowTT : profile.EN_UAMBoostMaxSMB * 0.8 );
+        var preBolus = ( profile.temptargetSet && target_bg < profile.normal_target_bg ? profile.EN_UAMBoostMaxSMBLowTT : profile.EN_UAMBoostMaxSMB);
         preBolus = round(preBolus,1);
         rT.units = preBolus;
         rT.insulinReq = rT.units;
         rT.boostType = "Prebolus";
-        rT.reason = "EN: " + convert_bg(target_bg, profile) + " Temp Target for " + profile.temptarget_duration + " mins, prebolusing " + rT.units + "/" + (profile.current_basal * profile.EatingNowUAMBoostMaxSMB / 60) + "U.";
+        rT.reason = convert_bg(target_bg, profile) + " temp target for >60 mins: prebolusing " + rT.units;
         return rT;
     }
 
@@ -1428,10 +1428,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //                }
 
                 // ============== MAXBOLUS RESTRICTIONS ==============
-                // If target is just above normal target restrict maxBolus
-                EatingNowMaxSMB = ( profile.temptargetSet && target_bg == profile.normal_target_bg + 1 ? maxBolus : EatingNowMaxSMB );
                 // If no TT and low insulin restrict maxBolus only when no COB
-                EatingNowMaxSMB = ( !profile.temptargetSet && iob_data.iob < profile.EatingNowIOB && meal_data.mealCOB == 0 ? maxBolus : EatingNowMaxSMB );
+                if (!profile.temptargetSet && iob_data.iob < profile.EatingNowIOB && meal_data.mealCOB == 0) {
+                    EatingNowMaxSMB = maxBolus;
+                    UAMBoostReason = "IOB less than " + profile.EatingNowIOB ": default maxBolus";
+                } else {
+                    EatingNowMaxSMB = EatingNowMaxSMB;
+                    UAMBoostReason = "IOB more than " + profile.EatingNowIOB ": boost enabled";
+                }
+                //EatingNowMaxSMB = ( !profile.temptargetSet && iob_data.iob < profile.EatingNowIOB && meal_data.mealCOB == 0 ? maxBolus : EatingNowMaxSMB );
 
                 // ============== RISE RESTRICTIONS ==============
                  // if the rise is slowing TBR only
@@ -1440,7 +1445,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = insulinReqPctDefault;
                     SMB_TBR = true;
                     EatingNowMaxSMB = maxBolus;
-                    UAMBoostReason = "; delta slowing: maxBolus & insulinReqPct reduced";
+                    UAMBoostReason = "; delta slowing: default maxBolus & insulinReqPct";
                     // Restrict insulinReq when above BGBoost_threshold
                     //insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > insulinReqPctDefault ? insulinReqPctDefault : insulinReqPct );
                     // this may help after sensor errors
