@@ -330,7 +330,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
     //var iTime = round(( meal_data.lastBolusCorr ) ,1);
 
-    var  iTimeProfile = profile.iTime;
+    var iTimeProfile = profile.iTime;
     if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && bg < 170 || smbTDD === 1 && bg < 170 ){iTimeProfile *=0.7; }
 
     var csf = profile.sens / profile.carb_ratio ;
@@ -860,7 +860,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log("AIMI");
+                console.log("AIMI V3");
                 console.log("------------------------------");
                 console.log("Pump extrapolated TDD = "+tdd_pump);
                 console.log("tdd7 using 7-day average "+tdd7);
