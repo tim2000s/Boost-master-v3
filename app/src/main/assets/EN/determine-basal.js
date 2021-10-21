@@ -1437,10 +1437,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  // if the rise is slowing TBR only
                 if (UAM_deltaShortRise < -0.10) {
                     //insulinReqPct = (liftISF > 1 ? insulinReqPct : 0); // TBR only if no autoISF
-                    insulinReqPct = 0; // TBR only if no autoISF
+                    insulinReqPct = insulinReqPctDefault;
                     SMB_TBR = true;
                     EatingNowMaxSMB = maxBolus;
-                    UAMBoostReason = "; delta slowing";
+                    UAMBoostReason = "; delta slowing: maxBolus & insulinReqPct reduced";
                     // Restrict insulinReq when above BGBoost_threshold
                     //insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > insulinReqPctDefault ? insulinReqPctDefault : insulinReqPct );
                     // this may help after sensor errors
