@@ -1461,7 +1461,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  if (minAgo > 1) {
                      insulinReqPct = 0;
                      SMB_TBR = true;
-                     UAMBoostReason =";minAgo>1";
+                     UAMBoostReason ="; recent loop iteration: no SMB";
                  }
 
                 if (eatingnowtimeOK) {
