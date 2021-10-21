@@ -403,8 +403,8 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
         mMealData.put("lastBolusCorr",treatmentsPlugin.getLastBolusTime(true));
-        String test = DateUtil.toISOString(mCurrentTime); // toISOString(timestamp))DateUtil(mCurrentTime)   mCurrentTime.  setHours(9,0,0,0)
-        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime(test));
+//        String test = DateUtil.toISOString(mCurrentTime); // toISOString(timestamp))DateUtil(mCurrentTime)   mCurrentTime.  setHours(9,0,0,0)
+//        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime(test));
 //        ENStart = new Date(mCurrentTime).  .setHours(9,0,0,0);
 //        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime(1634680800));
 //        mMealData.put("lastISFBoostSMB",treatmentsPlugin.getLastENBolusTime());
