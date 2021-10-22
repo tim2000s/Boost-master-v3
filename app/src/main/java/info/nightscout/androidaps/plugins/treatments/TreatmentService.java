@@ -683,7 +683,7 @@ public class TreatmentService extends OrmLiteBaseService<DatabaseHelper> {
             QueryBuilder<Treatment, Long> queryBuilder = getDao().queryBuilder();
             Where where = queryBuilder.where();
             where.gt("insulin", 0);
-            where.and().ge("date", mills);
+            where.and().le("date", mills);
             where.and().eq("isValid", true);
             where.and().eq("eventType", true);
             where.and().eq("isSMB", false);
