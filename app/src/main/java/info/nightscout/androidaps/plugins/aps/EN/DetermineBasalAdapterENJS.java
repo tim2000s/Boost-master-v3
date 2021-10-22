@@ -351,8 +351,8 @@ public class DetermineBasalAdapterENJS {
 
         mProfile.put("EatingNowISFBoost", sp.getDouble(R.string.key_eatingnow_isfboost, 1));
         mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3) * profile.getPercentage()/100);
-        mProfile.put("EatingNowTimeStart", sp.getDouble(R.string.key_eatingnow_timestart, 9));
-        mProfile.put("EatingNowTimeEnd", sp.getDouble(R.string.key_eatingnow_timeend, 17));
+        mProfile.put("EatingNowTimeStart", sp.getInt(R.string.key_eatingnow_timestart, 9));
+        mProfile.put("EatingNowTimeEnd", sp.getInt(R.string.key_eatingnow_timeend, 17));
         mProfile.put("TDD",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_TDD, "5.0")));
         mProfile.put("EatingNowinsulinReqPct",SafeParse.stringToDouble(sp.getString(R.string.key_eatingnow_insulinreqpct,"65")));
         // patches ==== END
@@ -404,9 +404,7 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
         mMealData.put("lastBolusCorr",treatmentsPlugin.getLastBolusTime(true));
-        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime("9"));
-//        long ENStart = new Date(systemTime).setHours(profile.EatingNowTimeStart,0,0,0); // today at EN Start
-        //        ENStart = new Date(mCurrentTime).  .setHours(9,0,0,0);
+        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime(sp.getInt(R.string.key_eatingnow_timestart, 9)));
 
         tddAIMI = new TddCalculator(hasAndroidInjector,aapsLogger,rxBusWrapper,resourceHelper,mainApp,sp,activePluginProvider,profileFunction,fabricPrivacy,nsUpload,dateUtil,uploadQueue);
         mMealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).total);

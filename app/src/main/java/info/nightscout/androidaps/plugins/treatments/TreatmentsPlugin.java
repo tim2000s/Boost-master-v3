@@ -360,8 +360,9 @@ public class TreatmentsPlugin extends PluginBase implements TreatmentsInterface 
         }
     }
 
-    public long getFirstENBolusTime(String ENStartTime) {
-        Treatment last = getService().getFirstENBolus(ENStartTime);
+    public long getFirstENBolusTime(int ENStartTime) {
+        String timeString = ENStartTime+":00";
+        Treatment last = getService().getFirstENBolus(timeString);
         if (last == null) {
             getAapsLogger().debug(LTag.DATATREATMENTS, "First manual bolus after EN start time: NOTHING FOUND");
             return 0;
