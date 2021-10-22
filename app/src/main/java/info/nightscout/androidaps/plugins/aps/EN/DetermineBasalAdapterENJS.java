@@ -406,9 +406,6 @@ public class DetermineBasalAdapterENJS {
 //        String test = DateUtil.toISOString(mCurrentTime); // toISOString(timestamp))DateUtil(mCurrentTime)   mCurrentTime.  setHours(9,0,0,0)
 //        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime(test));
 //        ENStart = new Date(mCurrentTime).  .setHours(9,0,0,0);
-//        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime(1634680800));
-//        mMealData.put("lastISFBoostSMB",treatmentsPlugin.getLastENBolusTime());
-//        mMealData.put("lastUAMBoostSMB",treatmentsPlugin.getLastENBolusTime("UAM"));
 
         tddAIMI = new TddCalculator(hasAndroidInjector,aapsLogger,rxBusWrapper,resourceHelper,mainApp,sp,activePluginProvider,profileFunction,fabricPrivacy,nsUpload,dateUtil,uploadQueue);
         mMealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).total);
