@@ -1396,6 +1396,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = ( profile.EN_UAMBoostMaxSMB > 0 ? profile.EN_UAMBoostMaxSMB : maxBolus );
                     // with a low TT allow different max SMB, this would be breakie - IDEA: USE FIRST MANUAL BOLUS TIME (ITIME) AFTER EATING NOW START TO INDICATE BREAKIE?
                     EatingNowMaxSMB = ( profile.EN_UAMBoostMaxSMBLowTT > 0 && profile.temptargetSet && target_bg < profile.normal_target_bg ? profile.EN_UAMBoostMaxSMBLowTT : EatingNowMaxSMB );
+                    // with a low TT allow different max SMB, this would be breakie - IDEA: USE FIRST MANUAL BOLUS TIME (ITIME) AFTER EATING NOW START TO INDICATE BREAKIE?
+                    EatingNowMaxSMB = ( iTime1 < 120 ? profile.EN_UAMBoostMaxSMBLowTT : EatingNowMaxSMB );
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // Not 100% insulinReqPct with a temp target that has a prebolus
                     // insulinReqPct = (profile.temptargetSet && profile.temptarget_duration > 60 ? ENinsulinReqPct : insulinReqPct);
