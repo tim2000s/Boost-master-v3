@@ -686,7 +686,7 @@ public class TreatmentService extends OrmLiteBaseService<DatabaseHelper> {
             where.and().ge("date", DateUtil.toTodayTime(ENStartTime));
             where.and().eq("isValid", true);
             where.and().eq("isSMB", false);
-            queryBuilder.orderBy("date", true);
+            queryBuilder.orderBy("date", false);
             queryBuilder.limit(1L);
 
             List<Treatment> result = getDao().query(queryBuilder.prepare());
