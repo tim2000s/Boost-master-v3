@@ -424,7 +424,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var HyperPredBGTest2 = round( bg - (iob_data.iob * sens) ) + round( 180 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
         var HyperPredBGTest3 = round( bg - (iob_data.iob * sens) ) + round( 120 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
         var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
+        // iTime is minutes since last manual bolus correction
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,0);
+        // iTime1 is minutes since first manual bolus correction after EN starts
         var iTime1 = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
         // Has there been a bolus since EN start time?
 //        var ENStart = new Date(systemTime).setHours(profile.EatingNowTimeStart,0,0,0); // today at EN Start
@@ -1293,7 +1295,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var insulinReqOrig = insulinReq;
             var SMB_TBR = false; // dont allow TBR with SMB
             var EatingNowMaxSMB = maxBolus;
-            var UAMBoosted = false, ISFBoosted = false;
+            var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
 
             // Determine the pct change in BG if rising and IOB conditions are OK
             if (eatingnow) {
@@ -1580,6 +1582,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // rT.boostType = ( BGBoosted ? "BG" : rT.boostType );
                     rT.boostType = ( ISFBoost < 1 ? "ISF" : rT.boostType );
                     rT.boostType = ( UAMBoosted ? "UAM" : rT.boostType );
+                    rT.boostType = ( UAMBoosted && iTime1 < 120 ? "UAM-MAX" : rT.boostType );
                 }
             } else {
                 rT.reason += "Waiting " + nextBolusMins + "m " + nextBolusSeconds + "s to microbolus again. ";
