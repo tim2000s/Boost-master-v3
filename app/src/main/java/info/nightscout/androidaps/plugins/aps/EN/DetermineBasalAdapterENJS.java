@@ -404,7 +404,7 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
         mMealData.put("lastBolusCorr",treatmentsPlugin.getLastBolusTime(true));
-        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime("9:00"));
+        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime("9"));
 //        long ENStart = new Date(systemTime).setHours(profile.EatingNowTimeStart,0,0,0); // today at EN Start
         //        ENStart = new Date(mCurrentTime).  .setHours(9,0,0,0);
 
