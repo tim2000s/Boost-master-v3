@@ -425,6 +425,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var HyperPredBGTest3 = round( bg - (iob_data.iob * sens) ) + round( 120 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
         var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,0);
+        var iTime1 = round(( new Date(systemTime).getTime() - meal_data.firstENBolusTime ) / 60000,0);
         // Has there been a bolus since EN start time?
 //        var ENStart = new Date(systemTime).setHours(profile.EatingNowTimeStart,0,0,0); // today at EN Start
 //        var ENBolused = (meal_data.lastBolusCorr > ENStart); // bolused after EN start?
@@ -1017,6 +1018,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     rT.reason += ", TDD: " + round(TDD, 2);
     rT.reason += ", iTime: " + iTime;
+    rT.reason += ", iTime1: " + iTime1;
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
     var carbsReqBG = naive_eventualBG;
