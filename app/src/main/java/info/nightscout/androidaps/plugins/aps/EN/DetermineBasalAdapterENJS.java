@@ -404,7 +404,7 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
         mMealData.put("lastBolusCorr",treatmentsPlugin.getLastBolusTime(true));
 //        String test = DateUtil.toISOString(mCurrentTime); // toISOString(timestamp))DateUtil(mCurrentTime)   mCurrentTime.  setHours(9,0,0,0)
-//        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime(test));
+        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime(System.currentTimeMillis()));
 //        ENStart = new Date(mCurrentTime).  .setHours(9,0,0,0);
 
         tddAIMI = new TddCalculator(hasAndroidInjector,aapsLogger,rxBusWrapper,resourceHelper,mainApp,sp,activePluginProvider,profileFunction,fabricPrivacy,nsUpload,dateUtil,uploadQueue);
