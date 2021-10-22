@@ -40,6 +40,7 @@ import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker;
 import info.nightscout.androidaps.plugins.general.openhumans.OpenHumansUploader;
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.GlucoseStatus;
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.IobCobCalculatorPlugin;
+import info.nightscout.androidaps.plugins.pump.common.utils.DateTimeUtil;
 import info.nightscout.androidaps.plugins.treatments.TreatmentsPlugin;
 import info.nightscout.androidaps.utils.SafeParse;
 import info.nightscout.androidaps.utils.resources.ResourceHelper;
@@ -403,9 +404,9 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
         mMealData.put("lastBolusCorr",treatmentsPlugin.getLastBolusTime(true));
-//        String test = DateUtil.toISOString(mCurrentTime); // toISOString(timestamp))DateUtil(mCurrentTime)   mCurrentTime.  setHours(9,0,0,0)
-        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime(System.currentTimeMillis()));
-//        ENStart = new Date(mCurrentTime).  .setHours(9,0,0,0);
+        mMealData.put("firstENBolusTime",treatmentsPlugin.getFirstENBolusTime("9"));
+//        long ENStart = new Date(systemTime).setHours(profile.EatingNowTimeStart,0,0,0); // today at EN Start
+        //        ENStart = new Date(mCurrentTime).  .setHours(9,0,0,0);
 
         tddAIMI = new TddCalculator(hasAndroidInjector,aapsLogger,rxBusWrapper,resourceHelper,mainApp,sp,activePluginProvider,profileFunction,fabricPrivacy,nsUpload,dateUtil,uploadQueue);
         mMealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).total);
