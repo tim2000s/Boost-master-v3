@@ -1360,7 +1360,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoost_bolus = profile.EN_UAMBoostBolusLowTT;
                     UAMBoost_threshold = UAMBoost_threshold_low;
                     UAMBoostOK = true;
-//                    UAMBoostReason += "; first bolus window: extra boost";
+                    UAMBoostReason += "; iTime1 < 120 Max UAMBoost";
                 }
 
                 // ****** Temp Target Set = normal profile target == NORMAL UAM MODE ******
@@ -1383,7 +1383,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // Recent manual bolus allow faster UAMBoost response
                 if (iTime <45 && UAM_safedelta >0) {
                     UAMBoostOK = true;
-                    UAMBoostReason = "recent manual bolus: UAMBoostOK";
+                    UAMBoostReason += "; iTime < 45 UAMBoost OK";
                 }
 
 
