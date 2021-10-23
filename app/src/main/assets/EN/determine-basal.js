@@ -1474,7 +1474,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
             }
-            if (!eatingnow) rT.reason += "EN Disabled"
             // ============  UAMBoost for Eating Now mode  ==================== END
 
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
@@ -1532,7 +1531,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 durationReq = 30;
             }
             rT.reason += " insulinReq " + insulinReq + (insulinReq > insulinReqOrig ? "(" + insulinReqOrig + ")" : "") + "@"+round(insulinReqPct*100,0)+"%";
-            rT.reason += "THE END!";//UAMBoostReason;
             if (microBolus >= maxBolus) {
                 rT.reason +=  "; maxBolus" + (maxBolus == EatingNowMaxSMB ? "^ ": " ") + maxBolus;
             }
@@ -1540,6 +1538,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason += "; setting " + durationReq + "m low temp of " + smbLowTempReq + "U/h";
             }
             rT.reason += ". ";
+            rT.reason += UAMBoostReason; // THE END?
 
             //allow SMBs every 3 minutes by default
             var SMBInterval = 3;
