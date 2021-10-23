@@ -1474,7 +1474,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
             }
-            if (!eatingnow) rT.reason += ";EN Disabled"
+            if (!eatingnow) rT.reason += "EN Disabled"
             // ============  UAMBoost for Eating Now mode  ==================== END
 
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
@@ -1607,7 +1607,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.reason += "temp " + round(currenttemp.rate,2) + " < " + rate + "U/hr. ";
         return tempBasalFunctions.setTempBasal(rate, 30, profile, rT, currenttemp);
     }
-
+    rT.reason += ";THE END!"
 };
 
 module.exports = determine_basal;
