@@ -1412,7 +1412,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // If no TT and low insulin restrict maxBolus only when no COB
                 if (!profile.temptargetSet && iob_data.iob < profile.EatingNowIOB && meal_data.mealCOB == 0) {
                     EatingNowMaxSMB = maxBolus;
-                    UAMBoostReason = "; IOB less than " + profile.EatingNowIOB + ": default maxBolus";
+                    UAMBoostReason = "; IOB < " + profile.EatingNowIOB + "U: default maxBolus";
                 } else {
                     EatingNowMaxSMB = EatingNowMaxSMB;
 //                    UAMBoostReason += ";IOB more than " + profile.EatingNowIOB + ": boost enabled";
