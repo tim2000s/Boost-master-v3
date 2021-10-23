@@ -333,16 +333,6 @@
                     validate:floatminNumber="0.0"
                     validate:testType="floatNumericRange"/>
 
-                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                    android:defaultValue="1.0"
-                    android:inputType="numberDecimal"
-                    android:key="@string/key_eatingnow_isfboost"
-                    android:dialogMessage="This will apply a percentage boost to ISF when Eating Now."
-                    android:title="ISF Boost Percentage"
-                    validate:floatmaxNumber="1"
-                    validate:floatminNumber="0.5"
-                    validate:testType="floatNumericRange"/>
-
             </PreferenceCategory>
 
         </androidx.preference.PreferenceScreen>

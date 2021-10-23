@@ -1472,7 +1472,6 @@
     <string name="key_eatingnow_uamboostmax_bolus">key_eatingnow_uamboostmax_bolus</string>
     <string name="key_eatingnow_uamboostmax_smblimit">key_eatingnow_uamboostmax_smblimit</string>
     <string name="key_eatingnow_isfboostmaxsmb">key_eatingnow_isfboostmaxsmb</string>
-    <string name="key_eatingnow_isfboost">key_eatingnow_isfboost</string>
     <string name="key_eatingnow_iobmax">key_eatingnow_iobmax</string>
     <string name="key_eatingnow_timestart">key_eatingnow_timestart</string>
     <string name="key_eatingnow_timeend">key_eatingnow_timeend</string>
