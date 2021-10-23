@@ -349,7 +349,7 @@ public class DetermineBasalAdapterENJS {
 
         mProfile.put("UAMBoostMAX_Bolus", sp.getDouble(R.string.key_eatingnow_uamboostmax_bolus, 0) * profile.getPercentage()/100);
         mProfile.put("UAMBoostMAX_SMBLimit", sp.getDouble(R.string.key_eatingnow_uamboostmax_smblimit, 0));
-        mProfile.put("iTime1Window", sp.getInt(R.string.key_eatingnow_itime1minutes, 15));
+        mProfile.put("iTimeMaxWindow", sp.getInt(R.string.key_eatingnow_itime1minutes, 15));
 
         mProfile.put("EN_ISFBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_isfboostmaxsmb, 0.1));
         // patches ==== END

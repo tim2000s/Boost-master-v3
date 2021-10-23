@@ -418,9 +418,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // iTime is minutes since last manual bolus correction
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,0);
         var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
-        // iTime1 is minutes since first manual bolus correction after EN starts
-        var iTime1 = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
-        var iTime1Window = profile.iTime1Window; // window for faster UAMBoostMAX
+        // iTimeMax is minutes since first manual bolus correction after EN starts
+        var iTimeMax = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
+        var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
         var csf = profile.sens / profile.carb_ratio;
 
         sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
@@ -1007,8 +1007,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (liftISF > 1) rT.reason += ", liftISF: " + round(liftISF,2); //autoISF reason
     rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     rT.reason += ", TDD: " + round(TDD, 2);
-    rT.reason += ", iTime: " + iTime;
-    rT.reason += ", iTime1: " + iTime1;
+    rT.reason += ", iTime: " + iTime+"m"; //if (iTime < iTimeWindow)
+    rT.reason += ", iTimeMax: " + iTimeMax+"m"; //if (iTimeMax < iTimeMaxWindow)
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
     var carbsReqBG = naive_eventualBG;
@@ -1322,7 +1322,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReqPct = ENinsulinReqPct;
 
                 // set UAMBoost Bolus size
-                UAMBoostMAX = (iTime1 < iTime1Window); // if within window of first bolus max mode
+                UAMBoostMAX = (iTimeMax < iTimeMaxWindow); // if within window of first bolus max mode
                 var UAMBoost_bolus = (UAMBoostMAX ? profile.UAMBoostMAX_Bolus : profile.UAMBoost_Bolus);
 
                 // apply any resistance
@@ -1342,7 +1342,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAMBoostMAX && UAM_safedelta >0){
                     UAMBoost_threshold = UAMBoost_threshold_low;
                     UAMBoostOK = true;
-                    UAMBoostReason += "; iTime1<" + iTime1Window + ": UAMBoostMAX";
+                    UAMBoostReason += "; iTimeMax<" + iTimeMaxWindow + ": UAMBoostMAX";
                 }
 
                 // ****** No Temp Target Set ******
