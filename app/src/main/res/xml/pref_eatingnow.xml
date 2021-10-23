@@ -292,6 +292,18 @@
                     validate:floatmaxNumber="5.0"
                     validate:floatminNumber="0.0"
                     validate:testType="floatNumericRange"/>
+
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="15"
+                    android:digits="0123456789"
+                    android:inputType="number"
+                    android:key="@string/key_eatingnow_itimeminutes"
+                    android:title="iTime Minutes Window"
+                    android:dialogMessage="Minutes since last manual bolus for faster UAMBoost"
+                    validate:maxNumber="120"
+                    validate:minNumber="15"
+                    validate:testType="numericRange" />
+
             </PreferenceCategory>
 
             <PreferenceCategory
@@ -317,6 +329,18 @@
                     validate:floatmaxNumber="5.0"
                     validate:floatminNumber="0.0"
                     validate:testType="floatNumericRange"/>
+
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="15"
+                    android:digits="0123456789"
+                    android:inputType="number"
+                    android:key="@string/key_eatingnow_itime1minutes"
+                    android:title="iTime1 Minutes Window"
+                    android:dialogMessage="Minutes since first manual bolus for faster UAMBoostMAX"
+                    validate:maxNumber="120"
+                    validate:minNumber="15"
+                    validate:testType="numericRange" />
+
             </PreferenceCategory>
 
             <PreferenceCategory

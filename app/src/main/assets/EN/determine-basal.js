@@ -426,10 +426,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
         // iTime is minutes since last manual bolus correction
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,0);
-        var iTimeWindow = 45; // window is 45m for UAMBoostOK
+        var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
         // iTime1 is minutes since first manual bolus correction after EN starts
         var iTime1 = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
-        var iTime1Window = 90; // window is 120m for UAMBoostOK and UAMBoostMAX
+        var iTime1Window = profile.iTime1Window; // window for faster UAMBoostMAX
         // Has there been a bolus since EN start time?
 //        var ENStart = new Date(systemTime).setHours(profile.EatingNowTimeStart,0,0,0); // today at EN Start
 //        var ENBolused = (meal_data.lastBolusCorr > ENStart); // bolused after EN start?
