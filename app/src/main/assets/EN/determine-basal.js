@@ -1378,7 +1378,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // insulinReqPct = (UAMBoost_threshold == UAMBoost_threshold_low && glucose_status.long_avgdelta < 1 && !profile.temptargetSet ? 0 : insulinReqPct);
                     // if (insulinReqPct == 0) UAMBoostReason +="; BGL bounce no TT";
 //                    EatingNowMaxSMB = ( profile.EatingNowUAMBoostMaxSMB > 0 ? profile.EatingNowUAMBoostMaxSMB : maxBolus );
-                    SMB_TBR = true;
+                    SMB_TBR = false;
                     UAMBoosted = true;
                 }
 
@@ -1388,7 +1388,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      // set max SMB for ISFBoost
                     EatingNowMaxSMB = ( profile.ISFBoost_SMBLimit > 0 ? profile.ISFBoost_SMBLimit : maxBolus );
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
-                    SMB_TBR = true;
+                    SMB_TBR = false;
                     ISFBoosted = true;
                 }
 
@@ -1424,7 +1424,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAM_deltaShortRise < -0.10) {
                     //insulinReqPct = (liftISF > 1 ? insulinReqPct : 0); // TBR only if no autoISF
                     insulinReqPct = insulinReqPctDefault;
-                    SMB_TBR = true;
+                    //SMB_TBR = true;
                     EatingNowMaxSMB = maxBolus;
                     UAMBoostReason = "; delta slowing: default maxBolus & insulinReqPct";
                     // Restrict insulinReq when above BGBoost_threshold
@@ -1438,7 +1438,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     //insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > 0 && !profile.temptargetSet ? round(Math.max(Math.min(UAM_safedelta/18,1),insulinReqPctDefault),2) : insulinReqPct );
                     // if BG above threshold with autoISF active and using BGBoost not BGBoost+ then allow 100%
 //                    if (bg > BGBoost_threshold && liftISF > 1 && BGBoosted && !UAMBoosted) insulinReqPct = 1.0;
-                    SMB_TBR = ( insulinReqPct < 1 ? true : SMB_TBR );
+                    // SMB_TBR = ( insulinReqPct < 1 ? true : SMB_TBR );
                     EatingNowMaxSMB = EatingNowMaxSMB;
                 }
 
