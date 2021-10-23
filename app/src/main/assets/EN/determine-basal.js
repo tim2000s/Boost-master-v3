@@ -1009,9 +1009,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     rT.reason += ", TDD: " + round(TDD, 2);
     // If max window exists we dont need to show iTime
     if (iTimeMax < iTimeMaxWindow) {
-        rT.reason += ", iTimeMax: " + iTimeMax+"m";
+        rT.reason += ", iTimeMax: " + iTimeMax+"m<"+iTimeMaxWindow+"m";
     } else if (iTime < iTimeWindow) {
-        rT.reason += ", iTime: " + iTime+"m";
+        rT.reason += ", iTime: " + iTime+"m<"+iTimeWindow+"m";
     }
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
@@ -1346,7 +1346,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAMBoostMAX && UAM_safedelta >0){
                     UAMBoost_threshold = UAMBoost_threshold_low;
                     UAMBoostOK = true;
-                    UAMBoostReason += "; iTimeMax<" + iTimeMaxWindow + ": UAMBoostMAX";
+                    //UAMBoostReason += "; iTimeMax<" + iTimeMaxWindow + ": UAMBoostMAX";
                 }
 
                 // ****** No Temp Target Set ******
