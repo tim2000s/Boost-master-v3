@@ -1286,7 +1286,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
 
             // Determine the pct change in BG if rising and IOB conditions are OK
-            if (eatingnow) {
+//            if (eatingnow) {
                 UAM_safedelta = glucose_status.delta;
                 // Calculate percentage change in deltas, long to short and short to now
                 if (glucose_status.long_avgdelta !=0) UAM_deltaLongRise = round((glucose_status.short_avgdelta - glucose_status.long_avgdelta) / Math.abs(glucose_status.long_avgdelta),2);
@@ -1299,7 +1299,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //                rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + (profile.temptargetSet ? "(" + (profile.temptarget_minutesrunning) + ")" : "") + ":";
                 // EN insulinReqPct is at least 80%
                 var ENinsulinReqPct = (profile.EatingNowinsulinReqPct/100);
-            }
+//            }
             //console.log("UAM_safedelta: " +UAM_safedelta);
             //console.log("UAM_deltaShortRise: " + UAM_deltaShortRise);
             //console.log("UAM_deltaLongRise: " + UAM_deltaLongRise);
@@ -1460,6 +1460,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = insulinReqPctDefault;
                     // maxBolus can be larger if the TT is low
                     maxBolus = ( profile.temptargetSet && target_bg <= profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
+                    UAMBoostReason ="; EN time override enabled: " + (profile.temptargetSet && target_bg <= profile.normal_target_bg ? "increased" : "default") +" maxBolus" ;
                 }
 
                 // ============== INSULIN BOOST  ==============
@@ -1469,6 +1470,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
             }
+            if (!eatingnow) rT.reason += ";EN Disabled"
             // ============  UAMBoost for Eating Now mode  ==================== END
 
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
