@@ -1322,7 +1322,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReqPct = ENinsulinReqPct;
 
                 // set UAMBoost Bolus size
-                UAMBoostMAX = (iTime1 < iTime1Window); // if within 2h of first bolus max mode
+                UAMBoostMAX = (iTime1 < iTime1Window); // if within window of first bolus max mode
                 var UAMBoost_bolus = (UAMBoostMAX ? profile.UAMBoostMAX_Bolus : profile.UAMBoost_Bolus);
 
                 // apply any resistance
@@ -1340,17 +1340,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // If UAMBoostMAX mode we are OK to boost
                 if (UAMBoostMAX && UAM_safedelta >0){
-                    UAMBoost_threshold_low;
-                    UAMBoostOK = true;
-                    UAMBoostReason += "; iTime1<" + iTime1Window + ": UAMBoostMAX";
-                }
-
-                // ****** Temp Target Set = normal profile target == NORMAL UAM MODE ******
-                if (profile.temptargetSet && (target_bg == profile.normal_target_bg || target_bg == profile.normal + 1) && UAM_safedelta >0 && profile.temptarget_minutesrunning <= 30) {
-                    // Any rise for 30 minutes triggers UAMBoost
                     UAMBoost_threshold = UAMBoost_threshold_low;
                     UAMBoostOK = true;
-//                    if (UAMBoostOK) UAMBoostReason += "; delta >0, <30m runtime";
+                    UAMBoostReason += "; iTime1<" + iTime1Window + ": UAMBoostMAX";
                 }
 
                 // ****** No Temp Target Set ******
@@ -1367,7 +1359,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostOK = true;
                     UAMBoostReason += "; iTime<" + iTimeWindow + ": UAMBoost";
                 }
-
 
                 // ============== UAMBOOST ==============
                 // If there is a sudden delta change allow UAMBoost
@@ -1472,7 +1463,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== INSULIN BOOST  ==============
-                UAMBoostReason = ", Boost: UAM>" + round(UAMBoost_threshold,1) + ": " + UAMBoost + (UAMBoosted ? "*" + round (UAMBoost_bolus,2) :"") + UAMBoostReason;
+                UAMBoostReason = ", UAM" + (UAMBoostMAX ? "-MAX" : "") + ">" + round(UAMBoost_threshold,1) + ": " + UAMBoost + (UAMBoosted ? "*" + round (UAMBoost_bolus,2) :"") + UAMBoostReason;
                 //UAMBoostReason = ", Boost: UAM>" + round(UAMBoost_threshold,1) + ": " + UAMBoost + (UAMBoosted ? "*" + round (UAMBoost_bolus,2) :"") + ", BG>" + convert_bg(BGBoost_threshold, profile) + ": " + round(BGBoost_scale,1) + (BGBoosted && insulinReqBoost >0 ? "*" + round(BGBoost_bolus,2) :"") + UAMBoostReason;
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
