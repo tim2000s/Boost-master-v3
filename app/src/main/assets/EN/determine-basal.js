@@ -1576,7 +1576,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // rT.boostType = ( BGBoosted ? "BG" : rT.boostType );
                     rT.boostType = ( ISFBoost < 1 ? "ISF" : rT.boostType );
                     rT.boostType = ( UAMBoosted ? "UAM" : rT.boostType );
-                    rT.boostType = ( UAMBoosted && iTime1 < iTime1Window ? "UAM-MAX" : rT.boostType );
+                    rT.boostType = ( UAMBoosted && UAMBoostMAX ? "UAM-MAX" : rT.boostType );
                 }
             } else {
                 rT.reason += "Waiting " + nextBolusMins + "m " + nextBolusSeconds + "s to microbolus again. ";
