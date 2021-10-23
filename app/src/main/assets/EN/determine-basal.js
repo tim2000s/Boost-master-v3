@@ -366,19 +366,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //console.error("CR:", );
 
     var ISFBoost = 1; // default is no ISFBoost
-//    if (eatingnow) {
-        //MT : TWTT
-        /*var tdd7 = meal_data.TDDAIMI7;
-        if (tdd7 < 20){
-        var tdd1 = meal_data.TDDAIMI1;
-        }else{
-        var tdd1 = meal_data.TDDPUMP;
-        }
-        var TDD = (tdd7 * 0.5) + (tdd1 * 0.5);*/
+
         /* ************************
            ** TS AutoTDD code    **
            ************************ */
-        // var now = new Date().getHours();
         if (now < 1) {
             now = 1;
         } else {
@@ -430,16 +421,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // iTime1 is minutes since first manual bolus correction after EN starts
         var iTime1 = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
         var iTime1Window = profile.iTime1Window; // window for faster UAMBoostMAX
-        // Has there been a bolus since EN start time?
-//        var ENStart = new Date(systemTime).setHours(profile.EatingNowTimeStart,0,0,0); // today at EN Start
-//        var ENBolused = (meal_data.lastBolusCorr > ENStart); // bolused after EN start?
-//        console.log("ENStart: "+ ENStart);
-//        console.log("ENBolused: "+ ENBolused);
-        var csf = profile.sens / profile.carb_ratio; // DO WE NEED THIS?
+        var csf = profile.sens / profile.carb_ratio;
 
         sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
-        //Target adjustment with HypoPredBG - TS
 
+        //Target adjustment with HypoPredBG - TS
         var EBG = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg;
         var REBG = EBG / min_bg;
         console.log("Experimental test, EBG : "+EBG+" REBG : "+REBG+" ; ");
