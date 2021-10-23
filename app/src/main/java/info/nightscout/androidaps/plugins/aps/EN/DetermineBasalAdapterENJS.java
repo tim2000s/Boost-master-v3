@@ -337,24 +337,19 @@ public class DetermineBasalAdapterENJS {
         // patches ==== START
         mProfile.put("enableGhostCOB", sp.getBoolean(R.string.key_use_ghostcob, false));
         mProfile.put("EatingNowIOB", sp.getDouble(R.string.key_eatingnow_iob, 5));
-//        mProfile.put("EatingNowBGBoostBG", sp.getDouble(R.string.key_eatingnow_bgboostbg, 0));
-//        mProfile.put("EatingNowBGBoostBolus", sp.getDouble(R.string.key_eatingnow_bgboostbolus, 0) * profile.getPercentage()/100);
-//        mProfile.put("EatingNowBGBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_bgboostmaxsmb, 0.1) * profile.getPercentage() / 100);
-
-        mProfile.put("EN_UAMBoostBolusLowTT", sp.getDouble(R.string.key_eatingnow_uamboostbolus_tt, 0) * profile.getPercentage()/100);
-        mProfile.put("EN_UAMBoostMaxSMBLowTT", sp.getDouble(R.string.key_eatingnow_uamboostmaxsmb_tt, 0.1));
-
-        mProfile.put("EN_UAMBoostBolus", sp.getDouble(R.string.key_eatingnow_uamboostbolus, 0) * profile.getPercentage()/100);
-        mProfile.put("EN_UAMBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_uamboostmaxsmb, 0.1));
-
-        mProfile.put("EN_ISFBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_isfboostmaxsmb, 0.1));
-
-        mProfile.put("EatingNowISFBoost", sp.getDouble(R.string.key_eatingnow_isfboost, 1));
         mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3) * profile.getPercentage()/100);
         mProfile.put("EatingNowTimeStart", sp.getInt(R.string.key_eatingnow_timestart, 9));
         mProfile.put("EatingNowTimeEnd", sp.getInt(R.string.key_eatingnow_timeend, 17));
         mProfile.put("TDD",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_TDD, "5.0")));
         mProfile.put("EatingNowinsulinReqPct",SafeParse.stringToDouble(sp.getString(R.string.key_eatingnow_insulinreqpct,"65")));
+
+        mProfile.put("UAMBoost_Bolus", sp.getDouble(R.string.key_eatingnow_uamboost_bolus, 0) * profile.getPercentage()/100);
+        mProfile.put("UAMBoost_SMBLimit", sp.getDouble(R.string.key_eatingnow_uamboost_smblimit, 0));
+        mProfile.put("UAMBoostMAX_Bolus", sp.getDouble(R.string.key_eatingnow_uamboostmax_bolus, 0) * profile.getPercentage()/100);
+        mProfile.put("UAMBoostMAX_SMBLimit", sp.getDouble(R.string.key_eatingnow_uamboostmax_smblimit, 0));
+
+        mProfile.put("EN_ISFBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_isfboostmaxsmb, 0.1));
+        mProfile.put("EatingNowISFBoost", sp.getDouble(R.string.key_eatingnow_isfboost, 1));
         // patches ==== END
 
 

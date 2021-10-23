@@ -426,8 +426,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
         // iTime is minutes since last manual bolus correction
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,0);
+        var iTimeWindow = 45; // window is 45m for UAMBoost
         // iTime1 is minutes since first manual bolus correction after EN starts
         var iTime1 = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
+        var iTime1Window = 120; // window is 120m for UAMBoostMAX
         // Has there been a bolus since EN start time?
 //        var ENStart = new Date(systemTime).setHours(profile.EatingNowTimeStart,0,0,0); // today at EN Start
 //        var ENBolused = (meal_data.lastBolusCorr > ENStart); // bolused after EN start?
@@ -629,18 +631,18 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // enable UAM (if enabled in preferences)
     var enableUAM=(profile.enableUAM);
 
-    // we are in a TT that is long enough and just started to allow a prebolus
-    if (eatingnow && profile.temptarget_duration > 60 && target_bg <= profile.normal_target_bg && profile.temptarget_minutesrunning == 0) {
-        enableSMB = true;
-        // allow all of maxSMB for low TT else 80%
-        var preBolus = ( profile.temptargetSet && target_bg < profile.normal_target_bg ? profile.EN_UAMBoostMaxSMBLowTT : profile.EN_UAMBoostMaxSMB);
-        preBolus = round(preBolus,1);
-        rT.units = preBolus;
-        rT.insulinReq = rT.units;
-        rT.boostType = "Prebolus";
-        rT.reason = convert_bg(target_bg, profile) + " temp target for >60 mins: prebolusing " + rT.units;
-        return rT;
-    }
+//    // we are in a TT that is long enough and just started to allow a prebolus
+//    if (eatingnow && profile.temptarget_duration > 60 && target_bg <= profile.normal_target_bg && profile.temptarget_minutesrunning == 0) {
+//        enableSMB = true;
+//        // allow all of maxSMB for low TT else 80%
+//        var preBolus = ( profile.temptargetSet && target_bg < profile.normal_target_bg ? profile.EN_UAMBoostMaxSMBLowTT : profile.EN_UAMBoostMaxSMB);
+//        preBolus = round(preBolus,1);
+//        rT.units = preBolus;
+//        rT.insulinReq = rT.units;
+//        rT.boostType = "Prebolus";
+//        rT.reason = convert_bg(target_bg, profile) + " temp target for >60 mins: prebolusing " + rT.units;
+//        return rT;
+//    }
 
     //console.error(meal_data);
     // carb impact and duration are 0 unless changed below
@@ -1308,7 +1310,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // set the UAMBoost factor that is the avg delta rise combined minimum of zero + 1 to allow multiply
 //                UAMBoost = round(1+UAM_deltaAvgRise,2);
                 UAMBoost = round(1+UAM_deltaShortRise,2); //try this without long avg
-                rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + (profile.temptargetSet ? "(" + (profile.temptarget_minutesrunning) + ")" : "") + ":";
+//                rT.reason +=" EN" + (profile.temptargetSet && target_bg < profile.normal_target_bg ? "-Max" : "") + (profile.temptargetSet ? "(" + (profile.temptarget_minutesrunning) + ")" : "") + ":";
                 // EN insulinReqPct is at least 80%
                 var ENinsulinReqPct = (profile.EatingNowinsulinReqPct/100);
             }
@@ -1333,8 +1335,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // 100% insulinReqPct and larger SMB with a temp target else EN insulinReqPct and maxBolus
                 insulinReqPct = ENinsulinReqPct;
 
-                // set UAMBoost Bolus
-                var UAMBoost_bolus = profile.EN_UAMBoostBolus;
+                // set UAMBoost Bolus size
+                UAMBoostMAX = (iTime1 < iTime1Window); // if within 2h of first bolus max mode
+                var UAMBoost_bolus = (UAMBoostMAX ? profile.UAMBoostMAX_Bolus : profile.UAMBoost_Bolus);
 
                 // apply any resistance
                 // UAMBoost_bolus *= (liftISF > 1 ? liftISF : 1);
@@ -1349,20 +1352,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // var UAMBoost_threshold = (iob_data.iob >= (UAMBoost_threshold_high * UAMBoost_bolus) ? UAMBoost_threshold_high : UAMBoost_threshold_low);
                 //var UAMBoost_threshold = (iob_data.iob < (UAMBoost_threshold_low * UAMBoost_bolus) ? UAMBoost_threshold_low : UAMBoost_threshold_high);
 
-                // ****** Temp Target Set < normal profile target == MAX UAM MODE ******
-                if (profile.temptargetSet && target_bg < profile.normal_target_bg && UAM_safedelta >0) {
-                    UAMBoost_bolus = profile.EN_UAMBoostBolusLowTT;
-                    UAMBoost_threshold = UAMBoost_threshold_low;
+                // If UAMBoostMAX mode we are OK to boost
+                if (UAMBoostMAX && UAM_safedelta >0){
+                    UAMBoost_threshold_low;
                     UAMBoostOK = true;
-//                    if (UAMBoostOK) UAMBoostReason += "; delta >0";
-                }
-
-                // ****** If we are within the window of the first bolus allow more ******
-                if (iTime1 < 120) {
-                    UAMBoost_bolus = profile.EN_UAMBoostBolusLowTT;
-                    UAMBoost_threshold = UAMBoost_threshold_low;
-                    UAMBoostOK = true;
-                    UAMBoostReason += "; iTime1 < 120 Max UAMBoost";
+                    UAMBoostReason += "; iTime1<" + iTime1Window + ": UAMBoostMAX";
                 }
 
                 // ****** Temp Target Set = normal profile target == NORMAL UAM MODE ******
@@ -1383,9 +1377,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // if (UAMBoost_threshold == UAMBoost_threshold_high && UAM_safedelta >=8 && minAvgDelta > 0) UAMBoostOK = true;
 
                 // Recent manual bolus allow faster UAMBoost response
-                if (iTime <45 && UAM_safedelta >0) {
+                if (iTime < iTimeWindow && UAM_safedelta >0 && !UAMBoostMAX) {
                     UAMBoostOK = true;
-                    UAMBoostReason += "; iTime < 45 UAMBoost OK";
+                    UAMBoostReason += "; iTime<" + iTimeWindow + ": UAMBoost";
                 }
 
 
@@ -1394,13 +1388,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (UAMBoostOK && UAMBoost > UAMBoost_threshold) {
                     // boost the insulin further
                     insulinReqBoost = UAMBoost * UAMBoost_bolus;
-                    // set max SMB for UAMBoost no TT
-                    EatingNowMaxSMB = ( profile.EN_UAMBoostMaxSMB > 0 ? profile.EN_UAMBoostMaxSMB : maxBolus );
-                    // with a low TT allow different max SMB, this would be breakie - IDEA: USE FIRST MANUAL BOLUS TIME (ITIME) AFTER EATING NOW START TO INDICATE BREAKIE?
-                    EatingNowMaxSMB = ( profile.EN_UAMBoostMaxSMBLowTT > 0 && profile.temptargetSet && target_bg < profile.normal_target_bg ? profile.EN_UAMBoostMaxSMBLowTT : EatingNowMaxSMB );
-                    // with a low TT allow different max SMB, this would be breakie - IDEA: USE FIRST MANUAL BOLUS TIME (ITIME) AFTER EATING NOW START TO INDICATE BREAKIE?
-                    EatingNowMaxSMB = ( iTime1 < 120 ? profile.EN_UAMBoostMaxSMBLowTT : EatingNowMaxSMB );
+                    // set SMB limit for UAMBoost or UAMBoostMAX
+                    EatingNowMaxSMB = ( UAMBoostMAX ? profile.UAMBoostMAX_SMBLimit : profile.UAMBoost_SMBLimit );
+                    EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
+                    // with a low TT allow different max SMB, this would be breakie - IDEA: USE FIRST MANUAL BOLUS TIME (ITIME) AFTER EATING NOW START TO INDICATE BREAKIE?
+                    // EatingNowMaxSMB = ( profile.EN_UAMBoostMaxSMBMAX > 0 && profile.temptargetSet && target_bg < profile.normal_target_bg ? profile.EN_UAMBoostMaxSMBLowTT : EatingNowMaxSMB );
+                    // with a low TT allow different max SMB, this would be breakie - IDEA: USE FIRST MANUAL BOLUS TIME (ITIME) AFTER EATING NOW START TO INDICATE BREAKIE?
                     // Not 100% insulinReqPct with a temp target that has a prebolus
                     // insulinReqPct = (profile.temptargetSet && profile.temptarget_duration > 60 ? ENinsulinReqPct : insulinReqPct);
                     // Restrict insulinReqPct if UAMBoosted with no TT, low insulin and BGL bounce
@@ -1582,7 +1576,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // rT.boostType = ( BGBoosted ? "BG" : rT.boostType );
                     rT.boostType = ( ISFBoost < 1 ? "ISF" : rT.boostType );
                     rT.boostType = ( UAMBoosted ? "UAM" : rT.boostType );
-                    rT.boostType = ( UAMBoosted && iTime1 < 120 ? "UAM-MAX" : rT.boostType );
+                    rT.boostType = ( UAMBoosted && iTime1 < iTime1Window ? "UAM-MAX" : rT.boostType );
                 }
             } else {
                 rT.reason += "Waiting " + nextBolusMins + "m " + nextBolusSeconds + "s to microbolus again. ";

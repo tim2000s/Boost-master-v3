@@ -209,87 +209,6 @@
                 validate:floatminNumber="1"
                 validate:testType="floatNumericRange" />
 
-<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
-<!--                android:defaultValue="0.1"-->
-<!--                android:dialogMessage="@string/openapsama_boost_bolus_summary"-->
-<!--                android:digits="0123456789.,"-->
-<!--                android:inputType="numberDecimal"-->
-<!--                android:key="@string/key_openapsama_boost_bolus"-->
-<!--                android:maxLines="20"-->
-<!--                android:selectAllOnFocus="true"-->
-<!--                android:singleLine="true"-->
-<!--                android:title="@string/openapsama_boost_bolus_title"-->
-<!--                validate:floatmaxNumber="10"-->
-<!--                validate:floatminNumber="0.1"-->
-<!--                validate:testType="floatNumericRange" />-->
-
-<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
-<!--                android:defaultValue="1.0"-->
-<!--                android:dialogMessage="@string/openapsama_boost_scale_summary"-->
-<!--                android:digits="0123456789.,"-->
-<!--                android:inputType="numberDecimal"-->
-<!--                android:key="@string/key_openapsama_boost_scale"-->
-<!--                android:maxLines="20"-->
-<!--                android:selectAllOnFocus="true"-->
-<!--                android:singleLine="true"-->
-<!--                android:title="@string/openapsama_boost_scale_title"-->
-<!--                validate:floatmaxNumber="3"-->
-<!--                validate:floatminNumber="0.1"-->
-<!--                validate:testType="floatNumericRange" />-->
-
-<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
-<!--                android:defaultValue="65"-->
-<!--                android:enabled="true"-->
-<!--                android:dialogMessage="@string/UAM_InsulinReq_summary"-->
-<!--                android:inputType="numberDecimal"-->
-<!--                android:key="@string/key_UAM_InsulinReq"-->
-<!--                android:title="@string/UAM_InsulinReq_title"-->
-<!--                validate:floatmaxNumber="100"-->
-<!--                validate:floatminNumber="50"-->
-<!--                validate:testType="floatNumericRange" />-->
-
-
-<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
-<!--                android:defaultValue="0.1"-->
-<!--                android:dialogMessage="@string/openapsama_boost_max_iob_summary"-->
-<!--                android:digits="0123456789.,"-->
-<!--                android:inputType="numberDecimal"-->
-<!--                android:key="@string/key_openapsama_boost_max_iob"-->
-<!--                android:maxLines="20"-->
-<!--                android:selectAllOnFocus="true"-->
-<!--                android:singleLine="true"-->
-<!--                android:title="@string/openapsama_boost_max_iob_title"-->
-<!--                validate:floatmaxNumber="12"-->
-<!--                validate:floatminNumber="0.1"-->
-<!--                validate:testType="floatNumericRange" />-->
-<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
-<!--                android:defaultValue="7"-->
-<!--                android:dialogMessage="@string/openapsama_boost_start_summary"-->
-<!--                android:digits="0123456789.,"-->
-<!--                android:inputType="number"-->
-<!--                android:key="@string/key_openapsama_boost_start"-->
-<!--                android:maxLines="20"-->
-<!--                android:selectAllOnFocus="true"-->
-<!--                android:singleLine="true"-->
-<!--                android:title="@string/openapsama_boost_start_title"-->
-<!--                validate:floatmaxNumber="24"-->
-<!--                validate:floatminNumber="0"-->
-<!--                validate:testType="floatNumericRange" />-->
-
-<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
-<!--                android:defaultValue="8"-->
-<!--                android:dialogMessage="@string/openapsama_boost_end_summary"-->
-<!--                android:digits="0123456789.,"-->
-<!--                android:inputType="number"-->
-<!--                android:key="@string/key_openapsama_boost_end"-->
-<!--                android:maxLines="20"-->
-<!--                android:selectAllOnFocus="true"-->
-<!--                android:singleLine="true"-->
-<!--                android:title="@string/openapsama_boost_end_title"-->
-<!--                validate:floatmaxNumber="24"-->
-<!--                validate:floatminNumber="0"-->
-<!--                validate:testType="floatNumericRange" />-->
-
         <androidx.preference.PreferenceScreen
             android:key="eatingnow_options"
             android:title="Eating Now mode">
@@ -328,19 +247,38 @@
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="0"
                 android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_uamboostbolus"
-                android:title="UAMBoost Bolus (No TT)"
-                android:dialogMessage="Minimum bolus to boost for BGL rises\n0 will use insulinReq as the minimum"
+                android:key="@string/key_eatingnow_uamboost_bolus"
+                android:title="UAMBoost Bolus"
+                android:dialogMessage="Bolus to boost for BGL rises\n0 will not boost"
                 validate:floatmaxNumber="5.0"
                 validate:floatminNumber="0"
                 validate:testType="floatNumericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0.1"
+                android:defaultValue="0.0"
                 android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_uamboostmaxsmb"
-                android:title="UAMBoost Max SMB (No TT)"
-                android:dialogMessage="UAMBoost Max SMB for BGL rises\n0 will use UAM SMB Minutes"
+                android:key="@string/key_eatingnow_uamboost_smblimit"
+                android:title="UAMBoost SMB Limit"
+                android:dialogMessage="UAMBoost SMB limit for BGL rises\n0 will use maxBolus"
+                validate:floatmaxNumber="5.0"
+                validate:floatminNumber="0.0"
+                validate:testType="floatNumericRange"/>
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="0"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnow_uamboostmax_bolus"
+                android:title="UAMBoostMAX Bolus"
+                android:dialogMessage="Bolus to boost for BGL rises within first bolus window (UAMBoostMAX)\n0 will not boost"
+                validate:floatmaxNumber="5.0"
+                validate:floatminNumber="0"
+                validate:testType="floatNumericRange"/>
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="0.0"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnow_uamboostmax_smblimit"
+                android:title="UAMBoostMAX SMB Limit"
+                android:dialogMessage="UAMBoostMAX SMB limit for BGL rises within first bolus window\n0 will use maxBolus"
                 validate:floatmaxNumber="5.0"
                 validate:floatminNumber="0.0"
                 validate:testType="floatNumericRange"/>
@@ -354,84 +292,6 @@
                 validate:floatmaxNumber="5.0"
                 validate:floatminNumber="0.0"
                 validate:testType="floatNumericRange"/>
-
-<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
-<!--                android:defaultValue="0"-->
-<!--                android:dialogMessage="UAMBoost Max SMB Minutes for BGL rises\n0 will use UAM SMB Minutes"-->
-<!--                android:digits="0123456789"-->
-<!--                android:inputType="number"-->
-<!--                android:key="@string/key_eatingnow_uamboostmaxsmb"-->
-<!--                android:maxLines="20"-->
-<!--                android:selectAllOnFocus="true"-->
-<!--                android:singleLine="true"-->
-<!--                android:title="UAMBoost Max SMB Minutes (No TT)"-->
-<!--                validate:maxNumber="360"-->
-<!--                validate:minNumber="0"-->
-<!--                validate:testType="numericRange" />-->
-
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0"
-                android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_uamboostbolus_tt"
-                android:title="UAMBoost Bolus (Low TT)"
-                android:dialogMessage="Minimum bolus to boost for BGL rises with low temp target\n0 will use insulinReq as the minimum"
-                validate:floatmaxNumber="5.0"
-                validate:floatminNumber="0"
-                validate:testType="floatNumericRange"/>
-
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0.1"
-                android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_uamboostmaxsmb_tt"
-                android:title="UAMBoost Max SMB (Low TT)"
-                android:dialogMessage="UAMBoost Max SMB for BGL rises with low temp target\n0 will use UAM SMB Minutes"
-                validate:floatmaxNumber="5.0"
-                validate:floatminNumber="0.0"
-                validate:testType="floatNumericRange"/>
-
-<!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
-<!--                android:defaultValue="0"-->
-<!--                android:dialogMessage="UAMBoost Max SMB Minutes for BGL rises with low temp target\n0 will use UAM SMB Minutes"-->
-<!--                android:digits="0123456789"-->
-<!--                android:inputType="number"-->
-<!--                android:key="@string/key_eatingnow_uamboostmaxsmb_tt"-->
-<!--                android:maxLines="20"-->
-<!--                android:selectAllOnFocus="true"-->
-<!--                android:singleLine="true"-->
-<!--                android:title="UAMBoost Max SMB Minutes (Low TT)"-->
-<!--                validate:maxNumber="360"-->
-<!--                validate:minNumber="0"-->
-<!--                validate:testType="numericRange" />-->
-
-            <!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
-            <!--                android:defaultValue="0"-->
-            <!--                android:inputType="numberDecimal"-->
-            <!--                android:key="@string/key_eatingnow_bgboostbg"-->
-            <!--                android:title="BGBoost Threshold"-->
-            <!--                android:dialogMessage="When BG is predicted to exceed this, BGBoost is used for insulinReq."-->
-            <!--                validate:floatmaxNumber="270.0"-->
-            <!--                validate:floatminNumber="7.0"-->
-            <!--                validate:testType="floatNumericRange" />-->
-
-            <!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
-            <!--                android:defaultValue="0"-->
-            <!--                android:inputType="numberDecimal"-->
-            <!--                android:key="@string/key_eatingnow_bgboostbolus"-->
-            <!--                android:title="BGBoost Bolus"-->
-            <!--                android:dialogMessage="Minimum bolus to boost for BG predicted to exceed the BGBoost Threshold\n0 will use insulinReq as the minimum"-->
-            <!--                validate:floatmaxNumber="5.0"-->
-            <!--                validate:floatminNumber="0"-->
-            <!--                validate:testType="floatNumericRange"/>-->
-
-            <!--            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
-            <!--                android:defaultValue="0.1"-->
-            <!--                android:inputType="numberDecimal"-->
-            <!--                android:key="@string/key_eatingnow_bgboostmaxsmb"-->
-            <!--                android:title="BGBoost Max SMB"-->
-            <!--                android:dialogMessage="BGBoost Max SMB for BGL rises\n0 will use UAM SMB Minutes"-->
-            <!--                validate:floatmaxNumber="5.0"-->
-            <!--                validate:floatminNumber="0.0"-->
-            <!--                validate:testType="floatNumericRange"/>-->
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="1.0"
