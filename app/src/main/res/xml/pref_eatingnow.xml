@@ -351,7 +351,7 @@
                     android:defaultValue="0.0"
                     android:inputType="numberDecimal"
                     android:key="@string/key_eatingnow_isfboost_smblimit"
-                    android:title="ISFBoost SMB Limit (No TT)"
+                    android:title="ISFBoost SMB Limit"
                     android:dialogMessage="ISFBoost SMB Limit for BGL rises\n0 will use maxBolus"
                     validate:floatmaxNumber="5.0"
                     validate:floatminNumber="0.0"
