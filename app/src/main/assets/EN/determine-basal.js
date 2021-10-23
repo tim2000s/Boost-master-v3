@@ -1386,7 +1386,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // For BG rises that dont meet the UAMBoost criteria
                 if (ISFBoost <1 && !UAMBoosted) {
                      // set max SMB for ISFBoost
-                    EatingNowMaxSMB = ( profile.EN_ISFBoostMaxSMB > 0 ? profile.EN_ISFBoostMaxSMB : maxBolus );
+                    EatingNowMaxSMB = ( profile.ISFBoost_SMBLimit > 0 ? profile.ISFBoost_SMBLimit : maxBolus );
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     SMB_TBR = true;
                     ISFBoosted = true;

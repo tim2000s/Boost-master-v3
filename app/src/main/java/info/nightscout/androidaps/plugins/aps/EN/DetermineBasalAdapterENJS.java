@@ -351,7 +351,7 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("UAMBoostMAX_SMBLimit", sp.getDouble(R.string.key_eatingnow_uamboostmax_smblimit, 0));
         mProfile.put("iTimeMaxWindow", sp.getInt(R.string.key_eatingnow_itime1minutes, 15));
 
-        mProfile.put("EN_ISFBoostMaxSMB", sp.getDouble(R.string.key_eatingnow_isfboostmaxsmb, 0.1));
+        mProfile.put("ISFBoost_SMBLimit", sp.getDouble(R.string.key_eatingnow_isfboost_smblimit, 0));
         // patches ==== END
 
 
