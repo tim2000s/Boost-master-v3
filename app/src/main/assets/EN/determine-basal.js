@@ -1007,8 +1007,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (liftISF > 1) rT.reason += ", liftISF: " + round(liftISF,2); //autoISF reason
     rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     rT.reason += ", TDD: " + round(TDD, 2);
-    if (iTime < iTimeWindow) rT.reason += ", iTime: " + iTime+"m";
-    if (iTimeMax < iTimeMaxWindow) rT.reason += ", iTimeMax: " + iTimeMax+"m";
+    // If max window exists we dont need to show iTime
+    if (iTimeMax < iTimeMaxWindow) {
+        rT.reason += ", iTimeMax: " + iTimeMax+"m";
+    } else if (iTime < iTimeWindow) {
+        rT.reason += ", iTime: " + iTime+"m";
+    }
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
     var carbsReqBG = naive_eventualBG;
