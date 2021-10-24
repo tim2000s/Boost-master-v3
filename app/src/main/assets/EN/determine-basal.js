@@ -1375,8 +1375,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // set SMB limit for UAMBoost or UAMBoostMAX
                     EatingNowMaxSMB = ( UAMBoostMAX ? profile.UAMBoostMAX_SMBLimit : profile.UAMBoost_SMBLimit );
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
-                    // Restrict SMB size to maxBolus if we are outside of the iTime window
-                    EatingNowMaxSMB = ( iTime < iTimeWindow || iTimeMax < iTimeMaxWindow ? EatingNowMaxSMB : maxBolus);
                     // make it pretty
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // with a low TT allow different max SMB, this would be breakie - IDEA: USE FIRST MANUAL BOLUS TIME (ITIME) AFTER EATING NOW START TO INDICATE BREAKIE?
@@ -1420,12 +1418,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== MAXBOLUS RESTRICTIONS ==============
                 // If no TT and low insulin restrict maxBolus only when no COB
-                if (!profile.temptargetSet && iob_data.iob < profile.EatingNowIOB && meal_data.mealCOB == 0) {
-                    EatingNowMaxSMB = maxBolus;
-                    UAMBoostReason = "; IOB < " + profile.EatingNowIOB + "U: default maxBolus";
-                } else {
+                //if (!profile.temptargetSet && iob_data.iob < profile.EatingNowIOB && meal_data.mealCOB == 0) {
+                // allow EatingNowMaxSMB with COB or iTime window OK else restrict to maxBolus
+                if ( meal_data.mealCOB > 0 || (iTime < iTimeWindow || iTimeMax < iTimeMaxWindow) ) {
                     EatingNowMaxSMB = EatingNowMaxSMB;
-//                    UAMBoostReason += ";IOB more than " + profile.EatingNowIOB + ": boost enabled";
+                    // UAMBoostReason = "; IOB < " + profile.EatingNowIOB + "U: default maxBolus";
+                } else {
+                    EatingNowMaxSMB = maxBolus;
+//                  // UAMBoostReason += ";IOB more than " + profile.EatingNowIOB + ": boost enabled";
                 }
                 //EatingNowMaxSMB = ( !profile.temptargetSet && iob_data.iob < profile.EatingNowIOB && meal_data.mealCOB == 0 ? maxBolus : EatingNowMaxSMB );
 
