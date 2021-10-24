@@ -1007,12 +1007,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (liftISF > 1) rT.reason += ", liftISF: " + round(liftISF,2); //autoISF reason
     rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     rT.reason += ", TDD: " + round(TDD, 2);
-    // If max window exists we dont need to show iTime
-    if (iTimeMax < iTimeMaxWindow) {
-        rT.reason += ", iTimeMax: " + iTimeMax+"m/"+iTimeMaxWindow+"m";
-    } else if (iTime < iTimeWindow) {
-        rT.reason += ", iTime: " + iTime+"m/"+iTimeWindow+"m";
-    }
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
     var carbsReqBG = naive_eventualBG;
@@ -1361,7 +1355,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // Recent manual bolus allow faster UAMBoost response
                 if (iTime < iTimeWindow && UAM_safedelta >0 && !UAMBoostMAX) {
                     UAMBoostOK = true;
-                    UAMBoostReason += "; iTime<" + iTimeWindow + "m: UAMBoost";
+                    //UAMBoostReason += "; iTime<" + iTimeWindow + "m: UAMBoost";
                 }
 
                 // ============== UAMBOOST ==============
@@ -1473,6 +1467,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
             }
+
+            // ============== iTime Reason ==============
+            // If max window exists we dont need to show iTime
+            if (iTimeMax < iTimeMaxWindow) {
+                UAMBoostReason += ", iTimeMax: " + iTimeMax+"m/"+iTimeMaxWindow+"m";
+            } else if (iTime < iTimeWindow) {
+                UAMBoostReason += ", iTime: " + iTime+"m/"+iTimeWindow+"m";
+            }
+
             // ============  UAMBoost for Eating Now mode  ==================== END
 
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
