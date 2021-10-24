@@ -168,6 +168,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.error ='Error: could not get current basal rate';
         return rT;
     }
+
+    rT.reason = "<start>";
     var profile_current_basal = round_basal(profile.current_basal, profile);
     var basal = profile_current_basal;
     var maxSafeBasal = tempBasalFunctions.getMaxSafeBasal(profile);
