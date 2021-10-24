@@ -1375,6 +1375,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // set SMB limit for UAMBoost or UAMBoostMAX
                     EatingNowMaxSMB = ( UAMBoostMAX ? profile.UAMBoostMAX_SMBLimit : profile.UAMBoost_SMBLimit );
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
+                    // Restrict SMB size to maxBolus if we are outside of the iTime window
+                    EatingNowMaxSMB = ( iTime < iTimeWindow || iTimeMax < iTimeMaxWindow ? EatingNowMaxSMB : maxBolus);
+                    // make it pretty
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // with a low TT allow different max SMB, this would be breakie - IDEA: USE FIRST MANUAL BOLUS TIME (ITIME) AFTER EATING NOW START TO INDICATE BREAKIE?
                     // EatingNowMaxSMB = ( profile.EN_UAMBoostMaxSMBMAX > 0 && profile.temptargetSet && target_bg < profile.normal_target_bg ? profile.EN_UAMBoostMaxSMBLowTT : EatingNowMaxSMB );
