@@ -1437,7 +1437,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = insulinReqPctDefault;
                     //SMB_TBR = true;
                     EatingNowMaxSMB = maxBolus;
-                    UAMBoostReason = "; delta slowing: default maxBolus & insulinReqPct";
+                    UAMBoostReason = "; delta slowing: no boost";
                     // Restrict insulinReq when above BGBoost_threshold
                     //insulinReqPct = ( bg > BGBoost_threshold && insulinReqPct > insulinReqPctDefault ? insulinReqPctDefault : insulinReqPct );
                     // this may help after sensor errors
@@ -1476,7 +1476,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== INSULIN BOOST  ==============
-                UAMBoostReason = "EN: UAM" + (UAMBoostMAX ? "-MAX" : "") + (UAMBoost > UAMBoost_threshold ? ">" + round(UAMBoost_threshold,1) : "") + ": " + UAMBoost + (UAMBoosted ? "*" + round (UAMBoost_bolus,2) :"") + UAMBoostReason;
+                UAMBoostReason = "EN: UAM" + (UAMBoostMAX ? "-MAX" : "") + (UAMBoost > UAMBoost_threshold ? ">" + round(UAMBoost_threshold,1) : "") + ":" + UAMBoost + (UAMBoosted ? "*" + round (UAMBoost_bolus,2) :"") + UAMBoostReason;
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
