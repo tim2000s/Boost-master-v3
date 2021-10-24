@@ -19,7 +19,7 @@
 // Escape the text for < &lt; & > &gt;
 function esc_text(text)
 {
-    return (text.replace("<", "&lt;").replace(">", "&gt;");
+    return (text.replace("<", "&lt;").replace(">", "&gt;"));
 }
 
 // Fix the round_basal issue?
