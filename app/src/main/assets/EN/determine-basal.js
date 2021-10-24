@@ -1468,9 +1468,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else {
                     // Default insulinReqPct and maxBolus at night
                     insulinReqPct = insulinReqPctDefault;
+                    maxBolus = maxBolus;
                     // maxBolus can be larger if the TT is low
-                    maxBolus = ( profile.temptargetSet && target_bg <= profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
-                    UAMBoostReason ="; EN time override enabled: " + (profile.temptargetSet && target_bg <= profile.normal_target_bg ? "increased" : "default") +" maxBolus" ;
+                    // maxBolus = ( profile.temptargetSet && target_bg <= profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
+                    //UAMBoostReason ="; EN time override enabled: " + (profile.temptargetSet && target_bg <= profile.normal_target_bg ? "increased" : "default") +" maxBolus" ;
                 }
 
                 // ============== INSULIN BOOST  ==============
