@@ -1009,9 +1009,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     rT.reason += ", TDD: " + round(TDD, 2);
     // If max window exists we dont need to show iTime
     if (iTimeMax < iTimeMaxWindow) {
-        rT.reason += ", iTimeMax: " + iTimeMax+"m<"+iTimeMaxWindow+"m";
+        rT.reason += ", iTimeMax: " + iTimeMax+"m/"+iTimeMaxWindow+"m";
     } else if (iTime < iTimeWindow) {
-        rT.reason += ", iTime: " + iTime+"m<"+iTimeWindow+"m";
+        rT.reason += ", iTime: " + iTime+"m/"+iTimeWindow+"m";
     }
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
@@ -1469,7 +1469,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== INSULIN BOOST  ==============
                 UAMBoostReason = ", UAM" + (UAMBoostMAX ? "-MAX" : "") + ">" + round(UAMBoost_threshold,1) + ": " + UAMBoost + (UAMBoosted ? "*" + round (UAMBoost_bolus,2) :"") + UAMBoostReason;
-                //UAMBoostReason = ", Boost: UAM>" + round(UAMBoost_threshold,1) + ": " + UAMBoost + (UAMBoosted ? "*" + round (UAMBoost_bolus,2) :"") + ", BG>" + convert_bg(BGBoost_threshold, profile) + ": " + round(BGBoost_scale,1) + (BGBoosted && insulinReqBoost >0 ? "*" + round(BGBoost_bolus,2) :"") + UAMBoostReason;
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
