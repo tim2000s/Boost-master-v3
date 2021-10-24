@@ -305,12 +305,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var CurrentTIRinRange = meal_data.currentTIRRange;
         var CurrentTIRAbove = meal_data.currentTIRAbove;
         var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
-        if (statinrange <= 95 && statTirBelow >= 4 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >= 4){
-        TDD*=0.7;
-        console.log("TDD new value because TIR show hypo during the last 7 days and  the curent day too :"+TDD);
-        }else if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0 || smbTDD === 0 && iTime < iTimeProfile && tdd_pump_now >= tdd7*0.3 ){
-        TDD*=1.2;
-        console.log("TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% or TDD_pump > 0.3*TTD7  :"+TDD);
+
+        if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0 || smbTDD === 0 && iTime < iTimeProfile && tdd_pump_now >= tdd7*0.3 ){
+            TDD*=1.2;
+            console.log("TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% or TDD_pump > 0.3*TTD7 && iTime < iTimeProfile  <  :"+TDD);
+        }else if (statinrange <= 95 && statTirBelow >= 4 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >= 4){
+            TDD*=0.7;
+            console.log("TDD new value because TIR show hypo during the last 7 days and  the curent day too :"+TDD);
         }
 
 
