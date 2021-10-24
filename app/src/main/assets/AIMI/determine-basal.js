@@ -294,6 +294,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
         }
+
+        var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
+        var iTimeProfile = profile.iTime;
+        if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && bg < 170 || smbTDD === 1 && bg < 170 ){iTimeProfile *=0.7; }
+
         var statTirBelow = meal_data.StatLow7;
         var statinrange = meal_data.StatInRange7;
         var currentTIRLow = meal_data.currentTIRLow;
@@ -303,9 +308,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (statinrange <= 95 && statTirBelow >= 4 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >= 4){
         TDD*=0.7;
         console.log("TDD new value because TIR show hypo during the last 7 days and  the curent day too :"+TDD);
-        }else if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0){
+        }else if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0 || smbTDD === 0 && iTime < iTimeProfile && tdd_pump_now >= tdd7*0.3 ){
         TDD*=1.2;
-        console.log("TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% :"+TDD);
+        console.log("TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% or TDD_pump > 0.3*TTD7  :"+TDD);
         }
 
 
@@ -318,6 +323,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //"+variable_sens+" ; ");
     //console.log("TDDnow : "+TDDnow+";");
     sens = variable_sens;
+
     //var eRatio = round((bg/0.16)/sens,2);
     var eRatio = round(sens / 13.2);
     //console.error("eRatio:",eRatio);
@@ -326,10 +332,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
     var TriggerPredSMB = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
 
-    //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
     var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
-    //var iTime = round(( meal_data.lastBolusCorr ) ,1);
-
     var iTimeProfile = profile.iTime;
     if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && bg < 170 || smbTDD === 1 && bg < 170 ){iTimeProfile *=0.7; }
 
@@ -365,13 +368,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             } else {
                 console.log("Basal unchanged: "+basal+"; ");
             }
-  }else if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target ) {//&& glucose_status.delta <= 0
+  }else if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && iTime > iTimeProfile ) {//&& glucose_status.delta <= 0
 
         var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
-        if (EBG <= 100 && HypoPredBG < 80) {
+       if (EBG <= 100 && HypoPredBG < 80) {
             hypo_target = 130;
             console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 100 and HypoPredBG < 80 : "+EBG+"; ");
-        }else if (EBG60 <= 90 && EBG60 >0) {
+        }else if (EBG60 <= 90 && EBG60 >0 && smbTDD === 1) {
             hypo_target = 100;
             console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG60 is lesser than 90 : "+EBG60+"; ");
         }else if (target_bg === hypo_target) {
@@ -420,8 +423,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.log("Basal unchanged: "+basal+"; ");
         }
     }
+
 //================= MT =====================================
-    console.log("***hypo_target : "+hypo_target+" & hyper_target : "+hyper_target);
+    //console.log("***hypo_target : "+hypo_target+" & hyper_target : "+hyper_target);
 
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
