@@ -758,9 +758,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var remainingCIs = [];
     var predCIs = [];
 
-    var insulinPeakTime = profile.insulinPeakTime;
-    // add 30m to allow for insulin delivery (SMBs or temps)
-    var insulinPeak5m = (insulinPeakTime/60)*12;
+//    var insulinPeakTime = profile.insulinPeakTime;
+//    // add 30m to allow for insulin delivery (SMBs or temps)
+//    var insulinPeak5m = (insulinPeakTime/60)*12;
+
     try {
         iobArray.forEach(function(iobTick) {
             //console.error(iobTick);
@@ -814,10 +815,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if ( ZTpredBG < minZTGuardBG ) { minZTGuardBG = round(ZTpredBG); }
 
             // set minPredBGs starting when currently-dosed insulin activity will peak
-            // look ahead to insulinPeakTime
-            // var insulinPeakTime = profile.insulinPeakTime;
+            // look ahead 60m (regardless of insulin type) so as to be less aggressive on slower insulins
+            var insulinPeakTime = 60;
             // add 30m to allow for insulin delivery (SMBs or temps)
-            // var insulinPeak5m = (insulinPeakTime/60)*12;
+            insulinPeakTime = 90;
+            var insulinPeak5m = (insulinPeakTime/60)*12;
             //console.error(insulinPeakTime, insulinPeak5m, profile.insulinPeakTime, profile.curve);
 
             // wait 90m before setting minIOBPredBG
