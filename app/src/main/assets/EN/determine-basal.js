@@ -1060,7 +1060,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     if (enableSMB && minGuardBG < threshold) {
         console.error("minGuardBG",convert_bg(minGuardBG, profile),"projected below", convert_bg(threshold, profile) ,"- disabling SMB");
-        rT.reason += esc_text("minGuardBG "+minGuardBG+"<"+threshold+": SMB disabled; ");
+        // rT.reason += "minGuardBG "+minGuardBG+"<"+threshold+": SMB disabled; ";
         enableSMB = false;
     }
     if ( maxDelta > 0.30 * bg ) {
