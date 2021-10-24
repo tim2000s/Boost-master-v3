@@ -133,13 +133,8 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     private val secondaryGraphsLabel = ArrayList<TextView>()
 
     private var carbAnimation: AnimationDrawable? = null
-    public var insulinAnimation: AnimationDrawable? = null
-
 
     private val graphLock = Object()
-   // val now = System.currentTimeMillis()
-
-   // private fun iTimeForOverview(now: Long) = (now - treatmentsPlugin.getLastBolusTime(true)) / 60000
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -176,10 +171,6 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         carbAnimation = overview_carbs_icon?.background as AnimationDrawable?
         carbAnimation?.setEnterFadeDuration(1200)
         carbAnimation?.setExitFadeDuration(1200)
-
-        insulinAnimation = overview_insulin_icon?.background as AnimationDrawable?
-        insulinAnimation?.setEnterFadeDuration(1200)
-        insulinAnimation?.setExitFadeDuration(1200)
 
         rangeToDisplay = sp.getInt(R.string.key_rangetodisplay, 6)
 
@@ -566,7 +557,6 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         val lastRun = loopPlugin.lastRun
         val predictionsAvailable = if (config.APS) lastRun?.request?.hasPredictions == true else config.NSCLIENT
 
-
         try {
             updateGraph(lastRun, predictionsAvailable, lowLine, highLine, pump, profile)
         } catch (e: IllegalStateException) {
@@ -789,11 +779,6 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             if (cobInfo.futureCarbs > 0) cobText += "(" + DecimalFormatter.to0Decimal(cobInfo.futureCarbs) + ")"
         }
 
-        if (iTimeUpdate < iTimeSettings) {
-            insulinAnimation?.start()
-        }else{
-            insulinAnimation?.stop()
-        }
         if (config.APS && lastRun?.constraintsProcessed != null) {
             if (lastRun.constraintsProcessed!!.carbsReq > 0) {
                 //only display carbsreq when carbs have not been entered recently
