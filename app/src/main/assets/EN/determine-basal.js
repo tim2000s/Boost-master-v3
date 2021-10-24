@@ -1475,7 +1475,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== INSULIN BOOST  ==============
-                UAMBoostReason = ", UAM" + (UAMBoostMAX ? "-MAX" : "") + ">" + round(UAMBoost_threshold,1) + ": " + UAMBoost + (UAMBoosted ? "*" + round (UAMBoost_bolus,2) :"") + UAMBoostReason;
+                UAMBoostReason = "* EN: UAM" + (UAMBoostMAX ? "-MAX" : "") + ">" + round(UAMBoost_threshold,1) + ": " + UAMBoost + (UAMBoosted ? "*" + round (UAMBoost_bolus,2) :"") + UAMBoostReason;
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
@@ -1484,9 +1484,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // ============== iTime Reason ==============
             // If max window exists we dont need to show iTime
             if (iTimeMax < iTimeMaxWindow) {
-                UAMBoostReason += ", iTimeMax: " + iTimeMax+"m/"+iTimeMaxWindow+"m";
+                UAMBoostReason += ", iTimeMax: " + iTimeMax+"m<"+iTimeMaxWindow+"m";
             } else if (iTime < iTimeWindow) {
-                UAMBoostReason += ", iTime: " + iTime+"m/"+iTimeWindow+"m";
+                UAMBoostReason += ", iTime: " + iTime+"m<"+iTimeWindow+"m";
             }
 
             // ============  UAMBoost for Eating Now mode  ==================== END
@@ -1553,7 +1553,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason += "; setting " + durationReq + "m low temp of " + smbLowTempReq + "U/h";
             }
             rT.reason += ". ";
-            rT.reason += UAMBoostReason; // THE END?
+            rT.reason += UAMBoostReason + "*"; // THE END?
             rT.reason = esc_text(rT.reason);
 
             //allow SMBs every 3 minutes by default
