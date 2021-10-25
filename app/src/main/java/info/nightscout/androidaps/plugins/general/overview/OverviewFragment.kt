@@ -81,11 +81,6 @@ import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
-import java.util.Date
-import info.nightscout.androidaps.utils.T
-import info.nightscout.androidaps.utils.DateUtil
-
-import org.json.JSONObject
 
 class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickListener {
 
@@ -120,7 +115,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     @Inject lateinit var databaseHelper: DatabaseHelperInterface
 
     private val disposable = CompositeDisposable()
-    private var profile = JSONObject()
+
     private var smallWidth = false
     private var smallHeight = false
     private lateinit var dm: DisplayMetrics
@@ -738,32 +733,15 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         treatmentsPlugin.updateTotalIOBTempBasals()
         val bolusIob = treatmentsPlugin.lastCalculationTreatments.round()
         val basalIob = treatmentsPlugin.lastCalculationTempBasals.round()
-        //val now = System.currentTimeMillis()
-
-        //(System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
-        val iTimeUpdate = (System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
         overview_iob?.text = resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob)
-        val iTimeSettings = (SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")))
-        if (iTimeUpdate < iTimeSettings) {
-            overview_iob_llayout?.setOnClickListener {
-                activity?.let {
-                    OKDialog.show(it, resourceHelper.gs(R.string.iob),
-                        resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
-                            resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
-                            resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob) + "\n" +
-                            resourceHelper.gs(R.string.iTime) + ": " + resourceHelper.gs(R.string.format_mins,iTimeUpdate)
-                    )
-                }
-            }
-        }else{
-            overview_iob_llayout?.setOnClickListener {
-                activity?.let {
-                    OKDialog.show(it, resourceHelper.gs(R.string.iob),
-                        resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
-                            resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
-                            resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob)
-                    )
-                }
+
+        overview_iob_llayout?.setOnClickListener {
+            activity?.let {
+                OKDialog.show(it, resourceHelper.gs(R.string.iob),
+                    resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
+                        resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
+                        resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob)
+                )
             }
         }
 
