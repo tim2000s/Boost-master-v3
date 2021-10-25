@@ -329,15 +329,6 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("autoisf_max",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autoisf_max, "1.2")));
         mProfile.put("autoisf_hourlychange",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autoisf_hourlychange, "0.2")));
 
-        //MD: TempTarget Info ==== START
-        TempTarget tempTarget = treatmentsPlugin.getTempTargetFromHistory(System.currentTimeMillis());
-
-        if (tempTarget != null) {
-            mProfile.put("temptarget_duration", tempTarget.durationInMinutes);
-            mProfile.put("temptarget_minutesrunning", tempTarget.getRealTTDuration());
-        }
-        //MD: TempTarget Info ==== END
-
         // patches ==== START
         mProfile.put("enableGhostCOB", sp.getBoolean(R.string.key_use_ghostcob, false));
         mProfile.put("EatingNowIOB", sp.getDouble(R.string.key_eatingnow_iob, 5));
