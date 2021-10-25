@@ -1384,9 +1384,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== MAXBOLUS RESTRICTIONS ==============
                 // allow EatingNowMaxSMB with COB or iTime window OK else restrict to maxBolus
                 if ( meal_data.mealCOB > 0 || (iTime < iTimeWindow || iTimeMax < iTimeMaxWindow) ) {
-                    EatingNowMaxSMB = EatingNowMaxSMB;
+                    EatingNowMaxSMB = EatingNowMaxSMB; // use EN SMB Limit
                 } else {
-                    EatingNowMaxSMB = maxBolus;
+                    EatingNowMaxSMB = Math.min(maxBolus,EatingNowMaxSMB); // use the most restrictive
                 }
                 // ===================================================
 
