@@ -283,16 +283,39 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var tdd7 = meal_data.TDDAIMI7;
         var tdd_pump_now = meal_data.TDDPUMP;
         var tdd_pump = ( tdd_pump_now / (now / 24));
-        var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
+        var TDD = (tdd7 * 0.3) + (tdd_pump * 0.7);
         console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
+        var smbTDD = 0;
         if (tdd_pump < (0.5 * tdd7)){
-            TDD = (tdd7 * 0.2) + (tdd_pump * 0.8);
+            TDD = (tdd7 * 0.1) + (tdd_pump * 0.9);
+            smbTDD = 1;
             console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
         }else{
 
             console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
         }
 
+        var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
+        var iTimeProfile = profile.iTime;
+        if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && bg < 170 || smbTDD === 1 && bg < 170 ){iTimeProfile *=0.7; }
+
+        var statTirBelow = meal_data.StatLow7;
+        var statinrange = meal_data.StatInRange7;
+        var currentTIRLow = meal_data.currentTIRLow;
+        var CurrentTIRinRange = meal_data.currentTIRRange;
+        var CurrentTIRAbove = meal_data.currentTIRAbove;
+        var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
+
+        if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0 || smbTDD === 0 && iTime < iTimeProfile && tdd_pump_now >= tdd7*0.3 ){
+            TDD*=1.2;
+            console.log("TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% or TDD_pump > 0.3*TTD7 && iTime < iTimeProfile  <  :"+TDD);
+        }else if (statinrange <= 95 && statTirBelow >= 4 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >= 4){
+            TDD*=0.7;
+            console.log("TDD new value because TIR show hypo during the last 7 days and  the curent day too :"+TDD);
+        }
+
+
+        //console.log("stat Tir : "+StatLow7);
     var variable_sens = (277700 / (TDD * bg));
     variable_sens = round(variable_sens,1);
     //var TDDnow = meal_data.TDDAIMI1;
@@ -301,6 +324,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //"+variable_sens+" ; ");
     //console.log("TDDnow : "+TDDnow+";");
     sens = variable_sens;
+
     //var eRatio = round((bg/0.16)/sens,2);
     var eRatio = round(sens / 13.2);
     //console.error("eRatio:",eRatio);
@@ -309,9 +333,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
     var TriggerPredSMB = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
 
-    //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
     var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
-    //var iTime = round(( meal_data.lastBolusCorr ) ,1);
+    var iTimeProfile = profile.iTime;
+    if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && bg < 170 || smbTDD === 1 && bg < 170 ){iTimeProfile *=0.7; }
 
     var csf = profile.sens / profile.carb_ratio ;
 
@@ -326,7 +350,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastboluscorr ) / 60000,1);
 
 
-    if (iTime < profile.iTime && glucose_status.delta > 2) {
+    if (iTime < iTimeProfile && glucose_status.delta > 2) {
             var hyper_target = 80;
             //console.log("target_bg from "+target_bg+" to "+hyper_target+" because TriggerPredSMB > 450 : "+TriggerPredSMB+" ; ");
             target_bg = hyper_target;
@@ -345,24 +369,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             } else {
                 console.log("Basal unchanged: "+basal+"; ");
             }
-  }else if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target ) {//&& glucose_status.delta <= 0
+  }else if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && iTime > iTimeProfile ) {//&& glucose_status.delta <= 0
 
         var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
-        if (HypoPredBG <= 90 && HypoPredBG >= 80 && hypo_target <= 100 && EBG < 110) {
-            hypo_target += 20;
-            //console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 90 : "+HypoPredBG+"; ");
-        }else if (EBG <= 100 && HypoPredBG < 80) {
+       if (EBG <= 100 && HypoPredBG < 80) {
             hypo_target = 130;
-            //console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 100 and HypoPredBG < 80 : "+EBG+"; ");
-        }else if (EBG <= 85) {
-            hypo_target = 130;
-            //console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 85 : "+EBG+"; ");
-        }else if (EBG60 <= 90 && EBG60 >0) {
+            console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 100 and HypoPredBG < 80 : "+EBG+"; ");
+        }else if (EBG60 <= 90 && EBG60 >0 && smbTDD === 1) {
             hypo_target = 100;
-            //console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG60 is lesser than 90 : "+EBG60+"; ");
-        }else if (EBG60 <= 0) {
-            hypo_target = 130;
-            //console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG60 is lesser than 0 : "+EBG60+"; ");
+            console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG60 is lesser than 90 : "+EBG60+"; ");
         }else if (target_bg === hypo_target) {
             console.log("target_bg unchanged: "+hypo_target+"; ");
         }else {
@@ -384,7 +399,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         } else {
             console.log("Basal unchanged: "+basal+"; ");
         }
-    } else if (!profile.temptargetSet && HyperPredBG >= 180 && profile.resistance_lowers_target) {
+    } else if (!profile.temptargetSet && HyperPredBG >= 220 && profile.resistance_lowers_target) {
 
         var hyper_target = round(Math.max(80, min_bg - (bg - min_bg)/3 ),0);
         if (target_bg === hyper_target) {
@@ -409,8 +424,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.log("Basal unchanged: "+basal+"; ");
         }
     }
+
 //================= MT =====================================
-    console.log("***hypo_target : "+hypo_target+" & hyper_target : "+hyper_target);
+    //console.log("***hypo_target : "+hypo_target+" & hyper_target : "+hyper_target);
 
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
@@ -726,11 +742,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //console.error(predBGI, predCI, predUCI);
             // truncate all BG predictions at 4 hours
 
-            if ( IOBpredBGs.length < 48) { IOBpredBGs.push(IOBpredBG); }
-            if ( COBpredBGs.length < 48) { COBpredBGs.push(COBpredBG); }
-            if ( aCOBpredBGs.length < 48) { aCOBpredBGs.push(aCOBpredBG); }
-            if ( UAMpredBGs.length < 48) { UAMpredBGs.push(UAMpredBG); }
-            if ( ZTpredBGs.length < 48) { ZTpredBGs.push(ZTpredBG); }
+            if ( iTime < iTimeProfile && IOBpredBGs.length < 24 || IOBpredBGs.length < 48) { IOBpredBGs.push(IOBpredBG); }
+            if ( iTime < iTimeProfile && COBpredBGs.length < 24 || COBpredBGs.length < 48) { COBpredBGs.push(COBpredBG); }
+            if ( iTime < iTimeProfile && aCOBpredBGs.length < 24 || aCOBpredBGs.length < 48) { aCOBpredBGs.push(aCOBpredBG); }
+            if ( iTime < iTimeProfile && UAMpredBGs.length < 24 ||  UAMpredBGs.length < 48) { UAMpredBGs.push(UAMpredBG); }
+            if ( iTime < iTimeProfile && ZTpredBGs.length < 24 || ZTpredBGs.length < 48) { ZTpredBGs.push(ZTpredBG); }
             // calculate minGuardBGs without a wait from COB, UAM, IOB predBGs
             if ( COBpredBG < minCOBGuardBG ) { minCOBGuardBG = round(COBpredBG); }
             if ( UAMpredBG < minUAMGuardBG ) { minUAMGuardBG = round(UAMpredBG); }
@@ -752,7 +768,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // wait 85-105m before setting COB and 60m for UAM minPredBGs
             if ( (cid || remainingCIpeak > 0) && COBpredBGs.length > insulinPeak5m && (COBpredBG < minCOBPredBG) ) { minCOBPredBG = round(COBpredBG); }
             if ( (cid || remainingCIpeak > 0) && COBpredBG > maxIOBPredBG ) { maxCOBPredBG = COBpredBG; }
-            if ( enableUAM && UAMpredBGs.length > 12 && (UAMpredBG < minUAMPredBG) ) { minUAMPredBG = round(UAMpredBG); }
+            if ( iTime < iTimeProfile && enableUAM && UAMpredBGs.length > 6 && (UAMpredBG < minUAMPredBG) || enableUAM && UAMpredBGs.length > 12 && (UAMpredBG < minUAMPredBG) ) { minUAMPredBG = round(UAMpredBG); }
             if ( enableUAM && UAMpredBG > maxIOBPredBG ) { maxUAMPredBG = UAMpredBG; }
             //console.log("insulinPeakTime : "+insulinPeakTime+" and insulinPeak5m : "+insulinPeak5m+" prediction : "+curvepred * 5+" minutes");
         });
@@ -833,22 +849,23 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         //var future_sens = ( 277700 / (TDD * eventualBG));
         //var future_sens = round(future_sens,1);
-        if( glucose_status.delta >= 0 ) {
-                        var future_sens = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
-                        console.log("Future state sensitivity is " +future_sens+" based on a weighted average of bg & eventual bg");
-                        }
-                   else {
-                        var future_sens = ( 277700 / (TDD * eventualBG));
-                        console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
-                        }
-                var future_sens = round(future_sens,1);
+        if( glucose_status.delta >= 0 && iTime < iTimeProfile ) {
+        var future_sens = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
+        console.log("Future state sensitivity is " +future_sens+" based on a weighted average of bg & eventual bg");
+        }else if (iTime < iTimeProfile){
+        var future_sens = ( 277700 / (TDD * eventualBG));
+        console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
+        }else{
+        var future_sens = sens;
+        }
+        var future_sens = round(future_sens,1);
 
 var TriggerPredSMB_future_sens_60 = round( bg - (iob_data.iob * future_sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) + round( 45 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log("AIMI");
+                console.log("AIMI V3");
                 console.log("------------------------------");
                 console.log("Pump extrapolated TDD = "+tdd_pump);
                 console.log("tdd7 using 7-day average "+tdd7);
@@ -869,6 +886,12 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 console.log("Adjusting basal from "+profile_current_basal+" to "+basal);
                 console.log("Future state sensitivity is " +future_sens+" based on eventual bg");
                 console.log("-------------");
+                if (iTime <= iTimeProfile){
+                console.log("iTime : "+iTime);
+                console.log("iTimeProfile : "+iTimeProfile);
+                console.log("smbTDD : "+smbTDD);
+                console.log("-------------");
+                }
 
 
     //console.error(insulinPeakTime, insulinPeak5m, profile.insulinPeakTime, profile.curve);
@@ -1240,12 +1263,10 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 console.error("IOB",iob_data.iob,"> COB",meal_data.mealCOB+"; mealInsulinReq =",mealInsulinReq);
                 if (profile.maxUAMSMBBasalMinutes) {
                     console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"basal:",basal);
-                    if (iTime < profile.iTime && target_bg < normalTarget && TriggerPredSMB > 450){
+                    if (iTime < iTimeProfile && target_bg < normalTarget && TriggerPredSMB > 450 && smbTDD === 0 && tdd_pump_now >= tdd7*0.3){
                     maxBolus = round(basal * profile.iTime_MaxBolus_minutes / 60 ,1);
-                    }else if (iTime < profile.iTime && TriggerPredSMB < 450){
+                    }else if (iTime < iTimeProfile && TriggerPredSMB < 450 && smbTDD === 0 && tdd_pump_now >= tdd7*0.3){
                     maxBolus = round(basal * (profile.iTime_MaxBolus_minutes/2) / 60 ,1);
-                    }else if (TriggerPredSMB > 450 && glucose_status.delta > 7){
-                    maxBolus = round (basal * profile.maxUAMSMBBasalMinutes * (bg/target_bg)/60,1);
                     }else{
                     maxBolus = round( basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
                     }
@@ -1262,19 +1283,19 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var InsulinTDD = (TDD * 0.4) / 24;
             var maxBolusTT = maxBolus;
             var roundSMBTo = 1 / profile.bolus_increment;
-            if (iTime < profile.iTime/2 && target_bg < normalTarget && TriggerPredSMB > 450){
+            if (iTime < iTimeProfile/2 && target_bg < normalTarget && TriggerPredSMB > 450 && smbTDD === 0 && tdd_pump_now >= tdd7*0.3){
             insulinReq = insulinReq + InsulinTDD;
             insulinReqPCT = 1;
-            }else if ( iTime < profile.iTime && !profile.temptargetSet){
+            }else if ( iTime < iTimeProfile && iTime > iTimeProfile/2 && smbTDD ===0 && !profile.temptargetSet && tdd_pump_now >= tdd7*0.3){
             insulinReqPCT = 1;
-            }else if(iTime > profile.iTime/2 && iTime < profile.iTime && TriggerPredSMB > 950 || profile.temptargetSet && target_bg > normalTarget && iTime < profile.iTime ){
+            }else if(iTime < iTimeProfile && smbTDD === 1 || profile.temptargetSet && target_bg > normalTarget && iTime < iTimeProfile || iTime < iTimeProfile && tdd_pump_now <= tdd7*0.3 ){
             insulinReqPCT = 0.8;
             }
 
             var microBolus = Math.floor(Math.min(insulinReq * insulinReqPCT,maxBolusTT)*roundSMBTo)/roundSMBTo;
             // calculate a long enough zero temp to eventually correct back up to target
-            if (iTime < profile.iTime ){
-            console.log("--- if iTime < 240 -----");
+            if (iTime < iTimeProfile ){
+            console.log("--- if iTime < "+iTimeProfile+" -----");
                             console.log("TriggerPredSMB : "+TriggerPredSMB);
                             console.log("iTime : "+iTime);
                             console.log("target_bg from "+target_bg+" to "+hyper_target);
@@ -1283,8 +1304,9 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                             console.log("maxBolusTT : "+maxBolusTT);
                             console.log("InsulinReqPCT : "+(insulinReqPCT * 100)+"%");
                             console.log("insulinReq : "+insulinReq);
+                            if(iTime < iTimeProfile/2){
                             console.log("insulinQ : "+insulinQ);
-                            console.log("InsulinTDD : "+InsulinTDD);
+                            console.log("InsulinTDD : "+InsulinTDD);}
                             console.log("microBolus : "+microBolus);
         console.log("------------------------------");
         }

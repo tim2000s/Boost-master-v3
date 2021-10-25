@@ -90,7 +90,7 @@ public class AIMIPlugin extends PluginBase implements APSInterface, ConstraintsI
                         .fragmentClass(AIMIFragment.class.getName())
                         .pluginIcon(R.drawable.ic_generic_icon)
                         .pluginName(R.string.AIMI)
-                        .shortName(R.string.AIMI)
+                        .shortName(R.string.AIMI_shortname)
                         .preferencesId(R.xml.pref_aimi)
                         .description(R.string.description_AIMI)
                         .setDefault(),
