@@ -440,14 +440,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log ("HypoPredBG = "+HypoPredBG+"; ");
 
         if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target ) {//&& glucose_status.delta <= 0
-           /*var hypo_target = round ((target_bg - 60) * profile.autosens_max) + 60;
-           if (glucose_status.delta < 0){
-           hypo_target = hypo_target + 10;
-           }
-           hypo_target = Math.min ( 130, hypo_target);
-           if (now <= MealTimeStart && now >= MealTimeEnd){
-           hypo_target = Math.min(100,hypo_target);
-           }*/
             var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
             if (hypo_target <= 90) {
                 hypo_target += 10;
@@ -475,7 +467,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.log("Basal unchanged: "+basal+"; ");
             }
         }
-//    }
 
         // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
         var lastTempAge;
@@ -1290,7 +1281,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var insulinReqOrig = insulinReq;
             var UAMBoostReason = ""; //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
-            var SMB_TBR = false; // dont allow TBR with SMB
             var EatingNowMaxSMB = maxBolus;
             var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
 
@@ -1314,12 +1304,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             // START === if we are eating now and BGL prediction is higher than target ===
             if (eatingnow && eventualBG > target_bg) {
-                // var BGBoost_threshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowBGBoostBG * 18, 1).toFixed(1) : profile.EatingNowBGBoostBG);
-                // if (BGBoost_threshold == 0) BGBoost_threshold = 216 ; // default is 216 = 12 mmol
-                // console.log("BGBoost_threshold: "+BGBoost_threshold);
-                // var BGBoost_scale = round(eventualBG / BGBoost_threshold,2);
-                // var BGBoost_bolus = profile.EatingNowBGBoostBolus;
-
                 // EN insulinReqPct is used from the profile
                 insulinReqPct = ENinsulinReqPct;
 
@@ -1366,7 +1350,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // allow 100% insulinReqPct when initial rise is known to go higher than 108 (6) TS
                     insulinReqPct = (eventualBG > 108 ? 1 : insulinReqPct);
-                    SMB_TBR = (eventualBG > 108); // TBR on with SMB for over 108 (6)
                     UAMBoosted = true;
                 }
                 // ============== UAMBOOST ============== END ===
@@ -1377,7 +1360,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      // set SMB limit for ISFBoost
                     EatingNowMaxSMB = ( profile.ISFBoost_SMBLimit > 0 ? profile.ISFBoost_SMBLimit : maxBolus );
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
-                    SMB_TBR = false; // TBR on with SMB?
                     ISFBoosted = true;
                 }
                 // ============== ISF BOOST ============== END ===
@@ -1410,7 +1392,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  // if we just had a loop iteration only allow TBR's
                  if (minAgo > 1) {
                      insulinReqPct = 0;
-                     SMB_TBR = true;
                      UAMBoostReason ="; recent loop iteration: no SMB";
                  }
 
@@ -1418,7 +1399,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // increase maxbolus if we are within the hours specified
                     maxBolus = EatingNowMaxSMB;
                     insulinReqPct = insulinReqPct;
-                    SMB_TBR = SMB_TBR;
                 } else {
                     // Default insulinReqPct and maxBolus at night
                     insulinReqPct = insulinReqPctDefault;
@@ -1433,24 +1413,20 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
-            }
 
-            // ============== iTime Reason ==============
-            // If max window exists we dont need to show iTime
-            if (iTimeMax < iTimeMaxWindow) {
-                UAMBoostReason += ", iTimeMax: " + iTimeMax+"m<"+iTimeMaxWindow+"m";
-            } else if (iTime < iTimeWindow) {
-                UAMBoostReason += ", iTime: " + iTime+"m<"+iTimeWindow+"m";
+                // ============== iTime Reason ==============
+                // If max window exists we dont need to show iTime
+                if (iTimeMax < iTimeMaxWindow) {
+                    UAMBoostReason += ", iTimeMax: " + iTimeMax+"m<"+iTimeMaxWindow+"m";
+                } else if (iTime < iTimeWindow) {
+                    UAMBoostReason += ", iTime: " + iTime+"m<"+iTimeWindow+"m";
+                }
             }
-            // ============  EATING NOW MODE  ==================== START ===
+            // ============  EATING NOW MODE  ==================== END ===
 
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
             var roundSMBTo = 1 / profile.bolus_increment;
             var microBolus = Math.floor(Math.min(insulinReq * insulinReqPct ,maxBolus)*roundSMBTo)/roundSMBTo;
-
-            // if we dont have any insulinReq remaining then dont bother with TBR and allow ZT
-            if (SMB_TBR && insulinReq - microBolus <= 0) SMB_TBR = false;
-            UAMBoostReason += (SMB_TBR ? ", TBR+" : "");
 
             // calculate a long enough zero temp to eventually correct back up to target
             var smbTarget = target_bg;
@@ -1481,8 +1457,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
              }
 
             // if insulinReq > 0 but not enough for a microBolus, don't set an SMB zero temp
-            if (insulinReq > 0 && microBolus < profile.bolus_increment || eatingnow && SMB_TBR) {
-//            if (insulinReq > 0 && microBolus < profile.bolus_increment) {
+            if (insulinReq > 0 && microBolus < profile.bolus_increment) {
                 durationReq = 0;
             }
 
@@ -1525,7 +1500,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.reason += "Microbolusing " + microBolus + "/" + maxBolus + "U. ";
                     // add the boost type if applicable
                     rT.boostType = ( "SMB" );
-                    // rT.boostType = ( BGBoosted ? "BG" : rT.boostType );
                     rT.boostType = ( ISFBoost < 1 ? "ISF" : rT.boostType );
                     rT.boostType = ( UAMBoosted ? "UAM" : rT.boostType );
                     rT.boostType = ( UAMBoosted && UAMBoostMAX ? "UAM-MAX" : rT.boostType );
@@ -1534,13 +1508,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason += "Waiting " + nextBolusMins + "m " + nextBolusSeconds + "s to microbolus again. ";
             }
             //rT.reason += ". ";
-
-//            // when eatingnow allow the remaining insulinReq to be delivered as TBR
-            if (eatingnow & SMB_TBR) {
-                insulinReq = insulinReq - microBolus;
-                // rate required to deliver remaining insulinReq over 20m:
-                rate = round(Math.max(basal + (3 * insulinReq),0),2);
-            }
 
             // if no zero temp is required, don't return yet; allow later code to set a high temp
             if (durationReq > 0) {
