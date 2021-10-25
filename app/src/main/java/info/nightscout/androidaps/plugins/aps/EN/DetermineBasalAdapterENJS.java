@@ -45,6 +45,7 @@ import info.nightscout.androidaps.plugins.treatments.TreatmentsPlugin;
 import info.nightscout.androidaps.utils.SafeParse;
 import info.nightscout.androidaps.utils.resources.ResourceHelper;
 import info.nightscout.androidaps.utils.sharedPreferences.SP;
+import info.nightscout.androidaps.utils.stats.TIR;
 import info.nightscout.androidaps.utils.stats.TddCalculator;
 import info.nightscout.androidaps.utils.DateUtil;
 import dagger.android.HasAndroidInjector;
@@ -53,6 +54,8 @@ import info.nightscout.androidaps.plugins.bus.RxBusWrapper;
 import info.nightscout.androidaps.utils.FabricPrivacy;
 import info.nightscout.androidaps.plugins.general.nsclient.NSUpload;
 import info.nightscout.androidaps.plugins.general.nsclient.UploadQueue;
+import info.nightscout.androidaps.utils.stats.TirCalculator;
+import android.util.LongSparseArray;
 
 
 public class DetermineBasalAdapterENJS {
@@ -79,6 +82,7 @@ public class DetermineBasalAdapterENJS {
     private JSONObject mProfile;
     private JSONObject mGlucoseStatus;
     private TddCalculator tddAIMI;
+    private TirCalculator StatTIR;
     private JSONArray mIobData;
     private JSONObject mMealData;
     private JSONObject mCurrentTemp;
