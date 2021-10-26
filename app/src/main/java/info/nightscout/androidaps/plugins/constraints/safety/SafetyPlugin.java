@@ -21,8 +21,6 @@ import info.nightscout.androidaps.interfaces.PumpInterface;
 import info.nightscout.androidaps.logging.AAPSLogger;
 import info.nightscout.androidaps.plugins.aps.openAPSAMA.OpenAPSAMAPlugin;
 import info.nightscout.androidaps.plugins.aps.openAPSSMB.OpenAPSSMBPlugin;
-import info.nightscout.androidaps.plugins.aps.AIMI.AIMIPlugin;
-import info.nightscout.androidaps.plugins.aps.Boost.BoostPlugin;
 import info.nightscout.androidaps.plugins.aps.EN.ENPlugin;
 import info.nightscout.androidaps.plugins.bus.RxBusWrapper;
 import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker;
@@ -45,8 +43,6 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
     private final ConstraintChecker constraintChecker;
     private final OpenAPSAMAPlugin openAPSAMAPlugin;
     private final OpenAPSSMBPlugin openAPSSMBPlugin;
-    private final AIMIPlugin AIMIPlugin;
-    private final BoostPlugin BoostPlugin;
     private final ENPlugin ENPlugin;
     private final SensitivityOref1Plugin sensitivityOref1Plugin;
     private final ActivePluginProvider activePlugin;
@@ -65,8 +61,6 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
             ConstraintChecker constraintChecker,
             OpenAPSAMAPlugin openAPSAMAPlugin,
             OpenAPSSMBPlugin openAPSSMBPlugin,
-            AIMIPlugin AIMIPlugin,
-            BoostPlugin BoostPlugin,
             ENPlugin ENPlugin,
             SensitivityOref1Plugin sensitivityOref1Plugin,
             ActivePluginProvider activePlugin,
@@ -89,8 +83,6 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
         this.constraintChecker = constraintChecker;
         this.openAPSAMAPlugin = openAPSAMAPlugin;
         this.openAPSSMBPlugin = openAPSSMBPlugin;
-        this.AIMIPlugin = AIMIPlugin;
-        this.BoostPlugin = BoostPlugin;
         this.ENPlugin = ENPlugin;
         this.sensitivityOref1Plugin = sensitivityOref1Plugin;
         this.activePlugin = activePlugin;
@@ -284,11 +276,7 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
         String apsmode = sp.getString(R.string.key_aps_mode, "open");
         if (openAPSSMBPlugin.isEnabled(PluginType.APS))
             maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
-        else if (BoostPlugin.isEnabled(PluginType.APS))
-            maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
         else if (ENPlugin.isEnabled(PluginType.APS))
-            maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
-        else if (AIMIPlugin.isEnabled(PluginType.APS))
             maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
         else
             maxIobPref = sp.getDouble(R.string.key_openapsma_max_iob, 1.5d);
@@ -298,10 +286,6 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
             maxIob.setIfSmaller(getAapsLogger(), hardLimits.maxIobAMA(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.maxIobAMA(), getResourceHelper().gs(R.string.hardlimit)), this);
         if (openAPSSMBPlugin.isEnabled(PluginType.APS))
             maxIob.setIfSmaller(getAapsLogger(), hardLimits.maxIobSMB(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.maxIobSMB(), getResourceHelper().gs(R.string.hardlimit)), this);
-        if (AIMIPlugin.isEnabled(PluginType.APS))
-            maxIob.setIfSmaller(getAapsLogger(), hardLimits.maxIobAIMI(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.maxIobAIMI(), getResourceHelper().gs(R.string.hardlimit)), this);
-        if (BoostPlugin.isEnabled(PluginType.APS))
-            maxIob.setIfSmaller(getAapsLogger(), hardLimits.maxIobBoost(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.maxIobBoost(), getResourceHelper().gs(R.string.hardlimit)), this);
         if (ENPlugin.isEnabled(PluginType.APS))
             maxIob.setIfSmaller(getAapsLogger(), hardLimits.maxIobEN(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.maxIobBoost(), getResourceHelper().gs(R.string.hardlimit)), this);
         if ((apsmode.equals("lgs")))
