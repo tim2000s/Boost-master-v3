@@ -394,10 +394,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // *****                           End of automated TDD code                                *****
     // **********************************************************************************************
 
-    ISFBoost = (variable_sens/sens);
-    //if (eatingnow && glucose_status.delta >=8 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
-
-//    sens = variable_sens;
+    //ISFBoost = (variable_sens/sens);
+    // sens = variable_sens;
 
     //var eRatio = round((bg/0.16)/sens,2);
 //    var eRatio = round(sens / 13.2);
@@ -1258,7 +1256,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var insulinReqPctDefault = 0.65; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var insulinReqPct = insulinReqPctDefault; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var insulinReqOrig = insulinReq;
-            var UAMBoostReason = "EN no boost"; //reason text for oaps pill is nothing to start
+            var UAMBoostReason = "EN: no boost required"; //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
             var EatingNowMaxSMB = maxBolus;
             var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
@@ -1290,6 +1288,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             // START === if we are eating now and BGL prediction is higher than target ===
             if (eatingnow && eventualBG > target_bg) {
+                UAMBoostReason = ""; //blank boost reason to prepare for boost info
+
                 // EN insulinReqPct is used from the profile
                 insulinReqPct = ENinsulinReqPct;
 
