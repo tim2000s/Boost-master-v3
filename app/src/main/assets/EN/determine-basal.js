@@ -397,7 +397,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     ISFBoost = (variable_sens/sens);
     //if (eatingnow && glucose_status.delta >=8 && liftISF == 1) ISFBoost = profile.EatingNowISFBoost;
 
-    sens = variable_sens;
+//    sens = variable_sens;
 
     //var eRatio = round((bg/0.16)/sens,2);
 //    var eRatio = round(sens / 13.2);
