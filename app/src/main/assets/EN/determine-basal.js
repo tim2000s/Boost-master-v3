@@ -410,7 +410,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     var csf = profile.sens / profile.carb_ratio;
 
-    sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
+    //sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
 
     //Target adjustment with HypoPredBG - TS
     var EBG = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg;
