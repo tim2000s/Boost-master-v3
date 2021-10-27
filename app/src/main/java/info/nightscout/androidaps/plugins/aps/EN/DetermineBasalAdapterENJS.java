@@ -385,8 +385,8 @@ public class DetermineBasalAdapterENJS {
         mGlucoseStatus.put("long_avgdelta", glucoseStatus.long_avgdelta);
         mGlucoseStatus.put("date", glucoseStatus.date);
         // mod 7: append 2 variables for 5% range
-//        mGlucoseStatus.put("autoISF_duration", glucoseStatus.autoISF_duration);
-//        mGlucoseStatus.put("autoISF_average", glucoseStatus.autoISF_average);
+        mGlucoseStatus.put("autoISF_duration", glucoseStatus.autoISF_duration);
+        mGlucoseStatus.put("autoISF_average", glucoseStatus.autoISF_average);
         mMealData = new JSONObject();
         mMealData.put("carbs", mealData.carbs);
         mMealData.put("boluses", mealData.boluses);
