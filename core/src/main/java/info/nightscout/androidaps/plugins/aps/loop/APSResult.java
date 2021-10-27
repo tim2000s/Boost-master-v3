@@ -194,7 +194,7 @@ public class APSResult {
     protected void doClone(APSResult newResult) {
         newResult.date = date;
         newResult.reason = reason != null ? reason : null;
-//        newResult.boostType = boostType;
+        newResult.boostType = boostType;
         newResult.rate = rate;
         newResult.duration = duration;
         newResult.tempBasalRequested = tempBasalRequested;
