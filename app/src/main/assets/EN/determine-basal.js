@@ -334,10 +334,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // If there are COB enable eating now
         if (meal_data.mealCOB >0) eatingnow = true;
     }
+    eatingnow = false; //DEBUG
+
     console.log("eatingnow: " + eatingnow);
     console.log("eatingnowtimeOK: " + eatingnowtimeOK);
 
-    eatingnow = false; //DEBUG
 
     // patches ===== END
 
