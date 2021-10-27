@@ -284,6 +284,12 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
         String apsmode = sp.getString(R.string.key_aps_mode, "open");
         if (openAPSSMBPlugin.isEnabled(PluginType.APS))
             maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
+        else if (BoostPlugin.isEnabled(PluginType.APS))
+            maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
+        else if (AIMIPlugin.isEnabled(PluginType.APS))
+            maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
+        else if (ENPlugin.isEnabled(PluginType.APS))
+            maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
         else
             maxIobPref = sp.getDouble(R.string.key_openapsma_max_iob, 1.5d);
         maxIob.setIfSmaller(getAapsLogger(), maxIobPref, String.format(getResourceHelper().gs(R.string.limitingiob), maxIobPref, getResourceHelper().gs(R.string.maxvalueinpreferences)), this);
@@ -292,6 +298,12 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
             maxIob.setIfSmaller(getAapsLogger(), hardLimits.maxIobAMA(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.maxIobAMA(), getResourceHelper().gs(R.string.hardlimit)), this);
         if (openAPSSMBPlugin.isEnabled(PluginType.APS))
             maxIob.setIfSmaller(getAapsLogger(), hardLimits.maxIobSMB(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.maxIobSMB(), getResourceHelper().gs(R.string.hardlimit)), this);
+        if (AIMIPlugin.isEnabled(PluginType.APS))
+            maxIob.setIfSmaller(getAapsLogger(), hardLimits.maxIobAIMI(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.maxIobAIMI(), getResourceHelper().gs(R.string.hardlimit)), this);
+        if (BoostPlugin.isEnabled(PluginType.APS))
+            maxIob.setIfSmaller(getAapsLogger(), hardLimits.maxIobBoost(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.maxIobBoost(), getResourceHelper().gs(R.string.hardlimit)), this);
+        if (ENPlugin.isEnabled(PluginType.APS))
+            maxIob.setIfSmaller(getAapsLogger(), hardLimits.maxIobBoost(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.maxIobEN(), getResourceHelper().gs(R.string.hardlimit)), this);
         if ((apsmode.equals("lgs")))
             maxIob.setIfSmaller(getAapsLogger(), hardLimits.getMAXIOB_LGS(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.getMAXIOB_LGS(), getResourceHelper().gs(R.string.lowglucosesuspend)), this);
 
