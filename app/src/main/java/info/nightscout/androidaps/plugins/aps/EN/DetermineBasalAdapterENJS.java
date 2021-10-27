@@ -324,10 +324,10 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("temptargetSet", tempTargetSet);
         mProfile.put("autosens_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_max, "1.2")));
         // mod 7e: can I add use autoisf here?
-        mProfile.put("use_autoisf", sp.getBoolean(R.string.key_openapsama_useautoisf, false));
+//        mProfile.put("use_autoisf", sp.getBoolean(R.string.key_openapsama_useautoisf, false));
         // mod 7d: can I add autosens_min here?
-        mProfile.put("autoisf_max",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autoisf_max, "1.2")));
-        mProfile.put("autoisf_hourlychange",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autoisf_hourlychange, "0.2")));
+//        mProfile.put("autoisf_max",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autoisf_max, "1.2")));
+//        mProfile.put("autoisf_hourlychange",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autoisf_hourlychange, "0.2")));
 
         // patches ==== START
         mProfile.put("enableGhostCOB", sp.getBoolean(R.string.key_use_ghostcob, false));
