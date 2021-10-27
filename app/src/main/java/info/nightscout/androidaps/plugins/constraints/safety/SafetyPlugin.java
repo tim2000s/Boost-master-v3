@@ -22,6 +22,8 @@ import info.nightscout.androidaps.logging.AAPSLogger;
 import info.nightscout.androidaps.plugins.aps.openAPSAMA.OpenAPSAMAPlugin;
 import info.nightscout.androidaps.plugins.aps.openAPSSMB.OpenAPSSMBPlugin;
 import info.nightscout.androidaps.plugins.aps.EN.ENPlugin;
+import info.nightscout.androidaps.plugins.aps.AIMI.AIMIPlugin;
+import info.nightscout.androidaps.plugins.aps.Boost.BoostPlugin;
 import info.nightscout.androidaps.plugins.bus.RxBusWrapper;
 import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker;
 import info.nightscout.androidaps.plugins.general.overview.events.EventNewNotification;
@@ -44,6 +46,8 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
     private final OpenAPSAMAPlugin openAPSAMAPlugin;
     private final OpenAPSSMBPlugin openAPSSMBPlugin;
     private final ENPlugin ENPlugin;
+    private final AIMIPlugin AIMIPlugin;
+    private final BoostPlugin BoostPlugin;
     private final SensitivityOref1Plugin sensitivityOref1Plugin;
     private final ActivePluginProvider activePlugin;
     private final HardLimits hardLimits;
@@ -62,6 +66,8 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
             OpenAPSAMAPlugin openAPSAMAPlugin,
             OpenAPSSMBPlugin openAPSSMBPlugin,
             ENPlugin ENPlugin,
+            AIMIPlugin AIMIPlugin,
+            BoostPlugin BoostPlugin,
             SensitivityOref1Plugin sensitivityOref1Plugin,
             ActivePluginProvider activePlugin,
             HardLimits hardLimits,
@@ -84,6 +90,8 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
         this.openAPSAMAPlugin = openAPSAMAPlugin;
         this.openAPSSMBPlugin = openAPSSMBPlugin;
         this.ENPlugin = ENPlugin;
+        this.AIMIPlugin = AIMIPlugin;
+        this.BoostPlugin = BoostPlugin;
         this.sensitivityOref1Plugin = sensitivityOref1Plugin;
         this.activePlugin = activePlugin;
         this.hardLimits = hardLimits;
@@ -276,8 +284,6 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
         String apsmode = sp.getString(R.string.key_aps_mode, "open");
         if (openAPSSMBPlugin.isEnabled(PluginType.APS))
             maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
-        else if (ENPlugin.isEnabled(PluginType.APS))
-            maxIobPref = sp.getDouble(R.string.key_openapssmb_max_iob, 3d);
         else
             maxIobPref = sp.getDouble(R.string.key_openapsma_max_iob, 1.5d);
         maxIob.setIfSmaller(getAapsLogger(), maxIobPref, String.format(getResourceHelper().gs(R.string.limitingiob), maxIobPref, getResourceHelper().gs(R.string.maxvalueinpreferences)), this);
@@ -286,8 +292,6 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
             maxIob.setIfSmaller(getAapsLogger(), hardLimits.maxIobAMA(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.maxIobAMA(), getResourceHelper().gs(R.string.hardlimit)), this);
         if (openAPSSMBPlugin.isEnabled(PluginType.APS))
             maxIob.setIfSmaller(getAapsLogger(), hardLimits.maxIobSMB(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.maxIobSMB(), getResourceHelper().gs(R.string.hardlimit)), this);
-        if (ENPlugin.isEnabled(PluginType.APS))
-            maxIob.setIfSmaller(getAapsLogger(), hardLimits.maxIobEN(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.maxIobEN(), getResourceHelper().gs(R.string.hardlimit)), this);
         if ((apsmode.equals("lgs")))
             maxIob.setIfSmaller(getAapsLogger(), hardLimits.getMAXIOB_LGS(), String.format(getResourceHelper().gs(R.string.limitingiob), hardLimits.getMAXIOB_LGS(), getResourceHelper().gs(R.string.lowglucosesuspend)), this);
 

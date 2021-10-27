@@ -86,6 +86,7 @@ import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.stats.TirCalculator
 import android.util.LongSparseArray
+
 import org.json.JSONObject
 
 class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickListener {
@@ -134,8 +135,14 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     private val secondaryGraphsLabel = ArrayList<TextView>()
 
     private var carbAnimation: AnimationDrawable? = null
+    public var insulinAnimation: AnimationDrawable? = null
+
+
 
     private val graphLock = Object()
+   // val now = System.currentTimeMillis()
+
+   // private fun iTimeForOverview(now: Long) = (now - treatmentsPlugin.getLastBolusTime(true)) / 60000
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -172,6 +179,10 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         carbAnimation = overview_carbs_icon?.background as AnimationDrawable?
         carbAnimation?.setEnterFadeDuration(1200)
         carbAnimation?.setExitFadeDuration(1200)
+
+        insulinAnimation = overview_insulin_icon?.background as AnimationDrawable?
+        insulinAnimation?.setEnterFadeDuration(1200)
+        insulinAnimation?.setExitFadeDuration(1200)
 
         rangeToDisplay = sp.getInt(R.string.key_rangetodisplay, 6)
 
@@ -742,25 +753,38 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         //val now = System.currentTimeMillis()
 
         //(System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
-        // val iTimeUpdate = (System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
-        // val StatTIR = TirCalculator(resourceHelper, profileFunction, dateUtil)
-        // val currentTIRLow = StatTIR.averageTIR(StatTIR.calculateDaily(70.0,180.0)).belowPct()
-        // val currentTIRRange = StatTIR.averageTIR(StatTIR.calculateDaily(70.0,180.0)).inRangePct()
-        // val currentTIRAbove = StatTIR.averageTIR(StatTIR.calculateDaily(70.0,180.0)).abovePct()
-        // var iTimeSettings = (SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")))
-        // if (iTimeUpdate < iTimeSettings && currentTIRRange <= 96 && currentTIRAbove <= 1 && currentTIRLow >=4 ) run {
-        //     iTimeSettings = iTimeSettings * 0.7
-        // }
+        val iTimeUpdate = (System.currentTimeMillis() - treatmentsPlugin.getLastBolusTime(true)) / 60000
+        val StatTIR = TirCalculator(resourceHelper, profileFunction, dateUtil)
+        val currentTIRLow = StatTIR.averageTIR(StatTIR.calculateDaily(70.0,180.0)).belowPct()
+        val currentTIRRange = StatTIR.averageTIR(StatTIR.calculateDaily(70.0,180.0)).inRangePct()
+        val currentTIRAbove = StatTIR.averageTIR(StatTIR.calculateDaily(70.0,180.0)).abovePct()
+        var iTimeSettings = (SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")))
+        if (iTimeUpdate < iTimeSettings && currentTIRRange <= 96 && currentTIRAbove <= 1 && currentTIRLow >=4 ) run {
+            iTimeSettings = iTimeSettings * 0.7
+        }
 
         overview_iob?.text = resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob)
 
-        overview_iob_llayout?.setOnClickListener {
-            activity?.let {
-                OKDialog.show(it, resourceHelper.gs(R.string.iob),
-                    resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
-                        resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
-                        resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob)
-                )
+        if (iTimeUpdate < iTimeSettings) {
+            overview_iob_llayout?.setOnClickListener {
+                activity?.let {
+                    OKDialog.show(it, resourceHelper.gs(R.string.iob),
+                        resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
+                            resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
+                            resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob) + "\n" +
+                            resourceHelper.gs(R.string.iTime) + ": " + resourceHelper.gs(R.string.format_mins,iTimeUpdate)
+                    )
+                }
+            }
+        }else{
+            overview_iob_llayout?.setOnClickListener {
+                activity?.let {
+                    OKDialog.show(it, resourceHelper.gs(R.string.iob),
+                        resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob + basalIob.basaliob) + "\n" +
+                            resourceHelper.gs(R.string.bolus) + ": " + resourceHelper.gs(R.string.formatinsulinunits, bolusIob.iob) + "\n" +
+                            resourceHelper.gs(R.string.basal) + ": " + resourceHelper.gs(R.string.formatinsulinunits, basalIob.basaliob)
+                    )
+                }
             }
         }
 
@@ -776,6 +800,11 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             if (cobInfo.futureCarbs > 0) cobText += "(" + DecimalFormatter.to0Decimal(cobInfo.futureCarbs) + ")"
         }
 
+        if (iTimeUpdate < iTimeSettings) {
+            insulinAnimation?.start()
+        }else{
+            insulinAnimation?.stop()
+        }
         if (config.APS && lastRun?.constraintsProcessed != null) {
             if (lastRun.constraintsProcessed!!.carbsReq > 0) {
                 //only display carbsreq when carbs have not been entered recently

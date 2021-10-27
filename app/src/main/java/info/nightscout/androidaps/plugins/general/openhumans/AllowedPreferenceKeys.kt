@@ -112,6 +112,9 @@ private val allowedKeys = """
     bolussnooze_dia_divisor
     openapssmb
     EN
+    AIMI
+    AIMI
+    Boost
     openapsma_max_basal
     openapsmb_max_iob
     openapsama_useautosens
