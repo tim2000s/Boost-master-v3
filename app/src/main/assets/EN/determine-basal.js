@@ -1260,7 +1260,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var insulinReqPctDefault = 0.65; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var insulinReqPct = insulinReqPctDefault; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var insulinReqOrig = insulinReq;
-            var UAMBoostReason = (!eatingnow ? "EN: disabled" : "EN: no boost required"); //reason text for oaps pill is nothing to start
+            var UAMBoostReason = (!eatingnow || !eatingnowtimeOK ? "EN: disabled" : "EN: no boost required"); //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
             var EatingNowMaxSMB = maxBolus;
             var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
@@ -1339,7 +1339,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // allow 100% insulinReqPct when initial rise is known to go higher than 108 (6) TS
-                    insulinReqPct = (eventualBG > 108 ? 1 : insulinReqPct);
+                    // insulinReqPct = (eventualBG > 108 ? 1 : insulinReqPct); // DEBUG
                     UAMBoosted = true;
                 }
                 // ============== UAMBOOST ============== END ===
