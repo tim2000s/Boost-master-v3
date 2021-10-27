@@ -192,8 +192,26 @@ abstract class PluginsModule {
     @Binds
     @APS
     @IntoMap
+    @IntKey(215)
+    abstract fun bindAIMIPlugin(plugin: AIMIPlugin): PluginBase
+
+    @Binds
+    @APS
+    @IntoMap
     @IntKey(220)
     abstract fun bindOpenAPSSMBPlugin(plugin: OpenAPSSMBPlugin): PluginBase
+
+    @Binds
+    @APS
+    @IntoMap
+    @IntKey(225)
+    abstract fun bindBoostPlugin(plugin: BoostPlugin): PluginBase
+
+    @Binds
+    @APS
+    @IntoMap
+    @IntKey(235)
+    abstract fun bindENPlugin(plugin: ENPlugin): PluginBase
 
     @Binds
     @AllConfigs

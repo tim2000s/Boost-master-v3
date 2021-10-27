@@ -66,6 +66,9 @@ abstract class FragmentsModule {
     @ContributesAndroidInjector abstract fun contributesObjectivesFragment(): ObjectivesFragment
     @ContributesAndroidInjector abstract fun contributesOpenAPSAMAFragment(): OpenAPSAMAFragment
     @ContributesAndroidInjector abstract fun contributesOpenAPSSMBFragment(): OpenAPSSMBFragment
+    @ContributesAndroidInjector abstract fun contributesAIMIFragment(): AIMIFragment
+    @ContributesAndroidInjector abstract fun contributesBoostFragment(): BoostFragment
+    @ContributesAndroidInjector abstract fun contributesENFragment(): ENFragment
     @ContributesAndroidInjector abstract fun contributesOverviewFragment(): OverviewFragment
     @ContributesAndroidInjector abstract fun contributesLocalInsightFragment(): LocalInsightFragment
     @ContributesAndroidInjector abstract fun contributesLoopFragment(): LoopFragment

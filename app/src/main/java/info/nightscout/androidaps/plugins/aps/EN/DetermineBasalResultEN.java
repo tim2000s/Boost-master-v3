@@ -71,9 +71,9 @@ public class DetermineBasalResultEN extends APSResult {
                 }
             }
 
-//            if (result.has("boostType")) {
-//                boostType = result.getString("boostType");
-//            }
+            if (result.has("boostType")) {
+                boostType = result.getString("boostType");
+            }
 
         } catch (JSONException e) {
             aapsLogger.error(LTag.APS, "Error parsing determine-basal result JSON", e);
