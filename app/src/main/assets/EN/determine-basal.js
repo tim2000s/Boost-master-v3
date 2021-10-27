@@ -336,6 +336,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
     console.log("eatingnow: " + eatingnow);
     console.log("eatingnowtimeOK: " + eatingnowtimeOK);
+
+    eatingnow = false; //DEBUG
+
     // patches ===== END
 
     var tick;
