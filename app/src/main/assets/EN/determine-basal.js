@@ -122,45 +122,45 @@ function enable_smb(
     return false;
 }
 
-//function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio)
-//{   // #### mod 7e: added switch fr autoISF ON/OFF
-//    liftISF = 1; // start with no adjustment
-//    if ( !profile.use_autoisf ) {
-//        console.error("autoISF disabled in Preferences");
-//        return sens;
-//    }
-//    // #### mod 7:  dynamic ISF strengthening based on duration and width of 5% BG band
-//    // #### mod 7b: misuse autosens_min to get the scale factor
-//    // #### mod 7d: use standalone variables for autopISF
-//    var dura05 = glucose_status.autoISF_duration;           // mod 7d
-//    var avg05 = glucose_status.autoISF_average;            // mod 7d
-//    //r weightISF = (1 - profile.autosens_min)*2;           // mod 7b: use 0.6 to get factor 0.8; use 1 to get factor 0, i.e. OFF
-//    var weightISF = profile.autoisf_hourlychange;           // mod 7d: specify factor directly; use factor 0 to shut autoISF OFF
-////    if (meal_data.mealCOB==0 && dura05>=10) {
-//    if (dura05>=10) {
-//        if (avg05 > target_bg) {
-//            // # fight the resistance at high levels
-//            var maxISFReduction = profile.autoisf_max;      // mod 7d
-//            var dura05_weight = dura05 / 60;
-//            var avg05_weight = weightISF / target_bg;       // mod gz7b: provide access from AAPS
-//            var levelISF = 1 + dura05_weight*avg05_weight*(avg05-target_bg);
-////            var liftISF = Math.max(Math.min(maxISFReduction, levelISF), sensitivityRatio);  // corrected logic on 30.Jan.2021
-//            liftISF = Math.min(maxISFReduction, levelISF);  // we want to apply the liftISF to the current sensitivity ratio (advanced targets)
-//            console.error("autoISF reports", sens, "did not do it for", dura05,"m; go more aggressive by", round(levelISF,2));
-//            if (maxISFReduction < levelISF) {
-//                console.error("autoISF reduction", round(levelISF,2), "limited by autoisf_max", maxISFReduction);
-//            }
-//            //sens = round(sens / liftISF, 1); // we want to adjust the current sens which could have been changed by advanced targets
-//        } else {
-//            console.error("autoISF by-passed; avg. glucose", avg05, "below target", target_bg);
-//        }
-////    } else if (meal_data.mealCOB>0) {
-////        console.error("autoISF by-passed; mealCOB of "+round(meal_data.mealCOB,1));
-//    } else {
-//        console.error("autoISF by-passed; BG is only "+dura05+"m at level "+avg05);
-//    }
-//    return sens;
-//}
+function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio)
+{   // #### mod 7e: added switch fr autoISF ON/OFF
+    liftISF = 1; // start with no adjustment
+    if ( !profile.use_autoisf ) {
+        console.error("autoISF disabled in Preferences");
+        return sens;
+    }
+    // #### mod 7:  dynamic ISF strengthening based on duration and width of 5% BG band
+    // #### mod 7b: misuse autosens_min to get the scale factor
+    // #### mod 7d: use standalone variables for autopISF
+    var dura05 = glucose_status.autoISF_duration;           // mod 7d
+    var avg05 = glucose_status.autoISF_average;            // mod 7d
+    //r weightISF = (1 - profile.autosens_min)*2;           // mod 7b: use 0.6 to get factor 0.8; use 1 to get factor 0, i.e. OFF
+    var weightISF = profile.autoisf_hourlychange;           // mod 7d: specify factor directly; use factor 0 to shut autoISF OFF
+//    if (meal_data.mealCOB==0 && dura05>=10) {
+    if (dura05>=10) {
+        if (avg05 > target_bg) {
+            // # fight the resistance at high levels
+            var maxISFReduction = profile.autoisf_max;      // mod 7d
+            var dura05_weight = dura05 / 60;
+            var avg05_weight = weightISF / target_bg;       // mod gz7b: provide access from AAPS
+            var levelISF = 1 + dura05_weight*avg05_weight*(avg05-target_bg);
+//            var liftISF = Math.max(Math.min(maxISFReduction, levelISF), sensitivityRatio);  // corrected logic on 30.Jan.2021
+            liftISF = Math.min(maxISFReduction, levelISF);  // we want to apply the liftISF to the current sensitivity ratio (advanced targets)
+            console.error("autoISF reports", sens, "did not do it for", dura05,"m; go more aggressive by", round(levelISF,2));
+            if (maxISFReduction < levelISF) {
+                console.error("autoISF reduction", round(levelISF,2), "limited by autoisf_max", maxISFReduction);
+            }
+            //sens = round(sens / liftISF, 1); // we want to adjust the current sens which could have been changed by advanced targets
+        } else {
+            console.error("autoISF by-passed; avg. glucose", avg05, "below target", target_bg);
+        }
+//    } else if (meal_data.mealCOB>0) {
+//        console.error("autoISF by-passed; mealCOB of "+round(meal_data.mealCOB,1));
+    } else {
+        console.error("autoISF by-passed; BG is only "+dura05+"m at level "+avg05);
+    }
+    return sens;
+}
 
 var determine_basal = function determine_basal(glucose_status, currenttemp, iob_data, profile, autosens_data, meal_data, tempBasalFunctions, microBolusAllowed, reservoir_data, currentTime, isSaveCgmSource) {
     var rT = {}; //short for requestedTemp
@@ -282,25 +282,25 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
     }
 
-//    // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
-//    if (profile.temptargetSet) {
-//        //console.log("Temp Target set, not adjusting with autosens; ");
-//    } else if (typeof autosens_data !== 'undefined' && autosens_data) {
-//        if ( profile.sensitivity_raises_target && autosens_data.ratio < 1 || profile.resistance_lowers_target && autosens_data.ratio > 1 ) {
-//            // with a target of 100, default 0.7-1.2 autosens min/max range would allow a 93-117 target range
-//            min_bg = round((min_bg - 60) / autosens_data.ratio) + 60;
-//            max_bg = round((max_bg - 60) / autosens_data.ratio) + 60;
-//            var new_target_bg = round((target_bg - 60) / autosens_data.ratio) + 60;
-//            // don't allow target_bg below 80
-//            new_target_bg = Math.max(80, new_target_bg);
-//            if (target_bg === new_target_bg) {
-//                console.log("target_bg unchanged: "+new_target_bg+"; ");
-//            } else {
-//                console.log("target_bg from "+target_bg+" to "+new_target_bg+"; ");
-//            }
-//            target_bg = new_target_bg;
-//        }
-//    }
+    // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
+    if (profile.temptargetSet) {
+        //console.log("Temp Target set, not adjusting with autosens; ");
+    } else if (typeof autosens_data !== 'undefined' && autosens_data) {
+        if ( profile.sensitivity_raises_target && autosens_data.ratio < 1 || profile.resistance_lowers_target && autosens_data.ratio > 1 ) {
+            // with a target of 100, default 0.7-1.2 autosens min/max range would allow a 93-117 target range
+            min_bg = round((min_bg - 60) / autosens_data.ratio) + 60;
+            max_bg = round((max_bg - 60) / autosens_data.ratio) + 60;
+            var new_target_bg = round((target_bg - 60) / autosens_data.ratio) + 60;
+            // don't allow target_bg below 80
+            new_target_bg = Math.max(80, new_target_bg);
+            if (target_bg === new_target_bg) {
+                console.log("target_bg unchanged: "+new_target_bg+"; ");
+            } else {
+                console.log("target_bg from "+target_bg+" to "+new_target_bg+"; ");
+            }
+            target_bg = new_target_bg;
+        }
+    }
 
     if (typeof iob_data === 'undefined' ) {
         rT.error ='Error: iob_data undefined. ';
@@ -410,7 +410,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     var csf = profile.sens / profile.carb_ratio;
 
-    //sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
+    sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
 
     //Target adjustment with HypoPredBG - TS
     var EBG = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg;
@@ -1407,7 +1407,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else if (iTime < iTimeWindow) {
                     UAMBoostReason += ", iTime: " + iTime+"m<"+iTimeWindow+"m";
                 }
-//                if (liftISF > 1) UAMBoostReason += ", liftISF: " + round(liftISF,2); //autoISF reason
+                if (liftISF > 1) UAMBoostReason += ", liftISF: " + round(liftISF,2); //autoISF reason
                 UAMBoostReason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
                 UAMBoostReason += ", TDD: " + round(TDD, 2);
             }
@@ -1488,10 +1488,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.units = microBolus;
                     rT.reason += "Microbolusing " + microBolus + "/" + maxBolus + "U. ";
                     // add the boost type if applicable
-//                    rT.boostType = ( "SMB" );
-//                    rT.boostType = ( ISFBoost < 1 ? "ISF" : rT.boostType );
-//                    rT.boostType = ( UAMBoosted ? "UAM" : rT.boostType );
-//                    rT.boostType = ( UAMBoosted && UAMBoostMAX ? "UAM-MAX" : rT.boostType );
+                    rT.boostType = ( "SMB" );
+                    rT.boostType = ( ISFBoost < 1 ? "ISF" : rT.boostType );
+                    rT.boostType = ( UAMBoosted ? "UAM" : rT.boostType );
+                    rT.boostType = ( UAMBoosted && UAMBoostMAX ? "UAM-MAX" : rT.boostType );
                 }
             } else {
                 rT.reason += "Waiting " + nextBolusMins + "m " + nextBolusSeconds + "s to microbolus again. ";
