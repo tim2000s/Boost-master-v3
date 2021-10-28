@@ -1290,7 +1290,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // if autoISF is active and insulinReq is less than normal maxbolus then allow 100%
             //if (liftISF > 1 && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
 
-            //console.log("DEBUG1");
             // START === if we are eating now and BGL prediction is higher than target ===
             if (eatingnow && eventualBG > target_bg) {
                 UAMBoostReason = ""; //blank boost reason to prepare for boost info
@@ -1334,7 +1333,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // If boost is allowed and there is sufficient short term delta change calculate boosted insulin
                 if (UAMBoostOK && UAMBoost > UAMBoost_threshold) {
-                    //console.log("DEBUG2");
                     // calculate the insulin boost
                     insulinReqBoost = UAMBoost * UAMBoost_bolus;
                     // set SMB limit for UAMBoost or UAMBoostMAX
@@ -1369,7 +1367,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== RISE RESTRICTIONS ==============
                  // if the rise is slowing limit insulinReq and max SMB
                 if (UAM_deltaShortRise < -0.10) {
-                    insulinReqPct = insulinReqPctDefault;
+                    // insulinReqPct = insulinReqPctDefault;
+                    insulinReqPct = 0;
                     EatingNowMaxSMB = Math.min(maxBolus,EatingNowMaxSMB); // use the most restrictive
                     UAMBoostReason = "; delta slowing: no boost";
                     // this may help after sensor errors
@@ -1419,7 +1418,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoostReason += ", TDD: " + round(TDD, 2);
             }
             // ============  EATING NOW MODE  ==================== END ===
-            console.log("DEBUG3");
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
             var roundSMBTo = 1 / profile.bolus_increment;
             var microBolus = Math.floor(Math.min(insulinReq * insulinReqPct ,maxBolus)*roundSMBTo)/roundSMBTo;
