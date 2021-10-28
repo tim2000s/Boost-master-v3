@@ -1290,7 +1290,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // if autoISF is active and insulinReq is less than normal maxbolus then allow 100%
             //if (liftISF > 1 && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
 
-            console.log("DEBUG1");
+            //console.log("DEBUG1");
             // START === if we are eating now and BGL prediction is higher than target ===
             if (eatingnow && eventualBG > target_bg) {
                 UAMBoostReason = ""; //blank boost reason to prepare for boost info
@@ -1334,7 +1334,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // If boost is allowed and there is sufficient short term delta change calculate boosted insulin
                 if (UAMBoostOK && UAMBoost > UAMBoost_threshold) {
-                    console.log("DEBUG2");
+                    //console.log("DEBUG2");
                     // calculate the insulin boost
                     insulinReqBoost = UAMBoost * UAMBoost_bolus;
                     // set SMB limit for UAMBoost or UAMBoostMAX
@@ -1342,7 +1342,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // allow 100% insulinReqPct when initial rise is known to go higher than 108 (6) TS
-                    // insulinReqPct = (eventualBG > 108 ? 1 : insulinReqPct); // DEBUG
+                    insulinReqPct = (eventualBG > 108 ? 1 : insulinReqPct);
                     UAMBoosted = true;
                 }
                 // ============== UAMBOOST ============== END ===
