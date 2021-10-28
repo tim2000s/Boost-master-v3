@@ -166,7 +166,7 @@ android {
                         // on below line we are specifying our app name.
 //                        project.ext { appName = 'aaps' }
                         // on below line we are adding the formatted date to our apk file name.
-                        def formattedDate = new Date().format('YYMMdd')
+                        def formattedDate = new Date().format('YYMMdd-hhmm')
                         // on below line we are creating a new name for our apk.
                         def newName = output.outputFile.name
                         // on below line we are replacing our previous name with our app name.
