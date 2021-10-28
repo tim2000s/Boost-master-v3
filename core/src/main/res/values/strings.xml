@@ -149,11 +149,6 @@
     <string name="profile_per_unit">/U</string>
     <string name="profile_ins_units_per_hour">U/h</string>
     <string name="profile_carbs_per_unit">g/U</string>
-    <!--    AIMI-->
-    <string name="key_AIMI_settings" translatable="false">AIMI_settings</string>
-    <string name="key_AIMI_max_iob" translatable="false">AIMI_max_iob</string>
-    <string name="AIMI_maxiob_title">Maximum total IOB AIMI can\'t go over [U]</string>
-    <string name="AIMI_maxiob_summary">This value is called Max IOB in AIMI context\nAIMI will not add more insulin if current IOB is greater than this value</string>
 
     <!--    ProfileFunction-->
     <string name="noprofileselected">No profile selected</string>
@@ -220,7 +215,6 @@
     <string name="insulin_unit_shortname">U</string>
     <string name="waitingforpumpresult">Waiting for result</string>
     <string name="smb_shortname">SMB</string>
-    <string name="AIMI_shortname">AIMI</string>
 
     <!--    CarbsReq-->
     <string name="carbsreq">%1$d g Additional Carbs Required Within %2$d Minutes</string>

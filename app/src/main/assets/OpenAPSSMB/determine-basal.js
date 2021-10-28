@@ -287,51 +287,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
-    //console.error("CR:", );
-    //MT : TWTT
-    /*var tdd7 = meal_data.TDDAIMI7;
-    if (tdd7 < 20){
-    var tdd1 = meal_data.TDDAIMI1;
-    }else{
-    var tdd1 = meal_data.TDDPUMP;
-    }
-    var TDD = (tdd7 * 0.5) + (tdd1 * 0.5);*/
-    /* ************************
-       ** TS AutoTDD code    **
-       ************************ */
-    var now = new Date().getHours();
-        if (now < 1){
-            now = 1;}
-        else {
-            console.error("Time now is "+now+"; ");
-        }
-        var tdd7 = meal_data.TDDAIMI7;
-        var tdd_pump_now = meal_data.TDDPUMP;
-        var tdd_pump = ( tdd_pump_now / (now / 24));
-        var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
-        console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
-        if (tdd_pump < (0.5 * tdd7)){
-            TDD = (tdd7 * 0.2) + (tdd_pump * 0.8);
-            console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
-        }
-        else{
-            console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
-        }
-
-
-    var variable_sens = (277700 / (TDD * bg));
-    variable_sens = round(variable_sens,1);
-    //var TDDnow = meal_data.TDDAIMI1;
-    console.log("Current sensitivity is " +variable_sens+" based on current bg");
-
-/* var profile_sens = round(profile.sens,1);
-     var TDD = profile.TDD;
-     var variable_sens = (277700 / (TDD * bg));
-     var variable_sens = round(variable_sens,1);
-     console.log("Current sensitivity is " +variable_sens+" based on current bg");*/
-    // **********************************************************************************************
-    // *****                           End of automated TDD code                                *****
-    // **********************************************************************************************
+    console.error("; CR:",profile.carb_ratio);
 
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
