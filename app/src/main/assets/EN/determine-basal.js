@@ -1376,7 +1376,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = (UAM_delta == 0 && glucose_status.short_avgdelta == 0 ? 0 : insulinReqPct);
                 } else {
                     insulinReqPct = insulinReqPct;
-                    EatingNowMaxSMB = Math.min(maxBolus,EatingNowMaxSMB); // use the most restrictive
+                    EatingNowMaxSMB = EatingNowMaxSMB; // use the most restrictive
                 }
                 // ===================================================
 
