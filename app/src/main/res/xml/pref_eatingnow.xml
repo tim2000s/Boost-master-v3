@@ -146,18 +146,21 @@
         <!-- TODO AS-FIX -->
         <SwitchPreference
             android:defaultValue="false"
-            android:enabled="true"
+            android:enabled="false"
             android:key="@string/key_high_temptarget_raises_sensitivity"
             android:summary="@string/high_temptarget_raises_sensitivity_summary"
-            android:title="@string/high_temptarget_raises_sensitivity_title" />
+            android:title="High temptarget raises sensitivity - ALWAYS ON" />
+<!--            android:title="@string/high_temptarget_raises_sensitivity_title" />-->
+
 
         <!-- TODO AS-FIX -->
         <SwitchPreference
             android:defaultValue="false"
-            android:enabled="true"
+            android:enabled="false"
             android:key="@string/key_low_temptarget_lowers_sensitivity"
             android:summary="@string/low_temptarget_lowers_sensitivity_summary"
-            android:title="@string/low_temptarget_lowers_sensitivity_title" />
+            android:title="Low temptarget lowers sensitivity - ALWAYS ON" />
+<!--            android:title="@string/low_temptarget_lowers_sensitivity_title" />-->
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="1"
