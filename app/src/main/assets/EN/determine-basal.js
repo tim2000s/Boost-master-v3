@@ -1301,6 +1301,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== UAMBOOST ============== START ===
                 // if within time window of first bolus max mode
                 UAMBoostMAX = (iTimeMax < iTimeMaxWindow);
+                console.log("UAMBoostMAX:"+ UAMBoostMAX);
                 // set UAMBoost Bolus size from the profile based on the window
                 var UAMBoost_bolus = (UAMBoostMAX ? profile.UAMBoostMAX_Bolus : profile.UAMBoost_Bolus);
 
