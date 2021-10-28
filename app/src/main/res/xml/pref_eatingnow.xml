@@ -39,6 +39,12 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            android:key="key_use_ghostcob"
+            android:title="Enable GhostCOB"
+            android:summary="Ignore COB and rely on UAM predictions" />
+
+        <SwitchPreference
+            android:defaultValue="false"
             android:key="@string/key_use_smb"
             android:summary="@string/enablesmb_summary"
             android:title="@string/enablesmb" />
