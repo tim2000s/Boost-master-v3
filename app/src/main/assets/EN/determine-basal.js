@@ -1370,13 +1370,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  // if the rise is slowing limit insulinReq and max SMB
                 if (UAM_deltaShortRise < -0.10) {
                     insulinReqPct = insulinReqPctDefault;
-                    EatingNowMaxSMB = maxBolus;
+                    EatingNowMaxSMB = Math.min(maxBolus,EatingNowMaxSMB); // use the most restrictive
                     UAMBoostReason = "; delta slowing: no boost";
                     // this may help after sensor errors
                     insulinReqPct = (UAM_delta == 0 && glucose_status.short_avgdelta == 0 ? 0 : insulinReqPct);
                 } else {
                     insulinReqPct = insulinReqPct;
-                    EatingNowMaxSMB = EatingNowMaxSMB; // use the most restrictive
+                    EatingNowMaxSMB = EatingNowMaxSMB;
                 }
                 // ===================================================
 
