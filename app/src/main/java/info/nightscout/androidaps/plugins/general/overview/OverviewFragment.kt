@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
@@ -49,6 +50,7 @@ import info.nightscout.androidaps.plugins.aps.loop.LoopPlugin
 import info.nightscout.androidaps.plugins.aps.loop.events.EventNewOpenLoopNotification
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker
+import info.nightscout.androidaps.plugins.general.automation.AutomationPlugin
 import info.nightscout.androidaps.plugins.general.nsclient.data.NSDeviceStatus
 import info.nightscout.androidaps.plugins.general.overview.activities.QuickWizardListActivity
 import info.nightscout.androidaps.plugins.general.overview.events.EventUpdateOverview
@@ -72,6 +74,7 @@ import info.nightscout.androidaps.utils.protection.ProtectionCheck
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.androidaps.utils.sharedPreferences.SP
+import info.nightscout.androidaps.utils.ui.SingleClickButton
 import info.nightscout.androidaps.utils.ui.UIRunnable
 import info.nightscout.androidaps.utils.wizard.QuickWizard
 import io.reactivex.disposables.CompositeDisposable
@@ -118,6 +121,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     @Inject lateinit var glucoseStatusProvider: GlucoseStatusProvider
     @Inject lateinit var overviewData: OverviewData
     @Inject lateinit var overviewPlugin: OverviewPlugin
+    @Inject lateinit var automationPlugin: AutomationPlugin
 
     private val disposable = CompositeDisposable()
 
@@ -459,6 +463,32 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         binding.buttonsLayout.calibrationButton.visibility = ((xDripIsBgSource || dexcomIsSource) && actualBG != null && sp.getBoolean(R.string.key_show_calibration_button, true)).toVisibility()
         binding.buttonsLayout.cgmButton.visibility = (sp.getBoolean(R.string.key_show_cgm_button, false) && (xDripIsBgSource || dexcomIsSource)).toVisibility()
 
+        // Automation buttons
+        binding.buttonsLayout.userButtonsLayout.removeAllViews()
+        val events = automationPlugin.userEvents()
+        for (event in events)
+            if (event.isEnabled && event.trigger.shouldRun())
+                context?.let { context ->
+                    SingleClickButton(context).also {
+                        it.setTextColor(resourceHelper.gc(R.color.colorTreatmentButton))
+                        it.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+                        it.layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 0.5f).also { l ->
+                            l.setMargins(0, 0, resourceHelper.dpToPx(-4), 0)
+                        }
+                        it.setCompoundDrawablesWithIntrinsicBounds(null, resourceHelper.gd(R.drawable.ic_danar_useropt), null, null)
+                        it.text = event.title
+
+                        it.setOnClickListener {
+                            OKDialog.showConfirmation(
+                                context,
+                                resourceHelper.gs(R.string.run_question, event.title),
+                                { handler.post { automationPlugin.processEvent(event, true) } }
+                            )
+                        }
+                        binding.buttonsLayout.userButtonsLayout.addView(it)
+                    }
+                }
+        binding.buttonsLayout.userButtonsLayout.visibility = events.isNotEmpty().toVisibility()
     }
 
     private fun processAps() {
@@ -636,18 +666,28 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             OverviewData.Property.PROFILE          -> {
                 val profileBackgroundColor =
                     profileFunction.getProfile()?.let {
-                        val profile = (it as ProfileSealed.EPS).value
-                        if (profile.originalPercentage != 100 || profile.originalTimeshift != 0L || profile.originalDuration != 0L)
-                            resourceHelper.gc(R.color.ribbonWarning)
-                        else resourceHelper.gc(R.color.ribbonDefault)
-                    } ?: resourceHelper.gc(R.color.ribbonTextDefault)
+                        if (it is ProfileSealed.EPS) {
+                            if (it.value.originalPercentage != 100 || it.value.originalTimeshift != 0L || it.value.originalDuration != 0L)
+                                resourceHelper.gc(R.color.ribbonWarning)
+                            else resourceHelper.gc(R.color.ribbonDefault)
+                        } else if (it is ProfileSealed.PS) {
+                            resourceHelper.gc(R.color.ribbonDefault)
+                        } else {
+                            resourceHelper.gc(R.color.ribbonDefault)
+                        }
+                    } ?: resourceHelper.gc(R.color.ribbonCritical)
 
                 val profileTextColor =
                     profileFunction.getProfile()?.let {
-                        val profile = (it as ProfileSealed.EPS).value
-                        if (profile.originalPercentage != 100 || profile.originalTimeshift != 0L || profile.originalDuration != 0L)
-                            resourceHelper.gc(R.color.ribbonTextWarning)
-                        else resourceHelper.gc(R.color.ribbonTextDefault)
+                        if (it is ProfileSealed.EPS) {
+                            if (it.value.originalPercentage != 100 || it.value.originalTimeshift != 0L || it.value.originalDuration != 0L)
+                                resourceHelper.gc(R.color.ribbonTextWarning)
+                            else resourceHelper.gc(R.color.ribbonTextDefault)
+                        }else if (it is ProfileSealed.PS) {
+                            resourceHelper.gc(R.color.ribbonTextDefault)
+                        } else {
+                            resourceHelper.gc(R.color.ribbonTextDefault)
+                        }
                     } ?: resourceHelper.gc(R.color.ribbonTextDefault)
 
                 binding.activeProfile.text = profileFunction.getProfileNameWithRemainingTime()
@@ -688,7 +728,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                     activity?.let { OKDialog.show(it, resourceHelper.gs(R.string.iob), overviewData.iobDialogText) }
                 }
                 // cob
-                var cobText = overviewData.cobInfo?.displayText(resourceHelper, dateUtil, buildHelper.isDev()) ?: resourceHelper.gs(R.string.value_unavailable_short)
+                var cobText = overviewData.cobInfo?.displayText(resourceHelper, dateUtil, buildHelper.isEngineeringMode()) ?: resourceHelper.gs(R.string.value_unavailable_short)
 
                 val constraintsProcessed = loopPlugin.lastRun?.constraintsProcessed
                 val lastRun = loopPlugin.lastRun
