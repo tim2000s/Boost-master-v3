@@ -1395,9 +1395,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // Default insulinReqPct and maxBolus at night
                     insulinReqPct = insulinReqPctDefault;
                     maxBolus = maxBolus;
-                    // maxBolus can be larger if the TT is low
-                    // maxBolus = ( profile.temptargetSet && target_bg <= profile.normal_target_bg ? EatingNowMaxSMB : maxBolus);
-                    //UAMBoostReason ="; EN time override enabled: " + (profile.temptargetSet && target_bg <= profile.normal_target_bg ? "increased" : "default") +" maxBolus" ;
                 }
 
                 // ============== INSULIN BOOST  ==============
@@ -1413,6 +1410,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else if (iTime < iTimeWindow) {
                     UAMBoostReason += ", iTime: " + iTime+"m<"+iTimeWindow+"m";
                 }
+                if (meal_data.mealCOB > 0) UAMBoostReason += ", COB Boost active";
                 if (liftISF > 1) UAMBoostReason += ", liftISF: " + round(liftISF,2); //autoISF reason
                 UAMBoostReason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
                 UAMBoostReason += ", TDD: " + round(TDD, 2);
