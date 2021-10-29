@@ -1318,8 +1318,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostOK = true;
                 }
 
-                // Recent manual bolus allow faster UAMBoost response
-                if (!UAMBoostMAX && iTime < iTimeWindow && UAM_delta >0) {
+                // Recent manual bolus or having COB will allow faster UAMBoost response
+                if (UAM_delta >0 && !UAMBoostMAX && (iTime < iTimeWindow || meal_data.mealCOB >0) {
                     UAMBoostOK = true;
                 }
 
