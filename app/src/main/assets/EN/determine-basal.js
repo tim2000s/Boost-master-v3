@@ -371,7 +371,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var ISFBoost = 1; // default is no ISFBoost
     // TIR 3 day average and today (now)
     var TIR3AvgBelow = meal_data.TIR3AvgBelow;
-    var TIR3NowBelow = meal_data.TIR3NowBelow;
+    var TIRNowBelow = meal_data.TIRNowBelow;
 
     /* ************************
        ** TS AutoTDD code    **
@@ -1274,7 +1274,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var iTimeMax = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
             var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
             // use TIR to slow down insulin delivery via SMB and reduce TDD * EXPERIMENTAL *
-            var SMBIntervalTIR = (TIR3NowBelow > TIR3AvgBelow ? 10 : profile.SMBInterval);
+            var SMBIntervalTIR = (TIRNowBelow > TIR3AvgBelow ? 10 : profile.SMBInterval);
 
             // Calculate percentage change in deltas, long to short and short to now
             if (glucose_status.long_avgdelta !=0) UAM_deltaLongRise = round((glucose_status.short_avgdelta - glucose_status.long_avgdelta) / Math.abs(glucose_status.long_avgdelta),2);
