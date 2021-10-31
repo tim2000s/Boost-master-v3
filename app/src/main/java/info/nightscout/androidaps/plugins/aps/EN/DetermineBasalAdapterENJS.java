@@ -398,8 +398,9 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("firstBolusCorr",treatmentsPlugin.getFirstENBolusTime(sp.getInt(R.string.key_eatingnow_timestart, 9)));
 
         tddAIMI = new TddCalculator(hasAndroidInjector,aapsLogger,rxBusWrapper,resourceHelper,mainApp,sp,activePluginProvider,profileFunction,fabricPrivacy,nsUpload,dateUtil,uploadQueue);
-        mMealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).total);
         mMealData.put("TDDAIMI1",tddAIMI.averageTDD(tddAIMI.calculate(1)).total);
+        mMealData.put("TDDAIMI3",tddAIMI.averageTDD(tddAIMI.calculate(3)).total);
+        mMealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).total);
         mMealData.put("TDDPUMP",tddAIMI.calculateDaily().total);
         StatTIR = new TirCalculator(resourceHelper,profileFunction,dateUtil);
         int lowMgdl = 80, highMgdl = 160, days = 3; // 4.4 - 8.8mmol
