@@ -150,7 +150,7 @@ function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_d
             if (maxISFReduction < levelISF) {
                 console.error("autoISF reduction", round(levelISF,2), "limited by autoisf_max", maxISFReduction);
             }
-            //sens = round(sens / liftISF, 1); // we want to adjust the current sens which could have been changed by advanced targets
+            sens = round(sens / liftISF, 1); // we want to adjust the current sens which could have been changed by advanced targets
         } else {
             console.error("autoISF by-passed; avg. glucose", avg05, "below target", target_bg);
         }
