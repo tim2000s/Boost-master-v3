@@ -1350,6 +1350,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      // set SMB limit for ISFBoost
                     EatingNowMaxSMB = ( profile.ISFBoost_SMBLimit > 0 ? profile.ISFBoost_SMBLimit : maxBolus );
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
+                    // try spacing out the SMB for ISFBoost
+                    insulinReqPct = (lastBolusAge > 10 ? insulinReqPct : 0);
                     ISFBoosted = true;
                 }
                 // ============== ISF BOOST ============== END ===
@@ -1414,6 +1416,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoostReason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
                 UAMBoostReason += ", TDD: " + round(TDD, 2);
             }
+            // try spacing out the SMB for ISFBoost until we figure out whats happening
+            if (ISFBoost <1 && !eatingnow) insulinReqPct = (lastBolusAge > 10 ? insulinReqPct : 0);
+
             // ============  EATING NOW MODE  ==================== END ===
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
             var roundSMBTo = 1 / profile.bolus_increment;
