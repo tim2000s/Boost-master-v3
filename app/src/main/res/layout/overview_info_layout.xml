@@ -246,11 +246,13 @@
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
+            android:id="@+id/overview_insulin_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_bolus"
-            android:contentDescription="@string/iob" />
+            android:contentDescription="@string/iob"
+            android:background="@drawable/anim_insulin"/>
+
 
         <TextView
             android:id="@+id/iob"

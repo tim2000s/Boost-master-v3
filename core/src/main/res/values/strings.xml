@@ -69,38 +69,8 @@
     <string name="key_fulluam_max_iob" translatable="false">fulluam_max_iob</string>
     <string name="fulluam_maxiob_title">Maximum total IOB AIMI can\'t go over [U]</string>
     <string name="fulluam_maxiob_summary">This value is called Max IOB in AIMI context\nAIMI will not add more insulin if current IOB is greater than this value</string>
-    <string name="key_scale_min" translatable="false">scale_min</string>
-    <string name="scale_min_title">scale_min [%]</string>
-    <string name="scale_min_summary">Percentage of profile ISF to use as base ISF for first wave UAM. Default of 100% means no offset is used (profile ISF = base ISF). scale_min describes the base aggressiveness.</string>
-    <string name="key_scale_max" translatable="false">scale_max</string>
-    <string name="scale_max_title">scale_max [%]</string>
-    <string name="scale_max_summary">Minimum percentage of base ISF to scale towards. Example: Scale_max of 50% means that the lowest possible ISF reachable by the scaling algorithm is 50% of your current base ISF. scale_max describes the global aggressiveness.</string>
-    <string name="key_scale_50" translatable="false">scale_50</string>
-    <string name="scale_50_title">scale_50</string>
-    <string name="scale_50_summary">Delta at which 50% of minimal ISF (defined by scale_max) is reached. scale_50 describes the local or initial aggressiveness.</string>
-    <!-- MP: UAMboluscap start -->
-    <string name="key_UAM_boluscap" translatable="false">UAM_boluscap</string>
-    <string name="UAM_UAM_boluscap_title">UAM bolus cap [U]</string>
-    <string name="UAM_boluscap_summary">max SMB size deliverable by UAM meal assists (W1 and W2 assists).</string>
-    <!-- MP: UAMboluscap end -->
-    <string name="key_UAM_InsulinReq" translatable="false">UAM_InsulinReq</string>
-    <string name="UAM_InsulinReq_title">insulinReq delivery percentage [%]</string>
-    <string name="UAM_InsulinReq_summary">Reduces the calculated required SMB size to the specified percentage. Example: If calculated insulin required is 1 U and fraction size is 50%, 0.5 U will be delivered.</string>
-    <string name="key_Mealfactor_start" translatable="false">W2 assist start time</string>
-    <string name="Mealfactor_start_summary">Hour of the day from when on W2 assist will be enabled.</string>
-    <string name="Mealfactor_start_title">W2 assist start time [h]</string>
-    <string name="key_Mealfactor_end" translatable="false">W2 assist end time</string>
-    <string name="Mealfactor_end_summary">Hour of the day until (and including) which W2 assist is enabled.</string>
-    <string name="Mealfactor_end_title">W2 assist end time [h]</string>
-    <string name="key_UAM_eventualBG" translatable="false">eventualBG above will change the target</string>
-    <string name="UAM_eventualBG_summary">eventualBG above will change the target</string>
-    <string name="UAM_eventualBG_title">ev.BG threshold to change the target.</string>
-    <string name="key_w2_iob_threshold" translatable="false">W2_IOB_threshold</string>
-    <string name="w2_iob_threshold_summary">Minimum percentage of maxIOB above which W2 assist is enabled. Below this threshold IOB, W2 assist will be disabled. Example: If this value is 10 and maxIOB is 8, your current IOB must be at least (8 * 10/100 =) 0.8 U for W2 assist to be active. This parameter is a safety feature assuming that postprandial glucose spikes (e.g. due to fat) occur before all insulin from the last meal decayed. If you set this value to 0, W2 assist will be decoupled from current IOB. Only do this if you are confident your sensor is not noisy, you enabled data smoothing and your scaling parameters and profile allow for safe use of W2 assist.</string>
-    <string name="w2_iob_threshold_title">W2 IOB threshold [%]</string>
-    <string name="key_UAM_hyperBG" translatable="false">Prediction Value to start scale smb</string>
-    <string name="UAM_hyperBG_summary">Prediction Value to start scale smb</string>
-    <string name="UAM_hyperBG_title">Prediction Value to start scale smb</string>
+
+
 
     <!--    General-->
     <string name="refresh">Refresh</string>
