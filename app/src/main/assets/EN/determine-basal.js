@@ -1422,7 +1422,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoostReason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
             }
             // try spacing out the SMB's ith TBR if TIR has more lows today
-            insulinReqPct = (lastBolusAge > SMBIntervalTIR ? insulinReqPctDefault : 0);
+            insulinReqPct = (lastBolusAge > SMBIntervalTIR ? insulinReqPct : 0);
 
             // ============  EATING NOW MODE  ==================== END ===
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
