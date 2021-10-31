@@ -394,6 +394,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
 
     var variable_sens = (277700 / (TDD * bg));
+    var var_sens_normalTarget = (277700 / (TDD * normalTarget));
+
     variable_sens = round(variable_sens,1);
     console.log("Current sensitivity is " +variable_sens+" based on current bg");
 
@@ -982,7 +984,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + "/" + glucose_status.long_avgdelta + ", ISF: " + convert_bg(sens, profile) + (ISFBoost !=1 ? "(" + convert_bg(profile_sens, profile) + ")" : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + "/" + glucose_status.long_avgdelta + ", ISF: " + convert_bg(sens, profile) + (ISFBoost !=1 ? "(" + convert_bg(var_sens_normalTarget, profile) + ")" : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
 
     if (lastCOBpredBG > 0) {
         rT.reason += ", COBpredBG " + convert_bg(lastCOBpredBG, profile);
