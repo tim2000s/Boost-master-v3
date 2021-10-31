@@ -1482,8 +1482,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason += "; setting " + durationReq + "m low temp of " + smbLowTempReq + "U/h";
             }
             rT.reason += ". ";
-            rT.reason += UAMBoostReason + ". "; // THE END?
-            rT.reason = esc_text(rT.reason);
+            rT.reason += UAMBoostReason;
+            rT.reason += ", SMBIntervalTIR: " + SMBIntervalTIR;
+            rT.reason = esc_text(rT.reason) + ". ";
 
             //allow SMBs every 3 minutes by default
             var SMBInterval = 3;
