@@ -1419,7 +1419,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (meal_data.mealCOB > 0) UAMBoostReason += ", COB Boost active";
                 if (liftISF > 1) UAMBoostReason += ", liftISF: " + round(liftISF,2); //autoISF reason
                 UAMBoostReason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
-                UAMBoostReason += ", TDD: " + round(TDD, 2);
             }
             // try spacing out the SMB for ISFBoost until we figure out whats happening
             // if (ISFBoost <1 && !eatingnow) insulinReqPct = (lastBolusAge > 10 ? insulinReqPct : 0);
@@ -1484,6 +1483,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             rT.reason += ". ";
             rT.reason += UAMBoostReason;
             rT.reason += ", SMBIntervalTIR: " + SMBIntervalTIR;
+            rT.reason += ", TDD: " + round(TDD, 2);
             rT.reason = esc_text(rT.reason) + ". ";
 
             //allow SMBs every 3 minutes by default
