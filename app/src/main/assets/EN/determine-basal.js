@@ -401,7 +401,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     ISFBoost = (variable_sens/sens);
     sens = variable_sens;
 
-    var eRatio = round((bg/0.16)/sens,2);
     var eRatio = round(sens / 13.2);
     console.error("CR:",eRatio);
     //var iob_scale = (profile.W2_IOB_threshold/100) * max_iob;
