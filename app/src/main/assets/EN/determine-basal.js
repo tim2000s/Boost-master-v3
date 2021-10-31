@@ -369,6 +369,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //console.error("CR:", );
 
     var ISFBoost = 1; // default is no ISFBoost
+    // TIR 3 day average and today (now)
+    var TIR3AvgBelow = meal_data.TIR3AvgBelow;
+    var TIR3NowBelow = meal_data.TIR3NowBelow;
 
     /* ************************
        ** TS AutoTDD code    **
@@ -1270,6 +1273,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // iTimeMax is minutes since first manual bolus correction after EN starts
             var iTimeMax = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
             var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
+            // use TIR to slow down insulin delivery via SMB and reduce TDD * EXPERIMENTAL *
+            var SMBIntervalTIR = (TIR3NowBelow > TIR3AvgBelow ? 10 : profile.SMBInterval);
 
             // Calculate percentage change in deltas, long to short and short to now
             if (glucose_status.long_avgdelta !=0) UAM_deltaLongRise = round((glucose_status.short_avgdelta - glucose_status.long_avgdelta) / Math.abs(glucose_status.long_avgdelta),2);
@@ -1351,7 +1356,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = ( profile.ISFBoost_SMBLimit > 0 ? profile.ISFBoost_SMBLimit : maxBolus );
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // try spacing out the SMB for ISFBoost
-                    insulinReqPct = (lastBolusAge > 10 ? insulinReqPct : 0);
+                    // insulinReqPct = (lastBolusAge > SMBIntervalTIR ? insulinReqPct : 0);
                     ISFBoosted = true;
                 }
                 // ============== ISF BOOST ============== END ===
@@ -1486,6 +1491,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // allow SMBIntervals between 1 and 10 minutes
                 SMBInterval = Math.min(10,Math.max(1,profile.SMBInterval));
             }
+            SMBInterval = SMBIntervalTIR;
             var nextBolusMins = round(SMBInterval-lastBolusAge,0);
             var nextBolusSeconds = round((SMBInterval - lastBolusAge) * 60, 0) % 60;
             //console.error(naive_eventualBG, insulinReq, worstCaseInsulinReq, durationReq);
