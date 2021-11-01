@@ -1486,8 +1486,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             rT.reason += ". ";
             rT.reason += UAMBoostReason;
-            rT.reason += ", TIR3LIH: " TIR3AvgBelow + "/" + TIR3AvgInRange + "/" + TIR3AvgAbove;
-            rT.reason += ", TIRLIH: " TIRNowBelow + "/" + TIRNowInRange + "/" + TIRNowAbove;
+            rT.reason += ", TIR3LIH: " + TIR3AvgBelow + "/" + TIR3AvgInRange + "/" + TIR3AvgAbove;
+            rT.reason += ", TIRLIH: " + TIRNowBelow + "/" + TIRNowInRange + "/" + TIRNowAbove;
             rT.reason += ", TDD: " + round(TDD, 2);
             rT.reason = esc_text(rT.reason) + ". ";
 
