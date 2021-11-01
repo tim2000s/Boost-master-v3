@@ -370,8 +370,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     var ISFBoost = 1; // default is no ISFBoost
     // TIR 3 day average and today (now)
-    var TIR3AvgBelow = meal_data.TIR3AvgBelow;
-    var TIRNowBelow = meal_data.TIRNowBelow;
+    var TIR3AvgBelow = meal_data.TIR3AvgBelow, TIR3AvgInRange = meal_data.TIR3AvgInRange, TIR3AvgAbove = meal_data.TIR3AvgAbove;
+    var TIRNowBelow = meal_data.TIRNowBelow, TIRNowInRange = meal_data.TIRNowInRange, TIRNowAbove = meal_data.TIRNowAbove;
 
     /* ************************
        ** TS AutoTDD code    **
@@ -1486,7 +1486,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             rT.reason += ". ";
             rT.reason += UAMBoostReason;
-            rT.reason += ", TIRLowDiff: " + (TIR3AvgBelow-TIRNowBelow);
+            rT.reason += ", TIR3LIH: " TIR3AvgBelow + "/" + TIR3AvgInRange + "/" + TIR3AvgAbove;
+            rT.reason += ", TIRLIH: " TIRNowBelow + "/" + TIRNowInRange + "/" + TIRNowAbove;
             rT.reason += ", TDD: " + round(TDD, 2);
             rT.reason = esc_text(rT.reason) + ". ";
 
