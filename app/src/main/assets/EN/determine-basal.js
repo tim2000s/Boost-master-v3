@@ -1348,6 +1348,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // allow 100% insulinReqPct when initial rise is known to go higher than 108 (6) TS
                     insulinReqPct = (eventualBG > 108 ? 1 : insulinReqPct);
                     UAMBoosted = true;
+                    SMBIntervalTIR = profile.SMBInterval; // allow immediate SMB for UAMBoost
                 }
                 // ============== UAMBOOST ============== END ===
 
@@ -1424,7 +1425,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoostReason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
             }
             // try spacing out the SMB's ith TBR if TIR has more lows today ONLY FOR ISFBOOST
-            insulinReqPct = (ISFBoosted && lastBolusAge < SMBIntervalTIR ? 0 : insulinReqPct);
+            insulinReqPct = (lastBolusAge > SMBIntervalTIR ? insulinReqPct : 0);
 
             // ============  EATING NOW MODE  ==================== END ===
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
