@@ -1143,6 +1143,7 @@
     <string name="key_iTime_MaxBolus_minutes" translatable="false">iTime_MaxBolus_minutes</string>
     <string name="iTime_MaxBolus_minutes_title">iTime_MaxBolus_minutes</string>
     <string name="iTime_MaxBolus_minutes_summary">iTime give a duration of the meal who allow larger smb and maxbolus. this variable give the higher maxbolus (basal * iTime_MaxBolus_minutes / 60)</string>
+    <string name="disable_Libre_smb_restrictions">Filtering active for every sensor, Go SMB!</string>
 
 
 </resources>

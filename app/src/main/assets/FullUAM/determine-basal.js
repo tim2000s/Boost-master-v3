@@ -865,7 +865,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log("AIMI V5 31/10/2021");
+                console.log("AIMI V5 01/11/2021");
                 console.log("------------------------------");
                 console.log("Pump extrapolated TDD = "+tdd_pump);
                 console.log("tdd7 using 7-day average "+tdd7);
