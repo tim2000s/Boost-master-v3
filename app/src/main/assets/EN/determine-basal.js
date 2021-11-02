@@ -1326,7 +1326,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // Recent manual bolus or having COB will allow faster UAMBoost response
-                if (UAM_delta >0 && !UAMBoostMAX && (iTime < iTimeWindow || meal_data.mealCOB >0)) {
+                if (UAM_delta >0 && !UAMBoostMAX && (iTime < iTimeWindow)) {
                     UAMBoostOK = true;
                 }
 
@@ -1369,7 +1369,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== MAXBOLUS RESTRICTIONS ==============
                 // allow EatingNowMaxSMB with COB or iTime window OK else restrict to maxBolus
-                if ( meal_data.mealCOB > 0 || (iTime < iTimeWindow || iTimeMax < iTimeMaxWindow) ) {
+                if ( iTime < iTimeWindow || iTimeMax < iTimeMaxWindow ) {
                     EatingNowMaxSMB = EatingNowMaxSMB; // use EN SMB Limit
                 } else {
                     EatingNowMaxSMB = Math.min(maxBolus,EatingNowMaxSMB); // use the most restrictive
@@ -1423,7 +1423,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else if (iTime < iTimeWindow) {
                     UAMBoostReason += ", iTime: " + iTime+"m<"+iTimeWindow+"m";
                 }
-                if (meal_data.mealCOB > 0) UAMBoostReason += ", COB Boost active";
                 if (liftISF > 1) UAMBoostReason += ", liftISF: " + round(liftISF,2); //autoISF reason
                 UAMBoostReason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
             }
