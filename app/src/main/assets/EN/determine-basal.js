@@ -1322,7 +1322,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 //var UAMBoost_threshold = (iob_data.iob < (UAMBoost_threshold_low * UAMBoost_bolus) ? UAMBoost_threshold_low : UAMBoost_threshold_high);
 
                 // If UAMBoostMAX mode we are OK to boost on any delta, this is the first meal of the day
-                if (UAMBoostMAX && UAM_delta >0){
+                if (UAMBoostMAX && UAM_delta >2){
                     UAMBoost_threshold = UAMBoost_threshold_low;
                     UAMBoostOK = true;
                 }
