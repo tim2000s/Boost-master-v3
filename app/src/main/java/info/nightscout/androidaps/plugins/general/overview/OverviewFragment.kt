@@ -130,7 +130,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     @Inject lateinit var automationPlugin: AutomationPlugin
 
     private val disposable = CompositeDisposable()
-    private val millsToThePast = T.hours(4).msecs()
+    public val millsToThePast = T.hours(4).msecs()
     private var smallWidth = false
     private var smallHeight = false
     private lateinit var dm: DisplayMetrics

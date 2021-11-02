@@ -106,7 +106,7 @@ function enable_smb(
     }
 
     console.error("SMB disabled (no enableSMB preferences active or no condition satisfied)");
-    return false;
+    return true;
 }
 
 
@@ -291,7 +291,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
     var iTimeProfile = profile.iTime;
     var smbTDD = 0;
-    if (tdd7 == 0){
+    if (tdd7 <= 0){
         console.log("No TDD data, ISF in the profile will be use");
     }else{
         var tdd_pump = ( tdd_pump_now / (now / 24));
@@ -853,7 +853,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     console.error("UAM Impact:",uci,"mg/dL per 5m; UAM Duration:",UAMduration,"hours");
     console.log("EventualBG is" +eventualBG+" ;");
-if (tdd7 == 0){
+if (tdd7 <= 0){
 console.log("no TDD data to calculate future_sens")
 var future_sens = sens;
 }else{
@@ -877,7 +877,7 @@ var future_sens = sens;
         console.log("------------------------------");
                 console.log("AIMI V5 02/11/2021");
                 console.log("------------------------------");
-                if (tdd7 == 0){
+                if (tdd7 > 0){
                 console.log("Pump extrapolated TDD = "+tdd_pump);
                 console.log("tdd7 using 7-day average "+tdd7);
                 console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD);
