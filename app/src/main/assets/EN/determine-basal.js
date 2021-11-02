@@ -333,6 +333,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (!profile.temptargetSet && eatingnowtimeOK) eatingnow = true;
         // If there are COB enable eating now
         if (meal_data.mealCOB >0) eatingnow = true;
+        if (eatingnow) max_iob *= profile.EatingNowIOBMax; // set maxIOB using the EN percentage
     }
     //eatingnow = false; //DEBUG
 
