@@ -291,7 +291,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
     var iTimeProfile = profile.iTime;
     var smbTDD = 0;
-    if (tdd7 === null){
+    if (tdd7 == 0){
         console.log("No TDD data, ISF in the profile will be use");
     }else{
         var tdd_pump = ( tdd_pump_now / (now / 24));
@@ -853,7 +853,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     console.error("UAM Impact:",uci,"mg/dL per 5m; UAM Duration:",UAMduration,"hours");
     console.log("EventualBG is" +eventualBG+" ;");
-if (tdd7 === null){
+if (tdd7 == 0){
 console.log("no TDD data to calculate future_sens")
 var future_sens = sens;
 }else{
@@ -875,9 +875,9 @@ var future_sens = sens;
         var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log("AIMI V5 01/11/2021");
+                console.log("AIMI V5 02/11/2021");
                 console.log("------------------------------");
-                if (tdd7 === null){
+                if (tdd7 == 0){
                 console.log("Pump extrapolated TDD = "+tdd_pump);
                 console.log("tdd7 using 7-day average "+tdd7);
                 console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD);
@@ -1292,7 +1292,7 @@ var future_sens = sens;
             }
             var insulinQ = insulinReq;
             var insulinReqPCT = profile.UAM_InsulinReq/100;
-            if (tdd7 === null){
+            if (tdd7 == 0){
             var InsulinTDD = 0;
             }else{
             var InsulinTDD = (TDD * 0.4) / 24;
