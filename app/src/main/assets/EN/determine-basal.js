@@ -1297,8 +1297,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // if autoISF is active and insulinReq is less than normal maxbolus then allow 100%
             //if (liftISF > 1 && insulinReq <= maxBolus && eatingnowtimeOK) insulinReqPct = 1.0;
 
-            // START === if we are eating now and BGL prediction is higher than target ===
-            if (eatingnow && eventualBG > target_bg) {
+            // START === if we are eating now and BGL prediction is higher than normal target ===
+            if (eatingnow && eventualBG > normalTarget) {
                 UAMBoostReason = ""; //blank boost reason to prepare for boost info
 
                 // EN insulinReqPct is used from the profile
@@ -1356,8 +1356,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== UAMBOOST ============== END ===
 
                 // ============== ISF BOOST ============== START ===
-                // For BG rises that dont meet the UAMBoost criteria
-                if (ISFBoost <1 && !UAMBoosted) {
+                // For BG rises that dont meet the UAMBoost criteria using adjusted target_bg
+                if (ISFBoost <1 && !UAMBoosted && eventualBG > target_bg) {
                      // set SMB limit for ISFBoost
                     EatingNowMaxSMB = ( profile.ISFBoost_SMBLimit > 0 ? profile.ISFBoost_SMBLimit : maxBolus );
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
