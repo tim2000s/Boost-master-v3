@@ -396,9 +396,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     var variable_sens = (277700 / (TDD * bg));
     var var_sens_normalTarget = (277700 / (TDD * normalTarget));
-
     variable_sens = round(variable_sens,1);
     console.log("Current sensitivity is " +variable_sens+" based on current bg");
+
+    // disable variable ISF with a TT
+    if (profile.temptargetSet) variable_sens = sens;
 
     // **********************************************************************************************
     // *****                           End of automated TDD code                                *****
