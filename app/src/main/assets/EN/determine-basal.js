@@ -1272,6 +1272,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var insulinReqBoost = 0; // no boost yet
             var EatingNowMaxSMB = maxBolus;
             var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
+            var EatingNowBGThreshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowBGThreshold * 18, 1).toFixed(1) : profile.EatingNowBGThreshold);
+            if (EatingNowBGThreshold == 0) EatingNowBGThreshold = 180 ; // default is 180 = 10 mmol
+            // console.log("EatingNowBGThreshold: "+EatingNowBGThreshold);
 
             // iTime is minutes since last manual bolus correction or carbs
             var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorr, meal_data.lastCarbTime)) / 60000,0);
@@ -1280,7 +1283,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var iTimeMax = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
             var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
             // use TIR to slow down insulin delivery via SMB and reduce TDD * EXPERIMENTAL *
-            var SMBIntervalTIR = (TIRNowBelow > TIR3AvgBelow ? 10 : profile.SMBInterval);
+            var EN_SMBInterval = (TIRNowBelow > TIR3AvgBelow ? 10 : profile.SMBInterval);
+            // trying to tame ISF Boost before working on scaling SMB Limit
+            EN_SMBInterval = ( bg > EatingNowBGThreshold ? 10 : profile.SMBInterval);
+
 
             // Calculate percentage change in deltas, long to short and short to now
             if (glucose_status.long_avgdelta !=0) UAM_deltaLongRise = round((glucose_status.short_avgdelta - glucose_status.long_avgdelta) / Math.abs(glucose_status.long_avgdelta),2);
@@ -1354,7 +1360,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // allow 100% insulinReqPct when initial rise is known to go higher than 108 (6) TS
                     insulinReqPct = (eventualBG > 108 ? 1 : insulinReqPct);
                     UAMBoosted = true;
-                    SMBIntervalTIR = profile.SMBInterval; // allow immediate SMB for UAMBoost
+                    EN_SMBInterval = profile.SMBInterval; // allow immediate SMB for UAMBoost
                 }
                 // ============== UAMBOOST ============== END ===
 
@@ -1365,7 +1371,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = ( profile.ISFBoost_SMBLimit > 0 ? profile.ISFBoost_SMBLimit : maxBolus );
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // try spacing out the SMB for ISFBoost
-                    insulinReqPct = (lastBolusAge > SMBIntervalTIR ? insulinReqPct : 0);
+                    // insulinReqPct = (lastBolusAge > EN_SMBInterval ? insulinReqPct : 0);
                     ISFBoosted = true;
                 }
                 // ============== ISF BOOST ============== END ===
@@ -1408,7 +1414,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = insulinReqPct;
                 } else {
                     // Default insulinReqPct and maxBolus at night
-                    insulinReqPct = (lastBolusAge > SMBIntervalTIR ? insulinReqPctDefault : 0);
+                    insulinReqPct = (lastBolusAge > EN_SMBInterval ? insulinReqPctDefault : 0);
                     //insulinReqPct = insulinReqPctDefault;
                     maxBolus = maxBolus;
                 }
@@ -1429,8 +1435,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (liftISF > 1) UAMBoostReason += ", liftISF: " + round(liftISF,2); //autoISF reason
                 UAMBoostReason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
             }
-            // try spacing out the SMB's ith TBR if TIR has more lows today ONLY FOR ISFBOOST
-            insulinReqPct = (lastBolusAge > SMBIntervalTIR ? insulinReqPct : 0);
+            // try spacing out the SMB's with TBR if TIR has more lows today ONLY FOR ISFBOOST
+            insulinReqPct = (lastBolusAge > EN_SMBInterval ? insulinReqPct : 0);
 
             // ============  EATING NOW MODE  ==================== END ===
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
@@ -1502,7 +1508,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // allow SMBIntervals between 1 and 10 minutes
                 SMBInterval = Math.min(10,Math.max(1,profile.SMBInterval));
             }
-            //SMBInterval = SMBIntervalTIR;
+            //SMBInterval = EN_SMBInterval;
             var nextBolusMins = round(SMBInterval-lastBolusAge,0);
             var nextBolusSeconds = round((SMBInterval - lastBolusAge) * 60, 0) % 60;
             //console.error(naive_eventualBG, insulinReq, worstCaseInsulinReq, durationReq);
