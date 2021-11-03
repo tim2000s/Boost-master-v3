@@ -249,16 +249,6 @@
                     validate:testType="numericRange" />
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                    android:defaultValue="5"
-                    android:inputType="numberDecimal"
-                    android:key="@string/key_eatingnow_iob"
-                    android:dialogMessage="IOB required to allow larger Eating Now SMB"
-                    android:title="IOB for larger SMB"
-                    validate:floatmaxNumber="25.0"
-                    validate:floatminNumber="0.1"
-                    validate:testType="floatNumericRange"/>
-
-                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                     android:defaultValue="65"
                     android:enabled="true"
                     android:dialogMessage="Percentage of Insulin Required. When Insulin is required this percentage will be applied. AAPS default is 50%. Setiting to 70 will make this 70%"

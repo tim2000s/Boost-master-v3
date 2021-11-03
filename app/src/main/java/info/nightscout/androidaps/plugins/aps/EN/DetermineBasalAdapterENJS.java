@@ -331,7 +331,6 @@ public class DetermineBasalAdapterENJS {
 
         // patches ==== START
         mProfile.put("enableGhostCOB", sp.getBoolean(R.string.key_use_ghostcob, false));
-        mProfile.put("EatingNowIOB", sp.getDouble(R.string.key_eatingnow_iob, 5));
         mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3) * profile.getPercentage()/100);
         mProfile.put("EatingNowTimeStart", sp.getInt(R.string.key_eatingnow_timestart, 9));
         mProfile.put("EatingNowTimeEnd", sp.getInt(R.string.key_eatingnow_timeend, 17));
