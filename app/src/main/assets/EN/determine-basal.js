@@ -1425,6 +1425,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
 
+                // ============== IOB RESTRICTION  ==============
+                if (insulinReq > max_iob-iob_data.iob) {
+                    UAMBoostReason += "max_iob " + max_iob + ", ";
+                    insulinReq = max_iob-iob_data.iob;
+                }
+
                 // ============== UAMBoost Reason ==============
                 // If max window exists we dont need to show iTime
                 if (iTimeMax < iTimeMaxWindow) {
