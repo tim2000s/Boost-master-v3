@@ -172,7 +172,8 @@ android {
                         // on below line we are replacing our previous name with our app name.
 //                        newName = newName.replace("app-", "$project.ext.appName-")
                         // on below line we are replacing -release with our formatted date and ID.
-                        newName = newName.replace("-release", "-release-" + formattedDate + "-EN")
+                        //newName = newName.replace("-release", "-" + formattedDate + "-EN")
+                        newName = "EN-"+ formattedDate + newName.replace("-release", "")
                         // at last we are setting our apk name to it.
                         output.outputFileName  = newName
                 }
