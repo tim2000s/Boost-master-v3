@@ -1357,8 +1357,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // if TIR is higher than the last 3 days allow a lift to EatingNowMaxSMB
                     EatingNowMaxSMB = (TIRNowAbove > TIR3AvgAbove ? EatingNowMaxSMB * (TIRNowAbove/TIR3AvgAbove) : EatingNowMaxSMB);
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
-                    // allow 100% insulinReqPct when initial rise is known to go higher than 108 (6) TS
-                    insulinReqPct = (eventualBG > 108 ? 1 : insulinReqPct);
+                    // allow 100% insulinReqPct when initial rise is known to go higher EatingNowBGThreshold
+                    insulinReqPct = (eventualBG > EatingNowBGThreshold ? 1 : insulinReqPct);
                     UAMBoosted = true;
                     EN_SMBInterval = profile.SMBInterval; // allow immediate SMB for UAMBoost
                 }
