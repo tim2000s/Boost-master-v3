@@ -334,7 +334,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // If there are COB enable eating now
         if (meal_data.mealCOB >0) eatingnow = true;
         if (eatingnow) max_iob *= profile.EatingNowIOBMax; // set maxIOB using the EN percentage
-        round(max_iob,1);
+        max_iob = round(max_iob,2);
     }
     //eatingnow = false; //DEBUG
 
@@ -1430,8 +1430,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== IOB RESTRICTION  ==============
                 if (insulinReq > max_iob-iob_data.iob) {
-                    UAMBoostReason += "max_iob " + max_iob + ", ";
-                    insulinReq = max_iob-iob_data.iob;
+                    UAMBoostReason += ", max_iob " + max_iob + ", ";
+                    insulinReq = round(max_iob-iob_data.iob,2);
                 }
 
                 // ============== UAMBoost Reason ==============
