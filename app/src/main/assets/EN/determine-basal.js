@@ -364,7 +364,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (sens !== profile_sens) {
             console.log("Profile ISF from "+profile_sens+" to "+sens);
         } else {
-            console.log("Profile ISF unchanged by Autosens: "+sens+". TDD based ISF "+(profile.temptargetSet || profile.use_autoisf ? "disabled" : "enabled");
+            console.log("Profile ISF unchanged by Autosens: "+sens+". TDD based ISF "+(profile.temptargetSet || profile.use_autoisf ? "disabled" : "enabled"));
         }
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
