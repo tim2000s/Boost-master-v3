@@ -1277,6 +1277,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // console.log("EatingNowBGThreshold: "+EatingNowBGThreshold);
 
             // iTime is minutes since last manual bolus correction or carbs
+            var cTime = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000,0);
             var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorr, meal_data.lastCarbTime)) / 60000,0);
             var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
             // iTimeMax is minutes since first manual bolus correction after EN starts
@@ -1286,7 +1287,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var EN_SMBInterval = (TIRNowBelow > TIR3AvgBelow ? 10 : profile.SMBInterval);
             // trying to tame ISF Boost before working on scaling SMB Limit
             EN_SMBInterval = ( bg > EatingNowBGThreshold ? 10 : profile.SMBInterval);
-
+            // cTime could be used for bolusing based on recent COB with Ghost COB
+            var cTime = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000,0);
+            if (ignoreCOBPatch && cTime < 5 && meal_data.carbs == meal_data.mealCOB && meal_data.boluses==0) console.log ("cTime:"+cTime+",COB:"+meal_data.mealCOB+",CR:"+profile.carb_ratio+",Bolus:"+mealInsulinReq+"U");
 
             // Calculate percentage change in deltas, long to short and short to now
             if (glucose_status.long_avgdelta !=0) UAM_deltaLongRise = round((glucose_status.short_avgdelta - glucose_status.long_avgdelta) / Math.abs(glucose_status.long_avgdelta),2);
