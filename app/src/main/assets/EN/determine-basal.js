@@ -1359,7 +1359,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = ( UAMBoostMAX ? profile.UAMBoostMAX_SMBLimit : profile.UAMBoost_SMBLimit );
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
                     // recent SMB that was bigger than maxBolus restrict UAM SMB size
-                    EatingNowMaxSMB = ( SMBTime < 5 && meal_data.lastSMBUnits > maxBolus ? maxBolus : EatingNowMaxSMB);
+                    EatingNowMaxSMB = ( SMBTime <=5 && meal_data.lastSMBUnits > maxBolus ? maxBolus : EatingNowMaxSMB);
                     // if TIR is higher than the last 3 days allow a lift to EatingNowMaxSMB - TOO MUCH
                     // EatingNowMaxSMB = (TIRNowAbove > TIR3AvgAbove ? EatingNowMaxSMB * (TIRNowAbove/TIR3AvgAbove) : EatingNowMaxSMB);
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
