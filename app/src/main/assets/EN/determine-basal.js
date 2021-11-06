@@ -1282,6 +1282,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // iTimeMax is minutes since first manual bolus correction after EN starts
             var iTimeMax = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
             var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
+            // SMBTime last SMB
+            var SMBTime = round(( new Date(systemTime).getTime() - meal_data.lastSMBTime) / 60000,0);
             // use TIR to slow down insulin delivery via SMB and reduce TDD * EXPERIMENTAL *
             var EN_SMBInterval = (TIRNowBelow > TIR3AvgBelow ? 10 : profile.SMBInterval);
             // trying to tame ISF Boost before working on scaling SMB Limit
@@ -1356,7 +1358,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // set SMB limit for UAMBoost or UAMBoostMAX
                     EatingNowMaxSMB = ( UAMBoostMAX ? profile.UAMBoostMAX_SMBLimit : profile.UAMBoost_SMBLimit );
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
-                    //EatingNowMaxSMB = ( profile.lastSMBUnits > maxBolus 0 ? EatingNowMaxSMB : maxBolus );
+                    // recent SMB that was bigger than maxBolus restrict UAM SMB size
+                    EatingNowMaxSMB = ( SMBTime < 5 && meal_data.lastSMBUnits > maxBolus ? maxBolus : EatingNowMaxSMB);
                     // if TIR is higher than the last 3 days allow a lift to EatingNowMaxSMB - TOO MUCH
                     // EatingNowMaxSMB = (TIRNowAbove > TIR3AvgAbove ? EatingNowMaxSMB * (TIRNowAbove/TIR3AvgAbove) : EatingNowMaxSMB);
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
