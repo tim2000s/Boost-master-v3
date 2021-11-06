@@ -349,8 +349,19 @@ public class TreatmentsPlugin extends PluginBase implements TreatmentsInterface 
         }
     }
 
-    public double getLastBolusSize(boolean excludeSMB) {
+    public long getLastBolusTime(boolean excludeSMB) {
         Treatment last = getService().getLastBolus(excludeSMB);
+        if (last == null) {
+            getAapsLogger().debug(LTag.DATATREATMENTS, "Last manual bolus time: NOTHING FOUND");
+            return 0;
+        } else {
+            getAapsLogger().debug(LTag.DATATREATMENTS, "Last manual bolus time: " + dateUtil.dateAndTimeString(last.date));
+            return last.date;
+        }
+    }
+
+    public double getLastBolusTypeUnits(boolean isSMB) {
+        Treatment last = getService().getLastBolusType(isSMB);
         if (last == null) {
             getAapsLogger().debug(LTag.DATATREATMENTS, "Last bolus size: NOTHING FOUND");
             return 0;
@@ -360,13 +371,13 @@ public class TreatmentsPlugin extends PluginBase implements TreatmentsInterface 
         }
     }
 
-    public long getLastBolusTime(boolean excludeSMB) {
-        Treatment last = getService().getLastBolus(excludeSMB);
+    public long getLastBolusTypeTime(boolean isSMB) {
+        Treatment last = getService().getLastBolusType(isSMB);
         if (last == null) {
-            getAapsLogger().debug(LTag.DATATREATMENTS, "Last manual bolus time: NOTHING FOUND");
+            getAapsLogger().debug(LTag.DATATREATMENTS, "Last bolus type time: NOTHING FOUND");
             return 0;
         } else {
-            getAapsLogger().debug(LTag.DATATREATMENTS, "Last manual bolus time: " + dateUtil.dateAndTimeString(last.date));
+            getAapsLogger().debug(LTag.DATATREATMENTS, "Last bolus type time: " + dateUtil.dateAndTimeString(last.date));
             return last.date;
         }
     }

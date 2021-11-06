@@ -1277,7 +1277,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // console.log("EatingNowBGThreshold: "+EatingNowBGThreshold);
 
             // iTime is minutes since last manual bolus correction or carbs
-            var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorr, meal_data.lastCarbTime)) / 60000,0);
+            var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,0);
             var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
             // iTimeMax is minutes since first manual bolus correction after EN starts
             var iTimeMax = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
@@ -1356,6 +1356,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // set SMB limit for UAMBoost or UAMBoostMAX
                     EatingNowMaxSMB = ( UAMBoostMAX ? profile.UAMBoostMAX_SMBLimit : profile.UAMBoost_SMBLimit );
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
+                    //EatingNowMaxSMB = ( profile.lastSMBUnits > maxBolus 0 ? EatingNowMaxSMB : maxBolus );
                     // if TIR is higher than the last 3 days allow a lift to EatingNowMaxSMB - TOO MUCH
                     // EatingNowMaxSMB = (TIRNowAbove > TIR3AvgAbove ? EatingNowMaxSMB * (TIRNowAbove/TIR3AvgAbove) : EatingNowMaxSMB);
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
