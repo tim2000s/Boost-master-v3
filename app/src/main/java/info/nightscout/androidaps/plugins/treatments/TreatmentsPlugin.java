@@ -349,6 +349,17 @@ public class TreatmentsPlugin extends PluginBase implements TreatmentsInterface 
         }
     }
 
+    public double getLastBolusSize(boolean excludeSMB) {
+        Treatment last = getService().getLastBolus(excludeSMB);
+        if (last == null) {
+            getAapsLogger().debug(LTag.DATATREATMENTS, "Last bolus size: NOTHING FOUND");
+            return 0;
+        } else {
+            getAapsLogger().debug(LTag.DATATREATMENTS, "Last bolus size: " + last.insulin);
+            return last.insulin;
+        }
+    }
+
     public long getLastBolusTime(boolean excludeSMB) {
         Treatment last = getService().getLastBolus(excludeSMB);
         if (last == null) {
