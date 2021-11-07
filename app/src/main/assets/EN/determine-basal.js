@@ -607,18 +607,21 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // enable UAM (if enabled in preferences)
     var enableUAM=(profile.enableUAM);
 
-//    // we are in a TT that is long enough and just started to allow a prebolus
-//    if (eatingnow && profile.temptarget_duration > 60 && target_bg <= profile.normal_target_bg && profile.temptarget_minutesrunning == 0) {
-//        enableSMB = true;
-//        // allow all of maxSMB for low TT else 80%
-//        var preBolus = ( profile.temptargetSet && target_bg < profile.normal_target_bg ? profile.EN_UAMBoostMaxSMBLowTT : profile.EN_UAMBoostMaxSMB);
-//        preBolus = round(preBolus,1);
-//        rT.units = preBolus;
-//        rT.insulinReq = rT.units;
-//        rT.boostType = "Prebolus";
-//        rT.reason = convert_bg(target_bg, profile) + " temp target for >60 mins: prebolusing " + rT.units;
-//        return rT;
-//    }
+    // cTime could be used for bolusing based on recent COB with Ghost COB
+    var cTime = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000,0);
+    if (ignoreCOBPatch && cTime < 5 && meal_data.carbs > 0 && meal_data.mealCOB == 0 && meal_data.boluses == 0 && profile.temptargetSet && target_bg == normalTarget) {
+        //console.log ("cTime:"+cTime+",COB:"+meal_data.mealCOB+",CR:"+profile.carb_ratio+",Bolus:"+mealInsulinReq+"U");
+        enableSMB = true;
+        // allow all of maxSMB for low TT else 80%
+        var preBolus = round( meal_data.carbs / profile.carb_ratio ,1);
+        preBolus *= 0.8; // Only give 80%
+        preBolus = round(preBolus,1);
+        rT.units = preBolus;
+        rT.insulinReq = rT.units;
+        rT.boostType = "Prebolus";
+        rT.reason = esc_text(meal_data.carbs +"g COB " + cTime + "m ago with TT. CR:"+ profile.carb_ratio+" Bolusing 80% = " + rT.units + "U");
+        return rT;
+    }
 
     //console.error(meal_data);
     // carb impact and duration are 0 unless changed below
@@ -1288,9 +1291,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var EN_SMBInterval = (TIRNowBelow > TIR3AvgBelow ? 10 : profile.SMBInterval);
             // trying to tame ISF Boost before working on scaling SMB Limit
             EN_SMBInterval = ( bg > EatingNowBGThreshold ? 10 : profile.SMBInterval);
-            // cTime could be used for bolusing based on recent COB with Ghost COB
-            var cTime = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000,0);
-            if (ignoreCOBPatch && cTime < 5 && meal_data.carbs >0 && meal_data.mealCOB==0 && meal_data.boluses==0) console.log ("cTime:"+cTime+",COB:"+meal_data.mealCOB+",CR:"+profile.carb_ratio+",Bolus:"+mealInsulinReq+"U");
 
             // Calculate percentage change in deltas, long to short and short to now
             if (glucose_status.long_avgdelta !=0) UAM_deltaLongRise = round((glucose_status.short_avgdelta - glucose_status.long_avgdelta) / Math.abs(glucose_status.long_avgdelta),2);
