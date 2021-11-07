@@ -1443,9 +1443,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostReason += ", iTimeMax: " + iTimeMax+"m<"+iTimeMaxWindow+"m";
                 } else if (iTime < iTimeWindow) {
                     UAMBoostReason += ", iTime: " + iTime+"m<"+iTimeWindow+"m";
+                } else {
+                    UAMBoostReason += ", iTime Expired"
                 }
-                if (liftISF > 1) UAMBoostReason += ", liftISF: " + round(liftISF,2); //autoISF reason
-                UAMBoostReason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
             }
             // try spacing out the SMB's with TBR if TIR has more lows today ONLY FOR ISFBOOST
             insulinReqPct = (lastBolusAge > EN_SMBInterval ? insulinReqPct : 0);
@@ -1509,6 +1509,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             rT.reason += ". ";
             rT.reason += UAMBoostReason;
+            if (liftISF > 1) rT.reason += ", liftISF: " + round(liftISF,2); //autoISF reason
+            rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
             rT.reason += ", TIR3LIH: " + TIR3AvgBelow + "/" + TIR3AvgInRange + "/" + TIR3AvgAbove;
             rT.reason += ", TIRLIH: " + TIRNowBelow + "/" + TIRNowInRange + "/" + TIRNowAbove;
             rT.reason += ", TDD: " + round(TDD, 2);
