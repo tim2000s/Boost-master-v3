@@ -1290,7 +1290,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // use TIR to slow down insulin delivery via SMB and reduce TDD * EXPERIMENTAL *
             var EN_SMBInterval = (TIRNowBelow > TIR3AvgBelow ? 10 : profile.SMBInterval);
             // trying to tame ISF Boost before working on scaling SMB Limit
-            EN_SMBInterval = ( bg > EatingNowBGThreshold ? 10 : profile.SMBInterval);
+            EN_SMBInterval = ( bg > EatingNowBGThreshold ? 10 : EN_SMBInterval);
 
             // Calculate percentage change in deltas, long to short and short to now
             if (glucose_status.long_avgdelta !=0) UAM_deltaLongRise = round((glucose_status.short_avgdelta - glucose_status.long_avgdelta) / Math.abs(glucose_status.long_avgdelta),2);
