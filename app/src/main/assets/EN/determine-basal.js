@@ -612,14 +612,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (ignoreCOBPatch && cTime < 5 && meal_data.carbs > 0 && meal_data.mealCOB == 0 && meal_data.boluses == 0 && profile.temptargetSet && target_bg == normalTarget) {
         //console.log ("cTime:"+cTime+",COB:"+meal_data.mealCOB+",CR:"+profile.carb_ratio+",Bolus:"+mealInsulinReq+"U");
         enableSMB = true;
-        // allow all of maxSMB for low TT else 80%
-        var preBolus = round( meal_data.carbs / profile.carb_ratio ,1);
-        preBolus *= 0.8; // Only give 80%
+        var preBolus = meal_data.carbs / profile.carb_ratio;
+        preBolus *= 0.7; // Only give 80%
         preBolus = round(preBolus,1);
         rT.units = preBolus;
         rT.insulinReq = rT.units;
         rT.boostType = "Prebolus";
-        rT.reason = esc_text(meal_data.carbs +"g COB " + cTime + "m ago with TT. CR:"+ profile.carb_ratio+" Bolusing 80% = " + rT.units + "U");
+        rT.reason = esc_text(meal_data.carbs +"g COB " + cTime + "m ago with TT. CR:"+ profile.carb_ratio+" Bolusing 70% = " + rT.units + "U");
         return rT;
     }
 
