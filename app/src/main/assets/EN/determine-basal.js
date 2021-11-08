@@ -612,16 +612,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // cTime could be used for bolusing based on recent COB with Ghost COB
     var cTime = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000,0);
-    if (ignoreCOBPatch && cTime < 5 && meal_data.carbs > 0 && meal_data.mealCOB == 0 && meal_data.boluses == 0 && profile.temptargetSet && target_bg == normalTarget) {
+    if (ignoreCOBPatch && cTime < 5 && meal_data.lastCarbs > 0 && profile.temptargetSet && target_bg == normalTarget) {
         //console.log ("cTime:"+cTime+",COB:"+meal_data.mealCOB+",CR:"+profile.carb_ratio+",Bolus:"+mealInsulinReq+"U");
         enableSMB = true;
-        var preBolus = meal_data.carbs / profile.carb_ratio;
-        preBolus *= 0.7; // Only give 80%
+        var preBolus = meal_data.lastCarbs / profile.carb_ratio;
+        preBolus *= 0.7; // Only give 70%
         preBolus = round(preBolus,1);
         rT.units = preBolus;
         rT.insulinReq = rT.units;
         rT.boostType = "Prebolus";
-        rT.reason = esc_text(meal_data.carbs +"g COB " + cTime + "m ago with TT. CR:"+ profile.carb_ratio+" Bolusing 70% = " + rT.units + "U");
+        rT.reason = esc_text(meal_data.lastCarbs +"g COB " + cTime + "m ago with TT. CR:"+ profile.carb_ratio+" Bolusing 70% = " + rT.units + "U");
         return rT;
     }
 
