@@ -612,8 +612,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // cTime could be used for bolusing based on recent COB with Ghost COB
     var cTime = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000,0);
-    //if (ignoreCOBPatch && cTime < 5 && meal_data.lastCarbs > 0 && profile.temptargetSet && target_bg == normalTarget) {
-    if (ignoreCOBPatch && cTime < 5 && meal_data.lastCarbs > 0 && !profile.temptargetSet) {
+    if (ignoreCOBPatch && cTime < 5 && meal_data.lastCarbs > 0 && profile.temptargetSet && target_bg == normalTarget) {
         //console.log ("cTime:"+cTime+",COB:"+meal_data.mealCOB+",CR:"+profile.carb_ratio+",Bolus:"+mealInsulinReq+"U");
         enableSMB = true;
         var preBolus = meal_data.lastCarbs / profile.carb_ratio;
