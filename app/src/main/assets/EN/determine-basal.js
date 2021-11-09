@@ -374,6 +374,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // TIR 3 day average and today (now)
     var TIR3AvgBelow = meal_data.TIR3AvgBelow, TIR3AvgInRange = meal_data.TIR3AvgInRange, TIR3AvgAbove = meal_data.TIR3AvgAbove;
     var TIRNowBelow = meal_data.TIRNowBelow, TIRNowInRange = meal_data.TIRNowInRange, TIRNowAbove = meal_data.TIRNowAbove;
+    // iTime is minutes since last manual bolus correction or carbs
+    var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,0);
+    var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
+    // iTimeMax is minutes since first manual bolus correction after EN starts
+    var iTimeMax = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
+    var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
+    // SMBTime last SMB
+    var SMBTime = round(( new Date(systemTime).getTime() - meal_data.lastSMBTime) / 60000,0);
 
     /* ************************
        ** TS AutoTDD code    **
@@ -1282,14 +1290,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (EatingNowBGThreshold == 0) EatingNowBGThreshold = 180 ; // default is 180 = 10 mmol
             // console.log("EatingNowBGThreshold: "+EatingNowBGThreshold);
 
-            // iTime is minutes since last manual bolus correction or carbs
-            var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,0);
-            var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
-            // iTimeMax is minutes since first manual bolus correction after EN starts
-            var iTimeMax = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
-            var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
-            // SMBTime last SMB
-            var SMBTime = round(( new Date(systemTime).getTime() - meal_data.lastSMBTime) / 60000,0);
             // use TIR to slow down insulin delivery via SMB and reduce TDD * EXPERIMENTAL *
             var EN_SMBInterval = (TIRNowBelow > TIR3AvgBelow ? 10 : profile.SMBInterval);
             // trying to tame ISF Boost before working on scaling SMB Limit
