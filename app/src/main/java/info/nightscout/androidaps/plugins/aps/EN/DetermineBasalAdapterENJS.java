@@ -346,7 +346,7 @@ public class DetermineBasalAdapterENJS {
 
         mProfile.put("ISFBoost_SMBLimit", sp.getDouble(R.string.key_eatingnow_isfboost_smblimit, 0));
         mProfile.put("EatingNowBGThreshold", sp.getDouble(R.string.key_eatingnow_bgthreshold, 0));
-
+        mProfile.put("EatingNowPrebolusPct", sp.getDouble(R.string.key_eatingnow_preboluspct, 0.1));
         // patches ==== END
 
 

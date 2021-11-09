@@ -626,14 +626,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (ignoreCOBPatch && cTime < 5 && iTime == cTime && meal_data.lastCarbs > 0 && profile.temptargetSet && target_bg == normalTarget) {
         enableSMB = true;
         var preBolus = meal_data.lastCarbs / profile.carb_ratio;
-        var preBolusPct = 0.7;
-        preBolus *= preBolusPct; // Only give 70%
+        var preBolusPct = profile.EatingNowPrebolusPct;
+        preBolus *= preBolusPct;
         preBolus = round(preBolus,1);
         rT.units = preBolus;
         rT.insulinReq = rT.units;
         rT.boostType = "Prebolus";
         rT.reason = esc_text(meal_data.lastCarbs +"g COB " + cTime + "m ago, CR:"+ profile.carb_ratio+" Bolusing " + round(preBolusPct*100) + "% = " + rT.units + "U");
-
         return rT;
     }
     console.log ("cTime:"+cTime+", iTime:"+iTime+",lastCarbs:"+meal_data.lastCarbs);

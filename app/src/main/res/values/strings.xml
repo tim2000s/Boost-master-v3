@@ -1393,6 +1393,7 @@
     <string name="key_use_eatingnow">key_use_eatingnow</string>
     <string name="key_eatingnow_iob">key_eatingnow_iob</string>
     <string name="key_eatingnow_bgthreshold">key_eatingnow_bgthreshold</string>
+    <string name="key_eatingnow_preboluspct">key_eatingnow_preboluspct</string>
     <string name="key_eatingnow_insulinreqpct">key_eatingnow_insulinreqpct</string>
     <string name="key_eatingnow_uamboost_bolus">key_eatingnow_uamboost_bolus</string>
     <string name="key_eatingnow_uamboost_smblimit">key_eatingnow_uamboost_smblimit</string>
