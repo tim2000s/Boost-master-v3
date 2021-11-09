@@ -624,7 +624,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // if iTime is the same as cTime it means that the carb entry doesnt yet have a correction
     if (ignoreCOBPatch && cTime < 5 && iTime == cTime && meal_data.lastCarbs > 0 && profile.temptargetSet && target_bg == normalTarget) {
-        //console.log ("cTime:"+cTime+",COB:"+meal_data.mealCOB+",CR:"+profile.carb_ratio+",Bolus:"+mealInsulinReq+"U");
         enableSMB = true;
         var preBolus = meal_data.lastCarbs / profile.carb_ratio;
         var preBolusPct = 0.7;
@@ -634,6 +633,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.insulinReq = rT.units;
         rT.boostType = "Prebolus";
         rT.reason = esc_text(meal_data.lastCarbs +"g COB " + cTime + "m ago, CR:"+ profile.carb_ratio+" Bolusing " + round(preBolusPct*100) + "% = " + rT.units + "U");
+        console.log ("cTime:"+cTime+"iTime:"+iTime+",NEW COB:"+meal_data.lastCarbs+",CR:"+profile.carb_ratio+",Bolus:"+mealInsulinReq+"U");
         return rT;
     }
 
