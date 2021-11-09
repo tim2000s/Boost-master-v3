@@ -141,10 +141,7 @@ class ConstraintsCheckerTest : TestBaseWithProfile() {
         fullUAMPlugin = FullUAMPlugin(injector, aapsLogger, rxBus, constraintChecker, rh, profileFunction, context, activePlugin, iobCobCalculator, hardLimits, profiler, sp, dateUtil, repository, glucoseStatusProvider)
         openAPSSMBPlugin = OpenAPSSMBPlugin(injector, aapsLogger, rxBus, constraintChecker, rh, profileFunction, context, activePlugin, iobCobCalculator, hardLimits, profiler, sp, dateUtil, repository, glucoseStatusProvider)
         openAPSAMAPlugin = OpenAPSAMAPlugin(injector, aapsLogger, rxBus, constraintChecker, rh, profileFunction, context, activePlugin, iobCobCalculator, hardLimits, profiler, fabricPrivacy, dateUtil, repository, glucoseStatusProvider)
-        safetyPlugin = SafetyPlugin(injector, aapsLogger, rh, sp, rxBus, constraintChecker,
-                                    openAPSAMAPlugin, openAPSSMBPlugin, sensitivityOref1Plugin, activePlugin,
-                                    hardLimits, BuildHelperImpl(ConfigImpl(), fileListProvider), iobCobCalculator,
-                                    ConfigImpl(), dateUtil)
+        safetyPlugin = SafetyPlugin(injector, aapsLogger, rh, sp, rxBus, constraintChecker, openAPSAMAPlugin, openAPSSMBPlugin, FullUAMPlugin, sensitivityOref1Plugin, activePlugin, hardLimits, BuildHelperImpl(ConfigImpl(), fileListProvider), iobCobCalculator, ConfigImpl(), dateUtil)
         val constraintsPluginsList = ArrayList<PluginBase>()
         constraintsPluginsList.add(safetyPlugin)
         constraintsPluginsList.add(objectivesPlugin)

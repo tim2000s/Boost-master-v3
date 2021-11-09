@@ -753,7 +753,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                 bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTime = bolus.timestamp }
                 var iTimeSettings = (SafeParse.stringToDouble(sp.getString(R.string.key_iTime, "180")))
                 var iTimeUpdate = (now - lastBolusNormalTime) / 60000
-                val StatTIR = TirCalculator(resourceHelper, profileFunction, dateUtil,repository)
+                val StatTIR = TirCalculator(rh, profileFunction, dateUtil,repository)
                 val statinrange = StatTIR.averageTIR(StatTIR.calculate(7,70.0,180.0)).inRangePct()
                 val statTirBelow = StatTIR.averageTIR(StatTIR.calculate(7,70.0,180.0)).belowPct()
                 val currentTIRLow = StatTIR.averageTIR(StatTIR.calculateDaily(80.0,180.0)).belowPct()

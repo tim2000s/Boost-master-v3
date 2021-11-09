@@ -43,7 +43,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
     @Inject lateinit var aapsLogger: AAPSLogger
     @Inject lateinit var constraintChecker: ConstraintChecker
     @Inject lateinit var sp: SP
-    @Inject lateinit var resourceHelper: ResourceHelper
+    @Inject lateinit var rh: ResourceHelper
     @Inject lateinit var profileFunction: ProfileFunction
     @Inject lateinit var iobCobCalculator: IobCobCalculator
     @Inject lateinit var activePlugin: ActivePlugin
@@ -207,8 +207,8 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
 //**********************************************************************************************************************************************
         //this.profile.put("high_temptarget_raises_sensitivity", false)
         //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, UAMDefaults.low_temptarget_lowers_sensitivity));
-        this.profile.put("high_temptarget_raises_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_high_temptarget_raises_sensitivity),UAMDefaults.high_temptarget_raises_sensitivity))
-        this.profile.put("low_temptarget_lowers_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_low_temptarget_lowers_sensitivity),UAMDefaults.low_temptarget_lowers_sensitivity))
+        this.profile.put("high_temptarget_raises_sensitivity",sp.getBoolean(rh.gs(R.string.key_high_temptarget_raises_sensitivity),UAMDefaults.high_temptarget_raises_sensitivity))
+        this.profile.put("low_temptarget_lowers_sensitivity",sp.getBoolean(rh.gs(R.string.key_low_temptarget_lowers_sensitivity),UAMDefaults.low_temptarget_lowers_sensitivity))
         //this.profile.put("low_temptarget_lowers_sensitivity", false)
 //**********************************************************************************************************************************************
         this.profile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, UAMDefaults.sensitivity_raises_target))
@@ -247,11 +247,12 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.profile.put("iTime",SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")))
         this.profile.put("iTime_MaxBolus_minutes",SafeParse.stringToDouble(sp.getString(R.string.key_iTime_MaxBolus_minutes,"200")))
         this.profile.put("iTime_Bolus",SafeParse.stringToDouble(sp.getString(R.string.key_iTime_Bolus,"2")));
-        this.profile.put("smb_delivery_ratio", sp.getDouble(R.string.key_openapsama_smb_delivery_ratio, 0.5))
-        this.profile.put("smb_delivery_ratio_min", sp.getDouble(R.string.key_openapsama_smb_delivery_ratio_min, 0.5))
-        this.profile.put("smb_delivery_ratio_max", sp.getDouble(R.string.key_openapsama_smb_delivery_ratio_max, 0.9))
-        this.profile.put("smb_delivery_ratio_bg_range", sp.getDouble(R.string.key_openapsama_smb_delivery_ratio_bg_range, 40))
-        this.profile.put("smb_max_range_extension", sp.getDouble(R.string.key_openapsama_smb_max_range_extension, 1.2))
+        this.profile.put("smb_delivery_ratio", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio, "0.5")))
+        this.profile.put("smb_delivery_ratio_min", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio_min, "0.5")))
+        this.profile.put("smb_delivery_ratio_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio_max, "0.9")))
+        this.profile.put("smb_delivery_ratio_bg_range", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio_bg_range, "40")))
+        this.profile.put("smb_max_range_extension", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_max_range_extension, "1.2")))
+
 
 
 //**********************************************************************************************************************************************
@@ -286,12 +287,12 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.mealData.put("lastBolusNormalTime", lastBolusNormalTime)
         this.mealData.put("lastCarbTime", mealData.lastCarbTime)
 
-        tddAIMI = TddCalculator(aapsLogger,resourceHelper,activePlugin,profileFunction,dateUtil,iobCobCalculator, repository)
+        tddAIMI = TddCalculator(aapsLogger,rh,activePlugin,profileFunction,dateUtil,iobCobCalculator, repository)
         this.mealData.put("TDDAIMI7", tddAIMI!!.averageTDD(tddAIMI!!.calculate(7)).totalAmount)
         this.mealData.put("TDDAIMI1", tddAIMI!!.averageTDD(tddAIMI!!.calculate(1)).totalAmount)
         this.mealData.put("TDDPUMP", tddAIMI!!.calculateDaily().totalAmount)
         //this.mealData.put("TDDPUMP", danaPump.dailyTotalUnits)
-        StatTIR = TirCalculator(resourceHelper,profileFunction,dateUtil,repository)
+        StatTIR = TirCalculator(rh,profileFunction,dateUtil,repository)
         this.mealData.put("StatLow7", StatTIR!!.averageTIR(StatTIR!!.calculate(7, 70.0, 180.0)).belowPct())
         this.mealData.put("StatInRange7", StatTIR!!.averageTIR(StatTIR!!.calculate(7, 70.0, 180.0)).inRangePct())
         this.mealData.put("StatAbove7", StatTIR!!.averageTIR(StatTIR!!.calculate(7, 70.0, 180.0)).abovePct())

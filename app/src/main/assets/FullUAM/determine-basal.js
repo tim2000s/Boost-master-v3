@@ -887,7 +887,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log("AIMI V4 09/11/2021");
+                console.log("AIMI V6 09/11/2021");
                 console.log("------------------------------");
                 console.log("Pump extrapolated TDD = "+tdd_pump);
                 console.log("tdd7 using 7-day average "+tdd7);
@@ -1308,6 +1308,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var smb_ratio = determine_varSMBratio(profile, bg, target_bg);
             if (iTime >= 26 && iTime <= 30 && glucose_status.delta >= 5){
             var microBolus =  profile.iTime_Bolus;
+            maxBolusTT = profile.iTime_Bolus;
             }else if (iTime < iTimeProfile/2 && smbTDD === 0 && tdd_pump_now >= tdd7*0.3){
             insulinReq = insulinReq + InsulinTDD;
             var microBolus = Math.min(insulinReq*smb_ratio*insulinReqPCT, maxBolusTT);

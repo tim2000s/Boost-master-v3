@@ -197,10 +197,10 @@ class SafetyPlugin @Inject constructor(
             else                                        -> sp.getDouble( R.string.key_openapsma_max_iob,1.5)
         }
         maxIob.setIfSmaller(aapsLogger, maxIobPref, String.format(rh.gs(R.string.limitingiob), maxIobPref, rh.gs(R.string.maxvalueinpreferences)), this)
-        if (openAPSAMAPlugin.isEnabled()) maxIob.setIfSmaller(aapsLogger, hardLimits.maxIobAMA(), String.format(rh.gs(R.string.limitingiob), hardLimits.maxIobAMA(), resourceHelper.gs(R.string.hardlimit)), this)
-        if (openAPSSMBPlugin.isEnabled()) maxIob.setIfSmaller(aapsLogger, hardLimits.maxIobSMB(), String.format(rh.gs(R.string.limitingiob), hardLimits.maxIobSMB(), resourceHelper.gs(R.string.hardlimit)), this)
-        if (fullUAMPlugin.isEnabled()) maxIob.setIfSmaller(aapsLogger, hardLimits.maxIobFullUAM(), String.format(rh.gs(R.string.limitingiob), hardLimits.maxIobFullUAM(), resourceHelper.gs(R.string.hardlimit)), this)
-        if (apsMode == "lgs") maxIob.setIfSmaller(aapsLogger, HardLimits.MAX_IOB_LGS, String.format(resourceHelper.gs(R.string.limitingiob), HardLimits.MAX_IOB_LGS, resourceHelper.gs(R.string.lowglucosesuspend)), this)
+        if (openAPSAMAPlugin.isEnabled()) maxIob.setIfSmaller(aapsLogger, hardLimits.maxIobAMA(), String.format(rh.gs(R.string.limitingiob), hardLimits.maxIobAMA(), rh.gs(R.string.hardlimit)), this)
+        if (openAPSSMBPlugin.isEnabled()) maxIob.setIfSmaller(aapsLogger, hardLimits.maxIobSMB(), String.format(rh.gs(R.string.limitingiob), hardLimits.maxIobSMB(), rh.gs(R.string.hardlimit)), this)
+        if (fullUAMPlugin.isEnabled()) maxIob.setIfSmaller(aapsLogger, hardLimits.maxIobFullUAM(), String.format(rh.gs(R.string.limitingiob), hardLimits.maxIobFullUAM(), rh.gs(R.string.hardlimit)), this)
+        if (apsMode == "lgs") maxIob.setIfSmaller(aapsLogger, HardLimits.MAX_IOB_LGS, String.format(rh.gs(R.string.limitingiob), HardLimits.MAX_IOB_LGS, rh.gs(R.string.lowglucosesuspend)), this)
         return maxIob
     }
 
