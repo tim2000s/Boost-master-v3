@@ -633,7 +633,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.insulinReq = rT.units;
         rT.boostType = "Prebolus";
         rT.reason = esc_text(meal_data.lastCarbs +"g COB " + cTime + "m ago, CR:"+ profile.carb_ratio+" Bolusing " + round(preBolusPct*100) + "% = " + rT.units + "U");
-        console.log ("cTime:"+cTime+"iTime:"+iTime+",NEW COB:"+meal_data.lastCarbs+",CR:"+profile.carb_ratio+",Bolus:"+mealInsulinReq+"U");
+        console.log ("cTime:"+cTime+"iTime:"+iTime+",NEW COB:"+meal_data.lastCarbs+",CR:"+profile.carb_ratio+",Bolus:"+rT.units+"U");
         return rT;
     }
 
