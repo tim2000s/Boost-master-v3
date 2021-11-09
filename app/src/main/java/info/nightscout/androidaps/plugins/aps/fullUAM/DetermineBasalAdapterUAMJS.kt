@@ -246,7 +246,12 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.profile.put("UAM_InsulinReq",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_InsulinReq,"65")))
         this.profile.put("iTime",SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")))
         this.profile.put("iTime_MaxBolus_minutes",SafeParse.stringToDouble(sp.getString(R.string.key_iTime_MaxBolus_minutes,"200")))
-
+        this.profile.put("iTime_Bolus",SafeParse.stringToDouble(sp.getString(R.string.key_iTime_Bolus,"2")));
+        this.profile.put("smb_delivery_ratio", sp.getDouble(R.string.key_openapsama_smb_delivery_ratio, 0.5))
+        this.profile.put("smb_delivery_ratio_min", sp.getDouble(R.string.key_openapsama_smb_delivery_ratio_min, 0.5))
+        this.profile.put("smb_delivery_ratio_max", sp.getDouble(R.string.key_openapsama_smb_delivery_ratio_max, 0.9))
+        this.profile.put("smb_delivery_ratio_bg_range", sp.getDouble(R.string.key_openapsama_smb_delivery_ratio_bg_range, 40))
+        this.profile.put("smb_max_range_extension", sp.getDouble(R.string.key_openapsama_smb_max_range_extension, 1.2))
 
 
 //**********************************************************************************************************************************************

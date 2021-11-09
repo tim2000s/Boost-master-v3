@@ -748,7 +748,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                 val currentTIRAbove = StatTIR.averageTIR(StatTIR.calculateDaily(80.0,180.0)).abovePct()
                 val CurrentTIR_70_140_Above = StatTIR.averageTIR(StatTIR.calculateDaily(70.0,140.0)).abovePct()
                 if (iTimeUpdate < iTimeSettings && currentTIRRange <= 96 && currentTIRAbove <= 1 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && CurrentTIR_70_140_Above <= 20) run {
-                    iTimeSettings = iTimeSettings * 0.7
+                    iTimeSettings *=  0.7
                 }
 
 
