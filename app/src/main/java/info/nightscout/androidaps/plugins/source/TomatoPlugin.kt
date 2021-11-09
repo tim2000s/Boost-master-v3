@@ -24,7 +24,7 @@ import javax.inject.Singleton
 @Singleton
 class TomatoPlugin @Inject constructor(
     injector: HasAndroidInjector,
-    resourceHelper: ResourceHelper,
+    rh: ResourceHelper,
     aapsLogger: AAPSLogger,
     private val sp: SP
 ) : PluginBase(PluginDescription()
@@ -35,7 +35,7 @@ class TomatoPlugin @Inject constructor(
     .preferencesId(R.xml.pref_bgsource)
     .shortName(R.string.tomato_short)
     .description(R.string.description_source_tomato),
-    aapsLogger, resourceHelper, injector
+    aapsLogger, rh, injector
 ), BgSource {
 
     // cannot be inner class because of needed injection
@@ -59,7 +59,7 @@ class TomatoPlugin @Inject constructor(
         override fun doWork(): Result {
             var ret = Result.success()
 
-            if (!tomatoPlugin.isEnabled(PluginType.BGSOURCE)) return Result.success(workDataOf("Result" to "Plugin not enabled"))
+            if (!tomatoPlugin.isEnabled()) return Result.success(workDataOf("Result" to "Plugin not enabled"))
             val glucoseValues = mutableListOf<CgmSourceTransaction.TransactionGlucoseValue>()
             glucoseValues += CgmSourceTransaction.TransactionGlucoseValue(
                 timestamp = inputData.getLong("com.fanqies.tomatofn.Extras.Time", 0),

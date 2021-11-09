@@ -26,7 +26,7 @@ import javax.inject.Singleton
 @Singleton
 class GlimpPlugin @Inject constructor(
     injector: HasAndroidInjector,
-    resourceHelper: ResourceHelper,
+    rh: ResourceHelper,
     aapsLogger: AAPSLogger,
     private val sp: SP
 ) : PluginBase(PluginDescription()
@@ -36,7 +36,7 @@ class GlimpPlugin @Inject constructor(
     .pluginName(R.string.Glimp)
     .preferencesId(R.xml.pref_bgsource)
     .description(R.string.description_source_glimp),
-    aapsLogger, resourceHelper, injector
+    aapsLogger, rh, injector
 ), BgSource {
 
     // cannot be inner class because of needed injection
@@ -58,7 +58,7 @@ class GlimpPlugin @Inject constructor(
         override fun doWork(): Result {
             var ret = Result.success()
 
-            if (!glimpPlugin.isEnabled(PluginType.BGSOURCE)) return Result.success(workDataOf("Result" to "Plugin not enabled"))
+            if (!glimpPlugin.isEnabled()) return Result.success(workDataOf("Result" to "Plugin not enabled"))
             aapsLogger.debug(LTag.BGSOURCE, "Received Glimp Data: $inputData}")
             val glucoseValues = mutableListOf<CgmSourceTransaction.TransactionGlucoseValue>()
             glucoseValues += CgmSourceTransaction.TransactionGlucoseValue(

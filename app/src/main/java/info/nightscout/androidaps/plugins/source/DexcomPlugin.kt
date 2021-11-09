@@ -34,7 +34,7 @@ import javax.inject.Singleton
 @Singleton
 class DexcomPlugin @Inject constructor(
     injector: HasAndroidInjector,
-    resourceHelper: ResourceHelper,
+    rh: ResourceHelper,
     aapsLogger: AAPSLogger,
     private val sp: SP,
     private val dexcomMediator: DexcomMediator,
@@ -47,7 +47,7 @@ class DexcomPlugin @Inject constructor(
     .shortName(R.string.dexcom_short)
     .preferencesId(R.xml.pref_bgsourcedexcom)
     .description(R.string.description_source_dexcom),
-    aapsLogger, resourceHelper, injector
+    aapsLogger, rh, injector
 ), BgSource {
 
     init {
@@ -94,7 +94,7 @@ class DexcomPlugin @Inject constructor(
         override fun doWork(): Result {
             var ret = Result.success()
 
-            if (!dexcomPlugin.isEnabled(PluginType.BGSOURCE)) return Result.success(workDataOf("Result" to "Plugin not enabled"))
+            if (!dexcomPlugin.isEnabled()) return Result.success(workDataOf("Result" to "Plugin not enabled"))
             val bundle = dataWorker.pickupBundle(inputData.getLong(DataWorker.STORE_KEY, -1))
                 ?: return Result.failure(workDataOf("Error" to "missing input data"))
             try {

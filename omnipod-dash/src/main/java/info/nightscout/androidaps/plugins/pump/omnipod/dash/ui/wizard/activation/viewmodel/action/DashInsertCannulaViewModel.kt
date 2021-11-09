@@ -26,6 +26,7 @@ import info.nightscout.androidaps.plugins.pump.omnipod.dash.util.I8n
 import info.nightscout.androidaps.plugins.pump.omnipod.dash.util.mapProfileToBasalProgram
 import info.nightscout.androidaps.utils.FabricPrivacy
 import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.androidaps.utils.sharedPreferences.SP
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
@@ -39,13 +40,15 @@ class DashInsertCannulaViewModel @Inject constructor(
     private val podStateManager: OmnipodDashPodStateManager,
     private val rxBus: RxBus,
     private val sp: SP,
-    private val resourceHelper: ResourceHelper,
+    private val rh: ResourceHelper,
     private val fabricPrivacy: FabricPrivacy,
     private val history: DashHistory,
 
     injector: HasAndroidInjector,
-    logger: AAPSLogger
-) : InsertCannulaViewModel(injector, logger) {
+    logger: AAPSLogger,
+    aapsSchedulers: AapsSchedulers
+) : InsertCannulaViewModel(injector, logger, aapsSchedulers) {
+
     override fun isPodInAlarm(): Boolean = false // TODO
 
     override fun isPodActivationTimeExceeded(): Boolean = false // TODO
@@ -87,7 +90,7 @@ class DashInsertCannulaViewModel @Inject constructor(
                 .subscribeBy(
                     onError = { throwable ->
                         logger.error(LTag.PUMP, "Error in Pod activation part 2", throwable)
-                        source.onSuccess(PumpEnactResult(injector).success(false).comment(I8n.textFromException(throwable, resourceHelper)))
+                        source.onSuccess(PumpEnactResult(injector).success(false).comment(I8n.textFromException(throwable, rh)))
                     },
                     onComplete = {
                         logger.debug("Pod activation part 2 completed")
