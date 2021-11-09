@@ -78,7 +78,7 @@ open class FullUAMPlugin @Inject constructor(
 
     override fun preprocessPreferences(preferenceFragment: PreferenceFragmentCompat) {
         super.preprocessPreferences(preferenceFragment)
-        val smbAlwaysEnabled = sp.getBoolean(R.string.key_enableSMB_always, false)
+        val smbAlwaysEnabled = sp.getBoolean(R.string.key_enableSMB_always, true)
         preferenceFragment.findPreference<SwitchPreference>(resourceHelper.gs(R.string.key_enableSMB_with_COB))?.isVisible = !smbAlwaysEnabled
         preferenceFragment.findPreference<SwitchPreference>(resourceHelper.gs(R.string.key_enableSMB_with_temptarget))?.isVisible = !smbAlwaysEnabled
         preferenceFragment.findPreference<SwitchPreference>(resourceHelper.gs(R.string.key_enableSMB_after_carbs))?.isVisible = !smbAlwaysEnabled

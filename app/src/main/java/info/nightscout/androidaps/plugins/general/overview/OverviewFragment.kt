@@ -85,6 +85,12 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.min
+import info.nightscout.androidaps.data.IobTotal
+import info.nightscout.androidaps.database.entities.Bolus
+import info.nightscout.androidaps.utils.*
+import info.nightscout.androidaps.utils.stats.TirCalculator
+import info.nightscout.androidaps.utils.T
+
 
 class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickListener {
 
@@ -125,7 +131,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     @Inject lateinit var bgQualityCheckPlugin: BgQualityCheckPlugin
 
     private val disposable = CompositeDisposable()
-
+    public val millsToThePast = T.hours(4).msecs()
     private var smallWidth = false
     private var smallHeight = false
     private lateinit var dm: DisplayMetrics
@@ -137,8 +143,10 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     private val secondaryGraphsLabel = ArrayList<TextView>()
 
     private var carbAnimation: AnimationDrawable? = null
+    private var insulinAnimation: AnimationDrawable? = null
 
     private var _binding: OverviewFragmentBinding? = null
+    private var lastBolusNormalTime: Long = 0
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -180,6 +188,10 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         carbAnimation = binding.infoLayout.carbsIcon.background as AnimationDrawable?
         carbAnimation?.setEnterFadeDuration(1200)
         carbAnimation?.setExitFadeDuration(1200)
+        insulinAnimation = binding.infoLayout.overviewInsulinIcon.background as AnimationDrawable?
+        insulinAnimation?.setEnterFadeDuration(1200)
+        insulinAnimation?.setExitFadeDuration(1200)
+
 
 
         binding.graphsLayout.bgGraph.setOnLongClickListener {
@@ -371,6 +383,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             }
         }
     }
+    private fun bolusMealLinks(now: Long) = repository.getBolusesDataFromTime(now - millsToThePast, false).blockingGet()
 
     override fun onLongClick(v: View): Boolean {
         when (v.id) {
@@ -736,10 +749,33 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             }
 
             OverviewData.Property.IOB_COB          -> {
+                var now = System.currentTimeMillis()
+                bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTime = bolus.timestamp }
+                var iTimeSettings = (SafeParse.stringToDouble(sp.getString(R.string.key_iTime, "180")))
+                var iTimeUpdate = (now - lastBolusNormalTime) / 60000
+                val StatTIR = TirCalculator(resourceHelper, profileFunction, dateUtil,repository)
+                val statinrange = StatTIR.averageTIR(StatTIR.calculate(7,70.0,180.0)).inRangePct()
+                val statTirBelow = StatTIR.averageTIR(StatTIR.calculate(7,70.0,180.0)).belowPct()
+                val currentTIRLow = StatTIR.averageTIR(StatTIR.calculateDaily(80.0,180.0)).belowPct()
+                val currentTIRRange = StatTIR.averageTIR(StatTIR.calculateDaily(80.0,180.0)).inRangePct()
+                val currentTIRAbove = StatTIR.averageTIR(StatTIR.calculateDaily(80.0,180.0)).abovePct()
+                val CurrentTIR_70_140_Above = StatTIR.averageTIR(StatTIR.calculateDaily(70.0,140.0)).abovePct()
+                if (iTimeUpdate < iTimeSettings && currentTIRRange <= 96 && currentTIRAbove <= 1 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && CurrentTIR_70_140_Above <= 20) run {
+                    iTimeSettings *=  0.7
+                }
+
+
                 binding.infoLayout.iob.text = overviewData.iobText
                 binding.infoLayout.iobLayout.setOnClickListener {
                     activity?.let { OKDialog.show(it, rh.gs(R.string.iob), overviewData.iobDialogText) }
                 }
+                if (iTimeUpdate < iTimeSettings && insulinAnimation?.isRunning == false) {
+                    insulinAnimation?.start()
+                }else{
+                    insulinAnimation?.stop()
+                    insulinAnimation?.selectDrawable(0)
+                }
+
                 // cob
                 var cobText = overviewData.cobInfo?.displayText(rh, dateUtil, buildHelper.isEngineeringMode()) ?: rh.gs(R.string.value_unavailable_short)
 
