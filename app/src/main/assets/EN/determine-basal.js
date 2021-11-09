@@ -375,13 +375,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TIR3AvgBelow = meal_data.TIR3AvgBelow, TIR3AvgInRange = meal_data.TIR3AvgInRange, TIR3AvgAbove = meal_data.TIR3AvgAbove;
     var TIRNowBelow = meal_data.TIRNowBelow, TIRNowInRange = meal_data.TIRNowInRange, TIRNowAbove = meal_data.TIRNowAbove;
     // iTime is minutes since last manual bolus correction or carbs
-    var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,0);
+    var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,1);
     var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
     // iTimeMax is minutes since first manual bolus correction after EN starts
-    var iTimeMax = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,0);
+    var iTimeMax = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,1);
     var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
     // SMBTime last SMB
-    var SMBTime = round(( new Date(systemTime).getTime() - meal_data.lastSMBTime) / 60000,0);
+    var SMBTime = round(( new Date(systemTime).getTime() - meal_data.lastSMBTime) / 60000,1);
 
     /* ************************
        ** TS AutoTDD code    **
@@ -619,8 +619,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var enableUAM=(profile.enableUAM);
 
     // cTime could be used for bolusing based on recent COB with Ghost COB
-    var cTime = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000,0);
-    if (ignoreCOBPatch && cTime == 0 && meal_data.lastCarbs > 0 && profile.temptargetSet && target_bg == normalTarget) {
+    var cTime = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000,1);
+    //var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,0);
+
+    // if iTime is the same as cTime it means that the carb entry doesnt yet have a correction
+    if (ignoreCOBPatch && cTime < 5 && iTime == cTime && meal_data.lastCarbs > 0 && profile.temptargetSet && target_bg == normalTarget) {
         //console.log ("cTime:"+cTime+",COB:"+meal_data.mealCOB+",CR:"+profile.carb_ratio+",Bolus:"+mealInsulinReq+"U");
         enableSMB = true;
         var preBolus = meal_data.lastCarbs / profile.carb_ratio;
