@@ -371,9 +371,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //console.error("CR:", );
 
     var ISFBoost = 1; // default is no ISFBoost
-    // TIR 3 day average and today (now)
-    var TIR3AvgBelow = meal_data.TIR3AvgBelow, TIR3AvgInRange = meal_data.TIR3AvgInRange, TIR3AvgAbove = meal_data.TIR3AvgAbove;
-    var TIRNowBelow = meal_data.TIRNowBelow, TIRNowInRange = meal_data.TIRNowInRange, TIRNowAbove = meal_data.TIRNowAbove;
+    // TIR 1 (now),3 & 7 day average
+    var TIR7Below = meal_data.TIR7Below, TIR7InRange = meal_data.TIR7InRange, TIR7Above = meal_data.TIR7Above;
+    var TIR3Below = meal_data.TIR3Below, TIR3InRange = meal_data.TIR3InRange, TIR3Above = meal_data.TIR3Above;
+    var TIR1Below = meal_data.TIR1Below, TIR1InRange = meal_data.TIR1InRange, TIR1Above = meal_data.TIR1Above;
+    
     // iTime is minutes since last manual bolus correction or carbs
     var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,1);
     var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
@@ -1293,7 +1295,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // console.log("EatingNowBGThreshold: "+EatingNowBGThreshold);
 
             // use TIR to slow down insulin delivery via SMB and reduce TDD * EXPERIMENTAL *
-            var EN_SMBInterval = (TIRNowBelow > TIR3AvgBelow ? 10 : profile.SMBInterval);
+            var EN_SMBInterval = (TIR1Below > TIR3Below ? 10 : profile.SMBInterval);
             // trying to tame ISF Boost before working on scaling SMB Limit
             EN_SMBInterval = ( bg > EatingNowBGThreshold ? 10 : EN_SMBInterval);
 
@@ -1366,7 +1368,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // recent SMB that was bigger than maxBolus restrict UAM SMB size
                     EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > maxBolus ? maxBolus : EatingNowMaxSMB);
                     // if TIR is higher than the last 3 days allow a lift to EatingNowMaxSMB - TOO MUCH
-                    // EatingNowMaxSMB = (TIRNowAbove > TIR3AvgAbove ? EatingNowMaxSMB * (TIRNowAbove/TIR3AvgAbove) : EatingNowMaxSMB);
+                    // EatingNowMaxSMB = (TIR1Above > TIR3Above ? EatingNowMaxSMB * (TIR1Above/TIR3Above) : EatingNowMaxSMB);
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // allow 100% insulinReqPct when initial rise is known to go higher EatingNowBGThreshold
                     insulinReqPct = (eventualBG > EatingNowBGThreshold ? 1 : insulinReqPct);
@@ -1455,7 +1457,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // try spacing out the SMB's with TBR if TIR has more lows today ONLY FOR ISFBOOST
             insulinReqPct = (lastBolusAge > EN_SMBInterval ? insulinReqPct : 0);
             // TBR only when lower today not for UAMBoost
-            insulinReqPct = ( TIRNowBelow > TIR3AvgBelow && !UAMBoosted ? 0 : insulinReqPct);
+            insulinReqPct = ( TIR1Below > TIR3Below && !UAMBoosted ? 0 : insulinReqPct);
 
             // ============  EATING NOW MODE  ==================== END ===
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
@@ -1518,8 +1520,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             rT.reason += UAMBoostReason;
             if (liftISF > 1) rT.reason += ", liftISF: " + round(liftISF,2); //autoISF reason
             rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
-            rT.reason += ", TIR3LIH: " + TIR3AvgBelow + "/" + TIR3AvgInRange + "/" + TIR3AvgAbove;
-            rT.reason += ", TIRLIH: " + TIRNowBelow + "/" + TIRNowInRange + "/" + TIRNowAbove;
+            rT.reason += ", TIR3LIH: " + TIR3Below + "/" + TIR3InRange + "/" + TIR3Above;
+            rT.reason += ", TIRLIH: " + TIR1Below + "/" + TIR1InRange + "/" + TIR1Above;
             rT.reason += ", TDD: " + round(TDD, 2);
             rT.reason += ", SMBTime: " + round(SMBTime, 2);
             rT.reason = esc_text(rT.reason) + ". ";

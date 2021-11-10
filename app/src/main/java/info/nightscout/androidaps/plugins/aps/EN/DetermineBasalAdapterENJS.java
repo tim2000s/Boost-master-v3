@@ -409,12 +409,15 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("TDDPUMP",tddAIMI.calculateDaily().total);
         StatTIR = new TirCalculator(resourceHelper,profileFunction,dateUtil);
         int lowMgdl = 80, highMgdl = 144; // 4.4 - 8.0mmol
-        mMealData.put("TIR3AvgBelow",StatTIR.averageTIR(StatTIR.calculate(3,lowMgdl,highMgdl)).belowPct());
-        mMealData.put("TIR3AvgInRange",StatTIR.averageTIR(StatTIR.calculate(3,lowMgdl,highMgdl)).inRangePct());
-        mMealData.put("TIR3AvgAbove",StatTIR.averageTIR(StatTIR.calculate(3,lowMgdl,highMgdl)).abovePct());
-        mMealData.put("TIRNowBelow",StatTIR.averageTIR(StatTIR.calculateDaily(lowMgdl,highMgdl)).belowPct());
-        mMealData.put("TIRNowInRange",StatTIR.averageTIR(StatTIR.calculateDaily(lowMgdl,highMgdl)).inRangePct());
-        mMealData.put("TIRNowAbove",StatTIR.averageTIR(StatTIR.calculateDaily(lowMgdl,highMgdl)).abovePct());
+        mMealData.put("TIR7Above",StatTIR.averageTIR(StatTIR.calculate(7,lowMgdl,highMgdl)).abovePct());
+        mMealData.put("TIR7InRange",StatTIR.averageTIR(StatTIR.calculate(7,lowMgdl,highMgdl)).inRangePct());
+        mMealData.put("TIR7Below",StatTIR.averageTIR(StatTIR.calculate(7,lowMgdl,highMgdl)).belowPct());
+        mMealData.put("TIR3Above",StatTIR.averageTIR(StatTIR.calculate(3,lowMgdl,highMgdl)).abovePct());
+        mMealData.put("TIR3InRange",StatTIR.averageTIR(StatTIR.calculate(3,lowMgdl,highMgdl)).inRangePct());
+        mMealData.put("TIR3Below",StatTIR.averageTIR(StatTIR.calculate(3,lowMgdl,highMgdl)).belowPct());
+        mMealData.put("TIR1Above",StatTIR.averageTIR(StatTIR.calculateDaily(lowMgdl,highMgdl)).abovePct());
+        mMealData.put("TIR1InRange",StatTIR.averageTIR(StatTIR.calculateDaily(lowMgdl,highMgdl)).inRangePct());
+        mMealData.put("TIR1Below",StatTIR.averageTIR(StatTIR.calculateDaily(lowMgdl,highMgdl)).belowPct());
         // mMealData.put("currentTIR_70_140_Above",StatTIR.averageTIR(StatTIR.calculateDaily(70,140)).abovePct());
 
 
