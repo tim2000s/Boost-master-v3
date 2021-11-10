@@ -132,6 +132,7 @@ function determine_varSMBratio(profile, bg, target_bg)
     return new_SMB;
 }
 
+
 var determine_basal = function determine_basal(glucose_status, currenttemp, iob_data, profile, autosens_data, meal_data, tempBasalFunctions, microBolusAllowed, reservoir_data, currentTime, isSaveCgmSource) {
     var rT = {}; //short for requestedTemp
 
@@ -234,7 +235,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
         sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
         sensitivityRatio = round(sensitivityRatio,2);
-        console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
+        //console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
     } else if (typeof autosens_data !== 'undefined' && autosens_data) {
         sensitivityRatio = autosens_data.ratio;
         console.log("Autosens ratio: "+sensitivityRatio+"; ");
@@ -243,7 +244,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         basal = profile.current_basal * sensitivityRatio;
         basal = round_basal(basal, profile);
         if (basal !== profile_current_basal) {
-            console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
+            //console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
         } else {
             console.log("Basal unchanged: "+basal+"; ");
         }
@@ -316,11 +317,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
         }
 
-        var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
+        var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
         var iTimeProfile = profile.iTime;
-
         if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && bg < 170 || smbTDD === 1 && bg < 170 ){iTimeProfile *=0.7; }
-        console.log("iTime / iTimeProfile : "  + iTime + "/" + iTimeProfile);
+
         var statTirBelow = meal_data.StatLow7;
         var statinrange = meal_data.StatInRange7;
         var currentTIRLow = meal_data.currentTIRLow;
@@ -355,7 +355,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
     var TriggerPredSMB = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
 
-    var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
+    var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
     var iTimeProfile = profile.iTime;
     if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && bg < 170 || smbTDD === 1 && bg < 170 ){iTimeProfile *=0.7; }
 
@@ -888,7 +888,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log("AIMI V6 09/11/2021");
+                console.log("AIMI V6 10/11/2021");
                 console.log("------------------------------");
                 console.log("Pump extrapolated TDD = "+tdd_pump);
                 console.log("tdd7 using 7-day average "+tdd7);
@@ -1333,7 +1333,6 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                             console.log("Adjusting basal from "+profile_current_basal+" to "+basal);
                             console.log("maxBolusTT : "+maxBolusTT);
                             console.log("InsulinReqPCT : "+(insulinReqPCT * 100)+"%");
-                            console.log("smbRatio : "+smb_ratio);
                             console.log("insulinReq : "+insulinReq);
                             if(iTime < iTimeProfile/2){
                             console.log("insulinQ : "+insulinQ);
@@ -1364,20 +1363,10 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 smbLowTempReq = round( basal * durationReq/30 ,2);
                 durationReq = 30;
             }
-            rT.reason += " insulinReq " + insulinReq + ", InsulinReqPCT " + insulinReqPCT*100 + "%, smbRatio :"+smb_ratio ;
-            if(iTime < iTimeProfile/2){
-                rT.reason += "; iTime :" + iTime + ", insulinQ : " + insulinQ + ", InsulinTDD : " + InsulinTDD;
-
-            }
-
-            if (iTime < iTimeProfile){
-                rT.reason += "; iTime : " + iTime + " / iTimeProfile : " + iTimeProfile;
-            }
-
+            rT.reason += " insulinReq " + insulinReq + ", InsulinReqPCT " + insulinReqPCT*100+"%, smbRatio : " + smb_ratio;
             if (microBolus >= maxBolus) {
                 rT.reason +=  "; maxBolusTT " + maxBolusTT;
             }
-
             if (durationReq > 0) {
                 rT.reason += "; setting " + durationReq + "m low temp of " + smbLowTempReq + "U/h";
             }
@@ -1412,7 +1401,6 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
 
         }
 
-
         var maxSafeBasal = tempBasalFunctions.getMaxSafeBasal(profile);
 
         if (rate > maxSafeBasal) {
@@ -1444,3 +1432,4 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
 };
 
 module.exports = determine_basal;
+
