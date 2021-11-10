@@ -1402,7 +1402,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // insulinReqPct = insulinReqPctDefault;
                     insulinReqPct = 0;
                     EatingNowMaxSMB = Math.min(maxBolus,EatingNowMaxSMB); // use the most restrictive
-                    UAMBoostReason = "; delta slowing: no boost";
+                    UAMBoostReason = "; delta slowing: no SMB";
                     // this may help after sensor errors
                     insulinReqPct = (UAM_delta == 0 && glucose_status.short_avgdelta == 0 ? 0 : insulinReqPct);
                 } else {
