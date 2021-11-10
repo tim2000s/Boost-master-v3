@@ -1333,7 +1333,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                             console.log("Adjusting basal from "+profile_current_basal+" to "+basal);
                             console.log("maxBolusTT : "+maxBolusTT);
                             console.log("InsulinReqPCT : "+(insulinReqPCT * 100)+"%");
-                            console.log("smbRatio : "+smb_ratio)
+                            console.log("smbRatio : "+smb_ratio);
                             console.log("insulinReq : "+insulinReq);
                             if(iTime < iTimeProfile/2){
                             console.log("insulinQ : "+insulinQ);
