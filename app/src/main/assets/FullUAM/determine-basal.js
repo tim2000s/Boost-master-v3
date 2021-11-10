@@ -316,10 +316,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
         }
 
-        var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
+        var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var iTimeProfile = profile.iTime;
-        if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && bg < 170 || smbTDD === 1 && bg < 170 ){iTimeProfile *=0.7; }
 
+        if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && bg < 170 || smbTDD === 1 && bg < 170 ){iTimeProfile *=0.7; }
+        console.log("iTime / iTimeProfile : "  + iTime + "/" + iTimeProfile);
         var statTirBelow = meal_data.StatLow7;
         var statinrange = meal_data.StatInRange7;
         var currentTIRLow = meal_data.currentTIRLow;
@@ -1332,6 +1333,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                             console.log("Adjusting basal from "+profile_current_basal+" to "+basal);
                             console.log("maxBolusTT : "+maxBolusTT);
                             console.log("InsulinReqPCT : "+(insulinReqPCT * 100)+"%");
+                            console.log("smbRatio : "+smb_ratio)
                             console.log("insulinReq : "+insulinReq);
                             if(iTime < iTimeProfile/2){
                             console.log("insulinQ : "+insulinQ);
@@ -1362,7 +1364,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 smbLowTempReq = round( basal * durationReq/30 ,2);
                 durationReq = 30;
             }
-            rT.reason += " insulinReq " + insulinReq + ", InsulinReqPCT " + insulinReqPCT*100 + "%";
+            rT.reason += " insulinReq " + insulinReq + ", InsulinReqPCT " + insulinReqPCT*100 + "%, smbRatio :"+smb_ratio ;
             if(iTime < iTimeProfile/2){
                 rT.reason += "; iTime :" + iTime + ", insulinQ : " + insulinQ + ", InsulinTDD : " + InsulinTDD;
 
