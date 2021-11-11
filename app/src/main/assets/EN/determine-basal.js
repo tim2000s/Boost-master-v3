@@ -375,7 +375,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TIR7Below = meal_data.TIR7Below, TIR7InRange = meal_data.TIR7InRange, TIR7Above = meal_data.TIR7Above;
     var TIR3Below = meal_data.TIR3Below, TIR3InRange = meal_data.TIR3InRange, TIR3Above = meal_data.TIR3Above;
     var TIR1Below = meal_data.TIR1Below, TIR1InRange = meal_data.TIR1InRange, TIR1Above = meal_data.TIR1Above;
-    
+    var TIRBelow = (TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 0), TIRAbove = (TIR1Above > TIR3Above ? round(TIR3Above/TIR1Above,2) : 0);
+
     // iTime is minutes since last manual bolus correction or carbs
     var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,1);
     var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
@@ -1520,8 +1521,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             rT.reason += UAMBoostReason;
             if (liftISF > 1) rT.reason += ", liftISF: " + round(liftISF,2); //autoISF reason
             rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
-            rT.reason += ", TIR3LIH: " + TIR3Below + "/" + TIR3InRange + "/" + TIR3Above;
-            rT.reason += ", TIRLIH: " + TIR1Below + "/" + TIR1InRange + "/" + TIR1Above;
+            //rT.reason += ", TIR3LIH: " + TIR3Below + "/" + TIR3InRange + "/" + TIR3Above;
+            //rT.reason += ", TIRLIH: " + TIR1Below + "/" + TIR1InRange + "/" + TIR1Above;
+            rT.reason += ", TIRLH: " + TIRBelow + "/" + TIRAbove;
             rT.reason += ", TDD: " + round(TDD, 2);
             rT.reason += ", SMBTime: " + round(SMBTime, 2);
             rT.reason = esc_text(rT.reason) + ". ";
