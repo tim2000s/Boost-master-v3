@@ -1395,7 +1395,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = ( SMBTime <=7 && meal_data.lastSMBUnits > EatingNowMaxSMB ? 0 : insulinReqPct);
 
                     // if we are in the iTime window and climbing apply TBR if low insulinReq
-                    if ( insulinReq <0 && eventualBG > EatingNowBGThreshold (iTime < iTimeWindow || iTimeMax < iTimeMaxWindow) ) {
+                    if ( insulinReq <0 && eventualBG > EatingNowBGThreshold && (iTime < iTimeWindow || iTimeMax < iTimeMaxWindow) ) {
                         insulinReqBoost = profile.current_basal;
                         insulinReqPct = 0;
                         UAMBoostReason += ", iTime TBR";
