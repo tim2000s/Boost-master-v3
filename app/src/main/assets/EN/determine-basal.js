@@ -416,7 +416,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //var variable_sens = (277700 / (TDD * bg));
     // limit ISF adjustment when above EatingNowBGThreshold, allow higher if more highs today
     var variable_sens = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold*TIRAbove)));
-
     variable_sens /= TIRBelow; // apply sensitivity based on TIR data
     var var_sens_normalTarget = (277700 / (TDD * normalTarget));
     var_sens_normalTarget /= TIRBelow; // apply sensitivity based on TIR data
