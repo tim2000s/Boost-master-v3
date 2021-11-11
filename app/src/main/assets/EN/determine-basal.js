@@ -918,10 +918,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // When Delta is -ve, eventual_bg alone is used.
     var future_sens = sens;
     if( glucose_status.delta >= 0 ) {
-        future_sens = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
+        //future_sens = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
+        future_sens = ( 277700 / (TDD * Math.min(((eventualBG*0.6)+(bg*0.4)),EatingNowBGThreshold)) );
         console.log("Future state sensitivity is " +future_sens+" based on a weighted average of bg & eventual bg");
     } else {
-        future_sens = ( 277700 / (TDD * eventualBG));
+        //future_sens = ( 277700 / (TDD * eventualBG));
+        future_sens = (277700 / (TDD * Math.min(eventualBG,EatingNowBGThreshold)) );
         console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
     }
     // disable future_sens with a TT or when autoISF is enabled
@@ -1030,7 +1032,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + "/" + glucose_status.long_avgdelta + ", ISF: " + convert_bg(sens, profile) + (ISFBoost !=1 ? "(" + convert_bg(var_sens_normalTarget, profile) + ")" : "") + ", PredictISF: " + convert_bg(future_sens, profile) + ", TIRLH: " + TIRBelow + "/" + TIRAbove + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + "/" + glucose_status.long_avgdelta + ", ISF: " + convert_bg(sens, profile) + (ISFBoost !=1 ? "(" + convert_bg(var_sens_normalTarget, profile) + ")" + convert_bg(future_sens, profile) : "") + ", TIRLH: " + TIRBelow + "/" + TIRAbove + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
 
     if (lastCOBpredBG > 0) {
         rT.reason += ", COBpredBG " + convert_bg(lastCOBpredBG, profile);
