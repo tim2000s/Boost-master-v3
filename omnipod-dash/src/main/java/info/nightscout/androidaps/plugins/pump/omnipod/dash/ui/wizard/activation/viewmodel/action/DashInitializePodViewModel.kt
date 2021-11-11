@@ -16,6 +16,7 @@ import info.nightscout.androidaps.plugins.pump.omnipod.dash.history.data.Initial
 import info.nightscout.androidaps.plugins.pump.omnipod.dash.history.data.ResolvedResult
 import info.nightscout.androidaps.plugins.pump.omnipod.dash.util.I8n
 import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.androidaps.utils.sharedPreferences.SP
 import io.reactivex.Single
 import io.reactivex.rxkotlin.plusAssign
@@ -28,10 +29,12 @@ class DashInitializePodViewModel @Inject constructor(
     logger: AAPSLogger,
     private val sp: SP,
     private val podStateManager: OmnipodDashPodStateManager,
-    private val resourceHelper: ResourceHelper,
+    private val rh: ResourceHelper,
     private val history: DashHistory,
+    aapsSchedulers: AapsSchedulers
 
-) : InitializePodViewModel(injector, logger) {
+) : InitializePodViewModel(injector, logger, aapsSchedulers) {
+
     override fun isPodInAlarm(): Boolean = false // TODO
 
     override fun isPodActivationTimeExceeded(): Boolean = false // TODO
@@ -64,7 +67,7 @@ class DashInitializePodViewModel @Inject constructor(
                         source.onSuccess(
                             PumpEnactResult(injector)
                                 .success(false)
-                                .comment(I8n.textFromException(throwable, resourceHelper))
+                                .comment(I8n.textFromException(throwable, rh))
                         )
                     },
                     onComplete = {
