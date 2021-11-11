@@ -377,6 +377,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TIR1Below = meal_data.TIR1Below, TIR1InRange = meal_data.TIR1InRange, TIR1Above = meal_data.TIR1Above;
     var TIRBelow = (TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 0), TIRAbove = (TIR1Above > TIR3Above ? round(TIR3Above/TIR1Above,2) : 0);
     console.log("TIRLH: " + TIRBelow + "/" + TIRAbove);
+    rT.reason += "TIRLH: " + TIRBelow + "/" + TIRAbove;
+
 
     // iTime is minutes since last manual bolus correction or carbs
     var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,1);
@@ -1524,7 +1526,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
             //rT.reason += ", TIR3LIH: " + TIR3Below + "/" + TIR3InRange + "/" + TIR3Above;
             //rT.reason += ", TIRLIH: " + TIR1Below + "/" + TIR1InRange + "/" + TIR1Above;
-            rT.reason += ", TIRLH: " + TIRBelow + "/" + TIRAbove;
             rT.reason += ", TDD: " + round(TDD, 2);
             rT.reason += ", SMBTime: " + round(SMBTime, 2);
             rT.reason = esc_text(rT.reason) + ". ";
