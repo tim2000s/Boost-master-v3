@@ -377,8 +377,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TIR1Below = meal_data.TIR1Below, TIR1InRange = meal_data.TIR1InRange, TIR1Above = meal_data.TIR1Above;
     var TIRBelow = Math.max((TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 1),0.85), TIRAbove = Math.min((TIR1Above > TIR3Above ? round(TIR1Above/TIR3Above,2) : 1),1.25);
     console.log("TIRLH: " + TIRBelow + "/" + TIRAbove);
-    rT.reason += "TIRLH: " + TIRBelow + "/" + TIRAbove;
-
 
     // iTime is minutes since last manual bolus correction or carbs
     var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,1);
@@ -1021,7 +1019,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (lastUAMpredBG > 0) {
         rT.reason += ", UAMpredBG " + convert_bg(lastUAMpredBG, profile); //MD Missing ;
     }
-
+    rT.reason += "TIRLH: " + TIRBelow + "/" + TIRAbove;
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
     var carbsReqBG = naive_eventualBG;
