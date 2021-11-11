@@ -375,7 +375,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TIR7Below = meal_data.TIR7Below, TIR7InRange = meal_data.TIR7InRange, TIR7Above = meal_data.TIR7Above;
     var TIR3Below = meal_data.TIR3Below, TIR3InRange = meal_data.TIR3InRange, TIR3Above = meal_data.TIR3Above;
     var TIR1Below = meal_data.TIR1Below, TIR1InRange = meal_data.TIR1InRange, TIR1Above = meal_data.TIR1Above;
-    var TIRBelow = (TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 0), TIRAbove = (TIR1Above > TIR3Above ? round(TIR3Above/TIR1Above,2) : 0);
+    var TIRBelow = Math.max((TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 1),0.85), TIRAbove = Math.min((TIR1Above > TIR3Above ? round(TIR1Above/TIR3Above,2) : 1),1.25);
     console.log("TIRLH: " + TIRBelow + "/" + TIRAbove);
     rT.reason += "TIRLH: " + TIRBelow + "/" + TIRAbove;
 
@@ -413,7 +413,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
 
     var variable_sens = (277700 / (TDD * bg));
-    var var_sens_normalTarget = (277700 / (TDD * normalTarget));
+    variable_sens /= TIRBelow; // apply sensitivity based on TIR data
+    var var_sens_normalTarget = (277700 / (TDD * normalTarget))*TIRBelow;
+    var_sens_normalTarget /= TIRBelow; // apply sensitivity based on TIR data
+
     variable_sens = round(variable_sens,1);
     console.log("Current sensitivity is " +variable_sens+" based on current bg");
 
@@ -1299,7 +1302,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // console.log("EatingNowBGThreshold: "+EatingNowBGThreshold);
 
             // use TIR to slow down insulin delivery via SMB and reduce TDD * EXPERIMENTAL *
-            var EN_SMBInterval = (TIR1Below > TIR3Below ? 10 : profile.SMBInterval);
+            var EN_SMBInterval = (TIRBelow != 1 ? 10 : profile.SMBInterval);
             // trying to tame ISF Boost before working on scaling SMB Limit
             EN_SMBInterval = ( bg > EatingNowBGThreshold ? 10 : EN_SMBInterval);
 
