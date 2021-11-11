@@ -1163,7 +1163,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         // calculate 30m low-temp required to get projected BG up to target
         // multiply by 2 to low-temp faster for increased hypo safety
-        var insulinReq = 2 * Math.min(0, (eventualBG - target_bg) / sens);
+        var insulinReq = 2 * Math.min(0, (eventualBG - target_bg) / future_sens);
         insulinReq = round( insulinReq , 2);
         // calculate naiveInsulinReq based on naive_eventualBG
         var naiveInsulinReq = Math.min(0, (naive_eventualBG - target_bg) / sens);
@@ -1266,7 +1266,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         // insulinReq is the additional insulin required to get minPredBG down to target_bg
         //console.error(minPredBG,eventualBG);
-        insulinReq = round( (Math.min(minPredBG,eventualBG) - target_bg) / sens, 2);
+        insulinReq = round( (Math.min(minPredBG,eventualBG) - target_bg) / future_sens, 2);
         // if that would put us over max_iob, then reduce accordingly
         if (insulinReq > max_iob-iob_data.iob) {
             rT.reason += "max_iob " + max_iob + ", ";
