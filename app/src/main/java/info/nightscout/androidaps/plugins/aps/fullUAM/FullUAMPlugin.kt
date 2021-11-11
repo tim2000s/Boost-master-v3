@@ -33,7 +33,7 @@ open class FullUAMPlugin @Inject constructor(
     aapsLogger: AAPSLogger,
     private val rxBus: RxBus,
     private val constraintChecker: ConstraintChecker,
-    resourceHelper: ResourceHelper,
+    rh: ResourceHelper,
     private val profileFunction: ProfileFunction,
     private val context: Context,
     private val activePlugin: ActivePlugin,
@@ -53,7 +53,7 @@ open class FullUAMPlugin @Inject constructor(
     .preferencesId(R.xml.pref_fulluam)
     .description(R.string.description_fulluam)
     .setDefault(),
-    aapsLogger, resourceHelper, injector
+    aapsLogger, rh, injector
 ), APS, Constraints {
 
     // last values
