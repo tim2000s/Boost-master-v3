@@ -79,9 +79,9 @@ open class FullUAMPlugin @Inject constructor(
     override fun preprocessPreferences(preferenceFragment: PreferenceFragmentCompat) {
         super.preprocessPreferences(preferenceFragment)
         val smbAlwaysEnabled = sp.getBoolean(R.string.key_enableSMB_always, false)
-        preferenceFragment.findPreference<SwitchPreference>(resourceHelper.gs(R.string.key_enableSMB_with_COB))?.isVisible = !smbAlwaysEnabled
-        preferenceFragment.findPreference<SwitchPreference>(resourceHelper.gs(R.string.key_enableSMB_with_temptarget))?.isVisible = !smbAlwaysEnabled
-        preferenceFragment.findPreference<SwitchPreference>(resourceHelper.gs(R.string.key_enableSMB_after_carbs))?.isVisible = !smbAlwaysEnabled
+        preferenceFragment.findPreference<SwitchPreference>(rh.gs(R.string.key_enableSMB_with_COB))?.isVisible = !smbAlwaysEnabled
+        preferenceFragment.findPreference<SwitchPreference>(rh.gs(R.string.key_enableSMB_with_temptarget))?.isVisible = !smbAlwaysEnabled
+        preferenceFragment.findPreference<SwitchPreference>(rh.gs(R.string.key_enableSMB_after_carbs))?.isVisible = !smbAlwaysEnabled
     }
 
     override fun invoke(initiator: String, tempBasalFallback: Boolean) {
@@ -91,18 +91,18 @@ open class FullUAMPlugin @Inject constructor(
         val profile = profileFunction.getProfile()
         val pump = activePlugin.activePump
         if (profile == null) {
-            rxBus.send(EventOpenAPSUpdateResultGui(resourceHelper.gs(R.string.noprofileselected)))
-            aapsLogger.debug(LTag.APS, resourceHelper.gs(R.string.noprofileselected))
+            rxBus.send(EventOpenAPSUpdateResultGui(rh.gs(R.string.noprofileset)))
+            aapsLogger.debug(LTag.APS, rh.gs(R.string.noprofileset))
             return
         }
         if (!isEnabled(PluginType.APS)) {
-            rxBus.send(EventOpenAPSUpdateResultGui(resourceHelper.gs(R.string.openapsma_disabled)))
-            aapsLogger.debug(LTag.APS, resourceHelper.gs(R.string.openapsma_disabled))
+            rxBus.send(EventOpenAPSUpdateResultGui(rh.gs(R.string.openapsma_disabled)))
+            aapsLogger.debug(LTag.APS, rh.gs(R.string.openapsma_disabled))
             return
         }
         if (glucoseStatus == null) {
-            rxBus.send(EventOpenAPSUpdateResultGui(resourceHelper.gs(R.string.openapsma_noglucosedata)))
-            aapsLogger.debug(LTag.APS, resourceHelper.gs(R.string.openapsma_noglucosedata))
+            rxBus.send(EventOpenAPSUpdateResultGui(rh.gs(R.string.openapsma_noglucosedata)))
+            aapsLogger.debug(LTag.APS, rh.gs(R.string.openapsma_noglucosedata))
             return
         }
 
@@ -137,7 +137,7 @@ open class FullUAMPlugin @Inject constructor(
         if (constraintChecker.isAutosensModeEnabled().value()) {
             val autosensData = iobCobCalculator.getLastAutosensDataWithWaitForCalculationFinish("OpenAPSPlugin")
             if (autosensData == null) {
-                rxBus.send(EventOpenAPSUpdateResultGui(resourceHelper.gs(R.string.openaps_noasdata)))
+                rxBus.send(EventOpenAPSUpdateResultGui(rh.gs(R.string.openaps_noasdata)))
                 return
             }
             lastAutosensResult = autosensData.autosensResult
