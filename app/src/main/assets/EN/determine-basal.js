@@ -412,7 +412,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     var variable_sens = (277700 / (TDD * bg));
     variable_sens /= TIRBelow; // apply sensitivity based on TIR data
-    var var_sens_normalTarget = (277700 / (TDD * normalTarget))*TIRBelow;
+    var var_sens_normalTarget = (277700 / (TDD * normalTarget));
     var_sens_normalTarget /= TIRBelow; // apply sensitivity based on TIR data
 
     variable_sens = round(variable_sens,1);
