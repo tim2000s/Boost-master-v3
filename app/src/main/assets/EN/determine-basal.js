@@ -386,6 +386,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
     // SMBTime last SMB
     var SMBTime = round(( new Date(systemTime).getTime() - meal_data.lastSMBTime) / 60000,1);
+    // Threshold for ISF Boost
+    var EatingNowBGThreshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowBGThreshold * 18, 1).toFixed(1) : profile.EatingNowBGThreshold);
+    if (EatingNowBGThreshold == 0) EatingNowBGThreshold = 180 ; // default is 180 = 10 mmol
 
     /* ************************
        ** TS AutoTDD code    **
@@ -410,7 +413,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
     }
 
-    var variable_sens = (277700 / (TDD * bg));
+    //var variable_sens = (277700 / (TDD * bg));
+    // limit ISF adjustment when above EatingNowBGThreshold, allow higher if more highs today
+    var variable_sens = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold*TIRAbove));
+
     variable_sens /= TIRBelow; // apply sensitivity based on TIR data
     var var_sens_normalTarget = (277700 / (TDD * normalTarget));
     var_sens_normalTarget /= TIRBelow; // apply sensitivity based on TIR data
@@ -1294,8 +1300,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var insulinReqBoost = 0; // no boost yet
             var EatingNowMaxSMB = maxBolus;
             var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
-            var EatingNowBGThreshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowBGThreshold * 18, 1).toFixed(1) : profile.EatingNowBGThreshold);
-            if (EatingNowBGThreshold == 0) EatingNowBGThreshold = 180 ; // default is 180 = 10 mmol
             // console.log("EatingNowBGThreshold: "+EatingNowBGThreshold);
 
             // use TIR to slow down insulin delivery via SMB and reduce TDD * EXPERIMENTAL *
