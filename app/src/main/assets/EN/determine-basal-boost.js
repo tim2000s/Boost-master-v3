@@ -1283,7 +1283,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
     //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
-                 if (glucose_status.delta >= 5 && glucose_status.short_avgdelta >= 3 && uamBoost1 > 1.2 && uamBoost2 > 2 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 5 && eventualBG > target_bg && bg > 80 && insulinReq > 0 /*&& target_bg < 82*/) {
+                 if (glucose_status.delta >= 5 && glucose_status.short_avgdelta >= 3 && uamBoost1 > 1.2 && uamBoost2 > 2 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 5 && eventualBG > target_bg && bg > 80 && insulinReq > 0  /*&& target_bg < 82*/) {
                      console.error("Profile Boost Scale value is "+boost_scale+": ");
                      //console.error("Automated Boost Scale value is "+scaleSMB+": ");
                      //document the pre-boost insulin required recommendation
@@ -1296,7 +1296,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      else {
                      boostInsulinReq = boostInsulinReq;
                      }
+                     if (boostInsulinReq < insulinReq) {
+                     var microBolus = Math.floor(Math.min(insulinReq,boost_max)*roundSMBTo)/roundSMBTo;
+                     }
+                     else {
                      var microBolus = Math.floor(Math.min(boostInsulinReq)*roundSMBTo)/roundSMBTo;
+                     }
                      console.error("UAM Boost enacted; SMB equals "+boostInsulinReq+" ; Original insulin requirement was "+insulinReq+"; Boost is " +(boostInsulinReq/insulinReq)+" times increase" );
                      rT.reason += "UAM Boost enacted; SMB equals" + boostInsulinReq;
                  }
