@@ -308,7 +308,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
         console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
         var smbTDD = 0;
-        if (tdd_pump < (0.5 * tdd7)){
+        if (tdd_pump < (0.3 * tdd7) && bg > 110) {
+        TDD = (tdd7 * 0.6) + (tdd_pump * 0.4);
+        smbTDD = 1;
+        console.log("tdd_pump is lesser than 30% tdd7");
+        } else if (tdd_pump < (0.5 * tdd7)){
             TDD = (tdd7 * 0.2) + (tdd_pump * 0.8);
             smbTDD = 1;
             console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
@@ -888,7 +892,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log("AIMI V6 10/11/2021");
+                console.log("AIMI V6 11/11/2021");
                 console.log("------------------------------");
                 console.log("Pump extrapolated TDD = "+tdd_pump);
                 console.log("tdd7 using 7-day average "+tdd7);
