@@ -95,8 +95,10 @@ class TddCalculator @Inject constructor(
             tdd.carbs += t.amount
             //result.put(midnight, tdd)
         }
+        val calculationStep = T.mins(5).msecs()
+        val tempBasals = iobCobCalculator.getTempBasalIncludingConvertedExtendedForRange(startTime, endTime, calculationStep)
+        for (t in startTime until endTime step calculationStep) {
 
-        for (t in startTime until endTime step T.mins(5).msecs()) {
             //val midnight = MidnightTime.calc(t)
             //val tdd = result[midnight] ?: TotalDailyDose(timestamp = midnight)
             val tbr = iobCobCalculator.getTempBasalIncludingConvertedExtended(t)
