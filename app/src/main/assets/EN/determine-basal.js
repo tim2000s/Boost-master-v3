@@ -384,6 +384,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // iTimeMax is minutes since first manual bolus correction after EN starts
     var iTimeMax = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,1);
     var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
+    var iTimeOK = (iTime < iTimeWindow || iTimeMax < iTimeMaxWindow);
     // SMBTime last SMB
     var SMBTime = round(( new Date(systemTime).getTime() - meal_data.lastSMBTime) / 60000,1);
     // Threshold for ISF Boost
@@ -1371,7 +1372,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // Recent manual bolus or having COB will allow faster UAMBoost response
-                if (UAM_delta >2 && !UAMBoostMAX && (iTime < iTimeWindow)) {
+                if (UAM_delta >2 && !UAMBoostMAX && iTimeOK) {
                     UAMBoostOK = true;
                 }
 
@@ -1412,7 +1413,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = ( SMBTime <=7 && meal_data.lastSMBUnits > EatingNowMaxSMB ? 0 : insulinReqPct);
 
                     // if we are in the iTime window and climbing apply TBR if low insulinReq
-                    if ( insulinReq <0 && eventualBG > EatingNowBGThreshold && (iTime < iTimeWindow || iTimeMax < iTimeMaxWindow) ) {
+                    if ( insulinReq <0 && eventualBG > EatingNowBGThreshold && iTimeOK ) {
                         insulinReqBoost = profile.current_basal;
                         insulinReqPct = 0;
                         UAMBoostReason += ", iTime TBR";
@@ -1424,7 +1425,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== MAXBOLUS RESTRICTIONS ==============
                 // allow EatingNowMaxSMB with COB or iTime window OK else restrict to maxBolus
-                if ( iTime < iTimeWindow || iTimeMax < iTimeMaxWindow ) {
+                if ( iTimeOK ) {
                     EatingNowMaxSMB = EatingNowMaxSMB; // use EN SMB Limit
                     // if there has been a prebolus limit the SMB
                     EatingNowMaxSMB = (preBolused ? maxBolus : EatingNowMaxSMB);
