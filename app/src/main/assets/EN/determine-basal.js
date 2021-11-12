@@ -1505,8 +1505,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
             durationReq = round(60*worstCaseInsulinReq / profile.current_basal);
 
-            //MD: Only use minBolus if not eating now and night time and no resistance
-            if (!eatingnow && !eatingnowtimeOK) {
+            //MD: Only use minBolus if not eating now and night time OR iTime NOT OK
+            if (!eatingnow && !eatingnowtimeOK || !iTimeOK) {
                 // Mackwe: If SMB dose < 500% TBR would deliver within 15 mins, use TBR instead of SMB
                 var maxTbrDoseMins = 15; // minutes for the TBR
                 var maxTbrDose = round((4*profile.current_basal)*(maxTbrDoseMins/60),4); //rounding this
