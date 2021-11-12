@@ -283,7 +283,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
 
     // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
-    if (profile.temptargetSet) {
+    if (profile.temptargetSet || !profile.use_autoisf ) {
         //console.log("Temp Target set, not adjusting with autosens; ");
     } else if (typeof autosens_data !== 'undefined' && autosens_data) {
         if ( profile.sensitivity_raises_target && autosens_data.ratio < 1 || profile.resistance_lowers_target && autosens_data.ratio > 1 ) {
