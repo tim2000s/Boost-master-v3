@@ -246,7 +246,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.error ='Error: could not determine target_bg. ';
         return rT;
     }
-
+    console.log("autosens_data undefined: "+ typeof autosens_data == 'undefined');
     var sensitivityRatio;
     var high_temptarget_raises_sensitivity = profile.exercise_mode || profile.high_temptarget_raises_sensitivity;
     var normalTarget = profile.normal_target_bg; // evaluate high/low temptarget against 100, not scheduled target (which might change)
