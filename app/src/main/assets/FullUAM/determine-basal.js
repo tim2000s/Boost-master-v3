@@ -132,6 +132,58 @@ function determine_varSMBratio(profile, bg, target_bg)
     return new_SMB;
 }
 
+/*function determine_ISF(profile,meal,iTime,iTimeProfile){
+
+if(typeof meal_data.TDDAIMI7 === 'undefined' || meal_data.TDDAIMI7 === 0) {
+console.error('TDD7 is undefine or null, ISF (profile.sens)',profile.sens);
+return profile.sens;
+}else{
+    var now = new Date().getHours();
+    if (now < 1){
+        now = 1;}
+    else {
+        console.error("Time now is "+now+"; ");
+    }
+    var tdd7 = meal_data.TDDAIMI7;
+    var tdd_pump_now = meal_data.TDDPUMP;
+    var tdd_pump = ( tdd_pump_now / (now / 24));
+    var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
+    console.error('Pump extrapolated TDD = '+tdd_pump+'; ');
+    var smbTDD = 0;
+    if (tdd_pump < (0.3 * tdd7) && bg > 110) {
+    TDD = (tdd7 * 0.6) + (tdd_pump * 0.4);
+    smbTDD = 1;
+    console.error('tdd_pump is lesser than 30% tdd7');
+    } else if (tdd_pump < (0.5 * tdd7)){
+        TDD = (tdd7 * 0.2) + (tdd_pump * 0.8);
+        smbTDD = 1;
+        console.error('TDD weighted to pump due to low insulin usage. TDD = '+TDD+'; ');
+    }else{
+
+        console.error('TDD 7 ='+tdd7+', TDD Pump ='+tdd_pump+' and TDD = '+TDD+';');
+        return TDD;
+    }
+    var statTirBelow = meal_data.StatLow7;
+    var statinrange = meal_data.StatInRange7;
+    var currentTIRLow = meal_data.currentTIRLow;
+    var CurrentTIRinRange = meal_data.currentTIRRange;
+    var CurrentTIRAbove = meal_data.currentTIRAbove;
+    var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
+     if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0 || smbTDD === 0 && iTime < iTimeProfile && tdd_pump_now >= tdd7*0.3 && CurrentTIR_70_140_Above > 20 ){
+    TDD*=1.2;
+    console.error('TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% or TDD_pump > 0.3*TTD7 && iTime < iTimeProfile  <  :'+TDD);
+    return TDD;
+    }else if (statinrange <= 95 && statTirBelow >= 4 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >= 4){
+    TDD*=0.7;
+    console.error('TDD new value because TIR show hypo during the last 7 days and  the curent day too :'+TDD);
+    return TDD;
+    }
+    var variable_sens = (277700 / (TDD * bg));
+    variable_sens = round(variable_sens,1);
+    return variable_sens;
+    }
+
+}*/
 
 var determine_basal = function determine_basal(glucose_status, currenttemp, iob_data, profile, autosens_data, meal_data, tempBasalFunctions, microBolusAllowed, reservoir_data, currentTime, isSaveCgmSource) {
     var rT = {}; //short for requestedTemp
@@ -303,6 +355,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.error("Time now is "+now+"; ");
         }
         var tdd7 = meal_data.TDDAIMI7;
+        if(typeof meal_data.TDDAIMI7 !== 'undefined' || meal_data.TDDAIMI7 !== 0) {
+
         var tdd_pump_now = meal_data.TDDPUMP;
         var tdd_pump = ( tdd_pump_now / (now / 24));
         var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
@@ -320,17 +374,17 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
         }
-
+var statTirBelow = meal_data.StatLow7;
+var statinrange = meal_data.StatInRange7;
+var currentTIRLow = meal_data.currentTIRLow;
+var CurrentTIRinRange = meal_data.currentTIRRange;
+var CurrentTIRAbove = meal_data.currentTIRAbove;
+var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
         var iTimeProfile = profile.iTime;
         if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && bg < 170 || smbTDD === 1 && bg < 170 ){iTimeProfile *=0.7; }
 
-        var statTirBelow = meal_data.StatLow7;
-        var statinrange = meal_data.StatInRange7;
-        var currentTIRLow = meal_data.currentTIRLow;
-        var CurrentTIRinRange = meal_data.currentTIRRange;
-        var CurrentTIRAbove = meal_data.currentTIRAbove;
-        var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
+
 
         if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0 || smbTDD === 0 && iTime < iTimeProfile && tdd_pump_now >= tdd7*0.3 && CurrentTIR_70_140_Above > 20 ){
             TDD*=1.2;
@@ -350,6 +404,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //"+variable_sens+" ; ");
     //console.log("TDDnow : "+TDDnow+";");
     sens = variable_sens;
+    }else{
+    sens = profile.sens;
+    var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
+    var iTimeProfile = profile.iTime;
+    if (iTime < iTimeProfile && glucose_status.delta > 5 ){
+    sens = profile_sens / 2;
+    }
+    console.log("TDD is undefine or null, ISF will only change during the iTime windows : "+sens);
+
+    }
 
     //var eRatio = round((bg/0.16)/sens,2);
     var eRatio = round(sens / 13.2);
@@ -892,7 +956,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log("AIMI V6 11/11/2021");
+                console.log("AIMI V6 12/11/2021");
                 console.log("------------------------------");
                 console.log("Pump extrapolated TDD = "+tdd_pump);
                 console.log("tdd7 using 7-day average "+tdd7);
