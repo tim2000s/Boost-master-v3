@@ -280,6 +280,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.log("Basal unchanged: "+basal+"; ");
         }
     }
+    autosens_data = void 0;
     console.log("autosens_data undefined: "+ typeof autosens_data == 'undefined');
 
 
