@@ -269,6 +269,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
     } else if (typeof autosens_data !== 'undefined' && autosens_data) {
         sensitivityRatio = autosens_data.ratio;
+        // restrict SR to 1 max if not using autoISF hence variable_sens may help with overnight low allowing basal to be adjusted
+        sensitivityRatio = (!profile.use_autoisf ? Math.min(sensitivityRatio,1) : sensitivityRatio);
         console.log("Autosens ratio: "+sensitivityRatio+"; ");
     }
     if (sensitivityRatio) {
