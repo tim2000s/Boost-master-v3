@@ -648,6 +648,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         return rT;
     }
     console.log ("cTime:"+cTime+", iTime:"+iTime+",lastCarbs:"+meal_data.lastCarbs);
+    var preBolused = (cTime-iTime)>0 && (cTime-iTime)<5;
+    console.log("preBolused:" + preBolused);
     //console.error(meal_data);
     // carb impact and duration are 0 unless changed below
     var ci = 0;
@@ -1424,6 +1426,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // allow EatingNowMaxSMB with COB or iTime window OK else restrict to maxBolus
                 if ( iTime < iTimeWindow || iTimeMax < iTimeMaxWindow ) {
                     EatingNowMaxSMB = EatingNowMaxSMB; // use EN SMB Limit
+                    // if there has been a prebolus limit the SMB
+                    EatingNowMaxSMB = (preBolused ? maxBolus : EatingNowMaxSMB);
                 } else {
                     EatingNowMaxSMB = Math.min(maxBolus,EatingNowMaxSMB); // use the most restrictive
                 }
@@ -1478,9 +1482,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== UAMBoost Reason ==============
                 // If max window exists we dont need to show iTime
                 if (iTimeMax < iTimeMaxWindow) {
-                    UAMBoostReason += ", iTimeMax: " + iTimeMax+"m<"+iTimeMaxWindow+"m";
+                    UAMBoostReason += ", iTimeMax: " + iTimeMax+"m<"+iTimeMaxWindow+"m" + (preBolused ? " preBolus" : "");
                 } else if (iTime < iTimeWindow) {
-                    UAMBoostReason += ", iTime: " + iTime+"m<"+iTimeWindow+"m";
+                    UAMBoostReason += ", iTime: " + iTime+"m<"+iTimeWindow+"m"+ (preBolused ? " preBolus" : "");
                 } else {
                     UAMBoostReason += ", iTime Expired"
                 }
