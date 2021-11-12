@@ -246,7 +246,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.error ='Error: could not determine target_bg. ';
         return rT;
     }
-    console.log("autosens_data undefined: "+ typeof autosens_data == 'undefined');
     var sensitivityRatio;
     var high_temptarget_raises_sensitivity = profile.exercise_mode || profile.high_temptarget_raises_sensitivity;
     var normalTarget = profile.normal_target_bg; // evaluate high/low temptarget against 100, not scheduled target (which might change)
@@ -281,6 +280,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.log("Basal unchanged: "+basal+"; ");
         }
     }
+    console.log("autosens_data undefined: "+ typeof autosens_data == 'undefined');
+
 
     // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
     if (profile.temptargetSet || !profile.use_autoisf ) {
