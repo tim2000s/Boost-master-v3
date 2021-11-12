@@ -323,6 +323,7 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("current_basal", basalrate);
         mProfile.put("temptargetSet", tempTargetSet);
         mProfile.put("autosens_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_max, "1.2")));
+        mProfile.put("autosens_min", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_min, "0.7")));
         // mod 7e: can I add use autoisf here?
         mProfile.put("use_autoisf", sp.getBoolean(R.string.key_openapsama_useautoisf, false));
         // mod 7d: can I add autosens_min here?
