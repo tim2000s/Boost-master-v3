@@ -280,9 +280,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.log("Basal unchanged: "+basal+"; ");
         }
     }
-    autosens_data = void 0;
-    console.log("autosens_data undefined: "+ typeof autosens_data == 'undefined');
-
 
     // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
     if (profile.temptargetSet || !profile.use_autoisf ) {
