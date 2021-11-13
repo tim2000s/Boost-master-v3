@@ -1521,11 +1521,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // Mackwe: If SMB dose < 500% TBR would deliver within 15 mins, use TBR instead of SMB
                 var maxTbrDoseMins = 15; // minutes for the TBR
                 var maxTbrDose = round((4*profile.current_basal)*(maxTbrDoseMins/60),4); //rounding this
-//                console.error("maxTbrDose ",maxTbrDose);
+                //console.error("maxTbrDose ",maxTbrDose);
                 /* Mackwe: maxTbrDose is how much insulin a 500% basal would deliver = 4x base basal.
                 Minimum SMB size would then be rounded _down_ to nearest bolus step.
                 Anything less would become TB instead. */
-//                var minBolus =  Math.round(maxTbrDose*roundSMBTo)/roundSMBTo;
+                //var minBolus =  Math.round(maxTbrDose*roundSMBTo)/roundSMBTo;
                 var minBolus = Math.floor((maxTbrDose*insulinReqPct)*roundSMBTo)/roundSMBTo;
                 console.error("Minimum microbolus size determined to",minBolus,"U. ");
                 //rT.reason +=  "minBolus " + minBolus + ", ";
