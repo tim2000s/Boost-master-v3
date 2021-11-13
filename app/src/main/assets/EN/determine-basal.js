@@ -1498,7 +1498,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
             }
             // try spacing out the SMB's with TBR if TIR has more lows today ONLY FOR ISFBOOST
-            insulinReqPct = ( TIRBelow < 1 && SMBTime <=7 && !UAMBoosted ? 0 : insulinReqPct);
+            if (TIRBelow < 1 && SMBTime <=7 && !UAMBoosted ) {
+                insulinReqPct = 0;
+                UAMBoostReason += ", TIRLow: No SMB";
+            }
             // insulinReqPct = (lastBolusAge > EN_SMBInterval ? insulinReqPct : 0);
             // TBR only when lower today not for UAMBoost
             // insulinReqPct = ( TIRBelow < 1 && !UAMBoosted ? 0 : insulinReqPct);
