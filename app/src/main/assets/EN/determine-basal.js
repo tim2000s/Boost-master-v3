@@ -376,8 +376,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TIR7Below = meal_data.TIR7Below, TIR7InRange = meal_data.TIR7InRange, TIR7Above = meal_data.TIR7Above;
     var TIR3Below = meal_data.TIR3Below, TIR3InRange = meal_data.TIR3InRange, TIR3Above = meal_data.TIR3Above;
     var TIR1Below = meal_data.TIR1Below, TIR1InRange = meal_data.TIR1InRange, TIR1Above = meal_data.TIR1Above;
-    var TIRBelow = Math.max((TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 1),profile.autosens_min), TIRAbove = Math.min((TIR1Above > TIR3Above ? round(TIR1Above/TIR3Above,2) : 1),profile.autosens_max);
-    console.log("TIRLH: " + TIRBelow + "/" + TIRAbove);
+    var TIRBelow = Math.max((TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 1),profile.autosens_min), TIRInRange = round(TIR1InRange/TIR3InRange,2), TIRAbove = Math.min((TIR1Above > TIR3Above ? round(TIR1Above/TIR3Above,2) : 1),profile.autosens_max);
+    console.log("TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove );
 
     // iTime is minutes since last manual bolus correction or carbs
     var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,1);
