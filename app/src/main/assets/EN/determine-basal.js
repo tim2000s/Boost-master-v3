@@ -1490,9 +1490,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== UAMBoost Reason ==============
                 // If max window exists we dont need to show iTime
                 if (iTimeMax < iTimeMaxWindow) {
-                    UAMBoostReason += ", iTimeMax: " + iTimeMax+"m<"+iTimeMaxWindow+"m" + (preBolused ? " preBolus" : "");
+                    UAMBoostReason += ", iTimeMax: " + iTimeMax+"/"+iTimeMaxWindow+"m" + (preBolused ? " PB" : "");
                 } else if (iTime < iTimeWindow) {
-                    UAMBoostReason += ", iTime: " + iTime+"m<"+iTimeWindow+"m"+ (preBolused ? " preBolus" : "");
+                    UAMBoostReason += ", iTime: " + iTime+"/"+iTimeWindow+"m"+ (preBolused ? " PB" : "");
                 } else {
                     UAMBoostReason += ", iTime Expired"
                 }
