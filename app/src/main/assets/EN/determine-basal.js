@@ -415,9 +415,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
     }
 
-    //var variable_sens = (277700 / (TDD * bg));
+    var variable_sens = (277700 / (TDD * bg));
     // limit ISF adjustment when above EatingNowBGThreshold, allow higher if more highs today
-    var variable_sens = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold*TIRAbove)));
+    //var variable_sens = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold*TIRAbove)));
     console.log("Current sensitivity is " +variable_sens+" based on current bg");
     //variable_sens /= TIRBelow; // apply sensitivity based on TIR data
     //if (TIRBelow<1) console.log("Current sensitivity adjusted to " +variable_sens+" based on TIRBelow " + TIRBelow);
@@ -924,12 +924,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // When Delta is -ve, eventual_bg alone is used.
     var future_sens = sens;
     if( glucose_status.delta >= 0 ) {
-        //future_sens = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
-        future_sens = ( 277700 / (TDD * Math.min(((eventualBG*0.6)+(bg*0.4)),EatingNowBGThreshold)) );
+        future_sens = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
         console.log("Future state sensitivity is " +future_sens+" based on a weighted average of bg & eventual bg");
     } else {
-        //future_sens = ( 277700 / (TDD * eventualBG));
-        future_sens = (277700 / (TDD * Math.min(eventualBG,EatingNowBGThreshold)) );
+        future_sens = ( 277700 / (TDD * eventualBG));
         console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
     }
     // disable future_sens with a TT or when autoISF is enabled
