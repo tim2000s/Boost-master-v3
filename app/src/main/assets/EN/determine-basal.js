@@ -1500,7 +1500,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // try spacing out the SMB's with TBR if TIR has more lows today ONLY FOR ISFBOOST
             //insulinReqPct = (lastBolusAge > EN_SMBInterval ? insulinReqPct : 0);
             // TBR only when lower today not for UAMBoost
-            insulinReqPct = ( TIRBelow < 1 && !UAMBoosted ? 0 : insulinReqPct);
+            // insulinReqPct = ( TIRBelow < 1 && !UAMBoosted ? 0 : insulinReqPct);
 
             // ============  EATING NOW MODE  ==================== END ===
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
