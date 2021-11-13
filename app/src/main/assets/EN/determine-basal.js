@@ -930,8 +930,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         future_sens = ( 277700 / (TDD * eventualBG));
         console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
     }
-    // disable future_sens with a TT or when autoISF is enabled
-    if (profile.temptargetSet || profile.use_autoisf ) future_sens = sens;
+    // disable future_sens with a TT, at night or when autoISF is enabled
+    if (profile.temptargetSet || profile.use_autoisf || !eatingnowtimeOK ) future_sens = sens;
     future_sens = round(future_sens,1);
 
     minIOBPredBG = Math.max(39,minIOBPredBG);
