@@ -428,7 +428,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.log("Current sensitivity is " +variable_sens+" based on current bg");
 
     // disable variable ISF with a TT or when autoISF is enabled
-    if (profile.temptargetSet || profile.use_autoisf ) variable_sens = sens;
+    if (profile.temptargetSet || profile.use_autoisf || !eatingnowtimeOK) variable_sens = sens;
 
     // **********************************************************************************************
     // *****                           End of automated TDD code                                *****
