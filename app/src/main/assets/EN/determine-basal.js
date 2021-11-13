@@ -419,10 +419,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // limit ISF adjustment when above EatingNowBGThreshold, allow higher if more highs today
     var variable_sens = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold*TIRAbove)));
     console.log("Current sensitivity is " +variable_sens+" based on current bg");
-    variable_sens /= TIRBelow; // apply sensitivity based on TIR data
-    if (TIRBelow<1) console.log("Current sensitivity adjusted to " +variable_sens+" based on TIRBelow " + TIRBelow);
+    //variable_sens /= TIRBelow; // apply sensitivity based on TIR data
+    //if (TIRBelow<1) console.log("Current sensitivity adjusted to " +variable_sens+" based on TIRBelow " + TIRBelow);
     var var_sens_normalTarget = (277700 / (TDD * normalTarget));
-    var_sens_normalTarget /= TIRBelow; // apply sensitivity based on TIR data
+    //var_sens_normalTarget /= TIRBelow; // apply sensitivity based on TIR data
 
     variable_sens = round(variable_sens,1);
     console.log("Current sensitivity is " +variable_sens+" based on current bg");
@@ -1328,7 +1328,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // console.log("EatingNowBGThreshold: "+EatingNowBGThreshold);
 
             // use TIR to slow down insulin delivery via SMB and reduce TDD * EXPERIMENTAL *
-            //var EN_SMBInterval = (TIRBelow < 1 ? 10 : profile.SMBInterval);
+            // var EN_SMBInterval = (TIRBelow < 1 ? 10 : profile.SMBInterval);
             // trying to tame ISF Boost before working on scaling SMB Limit
             //EN_SMBInterval = ( bg > EatingNowBGThreshold ? 10 : EN_SMBInterval);
 
@@ -1498,7 +1498,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
             }
             // try spacing out the SMB's with TBR if TIR has more lows today ONLY FOR ISFBOOST
-            //insulinReqPct = (lastBolusAge > EN_SMBInterval ? insulinReqPct : 0);
+            insulinReqPct = ( TIRBelow < 1 && SMBTime <=7 && !UAMBoosted ? 0 : insulinReqPct);
+            // insulinReqPct = (lastBolusAge > EN_SMBInterval ? insulinReqPct : 0);
             // TBR only when lower today not for UAMBoost
             // insulinReqPct = ( TIRBelow < 1 && !UAMBoosted ? 0 : insulinReqPct);
 
