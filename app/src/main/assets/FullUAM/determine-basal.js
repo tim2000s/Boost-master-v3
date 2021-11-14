@@ -344,7 +344,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
-
     /* ************************
        ** TS AutoTDD code    **
        ************************ */
@@ -355,36 +354,46 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.error("Time now is "+now+"; ");
         }
         var tdd7 = meal_data.TDDAIMI7;
-        if(typeof meal_data.TDDAIMI7 !== 'undefined' || meal_data.TDDAIMI7 !== 0) {
-
         var tdd_pump_now = meal_data.TDDPUMP;
         var tdd_pump = ( tdd_pump_now / (now / 24));
         var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
         console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
         var smbTDD = 0;
         if (tdd_pump < (0.3 * tdd7) && bg > 110) {
-        TDD = (tdd7 * 0.6) + (tdd_pump * 0.4);
-        smbTDD = 1;
-        console.log("tdd_pump is lesser than 30% tdd7");
-        } else if (tdd_pump < (0.5 * tdd7)){
-            TDD = (tdd7 * 0.2) + (tdd_pump * 0.8);
+            TDD = (tdd7 * 0.6) + (tdd_pump * 0.4);
             smbTDD = 1;
-            console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
-        }else{
+            console.log("tdd_pump is lesser than 30% tdd7");
+            } else if (tdd_pump < (0.5 * tdd7)){
+                TDD = (tdd7 * 0.2) + (tdd_pump * 0.8);
+                smbTDD = 1;
+                console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
+            }else{
 
-            console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
-        }
-var statTirBelow = meal_data.StatLow7;
-var statinrange = meal_data.StatInRange7;
-var currentTIRLow = meal_data.currentTIRLow;
-var CurrentTIRinRange = meal_data.currentTIRRange;
-var CurrentTIRAbove = meal_data.currentTIRAbove;
-var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
-        var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
+                console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
+            }
+
+
+
+        var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var iTimeProfile = profile.iTime;
+
+        if (meal_data.carbs) {
+                var lastCarbAgebis = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime ) / 60000);
+                //console.error(meal_data.lastCarbTime, lastCarbAge);
+             var iTime = lastCarbAgebis;
+             console.log("lastCarbAgebis =  iTime : "+iTime);
+
+            }
+
+
         if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && bg < 170 || smbTDD === 1 && bg < 170 ){iTimeProfile *=0.7; }
 
-
+        var statTirBelow = meal_data.StatLow7;
+        var statinrange = meal_data.StatInRange7;
+        var currentTIRLow = meal_data.currentTIRLow;
+        var CurrentTIRinRange = meal_data.currentTIRRange;
+        var CurrentTIRAbove = meal_data.currentTIRAbove;
+        var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
 
         if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0 || smbTDD === 0 && iTime < iTimeProfile && tdd_pump_now >= tdd7*0.3 && CurrentTIR_70_140_Above > 20 ){
             TDD*=1.2;
@@ -404,16 +413,6 @@ var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
     //"+variable_sens+" ; ");
     //console.log("TDDnow : "+TDDnow+";");
     sens = variable_sens;
-    }else{
-    sens = profile.sens;
-    var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusCorr ) / 60000,1);
-    var iTimeProfile = profile.iTime;
-    if (iTime < iTimeProfile && glucose_status.delta > 5 ){
-    sens = profile_sens / 2;
-    }
-    console.log("TDD is undefine or null, ISF will only change during the iTime windows : "+sens);
-
-    }
 
     //var eRatio = round((bg/0.16)/sens,2);
     var eRatio = round(sens / 13.2);
@@ -423,8 +422,7 @@ var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
     var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
     var TriggerPredSMB = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
 
-    var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
-    var iTimeProfile = profile.iTime;
+
     if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && bg < 170 || smbTDD === 1 && bg < 170 ){iTimeProfile *=0.7; }
 
     var csf = profile.sens / profile.carb_ratio ;
@@ -437,7 +435,7 @@ var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
     var REBG60 = round(EBG60 / min_bg,2);
     var EBX = Math.max(0,round(Math.min(EBG,EBG60),2));
     var REBX = Math.max(0.5,round(Math.min(REBG60,REBG),2));
-    //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastboluscorr ) / 60000,1);
+
 
 
     if (iTime < iTimeProfile && glucose_status.delta > 2) {
@@ -716,7 +714,8 @@ var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
         // so <= 90g is assumed to take 3h, and 120g=4h
         remainingCATimeMin = Math.max(remainingCATimeMin, meal_data.mealCOB/assumedCarbAbsorptionRate);
         var lastCarbAge = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime ) / 60000);
-        //console.error(meal_data.lastCarbTime, lastCarbAge);
+        console.error(meal_data.lastCarbTime, lastCarbAge);
+
 
         var fractionCOBAbsorbed = ( meal_data.carbs - meal_data.mealCOB ) / meal_data.carbs;
         remainingCATime = remainingCATimeMin + 1.5 * lastCarbAge/60;
@@ -956,7 +955,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log("AIMI V7 12/11/2021");
+                console.log("AIMI V8 14/11/2021");
                 console.log("------------------------------");
                 console.log("Pump extrapolated TDD = "+tdd_pump);
                 console.log("tdd7 using 7-day average "+tdd7);
@@ -1354,10 +1353,12 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 console.error("IOB",iob_data.iob,"> COB",meal_data.mealCOB+"; mealInsulinReq =",mealInsulinReq);
                 if (profile.maxUAMSMBBasalMinutes) {
                     console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"basal:",basal);
-                    if (iTime < iTimeProfile && smbTDD === 0 && tdd_pump_now >= tdd7*0.3){
-                    maxBolus = round(basal * profile.iTime_MaxBolus_minutes / 60 ,1);
-                    }else if (iTime < iTimeProfile && TriggerPredSMB < 450 && smbTDD === 0 && tdd_pump_now >= tdd7*0.3){
-                    maxBolus = round(basal * (profile.iTime_MaxBolus_minutes/2) / 60 ,1);
+                    if (meal_data.carbs > 30 && iTime < iTimeProfile || iTime < iTimeProfile ){
+                        if (smbTDD === 0 && tdd_pump_now >= tdd7*0.3){
+                            maxBolus = round(basal * profile.iTime_MaxBolus_minutes / 60 ,1);
+                        }else if (TriggerPredSMB < 450 && smbTDD === 0 && tdd_pump_now >= tdd7*0.3){
+                            maxBolus = round(basal * (profile.iTime_MaxBolus_minutes/2) / 60 ,1);
+                        }
                     }else{
                     maxBolus = round( basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
                     }
@@ -1375,17 +1376,19 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var maxBolusTT = maxBolus;
             var roundSMBTo = 1 / profile.bolus_increment;
             var smb_ratio = determine_varSMBratio(profile, bg, target_bg);
-            if (iTime >= 26 && iTime <= 30 && glucose_status.delta >= 5){
-            var microBolus =  profile.iTime_Bolus;
-            maxBolusTT = profile.iTime_Bolus;
-            }else if (iTime < iTimeProfile/2 && smbTDD === 0 && tdd_pump_now >= tdd7*0.3){
-            insulinReq = insulinReq + InsulinTDD;
-            var microBolus = Math.min(insulinReq*smb_ratio*insulinReqPCT, maxBolusTT);
-            }else if ( iTime < iTimeProfile && iTime > iTimeProfile/2 && smbTDD ===0 && !profile.temptargetSet && tdd_pump_now >= tdd7*0.3){
-            var microBolus = Math.min(insulinReq*smb_ratio*insulinReqPCT, maxBolus);
-            }else if(iTime < iTimeProfile && smbTDD === 1 || profile.temptargetSet && target_bg > normalTarget && iTime < iTimeProfile || iTime < iTimeProfile && tdd_pump_now <= tdd7*0.3 ){
-            insulinReqPCT = 0.8;
-            var microBolus = Math.min(insulinReq*insulinReqPCT, maxBolusTT);
+            if (meal_data.carbs > 30 && iTime < iTimeProfile || iTime < iTimeProfile ){
+                if (iTime >= 26 && iTime <= 30 && glucose_status.delta >= 5 ){
+                var microBolus =  profile.iTime_Bolus;
+                maxBolusTT = profile.iTime_Bolus;
+                }else if (iTime < iTimeProfile/2 && smbTDD === 0 && tdd_pump_now >= tdd7*0.3){
+                insulinReq = insulinReq + InsulinTDD;
+                var microBolus = Math.min(insulinReq*smb_ratio*insulinReqPCT, maxBolusTT);
+                }else if ( iTime < iTimeProfile && iTime > iTimeProfile/2 && smbTDD ===0 && !profile.temptargetSet && tdd_pump_now >= tdd7*0.3){
+                var microBolus = Math.min(insulinReq*smb_ratio*insulinReqPCT, maxBolus);
+                }else if(smbTDD === 1 || profile.temptargetSet && target_bg > normalTarget && iTime < iTimeProfile || iTime < iTimeProfile && tdd_pump_now <= tdd7*0.3 ){
+                insulinReqPCT = 0.8;
+                var microBolus = Math.min(insulinReq*insulinReqPCT, maxBolusTT);
+                }
             }else{
             var microBolus = Math.min(insulinReq*smb_ratio, maxBolusTT);
             }
