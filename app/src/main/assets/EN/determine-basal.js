@@ -1503,6 +1503,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReqPct = 0;
                 UAMBoostReason += ", TIRLow: No SMB";
             }
+            // restrict SMB for ISF stronger than sens_max
+            insulinReqPct = ( future_sens <= sens_max  && !UAMBoosted ? 0 : insulinReqPct);
+
             // insulinReqPct = (lastBolusAge > EN_SMBInterval ? insulinReqPct : 0);
             // TBR only when lower today not for UAMBoost
             // insulinReqPct = ( TIRBelow < 1 && !UAMBoosted ? 0 : insulinReqPct);
