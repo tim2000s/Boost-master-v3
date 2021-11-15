@@ -372,6 +372,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //console.error("CR:", );
 
     var ISFBoost = 1; // default is no ISFBoost
+    var sens_max = 72; // ISF 4
     // TIR 1 (now),3 & 7 day average
     var TIR7Below = meal_data.TIR7Below, TIR7InRange = meal_data.TIR7InRange, TIR7Above = meal_data.TIR7Above;
     var TIR3Below = meal_data.TIR3Below, TIR3InRange = meal_data.TIR3InRange, TIR3Above = meal_data.TIR3Above;
@@ -1416,6 +1417,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // space out the SMB for ISFBoost when boosting after a UAMBoost which should be bigger than ISFBoost bolus
                     insulinReqPct = ( SMBTime <=7 && meal_data.lastSMBUnits > EatingNowMaxSMB ? 0 : insulinReqPct);
+                    // restrict SMB for ISF stronger than sens_max
+                    insulinReqPct = ( future_sens <= sens_max ? 0 : insulinReqPct);
 
                     // if we are in the iTime window and climbing apply TBR if low insulinReq
                     if ( insulinReq <0 && eventualBG > EatingNowBGThreshold && iTimeOK ) {
