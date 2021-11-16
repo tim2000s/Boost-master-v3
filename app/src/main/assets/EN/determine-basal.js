@@ -1364,7 +1364,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // set UAMBoost Bolus size from the profile based on the window
                 // var UAMBoost_bolus = (UAMBoostMAX ? profile.UAMBoostMAX_Bolus : profile.UAMBoost_Bolus);
                 var UAMBoost_bolus = ((TDD * 0.4) / 24 );
-                UAMBoost_bolus *= (UAMBoostMAX ? profile.UAMBoostMAX_Bolus_Scale : profile.UAMBoost_Bolus_Scale);
+                var UAMBoost_bolus_scale = (UAMBoostMAX ? profile.UAMBoostMAX_Bolus_Scale : profile.UAMBoost_Bolus_Scale);
+                UAMBoost_bolus *= UAMBoost_bolus_scale;
                 //var boostInsulinReq = ((TDD * 0.4) / 24 );
                 // default is UAMBoost is NOT OK. Sensitive threshold is low normal is high
                 var UAMBoostOK = false, UAMBoost_threshold_low = 1.2, UAMBoost_threshold_high = 2;
@@ -1480,7 +1481,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== INSULIN BOOST  ==============
-                UAMBoostReason = "EN: UAM" + (UAMBoostMAX ? "-MAX" : "") + (UAMBoost > UAMBoost_threshold && UAMBoosted ? ">" + round(UAMBoost_threshold,1) : "") + "=" + UAMBoost + (UAMBoosted ? "*" + round (UAMBoost_bolus,2) :"") + UAMBoostReason;
+                UAMBoostReason = "EN: UAM" + (UAMBoostMAX ? "-MAX" : "") + (UAMBoost > UAMBoost_threshold && UAMBoosted ? "*" + UAMBoost_bolus_scale + ">" + round(UAMBoost_threshold,1) : "") + "=" + UAMBoost + (UAMBoosted ? "*" + round (UAMBoost_bolus,2) :"") + UAMBoostReason;
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
                 insulinReqPct = round(insulinReqPct,2);
