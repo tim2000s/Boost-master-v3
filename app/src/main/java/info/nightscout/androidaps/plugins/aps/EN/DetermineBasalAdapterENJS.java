@@ -336,7 +336,7 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("UAMBoost_SMBLimit", sp.getDouble(R.string.key_eatingnow_uamboost_smblimit, 0) * profile.getPercentage()/100);
         mProfile.put("iTimeWindow", sp.getInt(R.string.key_eatingnow_itimeminutes, 15));
 
-        mProfile.put("UAMBoostMAX_Bolus", sp.getDouble(R.string.key_eatingnow_uamboostmax_bolus, 0));
+        mProfile.put("UAMBoostMAX_Bolus_Scale", sp.getDouble(R.string.key_eatingnow_uamboostmax_bolus_scale, 1));
         mProfile.put("UAMBoostMAX_SMBLimit", sp.getDouble(R.string.key_eatingnow_uamboostmax_smblimit, 0)* profile.getPercentage()/100);
         mProfile.put("iTimeMaxWindow", sp.getInt(R.string.key_eatingnow_itime1minutes, 15));
 

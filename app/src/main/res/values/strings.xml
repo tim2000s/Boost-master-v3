@@ -1398,7 +1398,7 @@
     <string name="key_eatingnow_uamboost_bolus_scale">key_eatingnow_uamboost_bolus_scale</string>
     <string name="key_eatingnow_uamboost_smblimit">key_eatingnow_uamboost_smblimit</string>
     <string name="key_eatingnow_itimeminutes">key_eatingnow_itimeminutes</string>
-    <string name="key_eatingnow_uamboostmax_bolus">key_eatingnow_uamboostmax_bolus</string>
+    <string name="key_eatingnow_uamboostmax_bolus_scale">key_eatingnow_uamboostmax_bolus_scale</string>
     <string name="key_eatingnow_uamboostmax_smblimit">key_eatingnow_uamboostmax_smblimit</string>
     <string name="key_eatingnow_itime1minutes">key_eatingnow_itime1minutes</string>
     <string name="key_eatingnow_isfboost_smblimit">key_eatingnow_isfboost_smblimit</string>
