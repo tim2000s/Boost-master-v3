@@ -1395,7 +1395,7 @@
     <string name="key_eatingnow_bgthreshold">key_eatingnow_bgthreshold</string>
     <string name="key_eatingnow_preboluspct">key_eatingnow_preboluspct</string>
     <string name="key_eatingnow_insulinreqpct">key_eatingnow_insulinreqpct</string>
-    <string name="key_eatingnow_uamboost_bolus">key_eatingnow_uamboost_bolus</string>
+    <string name="key_eatingnow_uamboost_bolus_scale">key_eatingnow_uamboost_bolus_scale</string>
     <string name="key_eatingnow_uamboost_smblimit">key_eatingnow_uamboost_smblimit</string>
     <string name="key_eatingnow_itimeminutes">key_eatingnow_itimeminutes</string>
     <string name="key_eatingnow_uamboostmax_bolus">key_eatingnow_uamboostmax_bolus</string>

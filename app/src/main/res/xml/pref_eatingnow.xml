@@ -327,10 +327,10 @@
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                     android:defaultValue="0"
                     android:inputType="numberDecimal"
-                    android:key="@string/key_eatingnow_uamboost_bolus"
-                    android:title="UAMBoost Bolus"
-                    android:dialogMessage="Bolus to boost for BGL rises\n0 will not boost"
-                    validate:floatmaxNumber="5.0"
+                    android:key="@string/key_eatingnow_uamboost_bolus_scale"
+                    android:title="UAMBoost Bolus Scale"
+                    android:dialogMessage="Scale Bolus for boost for BGL rises\nBelow 1 will not boost"
+                    validate:floatmaxNumber="3.0"
                     validate:floatminNumber="0"
                     validate:testType="floatNumericRange"/>
 
