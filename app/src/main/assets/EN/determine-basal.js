@@ -1362,8 +1362,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoostMAX = (iTimeMax < iTimeMaxWindow);
                 console.log("UAMBoostMAX:"+ UAMBoostMAX);
                 // set UAMBoost Bolus size from the profile based on the window
-                // var UAMBoost_bolus = (UAMBoostMAX ? profile.UAMBoostMAX_Bolus : profile.UAMBoost_Bolus);
-                var UAMBoost_bolus = (UAMBoostMAX ? profile.UAMBoostMAX_Bolus : ((TDD * 0.4) / 24 ));
+                 var UAMBoost_bolus = (UAMBoostMAX ? profile.UAMBoostMAX_Bolus : profile.UAMBoost_Bolus);
+                //var UAMBoost_bolus = (UAMBoostMAX ? profile.UAMBoostMAX_Bolus : ((TDD * 0.4) / 24 ));
                 //var boostInsulinReq = ((TDD * 0.4) / 24 );
                 // default is UAMBoost is NOT OK. Sensitive threshold is low normal is high
                 var UAMBoostOK = false, UAMBoost_threshold_low = 1.2, UAMBoost_threshold_high = 2;
