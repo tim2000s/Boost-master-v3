@@ -408,6 +408,16 @@
                     validate:floatminNumber="0.0"
                     validate:testType="floatNumericRange"/>
 
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="0.0"
+                    android:inputType="numberDecimal"
+                    android:key="@string/key_eatingnow_isf_max"
+                    android:title="ISF Max"
+                    android:dialogMessage="Limit for maximum ISF when variable ISF is being used"
+                    validate:floatmaxNumber="360"
+                    validate:floatminNumber="0.0"
+                    validate:testType="floatNumericRange"/>
+
             </PreferenceCategory>
 
         </androidx.preference.PreferenceScreen>

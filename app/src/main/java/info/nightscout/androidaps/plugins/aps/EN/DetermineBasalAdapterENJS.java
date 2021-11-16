@@ -283,13 +283,8 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("sens", profile.getIsfMgdl());
         mProfile.put("max_daily_safety_multiplier", sp.getInt(R.string.key_openapsama_max_daily_safety_multiplier, 3));
         mProfile.put("current_basal_safety_multiplier", sp.getDouble(R.string.key_openapsama_current_basal_safety_multiplier, 4d));
-
-        //mProfile.put("high_temptarget_raises_sensitivity", SP.getBoolean(R.string.key_high_temptarget_raises_sensitivity, BoostDefaults.high_temptarget_raises_sensitivity));
         mProfile.put("high_temptarget_raises_sensitivity", true);
-        //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, BoostDefaults.low_temptarget_lowers_sensitivity));
         mProfile.put("low_temptarget_lowers_sensitivity", true);
-
-
         mProfile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, ENDefaults.sensitivity_raises_target));
         mProfile.put("resistance_lowers_target", sp.getBoolean(R.string.key_resistance_lowers_target, ENDefaults.resistance_lowers_target));
         mProfile.put("adv_target_adjustments", ENDefaults.adv_target_adjustments);
@@ -346,6 +341,7 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("iTimeMaxWindow", sp.getInt(R.string.key_eatingnow_itime1minutes, 15));
 
         mProfile.put("ISFBoost_SMBLimit", sp.getDouble(R.string.key_eatingnow_isfboost_smblimit, 0));
+        mProfile.put("ISF_Max", sp.getDouble(R.string.key_eatingnow_isf_max, profile.getIsfMgdl()));
         mProfile.put("EatingNowBGThreshold", sp.getDouble(R.string.key_eatingnow_bgthreshold, 0));
         mProfile.put("EatingNowPrebolusPct", sp.getDouble(R.string.key_eatingnow_preboluspct, 0.1));
         // patches ==== END
