@@ -1408,6 +1408,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // allow 100% insulinReqPct when initial rise is known to go higher EatingNowBGThreshold
                     insulinReqPct = (eventualBG > EatingNowBGThreshold ? 1 : insulinReqPct);
+                    // TBR only when preBolused
+                    insulinReqPct = (preBolused ? 0 : insulinReqPct);
                     UAMBoosted = true;
                     //EN_SMBInterval = profile.SMBInterval; // allow immediate SMB for UAMBoost
                 }
@@ -1423,13 +1425,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = ( SMBTime <=7 && meal_data.lastSMBUnits > EatingNowMaxSMB ? 0 : insulinReqPct);
                     // restrict SMB for ISF stronger than ISF_Max
                     insulinReqPct = ( future_sens <= ISF_Max ? 0 : insulinReqPct);
-
-                    // if we are in the iTime window and climbing apply TBR if low insulinReq
-                    if ( insulinReq <0 && eventualBG > EatingNowBGThreshold && iTimeOK ) {
-                        insulinReqBoost = profile.current_basal;
-                        insulinReqPct = 0;
-                        UAMBoostReason += ", iTime TBR";
-                    }
+                    // TBR only when preBolused
+                    insulinReqPct = (preBolused ? 0 : insulinReqPct);
+//                    // if we are in the iTime window and climbing apply TBR if low insulinReq
+//                    if ( insulinReq <0 && eventualBG > EatingNowBGThreshold && iTimeOK ) {
+//                        insulinReqBoost = profile.current_basal;
+//                        insulinReqPct = 0;
+//                        UAMBoostReason += ", iTime TBR";
+//                    }
 
                     ISFBoosted = true;
                 }
