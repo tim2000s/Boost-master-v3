@@ -1409,7 +1409,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // allow 100% insulinReqPct when initial rise is known to go higher EatingNowBGThreshold
                     insulinReqPct = (eventualBG > EatingNowBGThreshold ? 1 : insulinReqPct);
                     // TBR only when preBolused
-                    insulinReqPct = (preBolused ? 0 : insulinReqPct);
+                    //insulinReqPct = (preBolused ? 0 : insulinReqPct);
                     UAMBoosted = true;
                     //EN_SMBInterval = profile.SMBInterval; // allow immediate SMB for UAMBoost
                 }
@@ -1426,7 +1426,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // restrict SMB for ISF stronger than ISF_Max
                     insulinReqPct = ( future_sens <= ISF_Max ? 0 : insulinReqPct);
                     // TBR only when preBolused
-                    insulinReqPct = (preBolused ? 0 : insulinReqPct);
+                    //insulinReqPct = (preBolused ? 0 : insulinReqPct);
 //                    // if we are in the iTime window and climbing apply TBR if low insulinReq
 //                    if ( insulinReq <0 && eventualBG > EatingNowBGThreshold && iTimeOK ) {
 //                        insulinReqBoost = profile.current_basal;
@@ -1444,6 +1444,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = EatingNowMaxSMB; // use EN SMB Limit
                     // if there has been a prebolus limit the SMB
                     EatingNowMaxSMB = (preBolused ? maxBolus : EatingNowMaxSMB);
+                    // restrict SMB to the same as max TBR when ISF is strong
+                    EatingNowMaxSMB = ( future_sens <= ISF_Max && !UAMBoosted ? Math.min(maxSafeBasal,profile.current_basal*4)/12 : EatingNowMaxSMB);
                 } else {
                     EatingNowMaxSMB = Math.min(maxBolus,EatingNowMaxSMB); // use the most restrictive
                 }
@@ -1511,8 +1513,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoostReason += ", TIRLow: No SMB";
             }
             // restrict SMB for ISF stronger than ISF_Max
-            insulinReqPct = ( future_sens <= ISF_Max  && !UAMBoosted ? 0 : insulinReqPct);
-
+            // insulinReqPct = ( future_sens <= ISF_Max  && !UAMBoosted ? 0 : insulinReqPct);
+            // restrict SMB to the same as max TBR when ISF is strong
+            maxBolus = ( future_sens <= ISF_Max && !UAMBoosted ? Math.min(maxSafeBasal,profile.current_basal*4)/12 : maxBolus);
             // insulinReqPct = (lastBolusAge > EN_SMBInterval ? insulinReqPct : 0);
             // TBR only when lower today not for UAMBoost
             // insulinReqPct = ( TIRBelow < 1 && !UAMBoosted ? 0 : insulinReqPct);
