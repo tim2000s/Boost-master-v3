@@ -51,8 +51,7 @@ open class FullUAMPlugin @Inject constructor(
     .pluginName(R.string.fulluam)
     .shortName(R.string.fulluam_shortname)
     .preferencesId(R.xml.pref_fulluam)
-    .description(R.string.description_fulluam)
-    .setDefault(),
+    .description(R.string.description_fulluam),
     aapsLogger, resourceHelper, injector
 ), APS, Constraints {
 
