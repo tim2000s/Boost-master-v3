@@ -87,10 +87,12 @@ import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.min
 import info.nightscout.androidaps.data.IobTotal
+import info.nightscout.androidaps.data.MealData
 import info.nightscout.androidaps.database.entities.Bolus
 import info.nightscout.androidaps.utils.*
 import info.nightscout.androidaps.utils.stats.TirCalculator
 import info.nightscout.androidaps.utils.T
+
 
 
 class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickListener {
@@ -130,6 +132,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     @Inject lateinit var overviewPlugin: OverviewPlugin
     @Inject lateinit var automationPlugin: AutomationPlugin
     @Inject lateinit var bgQualityCheckPlugin: BgQualityCheckPlugin
+
 
     private val disposable = CompositeDisposable()
     public val millsToThePast = T.hours(4).msecs()
@@ -844,6 +847,8 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTime = bolus.timestamp }
         var iTimeSettings = (SafeParse.stringToDouble(sp.getString(R.string.key_iTime, "180")))
         var iTimeUpdate = (now - lastBolusNormalTime) / 60000
+
+        var lastCarbTime = (now - mealData.lastCarbTime) / 6000
         val StatTIR = TirCalculator(rh, profileFunction, dateUtil,repository)
         val statinrange = StatTIR.averageTIR(StatTIR.calculate(7,70.0,180.0)).inRangePct()
         val statTirBelow = StatTIR.averageTIR(StatTIR.calculate(7,70.0,180.0)).belowPct()
@@ -851,6 +856,9 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         val currentTIRRange = StatTIR.averageTIR(StatTIR.calculateDaily(80.0,180.0)).inRangePct()
         val currentTIRAbove = StatTIR.averageTIR(StatTIR.calculateDaily(80.0,180.0)).abovePct()
         val CurrentTIR_70_140_Above = StatTIR.averageTIR(StatTIR.calculateDaily(70.0,140.0)).abovePct()
+        if (mealData.carbs != null){
+            iTimeUpdate = lastCarbTime
+        }
         if (iTimeUpdate < iTimeSettings && currentTIRRange <= 96 && currentTIRAbove <= 1 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && CurrentTIR_70_140_Above <= 20) run {
             iTimeSettings *=  0.7
         }
