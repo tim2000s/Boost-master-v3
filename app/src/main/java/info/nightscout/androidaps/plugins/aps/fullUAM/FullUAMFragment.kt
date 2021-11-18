@@ -32,7 +32,7 @@ class FullUAMFragment : DaggerFragment() {
     @Inject lateinit var aapsLogger: AAPSLogger
     @Inject lateinit var aapsSchedulers: AapsSchedulers
     @Inject lateinit var rxBus: RxBus
-    @Inject lateinit var resourceHelper: ResourceHelper
+    @Inject lateinit var rh: ResourceHelper
     @Inject lateinit var fabricPrivacy: FabricPrivacy
     @Inject lateinit var fullUAMPlugin: FullUAMPlugin
     @Inject lateinit var dateUtil: DateUtil
@@ -59,7 +59,6 @@ class FullUAMFragment : DaggerFragment() {
     }
 
     @Synchronized
-    @kotlin.ExperimentalStdlibApi
     override fun onResume() {
         super.onResume()
         disposable += rxBus
@@ -91,7 +90,6 @@ class FullUAMFragment : DaggerFragment() {
     }
 
     @Synchronized
-    @kotlin.ExperimentalStdlibApi
     fun updateGUI() {
         if (_binding == null) return
         fullUAMPlugin.lastAPSResult?.let { lastAPSResult ->
@@ -103,7 +101,7 @@ class FullUAMFragment : DaggerFragment() {
             binding.currenttemp.text = jsonFormatter.format(determineBasalAdapterUAMJS.currentTempParam)
             try {
                 val iobArray = JSONArray(determineBasalAdapterUAMJS.iobDataParam)
-                binding.iobdata.text = TextUtils.concat(resourceHelper.gs(R.string.array_of_elements, iobArray.length()) + "\n", jsonFormatter.format(iobArray.getString(0)))
+                binding.iobdata.text = TextUtils.concat(rh.gs(R.string.array_of_elements, iobArray.length()) + "\n", jsonFormatter.format(iobArray.getString(0)))
             } catch (e: JSONException) {
                 aapsLogger.error(LTag.APS, "Unhandled exception", e)
                 @SuppressLint("SetTextI18n")
