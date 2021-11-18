@@ -353,7 +353,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         else {
             console.error("Time now is "+now+"; ");
         }
-    if ( meal_data.TDDAIMI7 && meal_data.TDDPUMP ){
+    if ( meal_data.TDDAIMI7 && meal_data.TDDPUMP && meal_data.StatInRange7 ){
         var statTirBelow = meal_data.StatLow7;
         var statinrange = meal_data.StatInRange7;
         var currentTIRLow = meal_data.currentTIRLow;
@@ -946,7 +946,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     console.error("UAM Impact:",uci,"mg/dL per 5m; UAM Duration:",UAMduration,"hours");
     console.log("EventualBG is" +eventualBG+" ;");
-    if ( meal_data.TDDAIMI7 && meal_data.TDDPUMP ){
+    if ( meal_data.TDDAIMI7 && meal_data.TDDPUMP && meal_data.StatInRange7 ){
         //var future_sens = ( 277700 / (TDD * eventualBG));
         //var future_sens = round(future_sens,1);
         if( glucose_status.delta >= 0 && iTime < iTimeProfile ) {
@@ -970,7 +970,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
         console.log("------------------------------");
                 console.log("AIMI V8 15/11/2021");
                 console.log("------------------------------");
-                if ( meal_data.TDDAIMI7 && meal_data.TDDPUMP ){
+                if ( meal_data.TDDAIMI7 && meal_data.TDDPUMP && meal_data.StatInRange7 ){
                 console.log("Pump extrapolated TDD = "+tdd_pump);
                 console.log("tdd7 using 7-day average "+tdd7);
                 console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD);}
@@ -990,7 +990,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 console.log("Adjusting basal from "+profile_current_basal+" to "+basal);
                 console.log("Future state sensitivity is " +future_sens+" based on eventual bg");
                 console.log("-------------");
-                if ( meal_data.TDDAIMI7 && meal_data.TDDPUMP ){
+                if ( meal_data.TDDAIMI7 && meal_data.TDDPUMP && meal_data.StatInRange7 ){
                     if (iTime <= iTimeProfile){
                     console.log("iTime : "+iTime);
                     console.log("iTimeProfile : "+iTimeProfile);
@@ -1369,7 +1369,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 console.error("IOB",iob_data.iob,"> COB",meal_data.mealCOB+"; mealInsulinReq =",mealInsulinReq);
                 if (profile.maxUAMSMBBasalMinutes) {
                     console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"basal:",basal);
-                    if (meal_data.TDDAIMI7 && meal_data.TDDPUMP ){
+                    if (meal_data.TDDAIMI7 && meal_data.TDDPUMP && meal_data.StatInRange7){
                     if (meal_data.carbs > 30 && iTime < iTimeProfile || iTime < iTimeProfile ){
                         if (smbTDD === 0 && tdd_pump_now >= tdd7*0.3){
                             maxBolus = round(basal * profile.iTime_MaxBolus_minutes / 60 ,1);
@@ -1396,7 +1396,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var maxBolusTT = maxBolus;
             var roundSMBTo = 1 / profile.bolus_increment;
             var smb_ratio = determine_varSMBratio(profile, bg, target_bg);
-        if (meal_data.TDDAIMI7 && meal_data.TDDPUMP ){
+        if (meal_data.TDDAIMI7 && meal_data.TDDPUMP && meal_data.StatInRange7){
             if (meal_data.carbs > 30 && iTime < iTimeProfile || iTime < iTimeProfile ){
                 if (meal_data.carbs && iTime >= 15 && iTime <= 19){
                 var microBolus =  profile.iTime_Bolus;
@@ -1422,7 +1422,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             microBolus = Math.floor(microBolus*roundSMBTo)/roundSMBTo;
             //var microBolus = Math.floor(Math.min(insulinReq * insulinReqPCT,maxBolusTT)*roundSMBTo)/roundSMBTo;
             // calculate a long enough zero temp to eventually correct back up to target
-    if (meal_data.TDDAIMI7 && meal_data.TDDPUMP ){
+    if (meal_data.TDDAIMI7 && meal_data.TDDPUMP && meal_data.StatInRange7){
             if (iTime < iTimeProfile ){
             console.log("--- if iTime < "+iTimeProfile+" -----");
                             console.log("TriggerPredSMB : "+TriggerPredSMB);

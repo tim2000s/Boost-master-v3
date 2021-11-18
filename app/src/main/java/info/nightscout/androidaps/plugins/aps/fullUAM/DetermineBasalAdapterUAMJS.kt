@@ -289,7 +289,6 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
 
         tddAIMI = TddCalculator(aapsLogger,rh,activePlugin,profileFunction,dateUtil,iobCobCalculator, repository)
         this.mealData.put("TDDAIMI7", tddAIMI!!.averageTDD(tddAIMI!!.calculate(7)).totalAmount)
-        this.mealData.put("TDDAIMI1", tddAIMI!!.averageTDD(tddAIMI!!.calculate(1)).totalAmount)
         this.mealData.put("TDDPUMP", tddAIMI!!.calculateDaily().totalAmount)
         //this.mealData.put("TDDPUMP", danaPump.dailyTotalUnits)
         StatTIR = TirCalculator(rh,profileFunction,dateUtil,repository)
