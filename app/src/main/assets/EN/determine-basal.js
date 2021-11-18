@@ -1424,7 +1424,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // space out the SMB for ISFBoost when boosting after a UAMBoost which should be bigger than ISFBoost bolus
                     insulinReqPct = ( SMBTime <=7 && meal_data.lastSMBUnits > EatingNowMaxSMB ? 0 : insulinReqPct);
                     // restrict SMB for ISF stronger than ISF_Max
-                    insulinReqPct = ( future_sens <= ISF_Max ? 0 : insulinReqPct);
+                    //insulinReqPct = ( future_sens <= ISF_Max ? 0 : insulinReqPct);
                     // TBR only when preBolused
                     //insulinReqPct = (preBolused ? 0 : insulinReqPct);
 //                    // if we are in the iTime window and climbing apply TBR if low insulinReq
