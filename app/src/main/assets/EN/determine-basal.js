@@ -1515,7 +1515,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // restrict SMB for ISF stronger than ISF_Max
             // insulinReqPct = ( future_sens <= ISF_Max  && !UAMBoosted ? 0 : insulinReqPct);
             // restrict SMB to the same as max TBR when ISF is strong
-            maxBolus = ( future_sens <= ISF_Max && !UAMBoosted ? Math.min(maxSafeBasal,profile.current_basal*4)/12 : maxBolus);
+            maxBolus = round(( future_sens <= ISF_Max && !UAMBoosted ? Math.min(maxSafeBasal,profile.current_basal*4)/12 : maxBolus),1);
             // insulinReqPct = (lastBolusAge > EN_SMBInterval ? insulinReqPct : 0);
             // TBR only when lower today not for UAMBoost
             // insulinReqPct = ( TIRBelow < 1 && !UAMBoosted ? 0 : insulinReqPct);
