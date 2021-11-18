@@ -35,6 +35,7 @@ import java.io.IOException
 import java.lang.reflect.InvocationTargetException
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
+import info.nightscout.androidaps.utils.stats.TirCalculator
 
 
 class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: ScriptReader, private val injector: HasAndroidInjector) {
@@ -42,7 +43,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
     @Inject lateinit var aapsLogger: AAPSLogger
     @Inject lateinit var constraintChecker: ConstraintChecker
     @Inject lateinit var sp: SP
-    @Inject lateinit var resourceHelper: ResourceHelper
+    @Inject lateinit var rh: ResourceHelper
     @Inject lateinit var profileFunction: ProfileFunction
     @Inject lateinit var iobCobCalculator: IobCobCalculator
     @Inject lateinit var activePlugin: ActivePlugin
@@ -60,7 +61,10 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
     private var currentTime: Long = 0
     private var saveCgmSource = false
     private var lastBolusNormalTime: Long = 0
-    private val millsToThePast = T.hours(3).msecs()
+    private val millsToThePast = T.hours(4).msecs()
+    private var tddAIMI: TddCalculator? = null
+    private var StatTIR: TirCalculator? = null
+
     var currentTempParam: String? = null
         private set
     var iobDataParam: String? = null
@@ -203,8 +207,8 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
 //**********************************************************************************************************************************************
         //this.profile.put("high_temptarget_raises_sensitivity", false)
         //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, UAMDefaults.low_temptarget_lowers_sensitivity));
-        this.profile.put("high_temptarget_raises_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_high_temptarget_raises_sensitivity),UAMDefaults.high_temptarget_raises_sensitivity))
-        this.profile.put("low_temptarget_lowers_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_low_temptarget_lowers_sensitivity),UAMDefaults.low_temptarget_lowers_sensitivity))
+        this.profile.put("high_temptarget_raises_sensitivity",sp.getBoolean(rh.gs(R.string.key_high_temptarget_raises_sensitivity),UAMDefaults.high_temptarget_raises_sensitivity))
+        this.profile.put("low_temptarget_lowers_sensitivity",sp.getBoolean(rh.gs(R.string.key_low_temptarget_lowers_sensitivity),UAMDefaults.low_temptarget_lowers_sensitivity))
         //this.profile.put("low_temptarget_lowers_sensitivity", false)
 //**********************************************************************************************************************************************
         this.profile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, UAMDefaults.sensitivity_raises_target))
@@ -240,8 +244,15 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.profile.put("autosens_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_max, "1.2")))
 //**********************************************************************************************************************************************
         this.profile.put("UAM_InsulinReq",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_InsulinReq,"65")))
-//MP: UAM_boluscap start
-        this.profile.put("UAM_boluscap",SafeParse.stringToDouble(sp.getString(R.string.key_UAM_boluscap,"2.5")))
+        this.profile.put("iTime",SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")))
+        this.profile.put("iTime_MaxBolus_minutes",SafeParse.stringToDouble(sp.getString(R.string.key_iTime_MaxBolus_minutes,"200")))
+        this.profile.put("iTime_Bolus",SafeParse.stringToDouble(sp.getString(R.string.key_iTime_Bolus,"2")));
+        this.profile.put("smb_delivery_ratio", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio, "0.5")))
+        this.profile.put("smb_delivery_ratio_min", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio_min, "0.5")))
+        this.profile.put("smb_delivery_ratio_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio_max, "0.9")))
+        this.profile.put("smb_delivery_ratio_bg_range", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio_bg_range, "40")))
+        this.profile.put("smb_max_range_extension", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_max_range_extension, "1.2")))
+
 
 
 //**********************************************************************************************************************************************
@@ -276,11 +287,20 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.mealData.put("lastBolusNormalTime", lastBolusNormalTime)
         this.mealData.put("lastCarbTime", mealData.lastCarbTime)
 
-        val tddAIMI = TddCalculator(aapsLogger,resourceHelper,activePlugin,profileFunction,dateUtil,iobCobCalculator, repository)
-        this.mealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).totalAmount)
-        this.mealData.put("TDDAIMI1",tddAIMI.averageTDD(tddAIMI.calculate(1)).totalAmount)
-        this.mealData.put("TDDPUMP",tddAIMI.calculateDaily().totalAmount)
+        tddAIMI = TddCalculator(aapsLogger,rh,activePlugin,profileFunction,dateUtil,iobCobCalculator, repository)
+        this.mealData.put("TDDAIMI7", tddAIMI!!.averageTDD(tddAIMI!!.calculate(7)).totalAmount)
+        this.mealData.put("TDDAIMI1", tddAIMI!!.averageTDD(tddAIMI!!.calculate(1)).totalAmount)
+        this.mealData.put("TDDPUMP", tddAIMI!!.calculateDaily().totalAmount)
         //this.mealData.put("TDDPUMP", danaPump.dailyTotalUnits)
+        StatTIR = TirCalculator(rh,profileFunction,dateUtil,repository)
+        this.mealData.put("StatLow7", StatTIR!!.averageTIR(StatTIR!!.calculate(7, 70.0, 180.0)).belowPct())
+        this.mealData.put("StatInRange7", StatTIR!!.averageTIR(StatTIR!!.calculate(7, 70.0, 180.0)).inRangePct())
+        this.mealData.put("StatAbove7", StatTIR!!.averageTIR(StatTIR!!.calculate(7, 70.0, 180.0)).abovePct())
+        this.mealData.put("currentTIRLow", StatTIR!!.averageTIR(StatTIR!!.calculateDaily(80.0, 180.0)).belowPct())
+        this.mealData.put("currentTIRRange", StatTIR!!.averageTIR(StatTIR!!.calculateDaily(80.0, 180.0)).inRangePct())
+        this.mealData.put("currentTIRAbove", StatTIR!!.averageTIR(StatTIR!!.calculateDaily(80.0, 180.0)).abovePct())
+        this.mealData.put("currentTIR_70_140_Above", StatTIR!!.averageTIR(StatTIR!!.calculateDaily(70.0, 140.0)).abovePct())
+
 
 
         if (constraintChecker.isAutosensModeEnabled().value()) {

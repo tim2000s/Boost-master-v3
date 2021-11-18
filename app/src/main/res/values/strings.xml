@@ -1137,5 +1137,41 @@
     <string name="recalculated_data_used">Recalculated data used</string>
     <string name="bg_too_close">BG too close:\n%1$s\n%2$s</string>
     <string name="key_last_processed_glunovo_timestamp" translatable="false">last_processed_glunovo_timestamp</string>
+    <string name="key_fulluam_settings" translatable="false">fulluam_settings</string>
+    <string name="key_fulluam_max_iob" translatable="false">fulluam_max_iob</string>
+    <string name="fulluam_maxiob_title">Maximum total IOB AIMI can\'t go over [U]</string>
+    <string name="fulluam_maxiob_summary">This value is called Max IOB in AIMI context\nAIMI will not add more insulin if current IOB is greater than this value</string>
+
+    <string name="iTime">iTime</string>
+    <string name="iTimeSettings">iTime</string>
+    <string name="key_iTime" translatable="false">iTime</string>
+    <string name="iTime_title">iTime</string>
+    <string name="iTime_summary">iTime is the duration in minutes of the meal who authorize larger SMB. This variable was created to let child/teenager adapt this value</string>
+    <string name="key_UAM_InsulinReq" translatable="false">UAM_InsulinReq</string>
+    <string name="UAM_InsulinReq_title">insulinReq delivery percentage [%]</string>
+    <string name="UAM_InsulinReq_summary">Reduces the calculated required SMB size to the specified percentage. Example: If calculated insulin required is 1 U and fraction size is 50%, 0.5 U will be delivered.</string>
+    <string name="key_iTime_MaxBolus_minutes" translatable="false">iTime_MaxBolus_minutes</string>
+    <string name="iTime_MaxBolus_minutes_title">iTime_MaxBolus_minutes</string>
+    <string name="iTime_MaxBolus_minutes_summary">iTime give a duration of the meal who allow larger smb and maxbolus. this variable give the higher maxbolus (basal * iTime_MaxBolus_minutes / 60)</string>
+    <string name="disable_Libre_smb_restrictions">Filtering active for every sensor, Go SMB!</string>
+    <string name="key_iTime_Bolus" translatable="false">iTime_Bolus</string>
+    <string name="iTime_Bolus_title">iTime_Bolus</string>
+    <string name="iTime_Bolus_summary">Automated Bolus at 28 minutes if delta > 5</string>
+    <string name="key_openapsama_smb_delivery_ratio" translatable="false">openapsama_smb_delivery_ratio</string>
+    <string name="key_openapsama_smb_delivery_ratio_min" translatable="false">openapsama_smb_delivery_ratio_min</string>
+    <string name="key_openapsama_smb_delivery_ratio_max" translatable="false">openapsama_smb_delivery_ratio_max</string>
+    <string name="key_openapsama_smb_delivery_ratio_bg_range" translatable="false">openapsama_smb_delivery_ratio_bg_range</string>
+    <string name="key_openapsama_smb_max_range_extension" translatable="false">openapsama_smb_max_range_extension</string>
+    <string name="openapsama_smb_delivery_ratio_summary">Default value: 0.5 This is another key OpenAPS safety cap, and specifies what share of the total insulin required can be delivered as SMB. This is to prevent people from getting into dangerous territory by setting SMB requests from the caregivers phone at the same time. Increase this experimental value slowly and with caution.</string>
+    <string name="openapsama_smb_delivery_ratio_min_summary">Default value: 0.5 This is the lower end of a linearly increasing ratio rather than the fix value above.</string>
+    <string name="openapsama_smb_delivery_ratio_max_summary">Default value: 0.9 This is the upper end of a linearly increasing ratio rather than the fix value above.</string>
+    <string name="openapsama_smb_delivery_ratio_bg_range_summary">Default value: 40. The linearly increasing SMB delivery ratio is mapped to the glucose range [target_bg, target_bg+bg_range].\nAt target_bg the SMB ratio is smb_delivery_ratio_min, at target_bg+bg_range it is smb_delivery_ratio_max\nWith 0 the linearly increasing SMB ratio is disabled and the fix smb_delivery_ratio is used.</string>
+    <string name="openapsama_smb_max_range_extension_summary">Default value: 1 This is another key OpenAPS safety cap, and specifies by what factor you can exceed the regular 120 maxSMB/maxUAM minutes. Increase this experimental value slowly and with caution.</string>
+    <string name="openapsama_smb_delivery_ratio">fixed SMB delivery ratio</string>
+    <string name="openapsama_smb_delivery_ratio_min">variable SMB delivery ratio, lower end</string>
+    <string name="openapsama_smb_delivery_ratio_max">variable SMB delivery ratio, upper end</string>
+    <string name="openapsama_smb_delivery_ratio_bg_range">variable SMB delivery ratio, mapped glucose range</string>
+    <string name="openapsama_smb_max_range_extension">SMB/UAM max range extension</string>
+
 
 </resources>

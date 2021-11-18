@@ -34,10 +34,10 @@ class DetermineBasalResultSMB private constructor(injector: HasAndroidInjector) 
                 rate = (-1).toDouble()
                 duration = -1
             }
-            if (result.has("units")) {
-                smb = result.getDouble("units")
+            smb = if (result.has("units")) {
+                result.getDouble("units")
             } else {
-                smb = 0.0
+                0.0
             }
             if (result.has("targetBG")) {
                 targetBG = result.getDouble("targetBG")
