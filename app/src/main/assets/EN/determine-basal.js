@@ -325,7 +325,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // Eating Now Variables
     var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false; // nah not eating yet
     var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
-    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd) eatingnowtimeOK = true;
+    // eating now time can be delayed if there is no first bolus
+    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && meal_data.firstBolusCorr !== 0) eatingnowtimeOK = true;
     if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
 
     // If we have UAM and GhostCOB enabled with low enough IOB we will enable eating now mode
@@ -655,7 +656,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.reason = esc_text(meal_data.lastCarbs +"g COB " + cTime + "m ago, CR:"+ round(profile.carb_ratio)+" Bolusing " + round(preBolusPct*100) + "% = " + rT.units + "U");
         return rT;
     }
-    console.log ("cTime:"+cTime+", iTime:"+iTime+",lastCarbs:"+meal_data.lastCarbs);
+    console.log ("cTime:"+cTime+", iTime:"+iTime+",iTimeMax:"+ iTimeMax+",lastCarbs:"+meal_data.lastCarbs+"firstBolusCorr:"+meal_data.firstBolusCorr);
     var preBolused = (cTime-iTime)>0 && (cTime-iTime)<5;
     console.log("preBolused:" + preBolused);
     //console.error(meal_data);
@@ -1534,9 +1535,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
             durationReq = round(60*worstCaseInsulinReq / profile.current_basal);
 
-            // Nightmode TBR
+            // Nightmode TBR with first bolus check
             if (!eatingnowtimeOK && bg < EatingNowBGThreshold)  {
                 microBolus = 0;
+                UAMBoostReason += ", no SMB";
             }
 
 //            //MD: Only use minBolus if not eating now and night time OR iTime NOT OK when below BG threshold
