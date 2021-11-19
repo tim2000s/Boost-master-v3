@@ -430,7 +430,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.log("Current sensitivity is " +variable_sens+" based on current bg");
 
     // disable variable ISF with a TT or when autoISF is enabled
-    if (profile.temptargetSet || profile.use_autoisf || !eatingnowtimeOK) variable_sens = sens;
+    if (profile.temptargetSet || profile.use_autoisf) variable_sens = sens;
+    //if (profile.temptargetSet || profile.use_autoisf || !eatingnowtimeOK) variable_sens = sens;
 
     // **********************************************************************************************
     // *****                           End of automated TDD code                                *****
@@ -459,7 +460,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.log("Experimental test, EBG : "+EBG+" REBG : "+REBG+" ; ");
     console.log ("HypoPredBG = "+HypoPredBG+"; ");
 
-    if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && !profile.use_autoisf && eatingnowtimeOK) {//&& glucose_status.delta <= 0
+    //if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && !profile.use_autoisf && eatingnowtimeOK) {//&& glucose_status.delta <= 0
+    if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && !profile.use_autoisf) {//&& glucose_status.delta <= 0
         var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
         if (hypo_target <= 90) {
             hypo_target += 10;
@@ -933,7 +935,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
     }
     // disable future_sens with a TT, at night or when autoISF is enabled
-    if (profile.temptargetSet || profile.use_autoisf || !eatingnowtimeOK ) future_sens = sens;
+    if (profile.temptargetSet || profile.use_autoisf ) future_sens = sens;
+    //if (profile.temptargetSet || profile.use_autoisf || !eatingnowtimeOK ) future_sens = sens;
     future_sens = round(future_sens,1);
 
     minIOBPredBG = Math.max(39,minIOBPredBG);
@@ -1530,28 +1533,33 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
             durationReq = round(60*worstCaseInsulinReq / profile.current_basal);
 
-            //MD: Only use minBolus if not eating now and night time OR iTime NOT OK when below BG threshold
-            if (!eatingnow && !eatingnowtimeOK || !iTimeOK && bg < EatingNowBGThreshold)  {
-                // Mackwe: If SMB dose < 500% TBR would deliver within 15 mins, use TBR instead of SMB
-                var maxTbrDoseMins = 15; // minutes for the TBR
-                var maxTbrDose = round((4*profile.current_basal)*(maxTbrDoseMins/60),4); //rounding this
-                //console.error("maxTbrDose ",maxTbrDose);
-                /* Mackwe: maxTbrDose is how much insulin a 500% basal would deliver = 4x base basal.
-                Minimum SMB size would then be rounded _down_ to nearest bolus step.
-                Anything less would become TB instead. */
-                //var minBolus =  Math.round(maxTbrDose*roundSMBTo)/roundSMBTo;
-                var minBolus = Math.floor((maxTbrDose*insulinReqPct)*roundSMBTo)/roundSMBTo;
-                console.error("Minimum microbolus size determined to",minBolus,"U. ");
-                //rT.reason +=  "minBolus " + minBolus + ", ";
-                //if (microBolus < minBolus && liftISF < 1.2) {
-                if (microBolus < minBolus) {
-                    console.error("insulinReq ",insulinReq,"U will be handled by basal modulation.");
-                    rT.reason +=  "minBolus " + minBolus + ", ";
-                    microBolus = 0;
-                } else {
-                    rT.reason +=  "minBolus " + minBolus + " disabled, ";
-                }
-             }
+            // Nightmode TBR
+            if (!eatingnow && !eatingnowtimeOK && bg < EatingNowBGThreshold)  {
+                microBolus = 0;
+            }
+
+//            //MD: Only use minBolus if not eating now and night time OR iTime NOT OK when below BG threshold
+//            if (!eatingnow && !eatingnowtimeOK || !iTimeOK && bg < EatingNowBGThreshold)  {
+//                // Mackwe: If SMB dose < 500% TBR would deliver within 15 mins, use TBR instead of SMB
+//                var maxTbrDoseMins = 15; // minutes for the TBR
+//                var maxTbrDose = round((4*profile.current_basal)*(maxTbrDoseMins/60),4); //rounding this
+//                //console.error("maxTbrDose ",maxTbrDose);
+//                /* Mackwe: maxTbrDose is how much insulin a 500% basal would deliver = 4x base basal.
+//                Minimum SMB size would then be rounded _down_ to nearest bolus step.
+//                Anything less would become TB instead. */
+//                //var minBolus =  Math.round(maxTbrDose*roundSMBTo)/roundSMBTo;
+//                var minBolus = Math.floor((maxTbrDose*insulinReqPct)*roundSMBTo)/roundSMBTo;
+//                console.error("Minimum microbolus size determined to",minBolus,"U. ");
+//                //rT.reason +=  "minBolus " + minBolus + ", ";
+//                //if (microBolus < minBolus && liftISF < 1.2) {
+//                if (microBolus < minBolus) {
+//                    console.error("insulinReq ",insulinReq,"U will be handled by basal modulation.");
+//                    rT.reason +=  "minBolus " + minBolus + ", ";
+//                    microBolus = 0;
+//                } else {
+//                    rT.reason +=  "minBolus " + minBolus + " disabled, ";
+//                }
+//             }
 
             // if insulinReq > 0 but not enough for a microBolus, don't set an SMB zero temp
             if (insulinReq > 0 && microBolus < profile.bolus_increment) {
