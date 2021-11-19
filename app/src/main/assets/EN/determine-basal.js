@@ -1534,7 +1534,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             durationReq = round(60*worstCaseInsulinReq / profile.current_basal);
 
             // Nightmode TBR
-            if (!eatingnow && !eatingnowtimeOK && bg < EatingNowBGThreshold)  {
+            if (!eatingnowtimeOK && bg < EatingNowBGThreshold)  {
                 microBolus = 0;
             }
 
