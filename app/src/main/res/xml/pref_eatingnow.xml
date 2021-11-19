@@ -30,14 +30,20 @@
         <SwitchPreference
             android:defaultValue="false"
             android:key="openapsama_useautosens"
-            android:summary="Recommended disabled due to dynamic ISF"
+            android:summary="Restricted to maximum of 1 with advanced ISF"
             android:title="@string/openapsama_useautosens" />
 
         <SwitchPreference
             android:defaultValue="false"
-            android:summary="When enabled dynamic ISF will be disabled"
+            android:summary="When using advanced ISF this will be disabled"
             android:key="openapsama_useautoisf"
             android:title="@string/openapsama_useautoisf" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:summary="Use ISF based on TDD and current BG. Predictions will use ISF for eventualBG. autoISF will be disabled."
+            android:key="@string/key_eatingnow_use_advanced_isf"
+            android:title="Use advanced ISF features" />
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="1.2"

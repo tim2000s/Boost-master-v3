@@ -125,7 +125,7 @@ function enable_smb(
 function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio)
 {   // #### mod 7e: added switch fr autoISF ON/OFF
     liftISF = 1; // start with no adjustment
-    if ( !profile.use_autoisf ) {
+    if ( !profile.use_autoisf || profile.ISFBoost_enabled ) {
         console.error("autoISF disabled in Preferences");
         return sens;
     }
@@ -265,14 +265,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sensitivityRatio = sensitivityRatio * autosens_data.ratio; //now apply existing sensitivity or resistance
         // limit sensitivityRatio to profile.autosens_max
         sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
-        // restrict SR to 1 max if not using autoISF hence variable_sens may help with overnight low allowing basal to be adjusted
-        sensitivityRatio = (!profile.use_autoisf ? Math.min(sensitivityRatio,1) : sensitivityRatio);
+        // restrict SR to 1 max if using advanced ISF hence variable_sens may help with overnight low allowing basal to be adjusted
+        sensitivityRatio = (profile.ISFBoost_enabled ? Math.min(sensitivityRatio,1) : sensitivityRatio);
         sensitivityRatio = round(sensitivityRatio,2);
         console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
     } else if (typeof autosens_data !== 'undefined' && autosens_data) {
         sensitivityRatio = autosens_data.ratio;
-        // restrict SR to 1 max if not using autoISF hence variable_sens may help with overnight low allowing basal to be adjusted
-        sensitivityRatio = (!profile.use_autoisf ? Math.min(sensitivityRatio,1) : sensitivityRatio);
+        // restrict SR to 1 max if using advanced ISF hence variable_sens may help with overnight low allowing basal to be adjusted
+        sensitivityRatio = (profile.ISFBoost_enabled ? Math.min(sensitivityRatio,1) : sensitivityRatio);
         console.log("Autosens ratio: "+sensitivityRatio+"; ");
     }
     if (sensitivityRatio) {
@@ -286,7 +286,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
 
     // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
-    if (profile.temptargetSet || !profile.use_autoisf ) {
+    if (profile.temptargetSet || profile.ISFBoost_enabled ) {
         //console.log("Temp Target set, not adjusting with autosens; ");
     } else if (typeof autosens_data !== 'undefined' && autosens_data) {
         if ( profile.sensitivity_raises_target && autosens_data.ratio < 1 || profile.resistance_lowers_target && autosens_data.ratio > 1 ) {
@@ -368,7 +368,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (sens !== profile_sens) {
             console.log("Profile ISF from "+profile_sens+" to "+sens);
         } else {
-            console.log("Profile ISF unchanged by Autosens: "+sens+". TDD based ISF "+(profile.temptargetSet || profile.use_autoisf ? "disabled" : "enabled"));
+            console.log("Profile ISF unchanged by Autosens: "+sens+". TDD based ISF "+(profile.temptargetSet || !profile.ISFBoost_enabled ? "disabled" : "enabled"));
         }
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
@@ -432,8 +432,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     variable_sens = round(variable_sens,1);
     console.log("Current sensitivity is " +variable_sens+" based on current bg");
 
-    // disable variable ISF with a TT or when autoISF is enabled
-    if (profile.temptargetSet || profile.use_autoisf) variable_sens = sens;
+    // disable variable ISF with a TT or when feature is disabled
+    if (profile.temptargetSet || !profile.ISFBoost_enabled) variable_sens = sens;
     //if (profile.temptargetSet || profile.use_autoisf || !eatingnowtimeOK) variable_sens = sens;
 
     // **********************************************************************************************
@@ -464,7 +464,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.log ("HypoPredBG = "+HypoPredBG+"; ");
 
     //if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && !profile.use_autoisf && eatingnowtimeOK) {//&& glucose_status.delta <= 0
-    if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && !profile.use_autoisf) {//&& glucose_status.delta <= 0
+    if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && profile.ISFBoost_enabled) {//&& glucose_status.delta <= 0
         var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
         if (hypo_target <= 90) {
             hypo_target += 10;
@@ -482,8 +482,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sensitivityRatio = REBG;
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
         sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
-        // restrict SR to 1 max if not using autoISF hence variable_sens may help with overnight low allowing basal to be adjusted
-        sensitivityRatio = (!profile.use_autoisf ? Math.min(sensitivityRatio,1) : sensitivityRatio);
+        // restrict SR to 1 max if using advanced ISF hence variable_sens may help with overnight low allowing basal to be adjusted
+        sensitivityRatio = (profile.ISFBoost_enabled ? Math.min(sensitivityRatio,1) : sensitivityRatio);
         sensitivityRatio = round(sensitivityRatio,2);
         console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
         basal = profile.current_basal * sensitivityRatio;
@@ -939,8 +939,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         future_sens = ( 277700 / (TDD * eventualBG));
         console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
     }
-    // disable future_sens with a TT, at night or when autoISF is enabled
-    if (profile.temptargetSet || profile.use_autoisf ) future_sens = sens;
+    // disable future_sens with a TT, at night or when feature not enabled
+    if (profile.temptargetSet || !profile.ISFBoost_enabled ) future_sens = sens;
     //if (profile.temptargetSet || profile.use_autoisf || !eatingnowtimeOK ) future_sens = sens;
     future_sens = round(future_sens,1);
 
@@ -1055,7 +1055,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.reason += ", UAMpredBG " + convert_bg(lastUAMpredBG, profile); //MD Missing ;
     }
     // extra reason text
-    if (liftISF > 1) rT.reason += ", liftISF: " + round(liftISF,2); //autoISF reason
+    if (liftISF > 1) rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     rT.reason += ", TDD: " + round(TDD, 2);
     rT.reason += "; ";
