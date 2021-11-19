@@ -1510,19 +1510,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostReason += ", iTime Expired"
                 }
             }
+            // END === if we are eating now and BGL prediction is higher than normal target ===
+
             // try spacing out the SMB's with TBR if TIR has more lows today ONLY FOR ISFBOOST
-            if (TIRBelow < 1 && && TIRInRange <1 && SMBTime <=7 && !UAMBoosted ) {
+            if (TIRBelow < 1 && TIRInRange <1 && SMBTime <=7 && !UAMBoosted ) {
                 insulinReqPct = 0;
                 UAMBoostReason += ", TIRLow: skip SMB";
             }
 
-            // restrict SMB for ISF stronger than ISF_Max
-            // insulinReqPct = ( future_sens <= ISF_Max  && !UAMBoosted ? 0 : insulinReqPct);
-            // restrict SMB to the same as max TBR when ISF is strong
-            maxBolus = round(( future_sens <= ISF_Max && !UAMBoosted ? Math.min(maxSafeBasal,profile.current_basal*4)/12 : maxBolus),1);
-            // insulinReqPct = (lastBolusAge > EN_SMBInterval ? insulinReqPct : 0);
-            // TBR only when lower today not for UAMBoost
-            // insulinReqPct = ( TIRBelow < 1 && !UAMBoosted ? 0 : insulinReqPct);
+            // try spacing out the SMB's with TBR if ISF Max exceeded ONLY FOR ISFBOOST
+            if ( future_sens <= ISF_Max && SMBTime <=7 && !UAMBoosted ) {
+                insulinReqPct = 0;
+                UAMBoostReason += ", ISFMax: skip SMB";
+            }
 
             // ============  EATING NOW MODE  ==================== END ===
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
