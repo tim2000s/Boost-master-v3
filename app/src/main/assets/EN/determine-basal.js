@@ -1511,10 +1511,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
             }
             // try spacing out the SMB's with TBR if TIR has more lows today ONLY FOR ISFBOOST
-            if (TIRBelow < 1 && SMBTime <=7 && !UAMBoosted ) {
+            if (TIRBelow < 1 && && TIRInRange <1 && SMBTime <=7 && !UAMBoosted ) {
                 insulinReqPct = 0;
-                UAMBoostReason += ", TIRLow: No SMB";
+                UAMBoostReason += ", TIRLow: skip SMB";
             }
+
             // restrict SMB for ISF stronger than ISF_Max
             // insulinReqPct = ( future_sens <= ISF_Max  && !UAMBoosted ? 0 : insulinReqPct);
             // restrict SMB to the same as max TBR when ISF is strong
