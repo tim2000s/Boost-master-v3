@@ -454,10 +454,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             target_bg = hyper_target;
             halfBasalTarget = 160;
             var c = halfBasalTarget - normalTarget;
-            //sensitivityRatio = c/(c+target_bg-normalTarget);
-            sensitivityRatio = REBX;
+            sensitivityRatio = c/(c+target_bg-normalTarget);
+            //sensitivityRatio = REBX;
             // limit sensitivityRatio to profile.autosens_max (1.2x by default)
-            //sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+            sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
             sensitivityRatio = round(sensitivityRatio,2);
             //console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
             basal = profile.current_basal * sensitivityRatio;
@@ -485,10 +485,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         target_bg = hypo_target;
         halfBasalTarget = 160;
         var c = halfBasalTarget - normalTarget;
-        //sensitivityRatio = c/(c+target_bg-normalTarget);
-        sensitivityRatio = REBX;
+        sensitivityRatio = c/(c+target_bg-normalTarget);
+        //sensitivityRatio = REBX;
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
-        //sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
         sensitivityRatio = round(sensitivityRatio,2);
         //console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
         basal = profile.current_basal * sensitivityRatio;
@@ -509,10 +509,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         target_bg = hyper_target;
         halfBasalTarget = 160;
         var c = halfBasalTarget - normalTarget;
-        //sensitivityRatio = c/(c+target_bg-normalTarget);
-        sensitivityRatio = REBX;
+        sensitivityRatio = c/(c+target_bg-normalTarget);
+        //sensitivityRatio = REBX;
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
-        //sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
         sensitivityRatio = round(sensitivityRatio,2);
         //console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
         basal = profile.current_basal * sensitivityRatio;
@@ -968,7 +968,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log("AIMI V8 15/11/2021");
+                console.log("AIMI V9 19/11/2021");
                 console.log("------------------------------");
                 if ( meal_data.TDDAIMI7 && meal_data.TDDPUMP && meal_data.StatInRange7 ){
                 console.log("Pump extrapolated TDD = "+tdd_pump);
