@@ -1482,8 +1482,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     maxBolus = EatingNowMaxSMB;
                     insulinReqPct = insulinReqPct;
                 } else {
-                    // Default insulinReqPct or No SMB when more lows today at night
-                    insulinReqPct = (TIRBelow < 1 ? 0 : insulinReqPctDefault);
+                    // Default insulinReqPct at night
+                    insulinReqPct = insulinReqPctDefault;
                     // default SMB
                     maxBolus = maxBolus;
                 }
