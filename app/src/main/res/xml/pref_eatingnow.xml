@@ -325,13 +325,13 @@
                 app:initialExpandedChildrenCount="0">
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                    android:defaultValue="1"
+                    android:defaultValue="0"
                     android:inputType="numberDecimal"
                     android:key="@string/key_eatingnow_uamboost_bolus_scale"
                     android:title="UAMBoost Bolus Scale"
-                    android:dialogMessage="Scale Bolus for boost for BGL rises\nBelow 1 will not boost"
+                    android:dialogMessage="Scale Bolus for boost for BGL rises\n0 will not boost"
                     validate:floatmaxNumber="5.0"
-                    validate:floatminNumber="1"
+                    validate:floatminNumber="0"
                     validate:testType="floatNumericRange"/>
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
@@ -362,13 +362,13 @@
                 app:initialExpandedChildrenCount="0">
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                    android:defaultValue="1"
+                    android:defaultValue="0"
                     android:inputType="numberDecimal"
                     android:key="@string/key_eatingnow_uamboostmax_bolus_scale"
                     android:title="UAMBoostMAX Bolus Scale"
-                    android:dialogMessage="Scale bolus to boost for BGL rises within first bolus window (UAMBoostMAX)\n1 will not boost"
+                    android:dialogMessage="Scale bolus to boost for BGL rises within first bolus window (UAMBoostMAX)\n0 will not boost"
                     validate:floatmaxNumber="5.0"
-                    validate:floatminNumber="1"
+                    validate:floatminNumber="0"
                     validate:testType="floatNumericRange"/>
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference

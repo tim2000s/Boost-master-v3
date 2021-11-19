@@ -332,11 +332,11 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("EatingNowTimeEnd", sp.getInt(R.string.key_eatingnow_timeend, 17));
         mProfile.put("EatingNowinsulinReqPct",SafeParse.stringToDouble(sp.getString(R.string.key_eatingnow_insulinreqpct,"65")));
 
-        mProfile.put("UAMBoost_Bolus_Scale", sp.getDouble(R.string.key_eatingnow_uamboost_bolus_scale, 1));
+        mProfile.put("UAMBoost_Bolus_Scale", sp.getDouble(R.string.key_eatingnow_uamboost_bolus_scale, 0));
         mProfile.put("UAMBoost_SMBLimit", sp.getDouble(R.string.key_eatingnow_uamboost_smblimit, 0) * profile.getPercentage()/100);
         mProfile.put("iTimeWindow", sp.getInt(R.string.key_eatingnow_itimeminutes, 15));
 
-        mProfile.put("UAMBoostMAX_Bolus_Scale", sp.getDouble(R.string.key_eatingnow_uamboostmax_bolus_scale, 1));
+        mProfile.put("UAMBoostMAX_Bolus_Scale", sp.getDouble(R.string.key_eatingnow_uamboostmax_bolus_scale, 0));
         mProfile.put("UAMBoostMAX_SMBLimit", sp.getDouble(R.string.key_eatingnow_uamboostmax_smblimit, 0)* profile.getPercentage()/100);
         mProfile.put("iTimeMaxWindow", sp.getInt(R.string.key_eatingnow_itime1minutes, 15));
 
