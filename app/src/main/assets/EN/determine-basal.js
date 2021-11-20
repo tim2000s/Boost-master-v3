@@ -1453,7 +1453,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // if there has been a prebolus limit the SMB
                     EatingNowMaxSMB = (preBolused ? maxBolus : EatingNowMaxSMB);
                     // restrict SMB to the same as max TBR when ISF is strong
-                    EatingNowMaxSMB = ( future_sens <= ISF_Max && !UAMBoosted ? Math.min(maxSafeBasal,profile.current_basal*4)/12 : EatingNowMaxSMB);
+                    // EatingNowMaxSMB = ( future_sens <= ISF_Max && !UAMBoosted ? Math.min(maxSafeBasal,profile.current_basal*4)/12 : EatingNowMaxSMB);
                 } else {
                     EatingNowMaxSMB = Math.min(maxBolus,EatingNowMaxSMB); // use the most restrictive
                 }
@@ -1520,13 +1520,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // try spacing out the SMB's with TBR if TIR has more lows today ONLY FOR ISFBOOST
             if (TIRBelow < 1 && TIRInRange <1 && SMBTime <=7 && !UAMBoosted ) {
                 insulinReqPct = 0;
-                UAMBoostReason += ", TIRLow: skip SMB";
+                UAMBoostReason += ", TIRLow: SMB<7m";
             }
 
-            // try spacing out the SMB's with TBR if ISF Max exceeded ONLY FOR ISFBOOST
-            if ( future_sens <= ISF_Max && SMBTime <=7 && !UAMBoosted ) {
+            // try spacing out the SMB's with TBR if ISF Max exceeded ONLY FOR ISFBOOST >= maxBolus
+            if ( future_sens <= ISF_Max && EatingNowMaxSMB >= maxBolus && SMBTime <=12 && !UAMBoosted ) {
                 insulinReqPct = 0;
-                UAMBoostReason += ", ISFMax: skip SMB";
+                UAMBoostReason += ", ISFMax: SMB<12m";
             }
 
             // ============  EATING NOW MODE  ==================== END ===
