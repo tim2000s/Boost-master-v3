@@ -1523,8 +1523,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             // END === if we are eating now and BGL prediction is higher than normal target ===
 
-            // try spacing out the SMB's with TBR if TIR has more lows today ONLY FOR ISFBOOST
-            if (TIRBelow < 1 && TIRInRange <1 && SMBTime <=7 && !UAMBoosted && insulinReqPct !==0  ) {
+            // try spacing out the SMB's with TBR if TIR has more lows today, less in range and no more highs ONLY FOR ISFBOOST
+            if (TIRBelow < 1 && TIRInRange <1 && TIRAbove == 1 && SMBTime <=7 && !UAMBoosted && insulinReqPct !==0  ) {
                 insulinReqPct = 0;
                 UAMBoostReason += ", TIRLow: SMB<7m";
             }
