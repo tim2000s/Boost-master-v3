@@ -1046,7 +1046,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + "/" + glucose_status.long_avgdelta + ", ISF: " + convert_bg(sens, profile) + (ISFBoost !=1 ? "(" + convert_bg(var_sens_normalTarget, profile) + ")" + convert_bg(future_sens, profile) : "") + ", TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + ", ISF: " + convert_bg(sens, profile) + (ISFBoost !=1 ? "(" + convert_bg(var_sens_normalTarget, profile) + ")" + convert_bg(future_sens, profile) : "") + ", TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
 
     if (lastCOBpredBG > 0) {
         rT.reason += ", COBpredBG " + convert_bg(lastCOBpredBG, profile);
@@ -1501,7 +1501,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== IOB RESTRICTION  ==============
                 if (insulinReq > max_iob-iob_data.iob) {
-                    UAMBoostReason += ", max_iob " + max_iob;
+                    //UAMBoostReason += ", max_iob " + max_iob;
                     insulinReq = round(max_iob-iob_data.iob,2);
                 }
 
@@ -1518,13 +1518,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // END === if we are eating now and BGL prediction is higher than normal target ===
 
             // try spacing out the SMB's with TBR if TIR has more lows today ONLY FOR ISFBOOST
-            if (TIRBelow < 1 && TIRInRange <1 && SMBTime <=7 && !UAMBoosted ) {
+            if (TIRBelow < 1 && TIRInRange <1 && SMBTime <=7 && !UAMBoosted && insulinReqPct !==0  ) {
                 insulinReqPct = 0;
                 UAMBoostReason += ", TIRLow: SMB<7m";
             }
 
             // try spacing out the SMB's with TBR if ISF Max exceeded ONLY FOR ISFBOOST >= maxBolus
-            if ( future_sens <= ISF_Max && EatingNowMaxSMB >= maxBolus && SMBTime <=12 && !UAMBoosted ) {
+            if ( future_sens <= ISF_Max && EatingNowMaxSMB >= maxBolus && SMBTime <=12 && !UAMBoosted && insulinReqPct !==0 ) {
                 insulinReqPct = 0;
                 UAMBoostReason += ", ISFMax: SMB<12m";
             }
