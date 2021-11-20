@@ -1484,13 +1484,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 if (eatingnowtimeOK) {
                     // increase maxbolus if we are within the hours specified
-                    maxBolus = EatingNowMaxSMB;
+                    maxBolus = round(EatingNowMaxSMB,1);
                     insulinReqPct = insulinReqPct;
                 } else {
                     // Default insulinReqPct at night
                     insulinReqPct = insulinReqPctDefault;
                     // default SMB
-                    maxBolus = maxBolus;
+                    maxBolus = round(maxBolus,1);
                 }
 
                 // ============== INSULIN BOOST  ==============
