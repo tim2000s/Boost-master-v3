@@ -1126,6 +1126,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     zeroTempEffect = round(zeroTempEffect);
     carbsReq = round(carbsReq);
     console.error("naive_eventualBG:",naive_eventualBG,"bgUndershoot:",bgUndershoot,"zeroTempDuration:",zeroTempDuration,"zeroTempEffect:",zeroTempEffect,"carbsReq:",carbsReq);
+    console.log("=========================================");
+    console.log("              Eating Now");
+    console.log("=========================================");
     if ( carbsReq >= profile.carbsReqThreshold && minutesAboveThreshold <= 45 ) {
         rT.carbsReq = carbsReq;
         rT.carbsReqWithin = minutesAboveThreshold;
@@ -1662,9 +1665,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.reason += esc_text("temp " + round(currenttemp.rate,2) + " < " + rate + "U/hr. ");
         return tempBasalFunctions.setTempBasal(rate, 30, profile, rT, currenttemp);
     }
-console.log("=========================================================");
-console.log("                     Eating Now");
-console.log("=========================================================");
 };
 
 module.exports = determine_basal;
