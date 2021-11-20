@@ -325,7 +325,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var ignoreCOBPatch = profile.enableGhostCOB; //MD#01: Ignore any COB and rely purely on UAM
 
     // Eating Now Variables
-    var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false; // nah not eating yet
+    var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false, enlog = ""; // nah not eating yet
     var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
     // eating now time can be delayed if there is no first bolus
     if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && meal_data.firstBolusCorr !== 0) eatingnowtimeOK = true;
@@ -341,11 +341,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         max_iob = round(max_iob,2);
     }
     //eatingnow = false; //DEBUG
-
-    console.log("eatingnow: " + eatingnow);
-    console.log("eatingnowtimeOK: " + eatingnowtimeOK);
-
-
+    enlog += "eatingnow: " + eatingnow + ", eatingnowtimeOK: " + eatingnowtimeOK+"\n";
     // patches ===== END
 
     var tick;
@@ -380,7 +376,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TIR3Below = meal_data.TIR3Below, TIR3InRange = meal_data.TIR3InRange, TIR3Above = meal_data.TIR3Above;
     var TIR1Below = meal_data.TIR1Below, TIR1InRange = meal_data.TIR1InRange, TIR1Above = meal_data.TIR1Above;
     var TIRBelow = Math.max((TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 1),profile.autosens_min), TIRInRange = round(TIR1InRange/TIR3InRange,2), TIRAbove = Math.min((TIR1Above > TIR3Above ? round(TIR1Above/TIR3Above,2) : 1),profile.autosens_max);
-    console.log("TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove );
+    enlog += "TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove+"\n";
 
     // iTime is minutes since last manual bolus correction or carbs
     var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,1);
@@ -395,7 +391,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var EatingNowBGThreshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowBGThreshold * 18, 1).toFixed(1) : profile.EatingNowBGThreshold);
     if (EatingNowBGThreshold == 0) EatingNowBGThreshold = 180 ; // default is 180 = 10 mmol
     var ISF_Max = (profile.out_units === "mmol/L" ? round(profile.ISF_Max * 18, 1).toFixed(1) : profile.ISF_Max);
-    console.log("ISF_Max:" + ISF_Max);
+    enlog += "* advanced ISF:\n";
+    enlog += "ISF_Max:" + ISF_Max+"\n";
 
     /* ************************
        ** TS AutoTDD code    **
@@ -409,28 +406,32 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var tdd_pump_now = meal_data.TDDPUMP;
     var tdd_pump = ( tdd_pump_now / (now / 24));
     var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
-    console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
+    //console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
+    enlog += "Pump extrapolated TDD = "+tdd_pump+"\n";
     if (tdd_pump < (0.5 * tdd7)){
         TDD = (tdd7 * 0.2) + (tdd_pump * 0.8);
-        console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
+        //console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
+        enlog += "TDD weighted to pump due to low insulin usage. TDD = "+TDD+"\n";
     } else if (tdd_pump > (1.3 * tdd7)) {
         TDD = (tdd7 * 0.8) + (tdd_pump * 0.2);
-        console.error("TDD weighted to TDD7 due to high insulin usage. TDD = "+TDD+"; ");
+        //console.error("TDD weighted to TDD7 due to high insulin usage. TDD = "+TDD+"; ");
+        enlog += "TDD weighted to TDD7 due to high insulin usage. TDD = "+TDD+"\n";
     } else {
-        console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
+        //console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
+        enlog +="TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+"\n";
     }
 
     var variable_sens = (277700 / (TDD * bg));
     // limit ISF adjustment when above EatingNowBGThreshold, allow higher if more highs today
     //var variable_sens = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold*TIRAbove)));
-    console.log("Current sensitivity is " +variable_sens+" based on current bg");
+    //console.log("Current sensitivity is " +variable_sens+" based on current bg");
     //variable_sens /= TIRBelow; // apply sensitivity based on TIR data
     //if (TIRBelow<1) console.log("Current sensitivity adjusted to " +variable_sens+" based on TIRBelow " + TIRBelow);
     var var_sens_normalTarget = (277700 / (TDD * normalTarget));
     //var_sens_normalTarget /= TIRBelow; // apply sensitivity based on TIR data
 
     variable_sens = round(variable_sens,1);
-    console.log("Current sensitivity is " +variable_sens+" based on current bg");
+    enlog +="Current sensitivity is " +variable_sens+" based on current bg\n";
 
     // disable variable ISF with a TT or when feature is disabled
     if (profile.temptargetSet || !profile.ISFBoost_enabled) variable_sens = sens;
@@ -444,7 +445,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     sens = variable_sens;
 
     var eRatio = round(sens / 13.2);
-    console.error("CR:",eRatio);
+    //console.error("CR:",eRatio);
+    enlog +="eRatio CR:"+eRatio+"\n";
     //var iob_scale = (profile.W2_IOB_threshold/100) * max_iob;
     var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
     var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
@@ -460,19 +462,20 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //Target adjustment with HypoPredBG - TS
     var EBG = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg;
     var REBG = EBG / min_bg;
-    console.log("Experimental test, EBG : "+EBG+" REBG : "+REBG+" ; ");
-    console.log ("HypoPredBG = "+HypoPredBG+"; ");
+    enlog += "* target adjustments:\n";
+    enlog += "Experimental test, EBG:"+EBG+", REBG:"+REBG+";\n";
+    enlog += "HypoPredBG:"+HypoPredBG+";\n";
 
     //if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && !profile.use_autoisf && eatingnowtimeOK) {//&& glucose_status.delta <= 0
     if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && profile.ISFBoost_enabled) {//&& glucose_status.delta <= 0
         var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
         if (hypo_target <= 90) {
             hypo_target += 10;
-            console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+"; ");
+            enlog += "target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+";\n";
         } else if (target_bg === hypo_target) {
-            console.log("target_bg unchanged: "+hypo_target+"; ");
+            enlog += "target_bg unchanged: "+hypo_target+";\n";
         } else {
-            console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+"; ");
+            enlog += "target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+";\n";
         }
 
         target_bg = hypo_target;
@@ -485,13 +488,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // restrict SR to 1 max if using advanced ISF hence variable_sens may help with overnight low allowing basal to be adjusted
         sensitivityRatio = (profile.ISFBoost_enabled ? Math.min(sensitivityRatio,1) : sensitivityRatio);
         sensitivityRatio = round(sensitivityRatio,2);
-        console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
+        enlog += "Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
         basal = profile.current_basal * sensitivityRatio;
         basal = round_basal(basal, profile);
         if (basal !== profile_current_basal) {
-            console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
+            enlog += "Adjusting basal from "+profile_current_basal+" to "+basal+";\n";
         } else {
-            console.log("Basal unchanged: "+basal+"; ");
+            enlog += "Basal unchanged: "+basal+";\n";
         }
     }
 
@@ -607,6 +610,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var threshold = min_bg - 0.5*(min_bg-40);
 
     //console.error(reservoir_data);
+    //console.error(reservoir_data);
 
     rT = {
         'temp': 'absolute'
@@ -660,9 +664,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.reason = esc_text(meal_data.lastCarbs +"g COB " + cTime + "m ago, CR:"+ round(profile.carb_ratio)+" Bolusing " + round(preBolusPct*100) + "% = " + rT.units + "U");
         return rT;
     }
-    console.log ("cTime:"+cTime+", iTime:"+iTime+",iTimeMax:"+ iTimeMax+",lastCarbs:"+meal_data.lastCarbs+"firstBolusCorr:"+meal_data.firstBolusCorr);
     var preBolused = (cTime-iTime)>0 && (cTime-iTime)<5 || meal_data.lastBolusCorrTime == meal_data.lastCarbTime;
-    console.log("preBolused:" + preBolused);
+    enlog += "* prebolusing:\n";
+    enlog += "preBolused:" + preBolused + ", cTime:" +cTime+ ", iTime:" +iTime+ ", iTimeMax:" +iTimeMax+ ", lastCarbs:" +meal_data.lastCarbs+ ", firstBolusCorr:"+meal_data.firstBolusCorr+"\n";
     //console.error(meal_data);
     // carb impact and duration are 0 unless changed below
     var ci = 0;
@@ -1126,11 +1130,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     zeroTempEffect = round(zeroTempEffect);
     carbsReq = round(carbsReq);
     console.error("naive_eventualBG:",naive_eventualBG,"bgUndershoot:",bgUndershoot,"zeroTempDuration:",zeroTempDuration,"zeroTempEffect:",zeroTempEffect,"carbsReq:",carbsReq);
-    console.log("===================================");
+    console.log("=======================");
     console.log("Eating Now");
-    console.log("===================================");
-    console.log("Variables will be listed here.");
-    console.log("===================================");
+    console.log("=======================");
+    console.log(enlog);
+    console.log("=======================");
 
     if ( carbsReq >= profile.carbsReqThreshold && minutesAboveThreshold <= 45 ) {
         rT.carbsReq = carbsReq;
