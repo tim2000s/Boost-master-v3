@@ -661,7 +661,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         return rT;
     }
     console.log ("cTime:"+cTime+", iTime:"+iTime+",iTimeMax:"+ iTimeMax+",lastCarbs:"+meal_data.lastCarbs+"firstBolusCorr:"+meal_data.firstBolusCorr);
-    var preBolused = (cTime-iTime)>0 && (cTime-iTime)<5;
+    var preBolused = (cTime-iTime)>=0 && (cTime-iTime)<5;
     console.log("preBolused:" + preBolused);
     //console.error(meal_data);
     // carb impact and duration are 0 unless changed below
