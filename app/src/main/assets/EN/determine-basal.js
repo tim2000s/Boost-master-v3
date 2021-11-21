@@ -1533,8 +1533,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoostReason += ", TIRLow: SMB<7m";
             }
 
-            // try spacing out the SMB's with TBR if ISF Max exceeded ONLY FOR ISFBOOST >= maxBolus
-            if ( future_sens <= ISF_Max && EatingNowMaxSMB >= maxBolus && SMBTime <=12 && !UAMBoosted && insulinReqPct !==0 ) {
+            // try spacing out the SMB's with TBR if ISF Max exceeded within the first half of a no preBolused rise ONLY FOR ISFBOOST >= maxBolus
+            if (future_sens <= ISF_Max && !UAMBoosted && !preBolused && iTime > iTimeWindow/2 && SMBTime <=12 && EatingNowMaxSMB >= maxBolus  && insulinReqPct !==0 ) {
                 insulinReqPct = 0;
                 UAMBoostReason += ", ISFMax: SMB<12m";
             }
