@@ -488,7 +488,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // restrict SR to 1 max if using advanced ISF hence variable_sens may help with overnight low allowing basal to be adjusted
         sensitivityRatio = (profile.ISFBoost_enabled ? Math.min(sensitivityRatio,1) : sensitivityRatio);
         sensitivityRatio = round(sensitivityRatio,2);
-        enlog += "Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
+        enlog += "Sensitivity ratio (REBG) set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
         basal = profile.current_basal * sensitivityRatio;
         basal = round_basal(basal, profile);
         if (basal !== profile_current_basal) {
