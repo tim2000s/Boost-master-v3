@@ -1559,7 +1559,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (eatingnowtimeOK && bg < EatingNowBGThreshold && !iTimeOK)  {
                 var minSMB = round(((TDD * 0.4) / 24 )*roundSMBTo)/roundSMBTo;
                 microBolus = (microBolus > minSMB ? microBolus : 0);
-                UAMBoostReason += (microBolus == 0 ? ", minSMB" + minSMB : "");
+                UAMBoostReason += (microBolus == 0 ? ", minSMB>" + minSMB : "");
             }
 
 //            //MD: Only use minBolus if not eating now and night time OR iTime NOT OK when below BG threshold
