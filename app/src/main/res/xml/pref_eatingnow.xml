@@ -357,7 +357,7 @@
                     android:key="@string/key_eatingnow_itimeminutes"
                     android:title="iTime Minutes Window"
                     android:dialogMessage="Minutes since last manual bolus for faster UAMBoost"
-                    validate:maxNumber="120"
+                    validate:maxNumber="240"
                     validate:minNumber="15"
                     validate:testType="numericRange" />
 
@@ -394,7 +394,7 @@
                     android:key="@string/key_eatingnow_itime1minutes"
                     android:title="iTimeMax Minutes Window"
                     android:dialogMessage="Minutes since first manual bolus for faster UAMBoostMAX"
-                    validate:maxNumber="120"
+                    validate:maxNumber="240"
                     validate:minNumber="15"
                     validate:testType="numericRange" />
 
