@@ -1555,6 +1555,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoostReason += ", no SMB";
             }
 
+            // Daytime TBR if below threshold and not in a boost window ** EXPERIMENTAL **
+            if (eatingnowtimeOK && bg < EatingNowBGThreshold && !iTimeOK)  {
+                var minSMB = Math.floor(((TDD * 0.4) / 24 )*roundSMBTo)/roundSMBTo;
+                microBolus = (microBolus > minSMB ? microBolus : 0);
+                UAMBoostReason += (microBolus == 0 ? ", minSMB " + minSMB : "");
+            }
+
 //            //MD: Only use minBolus if not eating now and night time OR iTime NOT OK when below BG threshold
 //            if (!eatingnow && !eatingnowtimeOK || !iTimeOK && bg < EatingNowBGThreshold)  {
 //                // Mackwe: If SMB dose < 500% TBR would deliver within 15 mins, use TBR instead of SMB
