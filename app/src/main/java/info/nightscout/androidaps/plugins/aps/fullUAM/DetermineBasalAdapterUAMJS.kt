@@ -36,6 +36,8 @@ import java.lang.reflect.InvocationTargetException
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 import info.nightscout.androidaps.utils.stats.TirCalculator
+//import info.nightscout.androidaps.dana.DanaPump
+
 
 
 class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: ScriptReader, private val injector: HasAndroidInjector) {
@@ -49,6 +51,8 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
     @Inject lateinit var activePlugin: ActivePlugin
     @Inject lateinit var repository: AppRepository
     @Inject lateinit var dateUtil: DateUtil
+    //@Inject lateinit var danaPump: DanaPump
+
 
     private var profile = JSONObject()
     private var mGlucoseStatus = JSONObject()
@@ -299,6 +303,8 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.mealData.put("currentTIRRange", StatTIR!!.averageTIR(StatTIR!!.calculateDaily(80.0, 180.0)).inRangePct())
         this.mealData.put("currentTIRAbove", StatTIR!!.averageTIR(StatTIR!!.calculateDaily(80.0, 180.0)).abovePct())
         this.mealData.put("currentTIR_70_140_Above", StatTIR!!.averageTIR(StatTIR!!.calculateDaily(70.0, 140.0)).abovePct())
+        //this.mealData.put("TDDPUMP1", danaPump.dailyTotalUnits)
+        //this.mealData.put("TDDPUMP2", pumpHistory.tddHistory.get(DEFAULT_BUFFER_SIZE))
 
 
 
