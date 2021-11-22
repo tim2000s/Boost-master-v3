@@ -443,7 +443,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // **********************************************************************************************
 
     ISFBoost = (variable_sens/sens);
-    sens = variable_sens;
+    //sens = variable_sens;
+    sens = var_sens_normalTarget; // just try this as future_sens will still be working
 
     var eRatio = round(sens / 13.2);
     //console.error("CR:",eRatio);
@@ -945,7 +946,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
     }
     // disable future_sens with a TT, at night or when feature not enabled
-    if (profile.temptargetSet || !profile.ISFBoost_enabled || !eatingnowtimeOK && bg < EatingNowBGThreshold) future_sens = sens;
+    if (profile.temptargetSet || !profile.ISFBoost_enabled) future_sens = sens;
+    //if (profile.temptargetSet || !profile.ISFBoost_enabled || !eatingnowtimeOK && bg < EatingNowBGThreshold) future_sens = sens;
     future_sens = round(future_sens,1);
 
     minIOBPredBG = Math.max(39,minIOBPredBG);
@@ -1050,7 +1052,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + ", ISF: " + convert_bg(sens, profile) + (ISFBoost !=1 ? "(" + convert_bg(var_sens_normalTarget, profile) + ")" + convert_bg(future_sens, profile) : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + ", ISF: " + convert_bg(variable_sens, profile) + (ISFBoost !=1 ? "(" + convert_bg(var_sens_normalTarget, profile) + ")" + convert_bg(future_sens, profile) : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
 
     if (lastCOBpredBG > 0) {
         rT.reason += ", COBpredBG " + convert_bg(lastCOBpredBG, profile);
@@ -1495,16 +1497,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // END === if we are eating now and BGL prediction is higher than normal target ===
 
             // try spacing out the SMB's with TBR if TIR has more lows today, less in range and no more highs ONLY FOR ISFBOOST
-            if (TIRBelow < 1 && TIRInRange <1 && TIRAbove == 1 && SMBTime <=7 && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && EatingNowMaxSMB >= maxBolus && insulinReqPct !==0  ) {
-                insulinReqPct = 0;
-                UAMBoostReason += ", TIRLow: SMB<7m";
-            }
-
-            // try spacing out the SMB's with TBR if ISF Max exceeded within the first half of a no preBolused rise ONLY FOR ISFBOOST >= maxBolus
-            if (future_sens <= ISF_Max && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && SMBTime <=12 && EatingNowMaxSMB >= maxBolus && insulinReqPct !==0 && insulinReq >0) {
-                insulinReqPct = 0;
-                UAMBoostReason += ", ISFMax: SMB<12m" + (preBolused ? " + PB" : " + iTime 50%");
-            }
+//            if (TIRBelow < 1 && TIRInRange <1 && TIRAbove == 1 && SMBTime <=7 && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && EatingNowMaxSMB >= maxBolus && insulinReqPct !==0  ) {
+//                insulinReqPct = 0;
+//                UAMBoostReason += ", TIRLow: SMB<7m";
+//            }
+//
+//            // try spacing out the SMB's with TBR if ISF Max exceeded within the first half of a no preBolused rise ONLY FOR ISFBOOST >= maxBolus
+//            if (future_sens <= ISF_Max && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && SMBTime <=12 && EatingNowMaxSMB >= maxBolus && insulinReqPct !==0 && insulinReq >0) {
+//                insulinReqPct = 0;
+//                UAMBoostReason += ", ISFMax: SMB<12m" + (preBolused ? " + PB" : " + iTime 50%");
+//            }
 
             // ============  EATING NOW MODE  ==================== END ===
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
