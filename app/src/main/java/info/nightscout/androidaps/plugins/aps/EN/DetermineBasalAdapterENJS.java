@@ -342,7 +342,7 @@ public class DetermineBasalAdapterENJS {
 
         mProfile.put("ISFBoost_enabled", sp.getBoolean(R.string.key_eatingnow_use_advanced_isf, false));
         mProfile.put("ISFBoost_SMBLimit", sp.getDouble(R.string.key_eatingnow_isfboost_smblimit, 0));
-        mProfile.put("ISF_Max", sp.getDouble(R.string.key_eatingnow_isf_max, profile.getIsfMgdl()));
+        mProfile.put("ISF_Max_Scale", sp.getDouble(R.string.key_eatingnow_isf_max_scale, 1));
         mProfile.put("EatingNowBGThreshold", sp.getDouble(R.string.key_eatingnow_bgthreshold, 0));
         mProfile.put("EatingNowPrebolusPct", sp.getDouble(R.string.key_eatingnow_preboluspct, 0.1));
         // patches ==== END
