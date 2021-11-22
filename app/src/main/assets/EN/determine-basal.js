@@ -412,14 +412,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (tdd_pump < (0.5 * tdd7)){
         TDD = (tdd7 * 0.2) + (tdd_pump * 0.8);
         //console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
-        enlog += "TDD weighted to pump due to low insulin usage. TDD = "+TDD+"\n";
+        enlog += "TDD weighted to pump due to low insulin usage. TDD:"+round(TDD,3)+"\n";
     } else if (tdd_pump > (1.3 * tdd7)) {
         TDD = (tdd7 * 0.8) + (tdd_pump * 0.2);
         //console.error("TDD weighted to TDD7 due to high insulin usage. TDD = "+TDD+"; ");
-        enlog += "TDD weighted to TDD7 due to high insulin usage. TDD = "+TDD+"\n";
+        enlog += "TDD weighted to 80% TDD7 due to high insulin usage. TDD7:"+round(tdd7,3)+"TDD:"+round(TDD,3)+"\n";
     } else {
         //console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
-        enlog +="TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+"\n";
+        enlog +="TDD7:"+round(tdd7,3)+", TDD Pump:"+round(tdd_pump,3)+" and TDD:"+round(TDD,3)+"\n";
     }
 
     var variable_sens = (277700 / (TDD * bg));
