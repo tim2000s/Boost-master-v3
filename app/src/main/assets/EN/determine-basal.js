@@ -1496,17 +1496,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             // END === if we are eating now and BGL prediction is higher than normal target ===
 
-            // try spacing out the SMB's with TBR if TIR has more lows today, less in range and no more highs ONLY FOR ISFBOOST
-//            if (TIRBelow < 1 && TIRInRange <1 && TIRAbove == 1 && SMBTime <=7 && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && EatingNowMaxSMB >= maxBolus && insulinReqPct !==0  ) {
-//                insulinReqPct = 0;
-//                UAMBoostReason += ", TIRLow: SMB<7m";
-//            }
-//
-//            // try spacing out the SMB's with TBR if ISF Max exceeded within the first half of a no preBolused rise ONLY FOR ISFBOOST >= maxBolus
-//            if (future_sens <= ISF_Max && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && SMBTime <=12 && EatingNowMaxSMB >= maxBolus && insulinReqPct !==0 && insulinReq >0) {
-//                insulinReqPct = 0;
-//                UAMBoostReason += ", ISFMax: SMB<12m" + (preBolused ? " + PB" : " + iTime 50%");
-//            }
+            // reduce maxBolus for SMB's if TIR has more lows today, less in range and no more highs ONLY FOR ISFBOOST
+            //if (TIRBelow < 1 && TIRInRange <1 && TIRAbove == 1 && SMBTime <=7 && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && EatingNowMaxSMB >= maxBolus && insulinReqPct !==0  ) {
+            if (TIRBelow < 1 && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && insulinReqPct !==0  ) {
+                maxBolus = round(maxBolus*TIRBelow,1);
+                UAMBoostReason += ", TIRLow: maxBolus "+round(TIRBelow*100,0)+"%";
+                //UAMBoostReason += ", TIRLow: SMB<7m";
+            }
+
+            // try spacing out the SMB's with TBR if ISF Max exceeded within the first half of a no preBolused rise ONLY FOR ISFBOOST >= maxBolus
+            //if (future_sens <= ISF_Max && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && SMBTime <=12 && EatingNowMaxSMB >= maxBolus && insulinReqPct !==0 && insulinReq >0) {
+            //    insulinReqPct = 0;
+            //    UAMBoostReason += ", ISFMax: SMB<12m" + (preBolused ? " + PB" : " + iTime 50%");
+            //}
 
             // ============  EATING NOW MODE  ==================== END ===
             // boost insulinReq and maxBolus if required limited to EatingNowMaxSMB
