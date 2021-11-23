@@ -1067,6 +1067,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (liftISF > 1) rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
     rT.reason += ", TDD: " + round(TDD, 2);
+    rT.reason += ", TIR3v1:L" + TIR3Below + "/" + TIR1Below + ",H" + TIR3Above+ "/" + TIR1Above;
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
     var carbsReqBG = naive_eventualBG;
@@ -1562,9 +1563,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             rT.reason += ". ";
             rT.reason += UAMBoostReason;
-            //rT.reason += ", TIR3LIH: " + TIR3Below + "/" + TIR3InRange + "/" + TIR3Above;
-            //rT.reason += ", TIRLIH: " + TIR1Below + "/" + TIR1InRange + "/" + TIR1Above;
-            //rT.reason += ", SMBTime: " + round(SMBTime, 2);
             rT.reason = esc_text(rT.reason) + ". ";
 
             //allow SMBs every 3 minutes by default
