@@ -1502,7 +1502,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             // reduce maxBolus for SMB's if TIR has more lows today than 3 day avg
             //if (TIRBelow < 1 && TIRInRange <1 && TIRAbove == 1 && SMBTime <=7 && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && EatingNowMaxSMB >= maxBolus && insulinReqPct !==0  ) {
-            if (TIRBelow < 1 && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && insulinReqPct !==0 && insulinReq >0) {
+            if (eatingnowtimeOK && TIRBelow < 1 && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && insulinReqPct !==0 && insulinReq >0) {
                 maxBolus = round(maxBolus*TIRBelow,1);
                 UAMBoostReason += ", TIRLow: maxBolus "+round(TIRBelow*100,0)+"%";
                 //UAMBoostReason += ", TIRLow: SMB<7m";
@@ -1524,8 +1524,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
             durationReq = round(60*worstCaseInsulinReq / profile.current_basal);
 
-            // Nightmode TBR with first bolus check
-            if (!eatingnowtimeOK && bg < EatingNowBGThreshold)  {
+            // Nightmode TBR with first bolus check and no COB
+            if (!eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0)  {
                 microBolus = 0;
                 UAMBoostReason += ", no SMB";
             }
