@@ -1358,7 +1358,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var smb_ratio = determine_varSMBratio(profile, bg, target_bg);
         if ( meal_data.TDDPUMP ){
             if (meal_data.carbs > 30 && iTime < iTimeProfile || iTime < iTimeProfile ){
-                if (meal_data.carbs && iTime >= 15 && iTime <= 19 && iob_data.iob < ((meal_data.mealCOB / eRatio)/2) ){
+                if (meal_data.carbs && iTime >= 15 && iTime <= 19 && iob_data.iob < (max_iob/2) ){
                 var microBolus = (meal_data.mealCOB / eRatio)/2;
                 maxBolusTT = microBolus;
                 //var microBolus =  profile.iTime_Bolus;
