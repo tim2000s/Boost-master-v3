@@ -422,9 +422,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         enlog +="TDDAVG:"+round(tdd_avg,3)+", TDD Pump:"+round(tdd_pump,3)+" and TDD:"+round(TDD,3)+"\n";
     }
 
-    var variable_sens = (277700 / (TDD * bg));
-    // limit ISF adjustment when above EatingNowBGThreshold, allow higher if more highs today
-    //var variable_sens = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold*TIRAbove)));
+    // var variable_sens = (277700 / (TDD * bg));
+    // limit ISF adjustment when above EatingNowBGThreshold
+    var variable_sens = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold)));
     //console.log("Current sensitivity is " +variable_sens+" based on current bg");
     //variable_sens /= TIRBelow; // apply sensitivity based on TIR data
     //if (TIRBelow<1) console.log("Current sensitivity adjusted to " +variable_sens+" based on TIRBelow " + TIRBelow);
@@ -443,8 +443,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // **********************************************************************************************
 
     ISFBoost = (variable_sens/sens);
-    //sens = variable_sens;
-    sens = var_sens_normalTarget; // just try this as future_sens will still be working
+    sens = variable_sens;
+    //sens = var_sens_normalTarget; // just try this as future_sens will still be working
 
     var eRatio = round(sens / 13.2);
     //console.error("CR:",eRatio);
@@ -945,6 +945,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         future_sens = ( 277700 / (TDD * eventualBG));
         console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
     }
+    // limit future_sens
+    future_sens = Math.max(future_sens, ISF_Max);
+
     // disable future_sens with a TT, at night or when feature not enabled
     if (profile.temptargetSet || !profile.ISFBoost_enabled) future_sens = sens;
     //if (profile.temptargetSet || !profile.ISFBoost_enabled || !eatingnowtimeOK && bg < EatingNowBGThreshold) future_sens = sens;
