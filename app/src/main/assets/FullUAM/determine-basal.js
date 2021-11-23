@@ -1332,10 +1332,11 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                     if (meal_data.carbs > 30 && iTime < iTimeProfile || iTime < iTimeProfile ){
                         if (smbTDD === 0 && tdd_pump >= tdd7*0.3){
                             maxBolus = round(basal * profile.iTime_MaxBolus_minutes / 60 ,1);
-                            console.log("iTime_MaxBolus_minutes : "+profile.iTime_MaxBolus_minutes+ "maxBolus : "+maxBolus)
+                            console.log("iTime_MaxBolus_minutes : "+profile.iTime_MaxBolus_minutes+ "maxBolus : "+maxBolus);
                         }else if (TriggerPredSMB < 450 && smbTDD === 0 && tdd_pump >= tdd7*0.3){
                             maxBolus = round(basal * (profile.iTime_MaxBolus_minutes/2) / 60 ,1);
-                            console.log("iTime_MaxBolus_minutes / 2 : "+(profile.iTime_MaxBolus_minutes / 2)+ "maxBolus : "+maxBolus)}
+                            console.log("iTime_MaxBolus_minutes / 2 : "+(profile.iTime_MaxBolus_minutes / 2)+ "maxBolus : "+maxBolus);
+                            }
                     }else{
                     maxBolus = round( basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
                     }
@@ -1347,6 +1348,20 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                     maxBolus = round( basal * 30 / 60 ,1);
                 }
             } else {
+
+            if ( meal_data.TDDPUMP ){
+                if (meal_data.carbs > 30 && iTime < iTimeProfile || iTime < iTimeProfile ){
+                    if (smbTDD === 0 && tdd_pump >= tdd7*0.3){
+                        maxBolus = round(basal * profile.iTime_MaxBolus_minutes / 60 ,1);
+                        console.log("iTime_MaxBolus_minutes : "+profile.iTime_MaxBolus_minutes+ "maxBolus : "+maxBolus);
+                    }else if (TriggerPredSMB < 450 && smbTDD === 0 && tdd_pump >= tdd7*0.3){
+                        maxBolus = round(basal * (profile.iTime_MaxBolus_minutes/2) / 60 ,1);
+                        console.log("iTime_MaxBolus_minutes / 2 : "+(profile.iTime_MaxBolus_minutes / 2)+ "maxBolus : "+maxBolus);
+                    }
+                }else{
+                maxBolus = round( basal * profile.maxSMBBasalMinutes / 60 ,1);
+                }
+            }
                 console.error("profile.maxSMBBasalMinutes:",profile.maxSMBBasalMinutes,"basal:",basal);
                 maxBolus = round( basal * profile.maxSMBBasalMinutes / 60 ,1);
             }
