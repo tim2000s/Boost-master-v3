@@ -379,14 +379,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     enlog += "TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove+"\n";
 
     // iTime is minutes since last manual bolus correction or carbs
-    var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,1);
+    var iTime = (( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000);
     var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
     // iTimeMax is minutes since first manual bolus correction after EN starts
-    var iTimeMax = round(( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000,1);
+    var iTimeMax = (( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000);
     var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
     var iTimeOK = (iTime < iTimeWindow || iTimeMax < iTimeMaxWindow);
     // SMBTime last SMB
-    var SMBTime = round(( new Date(systemTime).getTime() - meal_data.lastSMBTime) / 60000,1);
+    var SMBTime = (( new Date(systemTime).getTime() - meal_data.lastSMBTime) / 60000);
     // Threshold for ISF Boost
     var EatingNowBGThreshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowBGThreshold * 18, 1).toFixed(1) : profile.EatingNowBGThreshold);
     if (EatingNowBGThreshold == 0) EatingNowBGThreshold = 180 ; // default is 180 = 10 mmol
@@ -650,7 +650,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var enableUAM=(profile.enableUAM);
 
     // cTime could be used for bolusing based on recent COB with Ghost COB
-    var cTime = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000,1);
+    var cTime = (( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000);
     //var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,0);
 
     // if iTime is the same as cTime it means that the carb entry doesnt yet have a correction
@@ -663,7 +663,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.units = preBolus;
         rT.insulinReq = rT.units;
         rT.boostType = "Prebolus";
-        rT.reason = esc_text(meal_data.lastCarbs +"g COB " + cTime + "m ago, CR:"+ round(profile.carb_ratio)+" Bolusing " + round(preBolusPct*100) + "% = " + rT.units + "U");
+        rT.reason = esc_text(meal_data.lastCarbs +"g COB " + round(cTime) + "m ago, CR:"+ round(profile.carb_ratio)+" Bolusing " + round(preBolusPct*100) + "% = " + rT.units + "U");
         return rT;
     }
     var preBolused = (cTime-iTime)>0 && (cTime-iTime)<5 || meal_data.lastBolusCorrTime == meal_data.lastCarbTime;
@@ -1500,9 +1500,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== UAMBoost Reason ==============
                 // If max window exists we dont need to show iTime
                 if (iTimeMax < iTimeMaxWindow) {
-                    UAMBoostReason += ", iTimeMax: " + iTimeMax+"/"+iTimeMaxWindow+"m" + (preBolused ? " PB" : "");
+                    UAMBoostReason += ", iTimeMax: " + round(iTimeMax)+"/"+iTimeMaxWindow+"m" + (preBolused ? " PB" : "");
                 } else if (iTime < iTimeWindow) {
-                    UAMBoostReason += ", iTime: " + iTime+"/"+iTimeWindow+"m"+ (preBolused ? " PB" : "");
+                    UAMBoostReason += ", iTime: " + round(iTime)+"/"+iTimeWindow+"m"+ (preBolused ? " PB" : "");
                 } else {
                     UAMBoostReason += ", iTime Expired"
                 }
