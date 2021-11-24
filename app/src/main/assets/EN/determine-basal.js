@@ -391,10 +391,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var EatingNowBGThreshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowBGThreshold * 18, 1).toFixed(1) : profile.EatingNowBGThreshold);
     if (EatingNowBGThreshold == 0) EatingNowBGThreshold = 180 ; // default is 180 = 10 mmol
     // Limit ISF to profile ISF with this scale
-    var ISF_Max = profile.sens * profile.ISF_Max_Scale;
+    var ISF_Max = round (profile.sens * profile.ISF_Max_Scale,1);
     enlog += "* advanced ISF:\n";
     enlog += "ISF_Max:" + ISF_Max+"\n";
 
+    if (TIRAbove >1 && TIRBelow == 1 && bg > EatingNowBGThreshold) {
+        enlog += "TIRAbove:" + TIRAbove+"\n";
+        enlog += "TIRBelow:" + TIRBelow+"\n";
+        ISF_Max = round(ISF_Max/TIRAbove,1);
+        enlog += "Increasing ISF_Max by " + TIRAbove + " = " +ISF_Max+"\n";
+    }
     /* ************************
        ** TS AutoTDD code    **
        ************************ */
