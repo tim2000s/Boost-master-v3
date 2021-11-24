@@ -647,9 +647,9 @@ class OverviewData @Inject constructor(
                     maxCobValueFound = max(maxCobValueFound, cob.toDouble())
                     lastCob = cob
                 }
-                if (autosensData.failoverToMinAbsorbtionRate) {
-                    autosensData.setScale(cobScale)
-                    autosensData.setChartTime(time)
+                if (autosensData.failOverToMinAbsorptionRate) {
+                    autosensData.scale = cobScale
+                    autosensData.chartTime = time
                     minFailOverActiveList.add(autosensData)
                 }
             }

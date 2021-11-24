@@ -77,7 +77,7 @@ class SmsCommunicatorPlugin @Inject constructor(
     private val commandQueue: CommandQueue,
     private val loop: Loop,
     private val iobCobCalculator: IobCobCalculator,
-    private val xdripCalibrations: XdripCalibrations,
+    private val xDripBroadcast: XDripBroadcast,
     private var otp: OneTimePassword,
     private val config: Config,
     private val dateUtil: DateUtil,
@@ -499,7 +499,7 @@ class SmsCommunicatorPlugin @Inject constructor(
 
     private fun processPUMP(divided: Array<String>, receivedSms: Sms) {
         if (divided.size == 1) {
-            commandQueue.readStatus("SMS", object : Callback() {
+            commandQueue.readStatus(rh.gs(R.string.sms), object : Callback() {
                 override fun run() {
                     val pump = activePlugin.activePump
                     if (result.success) {
@@ -828,7 +828,7 @@ class SmsCommunicatorPlugin @Inject constructor(
                         override fun run() {
                             val resultSuccess = result.success
                             val resultBolusDelivered = result.bolusDelivered
-                            commandQueue.readStatus("SMS", object : Callback() {
+                            commandQueue.readStatus(rh.gs(R.string.sms), object : Callback() {
                                 override fun run() {
                                     if (resultSuccess) {
                                         var replyText = if (isMeal)
@@ -1064,7 +1064,7 @@ class SmsCommunicatorPlugin @Inject constructor(
             receivedSms.processed = true
             messageToConfirm = AuthRequest(injector, receivedSms, reply, passCode, object : SmsAction(pumpCommand = false, cal) {
                 override fun run() {
-                    val result = xdripCalibrations.sendIntent(aDouble!!)
+                    val result = xDripBroadcast.sendCalibration(aDouble!!)
                     val replyText =
                         if (result) rh.gs(R.string.smscommunicator_calibrationsent) else rh.gs(R.string.smscommunicator_calibrationfailed)
                     sendSMSToAllNumbers(Sms(receivedSms.phoneNumber, replyText))

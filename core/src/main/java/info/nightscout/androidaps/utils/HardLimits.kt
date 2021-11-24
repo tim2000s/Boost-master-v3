@@ -56,7 +56,7 @@ class HardLimits @Inject constructor(
         const val MAX_ISF = 720.0 // mgdl
         val MAX_IOB_AMA = doubleArrayOf(3.0, 5.0, 7.0, 12.0, 25.0)
         val MAX_IOB_SMB = doubleArrayOf(3.0, 7.0, 12.0, 25.0, 40.0)
-        val MAX_IOB_FULLUAM = doubleArrayOf(3.0, 7.0, 15.0, 30.0, 40.0)
+        val MAX_IOB_FULLUAM = doubleArrayOf(3.0, 7.0, 12.0, 25.0, 40.0)
         val MAX_BASAL = doubleArrayOf(2.0, 5.0, 10.0, 12.0, 25.0)
 
         //LGS Hard limits
