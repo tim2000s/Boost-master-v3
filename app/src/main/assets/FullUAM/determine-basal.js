@@ -318,17 +318,17 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
         var tdd7 = (tdd_pump / now) * 24;
         //var tdd_pump = ( tdd_pump_now / (now / 24));
-        var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
+        var TDD = (tdd7 * 0.6) + (tdd_pump * 0.4);
         console.log("tdd7 : "+tdd7);
         console.log("TDD  : "+TDD);
         console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
         var smbTDD = 0;
         if (tdd_pump < (0.3 * tdd7) && bg > 110) {
-            TDD = (tdd7 * 0.7) + (tdd_pump * 0.3);
+            TDD = (tdd7 * 0.8) + (tdd_pump * 0.2);
             smbTDD = 1;
             console.log("tdd_pump is lesser than 30% tdd7");
             } else if (tdd_pump < (0.5 * tdd7)){
-                TDD = (tdd7 * 0.3) + (tdd_pump * 0.7);
+                TDD = (tdd7 * 0.5) + (tdd_pump * 0.5);
                 smbTDD = 1;
                 console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
             }else{
@@ -1374,10 +1374,10 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
         if ( meal_data.TDDPUMP ){
             if (meal_data.carbs > 30 && iTime < iTimeProfile || iTime < iTimeProfile ){
                 if (meal_data.carbs && iTime >= 15 && iTime <= 19 && iob_data.iob < (max_iob/2) ){
-                var microBolus = (meal_data.mealCOB / eRatio)/2;
-                maxBolusTT = microBolus;
-                //var microBolus =  profile.iTime_Bolus;
-                //maxBolusTT = profile.iTime_Bolus;
+                /*var microBolus = (meal_data.mealCOB / profile.carb_ratio)/2;
+                maxBolusTT = microBolus;*/
+                var microBolus =  profile.iTime_Bolus;
+                maxBolusTT = profile.iTime_Bolus;
                 }else if (! meal_data.carbs && iTime >= 26 && iTime <= 30 && glucose_status.delta >= 5 ){
                 var microBolus =  profile.iTime_Bolus;
                 maxBolusTT = profile.iTime_Bolus;
