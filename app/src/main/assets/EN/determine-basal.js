@@ -478,8 +478,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     enlog += "Experimental test, EBG:"+EBG+", REBG:"+REBG+";\n";
     enlog += "HypoPredBG:"+HypoPredBG+";\n";
 
-    //if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && !profile.use_autoisf && eatingnowtimeOK) {//&& glucose_status.delta <= 0
-    if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && profile.ISFBoost_enabled) {//&& glucose_status.delta <= 0
+    // dont adjust target bg at night
+    if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && profile.ISFBoost_enabled && eatingnowtimeOK) {
         var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
         if (hypo_target <= 90) {
             hypo_target += 10;
