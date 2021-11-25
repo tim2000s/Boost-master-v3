@@ -309,21 +309,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var CurrentTIRinRange = meal_data.currentTIRRange;
         var CurrentTIRAbove = meal_data.currentTIRAbove;
         var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
-        //var tdd7 = meal_data.TDDAIMI7;
-        var tdd_pump = meal_data.TDDPUMP;
-        if (tdd_pump < (basal * 8) && bg < 100){
-        tdd_pump = basal * 8;
-        }else if (tdd_pump < (basal * 8) && bg > 100){
-        tdd_pump = basal * 16;
-        }
-        var tdd7 = (tdd_pump / now) * 24;
-        //var tdd_pump = ( tdd_pump_now / (now / 24));
-        var TDD = (tdd7 * 0.6) + (tdd_pump * 0.4);
+        var tdd7 = meal_data.TDDAIMI7;
+        var tdd_pump_now = meal_data.TDDPUMP;
+        var tdd_pump = (tdd_pump_now / (now / 24));
+        var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
         console.log("tdd7 : "+tdd7);
         console.log("TDD  : "+TDD);
         console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
         var smbTDD = 0;
-        if (tdd_pump < (0.3 * tdd7) && bg > 110) {
+        if (tdd_pump < (0.3 * tdd7)) {
             TDD = (tdd7 * 0.8) + (tdd_pump * 0.2);
             smbTDD = 1;
             console.log("tdd_pump is lesser than 30% tdd7");
