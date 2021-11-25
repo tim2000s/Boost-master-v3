@@ -1520,7 +1520,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             // reduce maxBolus for SMB's if TIR has more lows today than 3 day avg
             //if (TIRBelow < 1 && TIRInRange <1 && TIRAbove == 1 && SMBTime <=7 && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && EatingNowMaxSMB >= maxBolus && insulinReqPct !==0  ) {
-            if (eatingnowtimeOK && TIRBelow < 1 && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && insulinReqPct !==0 && insulinReq >0) {
+            if (eatingnowtimeOK && TIRBelow < 1 && !UAMBoostMAX && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && insulinReqPct !==0 && insulinReq >0) {
                 maxBolus = round(maxBolus*TIRBelow,1);
                 UAMBoostReason += ", TIRLow: maxBolus "+round(TIRBelow*100,0)+"%";
                 //UAMBoostReason += ", TIRLow: SMB<7m";

@@ -406,7 +406,9 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("TDDAIMI7",tddAIMI.averageTDD(tddAIMI.calculate(7)).total);
         mMealData.put("TDDPUMP",tddAIMI.calculateDaily().total);
         StatTIR = new TirCalculator(resourceHelper,profileFunction,dateUtil);
-        int lowMgdl = 80, highMgdl = 144; // 4.4 - 8.0mmol
+        int lowMgdl = (int) Math.min(normal_target_bg-27,72); // minimum 72 = 4.0
+        int highMgdl = (int) (normal_target_bg+45);
+        //int lowMgdl = 80, highMgdl = 144; // 4.4 - 8.0mmol
         mMealData.put("TIR7Above",StatTIR.averageTIR(StatTIR.calculate(7,lowMgdl,highMgdl)).abovePct());
         mMealData.put("TIR7InRange",StatTIR.averageTIR(StatTIR.calculate(7,lowMgdl,highMgdl)).inRangePct());
         mMealData.put("TIR7Below",StatTIR.averageTIR(StatTIR.calculate(7,lowMgdl,highMgdl)).belowPct());
