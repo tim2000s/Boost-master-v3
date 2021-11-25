@@ -1439,8 +1439,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      // set SMB limit for ISFBoost
                     EatingNowMaxSMB = ( profile.ISFBoost_SMBLimit > 0 ? profile.ISFBoost_SMBLimit : maxBolus );
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
-                    // space out the SMB for ISFBoost when boosting after a UAMBoost which should be bigger than ISFBoost bolus
-                    insulinReqPct = ( SMBTime <=7 && meal_data.lastSMBUnits > EatingNowMaxSMB ? 0 : insulinReqPct);
+                    // use maxBolus for ISFBoost when boosting after a UAMBoost when bigger than ISFBoost bolus
+                    EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > EatingNowMaxSMB ? maxBolus : EatingNowMaxSMB);
                     ISFBoosted = true;
                 }
                 // ============== ISF BOOST ============== END ===
