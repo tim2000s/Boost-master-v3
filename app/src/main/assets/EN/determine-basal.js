@@ -617,7 +617,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
 
     // min_bg of 90 -> threshold of 65, 100 -> 70 110 -> 75, and 130 -> 85
-    var threshold = min_bg - 0.5*(min_bg-40);
+    var threshold = Math.max(min_bg - 0.5*(min_bg-40),72); // minimum 72
 
     //console.error(reservoir_data);
     //console.error(reservoir_data);
