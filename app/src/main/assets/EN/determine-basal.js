@@ -385,8 +385,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var iTimeMax = (( new Date(systemTime).getTime() - meal_data.firstBolusCorr ) / 60000);
     var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
     var iTimeOK = (iTime < iTimeWindow || iTimeMax < iTimeMaxWindow);
-    // SMBTime last SMB
+    // SMBTime last SMB in minutes
     var SMBTime = (( new Date(systemTime).getTime() - meal_data.lastSMBTime) / 60000);
+    // CorrTime last manual bolus in minutes
+    var CorrTime = (( new Date(systemTime).getTime() - meal_data.lastBolusCorrTime) / 60000);
     // Threshold for ISF Boost
     var EatingNowBGThreshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowBGThreshold * 18, 1).toFixed(1) : profile.EatingNowBGThreshold);
     if (EatingNowBGThreshold == 0) EatingNowBGThreshold = 180 ; // default is 180 = 10 mmol
@@ -659,8 +661,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var cTime = (( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000);
     //var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,0);
 
-    // if iTime is the same as cTime it means that the carb entry doesnt yet have a correction
-    if (ignoreCOBPatch && cTime < 5 && iTime == cTime && meal_data.lastCarbs > 0 && profile.temptargetSet && target_bg == normalTarget) {
+    // if iTime is the same as cTime it means that the carb entry doesnt yet have a nearby correction. Also check for recent manual correction with CorrTime
+    if (ignoreCOBPatch && cTime < 5 && iTime == cTime && meal_data.lastCarbs > 0 && CorrTime > 5 && profile.temptargetSet && target_bg == normalTarget) {
         enableSMB = true;
         var preBolus = meal_data.lastCarbs / profile.carb_ratio;
         var preBolusPct = profile.EatingNowPrebolusPct;
@@ -674,7 +676,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
     var preBolused = (cTime-iTime)>0 && (cTime-iTime)<5 || meal_data.lastBolusCorrTime == meal_data.lastCarbTime;
     enlog += "* prebolusing:\n";
-    enlog += "preBolused:" + preBolused + ", cTime:" +cTime+ ", iTime:" +iTime+ ", iTimeMax:" +iTimeMax+ ", lastCarbs:" +meal_data.lastCarbs+ ", firstBolusCorr:"+meal_data.firstBolusCorr+"\n";
+    enlog += "preBolused:" + preBolused + ", cTime:" +cTime+ ", iTime:" +iTime+ ", CorrTime:" +CorrTime+ ", lastCarbs:" +meal_data.lastCarbs+ ", firstBolusCorr:"+meal_data.firstBolusCorr+"\n";
     //console.error(meal_data);
     // carb impact and duration are 0 unless changed below
     var ci = 0;
