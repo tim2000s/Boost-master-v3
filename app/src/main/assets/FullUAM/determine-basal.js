@@ -927,7 +927,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log("AIMI V10 24/11/2021");
+                console.log("AIMI V10 25/11/2021");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log("Pump extrapolated TDD = "+tdd_pump);
@@ -1321,50 +1321,22 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             // never bolus more than maxSMBBasalMinutes worth of basal
             var mealInsulinReq = round( meal_data.mealCOB / eRatio ,3);
             if (typeof profile.maxSMBBasalMinutes === 'undefined' ) {
-                var maxBolus = round( profile.current_basal * 30 / 60 ,1);
-                console.error("profile.maxSMBBasalMinutes undefined: defaulting to 30m");
-            // if IOB covers more than COB, limit maxBolus to 30m of basal
-            } else if ( iob_data.iob > mealInsulinReq && iob_data.iob > 0 ) {
-                console.error("IOB",iob_data.iob,"> COB",meal_data.mealCOB+"; mealInsulinReq =",mealInsulinReq);
-                if (profile.maxUAMSMBBasalMinutes) {
-                    console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"basal:",basal);
-                    if ( meal_data.TDDPUMP ){
-                    if (meal_data.carbs > 30 && iTime < iTimeProfile || iTime < iTimeProfile ){
-                        if (smbTDD === 0 && tdd_pump >= tdd7*0.3){
-                            maxBolus = round(basal * profile.iTime_MaxBolus_minutes / 60 ,1);
-                            console.log("iTime_MaxBolus_minutes : "+profile.iTime_MaxBolus_minutes+ "maxBolus : "+maxBolus);
-                        }else if (TriggerPredSMB < 450 && smbTDD === 0 && tdd_pump >= tdd7*0.3){
-                            maxBolus = round(basal * (profile.iTime_MaxBolus_minutes/2) / 60 ,1);
-                            console.log("iTime_MaxBolus_minutes / 2 : "+(profile.iTime_MaxBolus_minutes / 2)+ "maxBolus : "+maxBolus);
+                            var maxBolus = round( profile.current_basal * 30 / 60 ,1);
+                            console.error("profile.maxSMBBasalMinutes undefined: defaulting to 30m");
+                        // if IOB covers more than COB, limit maxBolus to 30m of basal
+                        } else if ( iob_data.iob > mealInsulinReq && iob_data.iob > 0 ) {
+                            console.error("IOB",iob_data.iob,"> COB",meal_data.mealCOB+"; mealInsulinReq =",mealInsulinReq);
+                            if (profile.maxUAMSMBBasalMinutes) {
+                                console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"profile.current_basal:",profile.current_basal);
+                                maxBolus = round( profile.current_basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
+                            } else {
+                                console.error("profile.maxUAMSMBBasalMinutes undefined: defaulting to 30m");
+                                maxBolus = round( profile.current_basal * 30 / 60 ,1);
                             }
-                    }else{
-                    maxBolus = round( basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
-                    }
-                    }else{
-                    maxBolus = round( basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
-                    }
-                } else {
-                    console.error("profile.maxUAMSMBBasalMinutes undefined: defaulting to 30m");
-                    maxBolus = round( basal * 30 / 60 ,1);
-                }
-            } else {
-
-            if ( meal_data.TDDPUMP ){
-                if (meal_data.carbs > 30 && iTime < iTimeProfile || iTime < iTimeProfile ){
-                    if (smbTDD === 0 && tdd_pump >= tdd7*0.3){
-                        maxBolus = round(basal * profile.iTime_MaxBolus_minutes / 60 ,1);
-                        console.log("iTime_MaxBolus_minutes : "+profile.iTime_MaxBolus_minutes+ "maxBolus : "+maxBolus);
-                    }else if (TriggerPredSMB < 450 && smbTDD === 0 && tdd_pump >= tdd7*0.3){
-                        maxBolus = round(basal * (profile.iTime_MaxBolus_minutes/2) / 60 ,1);
-                        console.log("iTime_MaxBolus_minutes / 2 : "+(profile.iTime_MaxBolus_minutes / 2)+ "maxBolus : "+maxBolus);
-                    }
-                }else{
-                maxBolus = round( basal * profile.maxSMBBasalMinutes / 60 ,1);
-                }
-            }
-                console.error("profile.maxSMBBasalMinutes:",profile.maxSMBBasalMinutes,"basal:",basal);
-                maxBolus = round( basal * profile.maxSMBBasalMinutes / 60 ,1);
-            }
+                        } else {
+                            console.error("profile.maxSMBBasalMinutes:",profile.maxSMBBasalMinutes,"profile.current_basal:",profile.current_basal);
+                            maxBolus = round( profile.current_basal * profile.maxSMBBasalMinutes / 60 ,1);
+                        }
             var insulinQ = insulinReq;
             var insulinReqPCT = profile.UAM_InsulinReq/100;
             var InsulinTDD = (TDD * 0.4) / 24;
@@ -1373,7 +1345,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var smb_ratio = determine_varSMBratio(profile, bg, target_bg);
         if ( meal_data.TDDPUMP ){
             if (meal_data.carbs > 30 && iTime < iTimeProfile || iTime < iTimeProfile ){
-                if (meal_data.carbs && iTime >= 15 && iTime <= 19 && iob_data.iob < (max_iob/2) ){
+                if (meal_data.carbs && iTime >= 10 && iTime <= 15 && iob_data.iob < (max_iob/2) ){
                 /*var microBolus = (meal_data.mealCOB / profile.carb_ratio)/2;
                 maxBolusTT = microBolus;*/
                 var microBolus =  profile.iTime_Bolus;
@@ -1383,15 +1355,17 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 maxBolusTT = profile.iTime_Bolus;
                 }else if (iTime < iTimeProfile/2 && smbTDD === 0 && tdd_pump >= tdd7*0.3){
                 insulinReq = insulinReq + InsulinTDD;
+                maxBolusTT = round(basal * profile.iTime_MaxBolus_minutes / 60 ,1);
+                console.log("iTime_MaxBolus_minutes : "+profile.iTime_MaxBolus_minutes+ "maxBolus : "+maxBolus);
                 var microBolus = Math.min(insulinReq*smb_ratio*insulinReqPCT, maxBolusTT);
                 }else if ( iTime < iTimeProfile && iTime > iTimeProfile/2 && smbTDD ===0 && !profile.temptargetSet && tdd_pump >= tdd7*0.3){
+                maxBolusTT = round(basal * (profile.iTime_MaxBolus_minutes/2) / 60 ,1);
+                console.log("iTime_MaxBolus_minutes / 2 : "+(profile.iTime_MaxBolus_minutes / 2)+ "maxBolus : "+maxBolus);
                 var microBolus = Math.min(insulinReq*smb_ratio*insulinReqPCT, maxBolus);
                 }else if(smbTDD === 1 || profile.temptargetSet && target_bg > normalTarget && iTime < iTimeProfile || iTime < iTimeProfile && tdd_pump <= tdd7*0.3 ){
                 insulinReqPCT = 0.8;
                 var microBolus = Math.min(insulinReq*insulinReqPCT, maxBolusTT);
                 }
-            }else{
-                var microBolus = Math.min(insulinReq*smb_ratio, maxBolusTT);
             }
         }else{
         var microBolus = Math.min(insulinReq*smb_ratio, maxBolusTT);
