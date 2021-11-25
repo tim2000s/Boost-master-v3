@@ -1365,7 +1365,11 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 }else if(smbTDD === 1 || profile.temptargetSet && target_bg > normalTarget && iTime < iTimeProfile || iTime < iTimeProfile && tdd_pump <= tdd7*0.3 ){
                 insulinReqPCT = 0.8;
                 var microBolus = Math.min(insulinReq*insulinReqPCT, maxBolusTT);
+                }else{
+                var microBolus = Math.min(insulinReq*smb_ratio, maxBolusTT);
                 }
+            }else{
+            var microBolus = Math.min(insulinReq*smb_ratio, maxBolusTT);
             }
         }else{
         var microBolus = Math.min(insulinReq*smb_ratio, maxBolusTT);
