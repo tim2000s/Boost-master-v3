@@ -471,6 +471,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     //Target adjustment with HypoPredBG - TS
     var EBG = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg;
+    //var EBG = Math.max(0, round((0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg,2));
+
     var REBG = EBG / min_bg;
     enlog += "* target adjustments:\n";
     enlog += "Experimental test, EBG:"+EBG+", REBG:"+REBG+";\n";
