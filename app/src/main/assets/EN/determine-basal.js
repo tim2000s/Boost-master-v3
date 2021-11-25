@@ -948,6 +948,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var future_sens = sens, future_sens_max = false;
     if( glucose_status.delta >= 0 ) {
         future_sens = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
+        // at night future_sens uses current bg to address -ve IOB predictions
+        if (!eatingnowtimeOK) future_sens = ( 277700 / (TDD * bg ));
         console.log("Future state sensitivity is " +future_sens+" based on a weighted average of bg & eventual bg");
     } else {
         future_sens = ( 277700 / (TDD * eventualBG));
@@ -967,7 +969,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // disable future_sens with a TT, at night or when feature not enabled
     if (profile.temptargetSet || !profile.ISFBoost_enabled) future_sens = sens;
-    //if (profile.temptargetSet || !profile.ISFBoost_enabled || !eatingnowtimeOK && bg < EatingNowBGThreshold) future_sens = sens;
     future_sens = round(future_sens,1);
 
     minIOBPredBG = Math.max(39,minIOBPredBG);
