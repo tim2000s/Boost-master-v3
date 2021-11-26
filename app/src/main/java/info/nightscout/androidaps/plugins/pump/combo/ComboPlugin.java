@@ -742,7 +742,7 @@ public class ComboPlugin extends PumpPluginBase implements PumpInterface, Constr
         return setTempBasalPercent(percent, durationInMinutes);
     }
 
-    private PumpEnactResult setTempBasalPercent(Integer percent, Integer durationInMinutes) { //MD: MaxTBR15
+    private PumpEnactResult setTempBasalPercent(Integer percent, final Integer durationInMinutes) {
         getAapsLogger().debug(LTag.PUMP, "setTempBasalPercent called with " + percent + "% for " + durationInMinutes + "min");
 
         if (pumpHistoryChanged && percent > 110) {
@@ -750,13 +750,6 @@ public class ComboPlugin extends PumpPluginBase implements PumpInterface, Constr
                     .comment(getResourceHelper().gs(R.string.combo_high_temp_rejected_due_to_pump_history_changes));
         }
 
-        //MD: MaxTBR15 Begin ============
-        if ( durationInMinutes > 25 && percent > 110 ) {
-            percent = percent + (percent-100);
-            durationInMinutes = 15;
-            getAapsLogger().debug(LTag.PUMP, "High TBR request adjusted to " + percent + "% for " + durationInMinutes + "min");
-        }
-        //MD: MaxTBR15 End ===============
         int adjustedPercent = percent;
 
         if (adjustedPercent > pumpDescription.maxTempPercent) {
@@ -776,9 +769,8 @@ public class ComboPlugin extends PumpPluginBase implements PumpInterface, Constr
         }
 
         int finalAdjustedPercent = adjustedPercent;
-        int finalDurationInMinutes = durationInMinutes; //MD: MaxTBR15
         CommandResult commandResult = runCommand(getResourceHelper().gs(R.string.combo_pump_action_setting_tbr, percent, durationInMinutes),
-                3, () -> ruffyScripter.setTbr(finalAdjustedPercent, finalDurationInMinutes)); //MD: MaxTBR15
+                3, () -> ruffyScripter.setTbr(finalAdjustedPercent, durationInMinutes));
         if (!commandResult.success) {
             return new PumpEnactResult(getInjector()).success(false).enacted(false);
         }
