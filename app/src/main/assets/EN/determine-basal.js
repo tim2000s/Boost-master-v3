@@ -959,9 +959,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
 
     // limit future_sens
-    //future_sens = Math.max(future_sens, ISF_Max);
-    if (iTimeOK && !preBolused && glucose_status.delta >=9) {
-        // unrestricted ISF when iTime and delta sufficient
+    if (iTimeOK && (!preBolused || iTime < iTimeWindow/2) && glucose_status.delta >=9) {
+        // unrestricted ISF when iTime and delta sufficient, if PB first half of the window is unrestricted
         future_sens = future_sens;
     } else {
         // limit future_sens
