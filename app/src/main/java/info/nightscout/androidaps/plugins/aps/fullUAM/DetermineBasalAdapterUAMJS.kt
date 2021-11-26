@@ -259,6 +259,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
 
 
 
+
 //**********************************************************************************************************************************************
         if (profileFunction.getUnits() == GlucoseUnit.MMOL) {
             this.profile.put("out_units", "mmol/L")
