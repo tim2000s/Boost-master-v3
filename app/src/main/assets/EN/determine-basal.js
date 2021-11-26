@@ -952,7 +952,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         future_sens = var_sens_normalTarget / (((Math.max(eventualBG,2.2) * 0.6) + (bg * 0.4)) /normalTarget); // safety * EXPERIMENT *
         // at night or when not boosting use current bg to address -ve IOB predictions
         //if (!eatingnowtimeOK || !iTimeOK) future_sens = ( 277700 / (TDD * bg ));
-        if (!eatingnowtimeOK || !iTimeOK) future_sens = Math.max(variable_sens,future_sens); // safety * EXPERIMENT *
+        if (!eatingnowtimeOK || !iTimeOK) future_sens = (var_sens_normalTarget + variable_sens)/2; // safety * EXPERIMENT * Use an average of profile ISF and current BG ISF
         console.log("Future state sensitivity is " +future_sens+" based on a weighted average of bg & eventual bg");
     } else {
         //future_sens = ( 277700 / (TDD * eventualBG));
