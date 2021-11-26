@@ -971,7 +971,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
 
     // safety * EXPERIMENT * ALWAYS RESTRICTED
-    future_sens = (future_sens > ISF_Max ? ISF_Max : future_sens); // safety * EXPERIMENT *
+    future_sens = (future_sens < ISF_Max ? ISF_Max : future_sens); // safety * EXPERIMENT *
     future_sens_max = (future_sens == ISF_Max); // safety * EXPERIMENT *
 
     // disable future_sens with a TT or when feature not enabled
