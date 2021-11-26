@@ -317,6 +317,7 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("insulinPeakTime", insulinPT);
         mProfile.put("current_basal", basalrate);
         mProfile.put("temptargetSet", tempTargetSet);
+
         mProfile.put("autosens_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_max, "1.2")));
         mProfile.put("autosens_min", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_autosens_min, "0.7")));
         // mod 7e: can I add use autoisf here?
@@ -345,6 +346,12 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("ISF_Max_Scale", sp.getDouble(R.string.key_eatingnow_isf_max_scale, 1));
         mProfile.put("EatingNowBGThreshold", sp.getDouble(R.string.key_eatingnow_bgthreshold, 0));
         mProfile.put("EatingNowPrebolusPct", sp.getDouble(R.string.key_eatingnow_preboluspct, 0.1));
+
+        TempTarget tempTarget = treatmentsPlugin.getTempTargetFromHistory(System.currentTimeMillis());
+        if (tempTarget != null) {
+            mProfile.put("tt_duration", tempTarget.durationInMinutes);
+            mProfile.put("tt_mins_active", tempTarget.getRealTTDuration());
+        }
         // patches ==== END
 
 

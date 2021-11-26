@@ -167,6 +167,18 @@ public class TempTarget implements Interval {
 
     // -------- Interval interface end ---------
 
+//    //MD: TempTarget Info ==== START
+    public int getRealTTDuration() {
+        return getDurationToTime(System.currentTimeMillis());
+    }
+
+    private int getDurationToTime(long time) {
+        long endTime = Math.min(time, end());
+        long msecs = endTime - date;
+        return Math.round(msecs / 60f / 1000);
+    }
+    //MD: TempTarget Info ==== START
+
     public String lowValueToUnitsToString(String units) {
         if (units.equals(Constants.MGDL)) return DecimalFormatter.to0Decimal(low);
         else return DecimalFormatter.to1Decimal(low * Constants.MGDL_TO_MMOLL);
