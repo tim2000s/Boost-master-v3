@@ -970,10 +970,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         future_sens_max = (future_sens == ISF_Max);
     }
 
-    // safety * EXPERIMENT * ALWAYS RESTRICTED
-    future_sens = Math.max(future_sens, ISF_Max); // safety * EXPERIMENT *
-    future_sens_max = (future_sens == ISF_Max); // safety * EXPERIMENT *
-
     // disable future_sens with a TT or when feature not enabled
     if (profile.temptargetSet || !profile.ISFBoost_enabled) future_sens = sens;
     future_sens = round(future_sens,1);
