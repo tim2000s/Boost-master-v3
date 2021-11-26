@@ -664,7 +664,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,0);
 
     // if iTime is the same as cTime it means that the carb entry doesnt yet have a nearby correction. Also check for recent manual correction with CorrTime
-    if (ignoreCOBPatch && cTime < 5 && iTime == cTime && meal_data.lastCarbs > 0 && CorrTime > 5 && profile.temptargetSet && target_bg == normalTarget) {
+    if (profile.temptargetSet && target_bg == normalTarget && profile.tt_duration == 5 && cTime < 5 && iTime == cTime && meal_data.lastCarbs > 0 && CorrTime > 5) {
         enableSMB = true;
         var preBolus = meal_data.lastCarbs / profile.carb_ratio;
         var preBolusPct = profile.EatingNowPrebolusPct;
