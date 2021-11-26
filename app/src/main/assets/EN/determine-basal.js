@@ -429,17 +429,17 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         enlog +="TDDAVG:"+round(tdd_avg,3)+", TDD Pump:"+round(tdd_pump,3)+" and TDD:"+round(TDD,3)+"\n";
     }
 
-    // var variable_sens = (277700 / (TDD * bg));
+    // ISF at normal target
+    //var var_sens_normalTarget = (277700 / (TDD * normalTarget));
+    var var_sens_normalTarget = sens; // use profile for now * EXPERIMENT *
+
     // limit ISF adjustment when above EatingNowBGThreshold
-    var variable_sens = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold)));
+    // var variable_sens = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold)));
     // trying profile.sens for safety
-    var variable_sens = sens;
-
-    //console.log("Current sensitivity is " +variable_sens+" based on current bg");
-    var var_sens_normalTarget = (277700 / (TDD * normalTarget));
-    var var_sens_normalTarget = sens;
-
+    var variable_sens = var_sens_normalTarget/(bg/normalTarget); // * EXPERIMENT *
     variable_sens = round(variable_sens,1);
+    //console.log("Current sensitivity is " +variable_sens+" based on current bg");
+
     enlog +="Current sensitivity is " +variable_sens+" based on current bg\n";
 
     // disable variable ISF with a TT or when feature is disabled
@@ -948,12 +948,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // When Delta is -ve, eventual_bg alone is used.
     var future_sens = sens, future_sens_max = false;
     if( glucose_status.delta >= 0 ) {
-        future_sens = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
+        //future_sens = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
+        future_sens = var_sens_normalTarget / (((eventualBG * 0.6) + (bg * 0.4)) /normalTarget); // safety * EXPERIMENT *
         // at night or when not boosting use current bg to address -ve IOB predictions
-        if (!eatingnowtimeOK || !iTimeOK) future_sens = ( 277700 / (TDD * bg ));
+        //if (!eatingnowtimeOK || !iTimeOK) future_sens = ( 277700 / (TDD * bg ));
+        if (!eatingnowtimeOK || !iTimeOK) future_sens = variable_sens; // safety * EXPERIMENT *
         console.log("Future state sensitivity is " +future_sens+" based on a weighted average of bg & eventual bg");
     } else {
-        future_sens = ( 277700 / (TDD * eventualBG));
+        //future_sens = ( 277700 / (TDD * eventualBG));
+        future_sens = var_sens_normalTarget / (eventualBG/normalTarget); // safety * EXPERIMENT *
         console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
     }
 
@@ -967,7 +970,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         future_sens_max = (future_sens == ISF_Max);
     }
 
-    // disable future_sens with a TT, at night or when feature not enabled
+    // safety * EXPERIMENT * ALWAYS RESTRICTED
+    future_sens = Math.max(future_sens, ISF_Max); // safety * EXPERIMENT *
+    future_sens_max = (future_sens == ISF_Max); // safety * EXPERIMENT *
+
+    // disable future_sens with a TT or when feature not enabled
     if (profile.temptargetSet || !profile.ISFBoost_enabled) future_sens = sens;
     future_sens = round(future_sens,1);
 
