@@ -430,8 +430,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
 
     // ISF at normal target
-    //var sens_normalTarget = (277700 / (TDD * normalTarget));
     var sens_normalTarget = sens; // use profile for now * EXPERIMENT *
+    var sens_TDD = round((277700 / (TDD * normalTarget)),1);
+
 
     // limit ISF adjustment when above EatingNowBGThreshold
     // var sens_currentBG = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold)));
@@ -1089,7 +1090,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // extra reason text
     if (liftISF > 1) rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     rT.reason += ", SR: " + sensitivityRatio; //MD Add AS to openaps reason for the app
-    rT.reason += ", TDD: " + round(TDD, 2);
+    rT.reason += ", TDD: " + round(TDD, 2) + " ("+sens_TDD+")";
     rT.reason += ", TIR3v1:L" + TIR3Below + "/" + TIR1Below + ",H" + TIR3Above+ "/" + TIR1Above;
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
