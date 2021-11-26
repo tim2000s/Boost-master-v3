@@ -370,7 +370,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
     //console.error("CR:", );
 
-    var ISFBoost = 1; // default is no ISFBoost
     // TIR 1 (now),3 & 7 day average
     var TIR7Below = meal_data.TIR7Below, TIR7InRange = meal_data.TIR7InRange, TIR7Above = meal_data.TIR7Above;
     var TIR3Below = meal_data.TIR3Below, TIR3InRange = meal_data.TIR3InRange, TIR3Above = meal_data.TIR3Above;
@@ -433,11 +432,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // var variable_sens = (277700 / (TDD * bg));
     // limit ISF adjustment when above EatingNowBGThreshold
     var variable_sens = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold)));
+    // trying profile.sens for safety
+    var variable_sens = sens;
+
     //console.log("Current sensitivity is " +variable_sens+" based on current bg");
-    //variable_sens /= TIRBelow; // apply sensitivity based on TIR data
-    //if (TIRBelow<1) console.log("Current sensitivity adjusted to " +variable_sens+" based on TIRBelow " + TIRBelow);
     var var_sens_normalTarget = (277700 / (TDD * normalTarget));
-    //var_sens_normalTarget /= TIRBelow; // apply sensitivity based on TIR data
+    var var_sens_normalTarget = sens;
 
     variable_sens = round(variable_sens,1);
     enlog +="Current sensitivity is " +variable_sens+" based on current bg\n";
@@ -450,7 +450,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // *****                           End of automated TDD code                                *****
     // **********************************************************************************************
 
-    ISFBoost = (variable_sens/sens);
     sens = variable_sens;
     //sens = var_sens_normalTarget; // just try this as future_sens will still be working
 
@@ -1075,7 +1074,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + ", Exp Delta: " + expectedDelta + ", ISF: " + convert_bg(variable_sens, profile) + (ISFBoost !=1 ? "(" + convert_bg(var_sens_normalTarget, profile) + ")" + convert_bg(future_sens, profile) : "") + (future_sens_max ? "*" : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + ", Exp Delta: " + expectedDelta + ", ISF: " + convert_bg(variable_sens, profile) + (profile.ISFBoost_enabled ? "(" + convert_bg(var_sens_normalTarget, profile) + ")" + convert_bg(future_sens, profile) : "") + (future_sens_max ? "*" : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
 
     if (lastCOBpredBG > 0) {
         rT.reason += ", COBpredBG " + convert_bg(lastCOBpredBG, profile);
@@ -1438,7 +1437,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== ISF BOOST ============== START ===
                 // For BG rises that dont meet the UAMBoost criteria using adjusted target_bg
-                if (ISFBoost <1 && !UAMBoosted && eventualBG > target_bg) {
+                if (profile.ISFBoost_enabled && !UAMBoosted && eventualBG > target_bg) {
                      // set SMB limit for ISFBoost
                     EatingNowMaxSMB = ( profile.ISFBoost_SMBLimit > 0 ? profile.ISFBoost_SMBLimit : maxBolus );
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
@@ -1553,7 +1552,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // Daytime TBR if below threshold and not in a boost window ** EXPERIMENTAL **
             if (eatingnowtimeOK && bg < EatingNowBGThreshold && !iTimeOK)  {
                 var minSMB = round(((TDD * 0.4) / 24 )*roundSMBTo)/roundSMBTo;
-                minSMB = Math.min(minSMB,maxBolus); // cen never be more than maxBolus
+                minSMB = Math.min(minSMB,maxBolus); // can never be more than maxBolus
                 microBolus = (microBolus >= minSMB ? microBolus : 0);
                 UAMBoostReason += (microBolus == 0 ? ", minSMB" + minSMB : "");
             }
@@ -1605,7 +1604,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.boostType = ( "SMB" );
                     rT.boostType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : rT.boostType );
                     rT.boostType = (lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "UAM" : rT.boostType );
-                    rT.boostType = ( ISFBoost < 1 ? "ISFBoost" : rT.boostType );
+                    rT.boostType = ( ISFBoosted ? "ISFBoost" : rT.boostType );
                     // insulin was boosted
                     rT.boostType = ( UAMBoosted && insulinReqBoost > 0 ? "UAMBoost" : rT.boostType );
                     rT.boostType = ( UAMBoosted && UAMBoostMAX && insulinReqBoost > 0 ? "UAMBoost-MAX" : rT.boostType );
