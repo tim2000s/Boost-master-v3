@@ -59,11 +59,11 @@ in this case a calculation : microBolus = (COB / eRatio)/2 => !!!!!consider if y
  of insulin. But in some rare case TDD can be higher and if you start for the first time the aaps
   v3 or beta dev actually, no TDD possible. Then i think about this pb and decide to test a
   projection of the current daily insulin. my last two days were working great. i will make it
-  better but this version is working nicely and base on the current day only. i let in the
-  meal_data log the value of the average on 7 days.
+  better but this version is working nicely and base on the current day only.
   theoricaly(i will test it on a new phone soon) you can start this plugin if no data.
 
  Out of the iTime window you have :
  -Automated target management
  -smbRatio function => this one will change the % of insulin required, start at 50% until 100%,
  for the variability, and you have a fixe % varaible too in the settings.
+ -smb_max_range_extension who is  a scale of maxuamminutesbasale
