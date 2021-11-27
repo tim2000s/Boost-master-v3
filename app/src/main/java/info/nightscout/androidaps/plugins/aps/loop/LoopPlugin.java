@@ -774,10 +774,10 @@ public class LoopPlugin extends PluginBase implements LoopInterface {
         DetailedBolusInfo detailedBolusInfo = new DetailedBolusInfo();
         detailedBolusInfo.lastKnownBolusTime = treatmentsPlugin.getLastBolusTime();
         detailedBolusInfo.eventType = CareportalEvent.CORRECTIONBOLUS;
-        detailedBolusInfo.eventType = (request.boostType.equals("") ? CareportalEvent.CORRECTIONBOLUS : request.boostType);
+        detailedBolusInfo.eventType = (request.SMBType.equals("") ? CareportalEvent.CORRECTIONBOLUS : request.SMBType);
         detailedBolusInfo.insulin = request.smb;
         //detailedBolusInfo.isSMB = true;
-        detailedBolusInfo.isSMB = (request.boostType.equals("Prebolus") ? false : true);
+        detailedBolusInfo.isSMB = (request.SMBType.equals("Prebolus") ? false : true);
         detailedBolusInfo.source = Source.USER;
         detailedBolusInfo.deliverAt = request.deliverAt;
         getAapsLogger().debug(LTag.APS, "applyAPSRequest: bolus()");

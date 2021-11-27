@@ -71,8 +71,8 @@ public class DetermineBasalResultEN extends APSResult {
                 }
             }
 
-            if (result.has("boostType")) {
-                boostType = result.getString("boostType");
+            if (result.has("SMBType")) {
+                SMBType = result.getString("SMBType");
             }
 
         } catch (JSONException e) {

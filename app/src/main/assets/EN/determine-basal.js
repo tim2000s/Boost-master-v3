@@ -672,7 +672,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         preBolus = round(preBolus,1);
         rT.units = preBolus;
         rT.insulinReq = rT.units;
-        rT.boostType = "Prebolus";
+        rT.SMBType = "Prebolus";
         rT.reason = esc_text(meal_data.lastCarbs +"g COB " + round(cTime) + "m ago, CR:"+ round(profile.carb_ratio)+" Bolusing " + round(preBolusPct*100) + "% = " + rT.units + "U");
         return rT;
     }
@@ -1608,14 +1608,20 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (microBolus > 0) {
                     rT.units = microBolus;
                     rT.reason += "Microbolusing " + microBolus + "/" + maxBolus + "U. ";
-                    // add the boost type if applicable
-                    rT.boostType = ( "SMB" );
-                    rT.boostType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : rT.boostType );
-                    rT.boostType = (lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "UAM" : rT.boostType );
-                    rT.boostType = ( ISFBoosted ? "ISFBoost" : rT.boostType );
-                    // insulin was boosted
-                    rT.boostType = ( UAMBoosted && insulinReqBoost > 0 ? "UAMBoost" : rT.boostType );
-                    rT.boostType = ( UAMBoosted && UAMBoostMAX && insulinReqBoost > 0 ? "UAMBoost-MAX" : rT.boostType );
+                    rT.SMBType = ( "SMB" );
+                    // if insulinReq is more than original then we boosted
+                    if (ISFBoosted || UAMBoosted) {
+                        // ISF related boost
+                        rT.SMBType = ( ISFBoosted && sens_future < sens_normalTarget ? "ISF" : rT.SMBType );
+                        rT.SMBType += (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "-COB" : "" );
+                        rT.SMBType += (lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "-UAM" : "" );
+                        // UAM related boost
+                        rT.SMBType = ( UAMBoosted ? "UAMBoost" : rT.SMBType );
+                        rT.SMBType = ( UAMBoosted && UAMBoostMAX ? "UAMBoost-MAX" : rT.SMBType );
+                    } else {
+                        rT.SMBType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : rT.SMBType );
+                        rT.SMBType = (lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "UAM" : rT.SMBType );
+                    }
                 }
             } else {
                 rT.reason += "Waiting " + nextBolusMins + "m " + nextBolusSeconds + "s to microbolus again. ";
