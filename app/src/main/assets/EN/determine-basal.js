@@ -455,60 +455,60 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
 
 
-//    var eRatio = round(sens / 13.2);
-//    //console.error("CR:",eRatio);
-//    enlog +="eRatio CR:"+eRatio+"\n";
-//    //var iob_scale = (profile.W2_IOB_threshold/100) * max_iob;
-//    var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-//    var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-//    var HyperPredBGTest = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-//    var HyperPredBGTest2 = round( bg - (iob_data.iob * sens) ) + round( 180 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-//    var HyperPredBGTest3 = round( bg - (iob_data.iob * sens) ) + round( 120 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-//    var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
-//
-//    var csf = profile.sens / profile.carb_ratio;
-//
-//
-//    //Target adjustment with HypoPredBG - TS
-//    var EBG = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg;
-//    //var EBG = Math.max(0, round((0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg,2));
-//
-//    var REBG = EBG / min_bg;
-//    enlog += "* target adjustments:\n";
-//    enlog += "Experimental test, EBG:"+EBG+", REBG:"+REBG+";\n";
-//    enlog += "HypoPredBG:"+HypoPredBG+";\n";
-//
-//    // dont adjust target bg at night
-//    if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && profile.ISFBoost_enabled && eatingnowtimeOK) {
-//        var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
-//        if (hypo_target <= 90) {
-//            hypo_target += 10;
-//            enlog += "target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+";\n";
-//        } else if (target_bg === hypo_target) {
-//            enlog += "target_bg unchanged: "+hypo_target+";\n";
-//        } else {
-//            enlog += "target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+";\n";
-//        }
-//
-//        target_bg = hypo_target;
-//        halfBasalTarget = 160;
-//        var c = halfBasalTarget - normalTarget;
-//        //sensitivityRatio = c/(c+target_bg-normalTarget);
-//        sensitivityRatio = REBG;
-//        // limit sensitivityRatio to profile.autosens_max (1.2x by default)
-//        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
-//        // restrict SR to 1 max if using advanced ISF hence sens_currentBG may help with overnight low allowing basal to be adjusted
-//        sensitivityRatio = (profile.ISFBoost_enabled ? Math.min(sensitivityRatio,1) : sensitivityRatio);
-//        sensitivityRatio = round(sensitivityRatio,2);
-//        enlog += "Sensitivity ratio (REBG) set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
-//        basal = profile.current_basal * sensitivityRatio;
-//        basal = round_basal(basal, profile);
-//        if (basal !== profile_current_basal) {
-//            enlog += "Adjusting basal from "+profile_current_basal+" to "+basal+";\n";
-//        } else {
-//            enlog += "Basal unchanged: "+basal+";\n";
-//        }
-//    }
+    var eRatio = round(sens / 13.2);
+    //console.error("CR:",eRatio);
+    enlog +="eRatio CR:"+eRatio+"\n";
+    //var iob_scale = (profile.W2_IOB_threshold/100) * max_iob;
+    var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var HyperPredBGTest = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var HyperPredBGTest2 = round( bg - (iob_data.iob * sens) ) + round( 180 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var HyperPredBGTest3 = round( bg - (iob_data.iob * sens) ) + round( 120 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
+
+    var csf = profile.sens / profile.carb_ratio;
+
+
+    //Target adjustment with HypoPredBG - TS
+    var EBG = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg;
+    //var EBG = Math.max(0, round((0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg,2));
+
+    var REBG = EBG / min_bg;
+    enlog += "* target adjustments:\n";
+    enlog += "Experimental test, EBG:"+EBG+", REBG:"+REBG+";\n";
+    enlog += "HypoPredBG:"+HypoPredBG+";\n";
+
+    // dont adjust target bg at night
+    if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && profile.ISFBoost_enabled && eatingnowtimeOK) {
+        var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
+        if (hypo_target <= 90) {
+            hypo_target += 10;
+            enlog += "target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+";\n";
+        } else if (target_bg === hypo_target) {
+            enlog += "target_bg unchanged: "+hypo_target+";\n";
+        } else {
+            enlog += "target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+";\n";
+        }
+
+        target_bg = hypo_target;
+        halfBasalTarget = 160;
+        var c = halfBasalTarget - normalTarget;
+        //sensitivityRatio = c/(c+target_bg-normalTarget);
+        sensitivityRatio = REBG;
+        // limit sensitivityRatio to profile.autosens_max (1.2x by default)
+        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+        // restrict SR to 1 max if using advanced ISF hence sens_currentBG may help with overnight low allowing basal to be adjusted
+        sensitivityRatio = (profile.ISFBoost_enabled ? Math.min(sensitivityRatio,1) : sensitivityRatio);
+        sensitivityRatio = round(sensitivityRatio,2);
+        enlog += "Sensitivity ratio (REBG) set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
+        basal = profile.current_basal * sensitivityRatio;
+        basal = round_basal(basal, profile);
+        if (basal !== profile_current_basal) {
+            enlog += "Adjusting basal from "+profile_current_basal+" to "+basal+";\n";
+        } else {
+            enlog += "Basal unchanged: "+basal+";\n";
+        }
+    }
 
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
