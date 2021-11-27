@@ -474,9 +474,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //var EBG = Math.max(0, round((0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg,2));
 
     var REBG = EBG / min_bg;
-    enlog += "* target adjustments:\n";
-    enlog += "Experimental test, EBG:"+EBG+", REBG:"+REBG+";\n";
-    enlog += "HypoPredBG:"+HypoPredBG+";\n";
+//    enlog += "* target adjustments:\n";
+//    enlog += "Experimental test, EBG:"+EBG+", REBG:"+REBG+";\n";
+//    enlog += "HypoPredBG:"+HypoPredBG+";\n";
 
     // dont adjust target bg at night
     if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && profile.ISFBoost_enabled && eatingnowtimeOK) {
@@ -942,6 +942,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // set eventualBG based on COB or UAM predBGs
         rT.eventualBG = eventualBG;
     }
+    enlog += "* target adjustments:\n";
+    enlog += "Experimental test, EBG:"+EBG+", REBG:"+REBG+";\n";
+    enlog += "eventualBG:"+eventualBG+"\n";
+    enlog += "HypoPredBG:"+HypoPredBG+";\n";
 
     console.error("UAM Impact:",uci,"mg/dL per 5m; UAM Duration:",UAMduration,"hours");
 
