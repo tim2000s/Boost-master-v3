@@ -963,15 +963,18 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("Future state sensitivity is " +sens_future+" based on eventual bg due to -ve delta");
     }
 
-    // limit sens_future
-    if (iTimeOK && !preBolused && glucose_status.delta >=9) {
-        // unrestricted ISF when iTime and delta sufficient, if PB first half of the window is unrestricted
-        sens_future = sens_future;
-    } else {
-        // limit sens_future
-        sens_future = Math.max(sens_future, ISF_Max);
-        sens_future_max = (sens_future == ISF_Max);
-    }
+    // limit sens_future ALL THE TIME!
+    sens_future = Math.max(sens_future, ISF_Max);
+    sens_future_max = (sens_future == ISF_Max);
+
+//    if (iTimeOK && !preBolused && glucose_status.delta >=9) {
+//        // unrestricted ISF when iTime and delta sufficient, if PB first half of the window is unrestricted
+//        sens_future = sens_future;
+//    } else {
+//        // limit sens_future
+//        sens_future = Math.max(sens_future, ISF_Max);
+//        sens_future_max = (sens_future == ISF_Max);
+//    }
 
     // disable sens_future with a TT or when feature not enabled
     if (profile.temptargetSet || !profile.ISFBoost_enabled) sens_future = sens;
