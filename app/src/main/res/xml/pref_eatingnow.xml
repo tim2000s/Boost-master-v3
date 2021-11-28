@@ -419,9 +419,9 @@
                     android:inputType="numberDecimal"
                     android:key="@string/key_eatingnow_isf_max_scale"
                     android:title="ISF Max Scale"
-                    android:dialogMessage="Scale profile ISF to maximum ISF when advanced ISF is being used\n1 is no scale, 0.5 is half the ISF"
-                    validate:floatmaxNumber="1"
-                    validate:floatminNumber="0.2"
+                    android:dialogMessage="Divide current ISF when advanced ISF is being used\n1 is no adjustment, 2 is half the ISF"
+                    validate:floatmaxNumber="3"
+                    validate:floatminNumber="1"
                     validate:testType="floatNumericRange"/>
 
             </PreferenceCategory>

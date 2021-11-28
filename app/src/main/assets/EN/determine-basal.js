@@ -394,7 +394,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // Limit ISF to profile ISF with this scale
     var ISF_Max = round (profile.sens * profile.ISF_Max_Scale,1);
     enlog += "* advanced ISF:\n";
-    enlog += "ISF_Max:" + ISF_Max+"\n";
 
     if (TIRAbove >1 && TIRBelow == 1 && bg > EatingNowBGThreshold) {
         enlog += "TIRAbove:" + TIRAbove+"\n";
@@ -432,7 +431,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // ISF at normal target
     var sens_normalTarget = sens; // use profile for now * EXPERIMENT *
     var sens_TDD = round((277700 / (TDD * normalTarget)),1);
-
+    // Limit ISF with this scale like AS
+    var ISF_Max = round (sens_normalTarget / profile.ISF_Max_Scale,1);
+    enlog += "ISF_Max:" + ISF_Max+"\n";
 
     // limit ISF adjustment when above EatingNowBGThreshold
     // var sens_currentBG = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold)));
