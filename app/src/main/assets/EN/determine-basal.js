@@ -369,7 +369,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
     //console.error("CR:", );
-    rT.reason += ", SR1: " + sensitivityRatio; //MD Add AS to openaps reason for the app
+    var SR1 = sensitivityRatio; //MD Add AS to openaps reason for the app
 
     // TIR 1 (now),3 & 7 day average
     var TIR7Below = meal_data.TIR7Below, TIR7InRange = meal_data.TIR7InRange, TIR7Above = meal_data.TIR7Above;
@@ -510,7 +510,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             enlog += "Basal unchanged: "+basal+";\n";
         }
     }
-    rT.reason += ", SR2: " + sensitivityRatio; //MD Add AS to openaps reason for the app
+    var SR2 = sensitivityRatio; //MD Add AS to openaps reason for the app
 
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
@@ -1099,6 +1099,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
     // extra reason text
     if (liftISF > 1) rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
+    rT.reason += ", SR: " + SR1 + "," + SR2;
     rT.reason += ", TDD: " + round(TDD, 2) + " ("+convert_bg(sens_TDD, profile)+")";
     rT.reason += ", TIR3v1:L" + TIR3Below + "/" + TIR1Below + ",H" + TIR3Above+ "/" + TIR1Above;
     rT.reason += "; ";
