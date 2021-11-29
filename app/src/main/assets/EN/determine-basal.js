@@ -932,7 +932,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // future-sens is calculated using 0.6 * eventual_bg and 0.4 * current bg, to reduce the risk of overdosing.
     // When Delta is -ve, eventual_bg alone is used.
     var sens_future = sens, sens_future_max = false;
-    if( glucose_status.delta >= 0 && bg > threshold) {
+    if( glucose_status.delta >= 0) {
         //sens_future = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
         sens_future = sens_normalTarget / (((Math.max(eventualBG,2.2) * 0.6) + (bg * 0.4)) /normalTarget); // safety * EXPERIMENT *
         // at night or when not boosting use current bg to address -ve IOB predictions
@@ -947,7 +947,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("Future state sensitivity is " +sens_future+" based on eventual bg due to -ve delta");
     }
 
-    // limit sens_future ALL THE TIME!
+    // if BG below threshold then take the max of the sens vars
+    sens_future = (bg <= threshold ? Math.max(sens_normalTarget, sens_currentBG, sens_future) : sens_future);
+    // limit sens_future to ISF_Max and if limited set sens_future_max to true for reason
     sens_future = Math.max(sens_future, ISF_Max);
     sens_future_max = (sens_future == ISF_Max);
 
