@@ -328,21 +328,21 @@ public class DetermineBasalAdapterENJS {
 
         // patches ==== START
         mProfile.put("enableGhostCOB", sp.getBoolean(R.string.key_use_ghostcob, false));
-        mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3) * profile.getPercentage()/100);
+        mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3));
         mProfile.put("EatingNowTimeStart", sp.getInt(R.string.key_eatingnow_timestart, 9));
         mProfile.put("EatingNowTimeEnd", sp.getInt(R.string.key_eatingnow_timeend, 17));
         mProfile.put("EatingNowinsulinReqPct",SafeParse.stringToDouble(sp.getString(R.string.key_eatingnow_insulinreqpct,"65")));
 
         mProfile.put("UAMBoost_Bolus_Scale", sp.getDouble(R.string.key_eatingnow_uamboost_bolus_scale, 0));
-        mProfile.put("UAMBoost_SMBLimit", sp.getDouble(R.string.key_eatingnow_uamboost_smblimit, 0) * profile.getPercentage()/100);
+        mProfile.put("UAMBoost_SMBScale", sp.getDouble(R.string.key_eatingnow_uamboost_smbscale, 1));
         mProfile.put("iTimeWindow", sp.getInt(R.string.key_eatingnow_itimeminutes, 15));
 
         mProfile.put("UAMBoostMAX_Bolus_Scale", sp.getDouble(R.string.key_eatingnow_uamboostmax_bolus_scale, 0));
-        mProfile.put("UAMBoostMAX_SMBLimit", sp.getDouble(R.string.key_eatingnow_uamboostmax_smblimit, 0)* profile.getPercentage()/100);
+        mProfile.put("UAMBoostMAX_SMBScale", sp.getDouble(R.string.key_eatingnow_uamboostmax_smbscale, 1));
         mProfile.put("iTimeMaxWindow", sp.getInt(R.string.key_eatingnow_itime1minutes, 15));
 
         mProfile.put("ISFBoost_enabled", sp.getBoolean(R.string.key_eatingnow_use_advanced_isf, false));
-        mProfile.put("ISFBoost_SMBLimit", sp.getDouble(R.string.key_eatingnow_isfboost_smblimit, 0));
+        mProfile.put("ISFBoost_SMBScale", sp.getDouble(R.string.key_eatingnow_isfboost_smbscale, 1));
         mProfile.put("ISF_Max_Scale", sp.getDouble(R.string.key_eatingnow_isf_max_scale, 1));
         mProfile.put("EatingNowBGThreshold", sp.getDouble(R.string.key_eatingnow_bgthreshold, 0));
         mProfile.put("EatingNowPrebolusPct", sp.getDouble(R.string.key_eatingnow_preboluspct, 0.1));

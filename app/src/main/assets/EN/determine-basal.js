@@ -1404,7 +1404,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // calculate the insulin boost
                     insulinReqBoost = UAMBoost * UAMBoost_bolus * UAMBoost_bolus_scale;
                     // set SMB limit for UAMBoost or UAMBoostMAX
-                    EatingNowMaxSMB = ( UAMBoostMAX ? profile.UAMBoostMAX_SMBLimit : profile.UAMBoost_SMBLimit );
+                    EatingNowMaxSMB = maxBolus * ( UAMBoostMAX ? profile.UAMBoostMAX_SMBScale : profile.UAMBoost_SMBScale );
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
                     // recent SMB that was bigger than maxBolus restrict next UAM SMB size
                     EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > maxBolus ? maxBolus : EatingNowMaxSMB);
@@ -1424,7 +1424,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // For BG rises that dont meet the UAMBoost criteria using adjusted target_bg
                 if (profile.ISFBoost_enabled && !UAMBoosted && eventualBG > target_bg) {
                      // set SMB limit for ISFBoost
-                    EatingNowMaxSMB = ( profile.ISFBoost_SMBLimit > 0 ? profile.ISFBoost_SMBLimit : maxBolus );
+                    EatingNowMaxSMB = maxBolus * profile.ISFBoost_SMBScale;
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // use maxBolus for ISFBoost when boosting after a UAMBoost when bigger than ISFBoost bolus
                     EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > EatingNowMaxSMB ? maxBolus : EatingNowMaxSMB);

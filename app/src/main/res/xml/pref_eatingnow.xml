@@ -341,13 +341,13 @@
                     validate:testType="floatNumericRange"/>
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                    android:defaultValue="0.0"
+                    android:defaultValue="1"
                     android:inputType="numberDecimal"
-                    android:key="@string/key_eatingnow_uamboost_smblimit"
-                    android:title="UAMBoost SMB Limit"
-                    android:dialogMessage="UAMBoost SMB limit for BGL rises\n0 will use maxBolus"
-                    validate:floatmaxNumber="5.0"
-                    validate:floatminNumber="0.0"
+                    android:key="@string/key_eatingnow_uamboost_smbscale"
+                    android:title="UAMBoost SMB Scale Limit"
+                    android:dialogMessage="UAMBoost SMB Scale limit for BGL rises\n1 will use maxBolus, 2 will double the maxBolus allowance"
+                    validate:floatmaxNumber="3"
+                    validate:floatminNumber="1"
                     validate:testType="floatNumericRange"/>
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
@@ -378,13 +378,13 @@
                     validate:testType="floatNumericRange"/>
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                    android:defaultValue="0.0"
+                    android:defaultValue="1"
                     android:inputType="numberDecimal"
-                    android:key="@string/key_eatingnow_uamboostmax_smblimit"
-                    android:title="UAMBoostMAX SMB Limit"
-                    android:dialogMessage="UAMBoostMAX SMB limit for BGL rises within first bolus window\n0 will use maxBolus"
+                    android:key="@string/key_eatingnow_uamboostmax_smbscale"
+                    android:title="UAMBoostMAX SMB Scale Limit"
+                    android:dialogMessage="UAMBoostMAX SMB limit for BGL rises within first bolus window\n1 will use maxBolus, 2 will double the maxBolus allowance"
                     validate:floatmaxNumber="5.0"
-                    validate:floatminNumber="0.0"
+                    validate:floatminNumber="1"
                     validate:testType="floatNumericRange"/>
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
@@ -405,13 +405,13 @@
                 app:initialExpandedChildrenCount="0">
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                    android:defaultValue="0.0"
+                    android:defaultValue="1"
                     android:inputType="numberDecimal"
-                    android:key="@string/key_eatingnow_isfboost_smblimit"
-                    android:title="ISFBoost SMB Limit"
-                    android:dialogMessage="ISFBoost SMB Limit for BGL rises\n0 will use maxBolus"
-                    validate:floatmaxNumber="5.0"
-                    validate:floatminNumber="0.0"
+                    android:key="@string/key_eatingnow_isfboost_smbscale"
+                    android:title="ISFBoost SMB Scale Limit"
+                    android:dialogMessage="ISFBoost SMB scale for BGL rises\n1 will use maxBolus, 2 will double the maxBolus allowance"
+                    validate:floatmaxNumber="3"
+                    validate:floatminNumber="1"
                     validate:testType="floatNumericRange"/>
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
