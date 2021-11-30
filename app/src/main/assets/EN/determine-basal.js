@@ -431,6 +431,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // ISF at normal target
     var sens_normalTarget = sens; // use profile for now * EXPERIMENT *
     var sens_TDD = round((277700 / (TDD * normalTarget)),1);
+    var sens_avg = (sens_normalTarget+sens_TDD)/2;
     // Limit ISF with this scale like AS
     var ISF_Max = round (sens_normalTarget / profile.ISF_Max_Scale,1);
     enlog += "ISF_Max:" + ISF_Max+"\n";
@@ -1070,7 +1071,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // extra reason text
     if (liftISF > 1) rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     rT.reason += ", SR: " + sensitivityRatio;
-    rT.reason += ", TDD: " + round(TDD, 2) + " ("+convert_bg(sens_TDD, profile)+")";
+    rT.reason += ", TDD: " + round(TDD, 2) + " ("+convert_bg(sens_TDD, profile)+"/"+convert_bg(sens_avg, profile)+")";
     rT.reason += ", TIR3v1:L" + TIR3Below + "/" + TIR1Below + ",H" + TIR3Above+ "/" + TIR1Above;
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
