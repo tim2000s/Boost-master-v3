@@ -1373,7 +1373,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //console.log("UAMBoost: " + UAMBoost);
 
             // START === if we are eating now and BGL prediction is higher than normal target ===
-            if (eatingnow && eventualBG > normalTarget) {
+            if (eatingnow && eventualBG > normalTarget && iTimeOK) {
                 UAMBoostReason = ""; //blank boost reason to prepare for boost info
 
                 // EN insulinReqPct is used from the profile
