@@ -722,6 +722,28 @@ public class TreatmentService extends OrmLiteBaseService<DatabaseHelper> {
         }
     }
 
+    /**
+     * Returns the first record with carbs > 0 after Eating Now start
+     */
+    @Nullable
+    public Treatment getFirstCarb(String ENStartTime) {
+        try {
+            QueryBuilder<Treatment, Long> queryBuilder = getDao().queryBuilder();
+            Where where = queryBuilder.where();
+            where.gt("carbs", 0);
+            where.and().ge("date", DateUtil.toTodayTime(ENStartTime));
+            where.and().eq("isValid", true);
+            queryBuilder.orderBy("date", false);
+            queryBuilder.limit(1L);
+
+            List<Treatment> result = getDao().query(queryBuilder.prepare());
+            if (result.isEmpty())
+                return null;
+            return result.get(0);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Returns the newest record with carbs > 0

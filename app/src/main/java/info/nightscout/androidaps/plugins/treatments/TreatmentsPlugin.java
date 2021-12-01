@@ -394,6 +394,18 @@ public class TreatmentsPlugin extends PluginBase implements TreatmentsInterface 
         }
     }
 
+    public long getFirstCarbTime(int ENStartTime) {
+        String timeString = ENStartTime+":00";
+        Treatment last = getService().getFirstCarb(timeString);
+        if (last == null) {
+            getAapsLogger().debug(LTag.DATATREATMENTS, "First Carb time since EN start time: NOTHING FOUND");
+            return 0;
+        } else {
+            getAapsLogger().debug(LTag.DATATREATMENTS, "First Carb time since EN start time: " + dateUtil.dateAndTimeString(last.date));
+            return last.date;
+        }
+    }
+
     public long getLastCarbTime() {
         Treatment last = getService().getLastCarb();
         if (last == null) {

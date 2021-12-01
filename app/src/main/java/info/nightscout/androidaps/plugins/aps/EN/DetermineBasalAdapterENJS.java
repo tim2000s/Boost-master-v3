@@ -399,6 +399,7 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("slopeFromMaxDeviation", mealData.slopeFromMaxDeviation);
         mMealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation);
         mMealData.put("lastBolusTime", mealData.lastBolusTime);
+        mMealData.put("firstCarbTime", treatmentsPlugin.getFirstCarbTime(sp.getInt(R.string.key_eatingnow_timestart, 9)));
         mMealData.put("lastCarbTime", mealData.lastCarbTime);
         mMealData.put("lastCarbs", treatmentsPlugin.getLastCarbs());
         mMealData.put("lastBolusCorrTime",treatmentsPlugin.getLastBolusTypeTime(false));
