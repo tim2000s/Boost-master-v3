@@ -432,6 +432,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var sens_normalTarget = sens; // use profile for now * EXPERIMENT *
     var sens_TDD = round((277700 / (TDD * normalTarget)),1);
     var sens_avg = (sens_normalTarget+sens_TDD)/2;
+    var sens_normalTarget = sens_avg; // Try the average ISF, ISF Max will move with this avg
+
     // Limit ISF with this scale like AS
     var ISF_Max = round (sens_normalTarget / profile.ISF_Max_Scale,1);
     enlog += "ISF_Max:" + ISF_Max+"\n";
