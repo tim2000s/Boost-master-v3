@@ -1592,18 +1592,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.reason += "Microbolusing " + microBolus + "/" + maxBolus + "U";
                     rT.reason += (EatingNowMaxCOBSMB > 0 ? " (COB@"+ round(profile.EatingNowPrebolusPct*100)+"%)." : ".");
                     rT.SMBType = ( "SMB" );
-                    // if insulinReq is more than original then we boosted
-                    if (ISFBoosted || UAMBoosted) {
-                        // ISF related boost
-                        rT.SMBType = ( ISFBoosted && sens_future < sens_normalTarget ? "ISF" : rT.SMBType );
-                        rT.SMBType += (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "-COB" : "" );
-                        rT.SMBType += (lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "-UAM" : "" );
-                        // UAM related boost
-                        rT.SMBType = ( UAMBoosted ? "UAMBoost" : rT.SMBType );
-                        rT.SMBType = ( UAMBoosted && UAMBoostMAX ? "UAMBoost-MAX" : rT.SMBType );
-                    } else {
-                        rT.SMBType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : rT.SMBType );
-                        rT.SMBType = (lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "UAM" : rT.SMBType );
+                    rT.SMBType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : rT.SMBType );
+                    rT.SMBType = (lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "UAM" : rT.SMBType );
+                    // boosted by ISF but not UAMBoost
+                    rT.SMBType += (ISFBoosted && sens_future < sens_normalTarget && lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "+" : "" );
+                    rT.SMBType += (ISFBoosted && sens_future < sens_normalTarget && lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "+" : "" );
+                    // UAM related boost
+                    rT.SMBType = ( UAMBoosted ? "UAMBoost" : rT.SMBType );
+                    rT.SMBType = ( UAMBoosted && UAMBoostMAX ? "UAMBoost-MAX" : rT.SMBType );
                     }
                 }
             } else {
