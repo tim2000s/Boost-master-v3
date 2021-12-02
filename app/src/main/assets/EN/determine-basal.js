@@ -374,7 +374,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TIR7Below = meal_data.TIR7Below, TIR7InRange = meal_data.TIR7InRange, TIR7Above = meal_data.TIR7Above;
     var TIR3Below = meal_data.TIR3Below, TIR3InRange = meal_data.TIR3InRange, TIR3Above = meal_data.TIR3Above;
     var TIR1Below = meal_data.TIR1Below, TIR1InRange = meal_data.TIR1InRange, TIR1Above = meal_data.TIR1Above;
-    var TIRBelow = Math.max((TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 1),profile.autosens_min), TIRInRange = round(TIR1InRange/TIR3InRange,2), TIRAbove = Math.min((TIR1Above > TIR3Above ? round(TIR1Above/TIR3Above,2) : 1),profile.autosens_max);
+    var TIRBelow = Math.max((TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 1),profile.autosens_min), TIRInRange = round(TIR1InRange,2), TIRAbove = Math.min((TIR1Above > TIR3Above ? round(TIR1Above/TIR3Above,2) : 1),profile.autosens_max);
     enlog += "TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove+"\n";
 
     // iTime is minutes since last manual bolus correction or carbs
@@ -1513,7 +1513,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             // reduce maxBolus for SMB's if TIR has more lows today than 3 day avg
             //if (TIRBelow < 1 && TIRInRange <1 && TIRAbove == 1 && SMBTime <=7 && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && EatingNowMaxSMB >= maxBolus && insulinReqPct !==0  ) {
-            if (eatingnowtimeOK && TIRBelow < 1 && !UAMBoostMAX && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && insulinReqPct !==0 && insulinReq >0) {
+            if (eatingnowtimeOK && TIRBelow < 1 && TIRInRange < TIR3InRange && !UAMBoostMAX && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && insulinReqPct !==0 && insulinReq >0) {
                 maxBolus = round(maxBolus*TIRBelow,1);
                 UAMBoostReason += ", TIRLow: maxBolus "+round(TIRBelow*100,0)+"%";
                 //UAMBoostReason += ", TIRLow: SMB<7m";
