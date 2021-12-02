@@ -1414,6 +1414,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > maxBolus ? maxBolus : EatingNowMaxSMB);
                     // if COB allow increase UAMBoost max SMB if Carbs were less than an hour ago
                     EatingNowMaxCOBSMB = (meal_data.mealCOB > 0 && cTime < 60 && !ignoreCOBPatch ? (meal_data.mealCOB / profile.carb_ratio) * profile.EatingNowPrebolusPct : EatingNowMaxCOBSMB);
+                    insulinReqPct = (cTime <= 10 ? 1 : insulinReqPct); // 100% insulinReqPct with COB in the first 10 mins, preBolusPct still applies
                     EatingNowMaxSMB = Math.max(EatingNowMaxSMB,EatingNowMaxCOBSMB);
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // allow 100% insulinReqPct when initial rise is known to go higher EatingNowBGThreshold and not high already
