@@ -327,8 +327,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // Eating Now Variables
     var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false, enlog = ""; // nah not eating yet
     var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
-    // eating now time can be delayed if there is no first bolus
-    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && meal_data.firstBolusCorr !== 0) eatingnowtimeOK = true;
+    // eating now time can be delayed if there is no first bolus or carbs
+    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.firstBolusCorr !== 0 || meal_data.firstCarbTime !==0)) eatingnowtimeOK = true;
     if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
 
     // If we have UAM and GhostCOB enabled with low enough IOB we will enable eating now mode
