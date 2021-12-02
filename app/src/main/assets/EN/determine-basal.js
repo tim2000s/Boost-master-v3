@@ -1590,7 +1590,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (microBolus > 0) {
                     rT.units = microBolus;
                     rT.reason += "Microbolusing " + microBolus + "/" + maxBolus + "U";
-                    rT.reason += (EatingNowMaxCOBSMB > 0 ? " (" + meal_data.mealCOB +"g @ "+ round(profile.EatingNowPrebolusPct*100)+"%)." : ".");
+                    rT.reason += (EatingNowMaxCOBSMB > 0 ? " (" + round(meal_data.mealCOB,1) +"g @ "+ round(profile.EatingNowPrebolusPct*100)+"%)." : ".");
                     rT.SMBType = ( "SMB" );
                     // if insulinReq is more than original then we boosted
                     if (ISFBoosted || UAMBoosted) {
