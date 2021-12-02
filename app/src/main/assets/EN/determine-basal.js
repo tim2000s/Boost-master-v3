@@ -1354,7 +1354,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var insulinReqOrig = insulinReq;
             var UAMBoostReason = (!eatingnowtimeOK ? "EN: inactive" : "EN: no boost required"); //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
-            var EatingNowMaxSMB = maxBolus;
+            var EatingNowMaxSMB = maxBolus, EatingNowMaxCOBSMB = 0;
             var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
             // console.log("EatingNowBGThreshold: "+EatingNowBGThreshold);
 
@@ -1412,7 +1412,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // recent SMB that was bigger than maxBolus restrict next UAM SMB size
                     EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > maxBolus ? maxBolus : EatingNowMaxSMB);
                     // if COB allow increase UAMBoost max SMB if Carbs were less than an hour ago
-                    EatingNowMaxSMB = Math.max((meal_data.mealCOB > 0 && cTime < 60 && !ignoreCOBPatch ? (meal_data.mealCOB / profile.carb_ratio) * profile.EatingNowPrebolusPct : EatingNowMaxSMB),EatingNowMaxSMB);
+                    EatingNowMaxCOBSMB = (meal_data.mealCOB > 0 && cTime < 60 && !ignoreCOBPatch ? (meal_data.mealCOB / profile.carb_ratio) * profile.EatingNowPrebolusPct : EatingNowMaxCOBSMB);
+                    EatingNowMaxSMB = Math.max(EatingNowMaxSMB,EatingNowMaxCOBSMB);
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // allow 100% insulinReqPct when initial rise is known to go higher EatingNowBGThreshold and not high already
                     insulinReqPct = (eventualBG > EatingNowBGThreshold && bg < EatingNowBGThreshold ? 1 : insulinReqPct);
@@ -1587,7 +1588,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (lastBolusAge > SMBInterval) {
                 if (microBolus > 0) {
                     rT.units = microBolus;
-                    rT.reason += "Microbolusing " + microBolus + "/" + maxBolus + "U. ";
+                    rT.reason += "Microbolusing " + microBolus + "/" + maxBolus + "U";
+                    rT.reason += (EatingNowMaxCOBSMB > 0 ? " (" + meal_data.mealCOB +"g @ "+ round(profile.EatingNowPrebolusPct*100)+"%)." : ".");
                     rT.SMBType = ( "SMB" );
                     // if insulinReq is more than original then we boosted
                     if (ISFBoosted || UAMBoosted) {
