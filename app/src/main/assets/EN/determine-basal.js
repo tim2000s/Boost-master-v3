@@ -1434,6 +1434,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // use maxBolus for ISFBoost when boosting after a UAMBoost when bigger than ISFBoost bolus
                     EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > EatingNowMaxSMB ? maxBolus : EatingNowMaxSMB);
+                    insulinReqPct = (cTime <= 10 ? 1 : insulinReqPct); // 100% insulinReqPct with COB in the first 10 mins, maxBolus still applies
                     ISFBoosted = true;
                 }
                 // ============== ISF BOOST ============== END ===
