@@ -1073,7 +1073,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // extra reason text
     if (liftISF > 1) rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     rT.reason += ", SR: " + sensitivityRatio;
-    rT.reason += ", TDD: " + round(TDD, 2) + " ("+convert_bg(sens_TDD, profile)+"/"+convert_bg(sens_avg, profile)+")";
+    //rT.reason += ", TDD: " + round(TDD, 2) + " ("+convert_bg(sens_TDD, profile)+"/"+convert_bg(sens_avg, profile)+")";
+    rT.reason += ", TDD: " + round(TDD, 2) + " ("+convert_bg(sens_TDD, profile)+")";
     rT.reason += ", TIR3v1:L" + TIR3Below + "/" + TIR1Below + ",H" + TIR3Above+ "/" + TIR1Above;
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
