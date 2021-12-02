@@ -296,6 +296,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     /* ************************
        ** TS AutoTDD code    **
        ************************ */
+    var enlog = "";
     var now = new Date().getHours();
         if (now < 1){
             now = 1;}
@@ -316,21 +317,21 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var tdd_pump_now = meal_data.TDDPUMP;
         var tdd_pump = (tdd_pump_now / (now / 24));
         var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
-        console.log("tdd7 : "+tdd7);
-        console.log("TDD  : "+TDD);
-        console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
+        enlog +="tdd7 : "+tdd7+"\n";
+        enlog +="TDD  : "+TDD+"\n";
+        enlog +="Pump extrapolated TDD = "+tdd_pump+";\n";
         var smbTDD = 0;
         if (tdd_pump < (0.3 * tdd7)) {
             TDD = (tdd7 * 0.8) + (tdd_pump * 0.2);
             smbTDD = 1;
-            console.log("tdd_pump is lesser than 30% tdd7");
+            enlog +="tdd_pump is lesser than 30% tdd7\n";
             } else if (tdd_pump < (0.5 * tdd7)){
                 TDD = (tdd7 * 0.5) + (tdd_pump * 0.5);
                 smbTDD = 1;
-                console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
+                enlog +="TDD weighted to pump due to low insulin usage. TDD = "+TDD+";\n";
             }else{
 
-                console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
+                enlog +="TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";\n";
             }
 
 
@@ -342,7 +343,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var lastCarbAgebis = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime ) / 60000);
                 //console.error(meal_data.lastCarbTime, lastCarbAge);
              var iTime = lastCarbAgebis;
-             console.log("lastCarbAgebis =  iTime : "+iTime);
+             enlog +="lastCarbAgebis =  iTime : "+iTime+"\n";
 
             }
 
@@ -353,32 +354,45 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0 || smbTDD === 0 && iTime < iTimeProfile && tdd_pump >= tdd7*0.3 && CurrentTIR_70_140_Above > 20 ){
             TDD*=1.2;
-            console.log("TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% or TDD_pump > 0.3*TTD7 && iTime < iTimeProfile  <  :"+TDD);
+            //console.log("TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% or TDD_pump > 0.3*TTD7 && iTime < iTimeProfile  <  :"+TDD);
+            enlog +="TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% or TDD_pump > 0.3*TTD7 && iTime < iTimeProfile  <  :"+TDD+"\n";
         }else if (iTime < profile.iTime && CurrentTIRinRange <= 96 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && bg < 170 || smbTDD === 1 && bg < 170 ){
 
         iTimeProfile *=0.7;
         }else if (statinrange <= 96 && statTirBelow >= 4 && CurrentTIR_70_140_Above <= 20 && currentTIRLow >= 4){
             TDD*=0.7;
-            console.log("TDD new value because TIR show hypo during the last 7 days and  the curent day too :"+TDD);
+            enlog +="TDD new value because TIR show hypo during the last 7 days and  the curent day too :"+TDD+"\n";
         }
 
 
         //console.log("stat Tir : "+StatLow7);
-    var variable_sens = (277700 / (TDD * bg));
+    /*var variable_sens = (277700 / (TDD * bg));
     variable_sens = round(variable_sens,1);
     //var TDDnow = meal_data.TDDAIMI1;
-    console.log("Current sensitivity is " +variable_sens+" based on current bg");
+    console.log("Current sensitivity is " +variable_sens+" based on current bg");*/
     //console.log("####### tdd7 : "+tdd7+"##### tdd1 : "+tdd1+" ### variable_sens :
     //"+variable_sens+" ; ");
     //console.log("TDDnow : "+TDDnow+";");
-    sens = variable_sens;
+    //sens = variable_sens;
+    var sens_normalTarget = sens; // use profile for now * EXPERIMENT *
+    var sens_TDD = round((277700 / (TDD * normalTarget)),1);
+    var sens_avg = (sens_normalTarget+sens_TDD)/2;
+    var sens_normalTarget = sens_avg;
+    var sens_currentBG = sens_normalTarget/(bg/normalTarget); // * EXPERIMENT *
+    sens_currentBG = round(sens_currentBG,1);
+    sens = sens_currentBG;
+    enlog +="Current sensitivity is " +sens_currentBG+" based on current bg\n";
     }else{
     sens = profile.sens;
-    console.log("######--TDD and TIR don't have data, the ISF come from the profile--######");
+    enlog +="######--TDD and TIR don't have data, the ISF come from the profile--######\n";
     }
-    if (iTime < iTimeProfile && glucose_status.delta > 2){
+
+
+
+
+    if (iTime < iTimeProfile && glucose_status.delta > 2 && smbTDD === 0 && ! profile.temptargetSet ){
     sens = round(sens / (profile.autosens_max / sensitivityRatio),1);
-    console.log("###Scale ISF during iTime : "+sens);
+    enlog +="###Scale ISF during iTime : "+sens+"\n";
     }
 
     //var eRatio = round((bg/0.16)/sens,2);
@@ -929,10 +943,12 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 console.log(" AIMI V12 01/12/2021 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
-                console.log("Pump extrapolated TDD = "+tdd_pump);
+                console.log(enlog);
+                }
+                /*console.log("Pump extrapolated TDD = "+tdd_pump);
                 console.log("tdd7 using 7-day average "+tdd7);
                 console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD);}
-                console.log("Current sensitivity is " +variable_sens+" based on current bg");
+                console.log("Current sensitivity is " +variable_sens+" based on current bg");*/
                 console.log("eRatio: "+eRatio);
                 console.log("-------------");
                 console.log("TriggerPredSMB : "+TriggerPredSMB);
