@@ -334,9 +334,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // If we have UAM and GhostCOB enabled with low enough IOB we will enable eating now mode
     if (profile.enableUAM && eatingnowMaxIOBOK) {
         // enable eatingnow if no TT and within safe hours
-        if (!profile.temptargetSet && eatingnowtimeOK) eatingnow = true;
+        if (eatingnowtimeOK) eatingnow = true;
         // If there are COB enable eating now
         if (meal_data.mealCOB >0) eatingnow = true;
+        // no EN with a TT
+        if (profile.temptargetSet) eatingnow = false;
         if (eatingnow) max_iob *= profile.EatingNowIOBMax; // set maxIOB using the EN percentage
         max_iob = round(max_iob,2);
     }
