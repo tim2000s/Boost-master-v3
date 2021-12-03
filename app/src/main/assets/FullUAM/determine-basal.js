@@ -336,8 +336,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
         var iTime_Start_Bolus = profile.iTime_Start_Bolus;
-        if (iob_data.iob>= iTime_Start_Bolus){var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);}
         var iTimeProfile = profile.iTime;
+        var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
+        if (iob_data.iob <= iTime_Start_Bolus && iTime < iTimeProfile){
+        iTime = iTimeProfile + 1 ;
+        enlog += "A manual bolus was done, but iTime is disable, iob < iTime_start_bolus : "+iob_data.iob+"<"+iTime_Start_Bolus+"\n";
+        }
+
 
         if (meal_data.carbs) {
                 var lastCarbAgebis = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime ) / 60000);
@@ -435,28 +440,48 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // limit sensitivityRatio to profile.autosens_max (1.2x by default)
             sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
             sensitivityRatio = round(sensitivityRatio,2);
-            //console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
+            enlog +="Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
             basal = profile.current_basal * sensitivityRatio;
             basal = round_basal(basal, profile);
             if (basal !== profile_current_basal) {
-                //console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
+                enlog +="Adjusting basal from "+profile_current_basal+" to "+basal+";\n";
             } else {
                 console.log("Basal unchanged: "+basal+"; ");
             }
-  }else if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && iTime > iTimeProfile ) {//&& glucose_status.delta <= 0
+  }else if (! profile.temptargetSet && (glucose_status.glucose + glucose_status.long_avgdelta) <= 100){
+            var hypo_target = 100;
+            enlog += "to avoid a strong correction after an hypo target is now : "+hypo_target+"\n";
+             target_bg = hypo_target;
+             halfBasalTarget = 160;
+             var c = halfBasalTarget - normalTarget;
+             sensitivityRatio = c/(c+target_bg-normalTarget);
+             //sensitivityRatio = REBX;
+             // limit sensitivityRatio to profile.autosens_max (1.2x by default)
+             sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+             sensitivityRatio = round(sensitivityRatio,2);
+             enlog +="Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
+             basal = profile.current_basal * sensitivityRatio;
+             basal = round_basal(basal, profile);
+             if (basal !== profile_current_basal) {
+             enlog +="Adjusting basal from "+profile_current_basal+" to "+basal+";\n ";
+             } else {
+                 enlog +="Basal unchanged: "+basal+";\n ";
+             }
+
+   }else if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && iTime > iTimeProfile ) {//&& glucose_status.delta <= 0
 
         var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
        if (EBG <= 100 && HypoPredBG < 80) {
             hypo_target = 130;
-            console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 100 and HypoPredBG < 80 : "+EBG+"; ");
+            enlog +="target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 100 and HypoPredBG < 80 : "+EBG+"; \n";
         }else if (EBG60 <= 90 && EBG60 >0 && smbTDD === 1) {
             hypo_target = 100;
-            console.log("target_bg from "+target_bg+" to "+hypo_target+" because EBG60 is lesser than 90 : "+EBG60+"; ");
+            enlog +="target_bg from "+target_bg+" to "+hypo_target+" because EBG60 is lesser than 90: "+EBG60+";\n ";
         }else if (target_bg === hypo_target) {
-            console.log("target_bg unchanged: "+hypo_target+"; ");
+            enlog +="target_bg unchanged: "+hypo_target+";\n";
         }else {
             hypo_target = 100;
-            console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+"; ");
+            enlog +="target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+";\n";
         }
         target_bg = hypo_target;
         halfBasalTarget = 160;
@@ -466,21 +491,21 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
         sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
         sensitivityRatio = round(sensitivityRatio,2);
-        //console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
+        enlog +="Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
         basal = profile.current_basal * sensitivityRatio;
         basal = round_basal(basal, profile);
         if (basal !== profile_current_basal) {
-            //console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
+            enlog +="Adjusting basal from "+profile_current_basal+" to "+basal+";\n";
         } else {
-            console.log("Basal unchanged: "+basal+"; ");
+            enlog +="Basal unchanged: "+basal+";\n";
         }
     } else if (!profile.temptargetSet && HyperPredBG >= 220 && profile.resistance_lowers_target) {
 
         var hyper_target = round(Math.max(80, min_bg - (bg - min_bg)/3 ),0);
         if (target_bg === hyper_target) {
-            console.log("target_bg unchanged: "+hyper_target+"; ");
+            enlog +="target_bg unchanged: "+hyper_target+";\n";
         } else {
-            console.log("target_bg from "+target_bg+" to "+hyper_target+" because HyperPredBG > 180 : "+HyperPredBG+" ; ");
+            enlog +="target_bg from "+target_bg+" to "+hyper_target+" because HyperPredBG > 180 : "+HyperPredBG+" ;\n";
         }
         target_bg = hyper_target;
         halfBasalTarget = 160;
@@ -490,13 +515,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
         sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
         sensitivityRatio = round(sensitivityRatio,2);
-        //console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
+        enlog +="Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
         basal = profile.current_basal * sensitivityRatio;
         basal = round_basal(basal, profile);
         if (basal !== profile_current_basal) {
-            //console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
+            enlog +="Adjusting basal from "+profile_current_basal+" to "+basal+";\n";
         } else {
-            console.log("Basal unchanged: "+basal+"; ");
+            enlog +="Basal unchanged: "+basal+";\n";
         }
     }
 
