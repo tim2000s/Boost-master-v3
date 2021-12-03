@@ -1541,13 +1541,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 UAMBoostReason += ", no SMB";
             }
 
-            // Daytime TBR if below threshold and not in a boost window ** EXPERIMENTAL **
-            if (eatingnowtimeOK && bg < EatingNowBGThreshold && !iTimeOK)  {
-                var minSMB = round(((TDD * 0.4) / 24 )*roundSMBTo)/roundSMBTo;
-                minSMB = Math.min(minSMB,maxBolus); // can never be more than maxBolus
-                microBolus = (microBolus >= minSMB ? microBolus : 0);
-                UAMBoostReason += (microBolus == 0 ? ", minSMB" + minSMB : "");
-            }
+//            // Daytime TBR if below threshold and not in a boost window ** EXPERIMENTAL **
+//            if (eatingnowtimeOK && bg < EatingNowBGThreshold && !iTimeOK)  {
+//                var minSMB = round(((TDD * 0.4) / 24 )*roundSMBTo)/roundSMBTo;
+//                minSMB = Math.min(minSMB,maxBolus); // can never be more than maxBolus
+//                microBolus = (microBolus >= minSMB ? microBolus : 0);
+//                UAMBoostReason += (microBolus == 0 ? ", minSMB " + minSMB : "");
+//            }
 
             // if insulinReq > 0 but not enough for a microBolus, don't set an SMB zero temp
             if (insulinReq > 0 && microBolus < profile.bolus_increment) {
