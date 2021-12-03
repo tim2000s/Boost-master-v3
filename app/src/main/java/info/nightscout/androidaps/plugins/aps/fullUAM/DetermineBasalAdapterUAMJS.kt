@@ -251,6 +251,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.profile.put("iTime",SafeParse.stringToDouble(sp.getString(R.string.key_iTime,"180")))
         this.profile.put("iTime_MaxBolus_minutes",SafeParse.stringToDouble(sp.getString(R.string.key_iTime_MaxBolus_minutes,"200")))
         this.profile.put("iTime_Bolus",SafeParse.stringToDouble(sp.getString(R.string.key_iTime_Bolus,"2")));
+        this.profile.put("iTime_Start_Bolus",SafeParse.stringToDouble(sp.getString(R.string.key_iTime_Starting_Bolus,"2")));
         this.profile.put("smb_delivery_ratio", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio, "0.5")))
         this.profile.put("smb_delivery_ratio_min", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio_min, "0.5")))
         this.profile.put("smb_delivery_ratio_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio_max, "0.9")))

@@ -1148,15 +1148,18 @@
     <string name="iTime_title">iTime</string>
     <string name="iTime_summary">iTime is the duration in minutes of the meal who authorize larger SMB. This variable was created to let child/teenager adapt this value</string>
     <string name="key_UAM_InsulinReq" translatable="false">UAM_InsulinReq</string>
-    <string name="UAM_InsulinReq_title">insulinReq delivery percentage [%]</string>
-    <string name="UAM_InsulinReq_summary">Reduces the calculated required SMB size to the specified percentage. Example: If calculated insulin required is 1 U and fraction size is 50%, 0.5 U will be delivered.</string>
+    <string name="UAM_InsulinReq_title">AIMI iTime SMB Power %</string>
+    <string name="UAM_InsulinReq_summary">percentage of the AIMI response during the iTime duration</string>
     <string name="key_iTime_MaxBolus_minutes" translatable="false">iTime_MaxBolus_minutes</string>
     <string name="iTime_MaxBolus_minutes_title">iTime_MaxBolus_minutes</string>
     <string name="iTime_MaxBolus_minutes_summary">iTime give a duration of the meal who allow larger smb and maxbolus. this variable give the higher maxbolus (basal * iTime_MaxBolus_minutes / 60)</string>
     <string name="disable_Libre_smb_restrictions">Filtering active for every sensor, Go SMB!</string>
     <string name="key_iTime_Bolus" translatable="false">iTime_Bolus</string>
     <string name="iTime_Bolus_title">iTime_Bolus</string>
-    <string name="iTime_Bolus_summary">Automated Bolus at 28 minutes if delta > 5</string>
+    <string name="iTime_Bolus_summary">Automated Bolus at 28 minutes if delta > 2 if iTime Start with a manual bolus and 15 minutes if delta > 2 and iTime start with more than 30 carbs</string>
+    <string name="key_iTime_Starting_Bolus" translatable="false">iTime_Starting_Bolus</string>
+    <string name="iTime_Starting_Bolus_title">iTime_Starting_Bolus</string>
+    <string name="iTime_Starting_Bolus_summary">Value of the manual Bolus who will start iTime, like > iTime_Starting_Bolus</string>
     <string name="key_openapsama_smb_delivery_ratio" translatable="false">openapsama_smb_delivery_ratio</string>
     <string name="key_openapsama_smb_delivery_ratio_min" translatable="false">openapsama_smb_delivery_ratio_min</string>
     <string name="key_openapsama_smb_delivery_ratio_max" translatable="false">openapsama_smb_delivery_ratio_max</string>

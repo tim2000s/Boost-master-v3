@@ -335,8 +335,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
 
 
-
-        var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
+        var iTime_Start_Bolus = profile.iTime_Start_Bolus;
+        if (iob_data.iob>= iTime_Start_Bolus){var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);}
         var iTimeProfile = profile.iTime;
 
         if (meal_data.carbs) {
@@ -390,10 +390,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
 
-    if (iTime < iTimeProfile && glucose_status.delta > 2 && smbTDD === 0 && ! profile.temptargetSet ){
-    sens = round(sens / (profile.autosens_max / sensitivityRatio),1);
-    enlog +="###Scale ISF during iTime : "+sens+"\n";
-    }
+
 
     //var eRatio = round((bg/0.16)/sens,2);
 
@@ -419,6 +416,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var EBX = Math.max(0,round(Math.min(EBG,EBG60),2));
     var REBX = Math.max(0.5,round(Math.min(REBG60,REBG),2));
 
+     if (iTime < iTimeProfile && glucose_status.delta > 2 && smbTDD === 0 && ! profile.temptargetSet ){
+        sens = round(sens / (profile.autosens_max / sensitivityRatio),1);
+        enlog +="###Scale ISF during iTime : "+sens+"\n";
+        }else if (iTime < iTimeProfile && glucose_status.delta > 2 && smbTDD === 0 && ! profile.temptargetSet && TriggerPredSMB > 400){
+        sens /= REBG60;
+        enlog +="### Scale ISF during iTime when rise started : "+sens+"\n";
+        }
 
     if (iTime < iTimeProfile && glucose_status.delta > 2) {
             var hyper_target = 80;
@@ -1358,12 +1362,12 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                         }
             var insulinQ = insulinReq;
             var insulinReqPCT = profile.UAM_InsulinReq/100;
-            var InsulinTDD = (TDD * 0.4) / 24;
+            var InsulinTDD = (TDD * 0.6) / 24;
             var maxBolusTT = maxBolus;
             var roundSMBTo = 1 / profile.bolus_increment;
             var smb_ratio = determine_varSMBratio(profile, bg, target_bg);
 
-            if (meal_data.carbs > 30 && meal_data.carbs && iTime >= 15 && iTime <= 19){
+            if (meal_data.carbs > 30 && meal_data.carbs && iTime >= 15 && iTime <= 19 && ! profile.temptargetSet){
 
                 var microBolus =  profile.iTime_Bolus;
 
