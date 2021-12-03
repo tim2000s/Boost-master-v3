@@ -1400,8 +1400,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     UAMBoostOK = true;
                 }
 
-                // Boost outside of iTime Window
-                if (UAM_delta >=8 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
+                // Boost outside of iTime Window - NOT APPLICABLE AS THIS CODE WONT RUN WITHOUT ITIME
+                //if (UAM_delta >=8 && glucose_status.short_avgdelta > 0) UAMBoostOK = true;
 
                 // If boost is allowed and there is sufficient short term delta change calculate boosted insulin
                 if (UAMBoostOK && UAMBoost > UAMBoost_threshold) {
