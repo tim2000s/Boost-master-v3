@@ -1602,6 +1602,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // UAM related boost
                     rT.SMBType = ( UAMBoosted ? "UAMBoost" : rT.SMBType );
                     rT.SMBType = ( UAMBoosted && UAMBoostMAX ? "UAMBoost-MAX" : rT.SMBType );
+                    rT.insulinReqBoost = insulinReqBoost;
                     }
             } else {
                 rT.reason += "Waiting " + nextBolusMins + "m " + nextBolusSeconds + "s to microbolus again. ";
