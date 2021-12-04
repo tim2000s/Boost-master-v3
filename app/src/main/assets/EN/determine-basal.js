@@ -174,10 +174,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.error ='Error: could not get current basal rate';
         return rT;
     }
-
     var profile_current_basal = round_basal(profile.current_basal, profile);
     var basal = profile_current_basal;
-    var maxSafeBasal = tempBasalFunctions.getMaxSafeBasal(profile);
 
     var systemTime = new Date();
     if (currentTime) {
@@ -1219,8 +1217,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //console.error("Increasing insulinReq from " + insulinReq + " to " + newinsulinReq);
             insulinReq = newinsulinReq;
         }
-        // rate required to deliver insulinReq less insulin over 20m:
-        var rate = basal + (3 * insulinReq);
+        // rate required to deliver insulinReq less insulin over 30m:
+        var rate = basal + (2 * insulinReq);
         rate = round_basal(rate, profile);
 
         // if required temp < existing temp basal
@@ -1318,8 +1316,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             insulinReq = max_iob-iob_data.iob;
         }
 
-        // rate required to deliver insulinReq more insulin over 20m:
-        rate = basal + (3 * insulinReq);
+        // rate required to deliver insulinReq more insulin over 30m:
+        rate = basal + (2 * insulinReq);
         rate = round_basal(rate, profile);
         insulinReq = round(insulinReq,3);
         rT.insulinReq = insulinReq;
@@ -1450,10 +1448,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // allow EatingNowMaxSMB with COB or iTime window OK else restrict to maxBolus
                 if ( iTimeOK ) {
                     EatingNowMaxSMB = EatingNowMaxSMB; // use EN SMB Limit
-                    // if there has been a prebolus limit the SMB
-                    // EatingNowMaxSMB = (preBolused ? maxBolus : EatingNowMaxSMB);
-                    // restrict SMB to the same as max TBR when ISF is strong
-                    // EatingNowMaxSMB = ( sens_future <= ISF_Max && !UAMBoosted ? Math.min(maxSafeBasal,profile.current_basal*4)/12 : EatingNowMaxSMB);
                 } else {
                     EatingNowMaxSMB = Math.min(maxBolus,EatingNowMaxSMB); // use the most restrictive
                 }
@@ -1625,14 +1619,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         }
 
+        var maxSafeBasal = tempBasalFunctions.getMaxSafeBasal(profile);
+
         if (rate > maxSafeBasal) {
             rT.reason += "adj. req. rate: "+rate+" to maxSafeBasal: "+maxSafeBasal+", ";
             rate = round_basal(maxSafeBasal, profile);
         }
 
         insulinScheduled = currenttemp.duration * (currenttemp.rate - basal) / 60;
-        if (insulinScheduled >= insulinReq * 1.5) { // if current temp would deliver >2x more than the required insulin, lower the rate
-            rT.reason += esc_text(currenttemp.duration + "m@" + (currenttemp.rate).toFixed(2) + " > 1.5 * insulinReq. Setting temp basal of " + rate + "U/hr. ");
+        if (insulinScheduled >= insulinReq * 2) { // if current temp would deliver >2x more than the required insulin, lower the rate
+            rT.reason += esc_text(currenttemp.duration + "m@" + (currenttemp.rate).toFixed(2) + " > 2 * insulinReq. Setting temp basal of " + rate + "U/hr. ");
             return tempBasalFunctions.setTempBasal(rate, 30, profile, rT, currenttemp);
         }
 
