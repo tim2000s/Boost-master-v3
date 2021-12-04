@@ -1398,7 +1398,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
 
                 var microBolus =  profile.iTime_Bolus;
 
-            }else if (! meal_data.carbs && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < iTime_Start_Bolus && ! profile.temptargetSet){
+            }else if (! meal_data.carbs && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < (2 * iTime_Start_Bolus) && ! profile.temptargetSet){
 
                 var microBolus =  profile.iTime_Bolus;
 
