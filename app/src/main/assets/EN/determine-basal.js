@@ -449,9 +449,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     enlog +="Current sensitivity is " +sens_currentBG+" based on current bg\n";
 
-    // disable variable ISF with a TT or when feature is disabled
-    if (profile.temptargetSet || !profile.ISFBoost_enabled) sens_currentBG = sens;
-    //if (profile.temptargetSet || profile.use_autoisf || !eatingnowtimeOK) sens_currentBG = sens;
+    // disable variable ISF with a TT, when feature is disabled or if above EatingNowBGThreshold
+    // EatingNowBGThreshold condition prevents unexpected increases triggering too much insulin at night
+    if (profile.temptargetSet || profile.use_autoisf || !eatingnow && bg > EatingNowBGThreshold) sens_currentBG = sens_normalTarget;
 
     // **********************************************************************************************
     // *****                           End of automated TDD code                                *****
@@ -944,7 +944,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // at night or when not boosting use current bg to address -ve IOB predictions
         //if (!eatingnowtimeOK || !iTimeOK) sens_future = ( 277700 / (TDD * bg ));
         // at night use an average of target BG ISF and current BG ISF and use the highest ISF compared to BG ISF
-        if (!eatingnowtimeOK || !iTimeOK) sens_future = Math.max((sens_normalTarget + sens_currentBG)/2,sens_currentBG); // safety * EXPERIMENT *
+        if (!eatingnow || !iTimeOK) sens_future = Math.max(sens_normalTarget, sens_future); // safety * EXPERIMENT *
         console.log("Future state sensitivity is " +sens_future+" based on a weighted average of bg & eventual bg");
     } else {
         //sens_future = ( 277700 / (TDD * eventualBG));
