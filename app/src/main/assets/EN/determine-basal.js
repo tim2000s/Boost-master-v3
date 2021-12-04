@@ -432,7 +432,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // ISF at normal target
     var sens_normalTarget = sens; // use profile for now * EXPERIMENT *
-    var sens_TDD = round((277700 / (TDD * normalTarget)),1);
+    var sens_TDD = (sensitivityRatio < 1 ? sens_normalTarget : round((277700 / (TDD * normalTarget)),1)); //sens_TDD if no sensitivity
     var sens_avg = (sens_normalTarget+sens_TDD)/2;
     var sens_normalTarget = sens_avg; // Try the average ISF, ISF Max will move with this avg
 
