@@ -338,7 +338,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var iTime_Start_Bolus = profile.iTime_Start_Bolus;
         var iTimeProfile = profile.iTime;
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
-        if (iob_data.iob <= iTime_Start_Bolus && iTime < iTimeProfile){
+        var C1 = glucose_status.glucose + glucose_status.delta;
+        var C2 = min_bg + profile.smb_max_range_extension;
+        if (iob_data.iob <= iTime_Start_Bolus && iTime < iTimeProfile && C2 <= C1){
         iTime = iTimeProfile + 1 ;
         enlog += "A manual bolus was done, but iTime is disable, iob < iTime_start_bolus : "+iob_data.iob+"<"+iTime_Start_Bolus+"\n";
         }
@@ -1396,7 +1398,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
 
                 var microBolus =  profile.iTime_Bolus;
 
-            }else if (! meal_data.carbs && iTime >= 26 && iTime <= 30 && glucose_status.delta >= 2 && ! profile.temptargetSet){
+            }else if (! meal_data.carbs && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < iTime_Start_Bolus && ! profile.temptargetSet){
 
                 var microBolus =  profile.iTime_Bolus;
 
