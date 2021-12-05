@@ -338,8 +338,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var iTime_Start_Bolus = profile.iTime_Start_Bolus;
         var iTimeProfile = profile.iTime;
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
-        var C1 = glucose_status.glucose + glucose_status.delta;
-        var C2 = min_bg + profile.smb_max_range_extension;
+        var C1 = bg + glucose_status.delta;
+        var C2 = profile.min_bg + profile.smb_delivery_ratio_bg_range;
         if (iob_data.iob <= iTime_Start_Bolus && iTime < iTimeProfile && C2 <= C1){
         iTime = iTimeProfile + 1 ;
         enlog += "A manual bolus was done, but iTime is disable, iob < iTime_start_bolus : "+iob_data.iob+"<"+iTime_Start_Bolus+"\n";
@@ -450,7 +450,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             } else {
                 console.log("Basal unchanged: "+basal+"; ");
             }
-  }else if (! profile.temptargetSet && (glucose_status.glucose + glucose_status.long_avgdelta) <= 100){
+  }else if (! profile.temptargetSet && (bg + glucose_status.long_avgdelta) <= 100){
             var hypo_target = 100;
             enlog += "to avoid a strong correction after an hypo target is now : "+hypo_target+"\n";
              target_bg = hypo_target;
