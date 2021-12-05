@@ -131,7 +131,7 @@ function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_d
     }
     // #### mod 7:  dynamic ISF strengthening based on duration and width of 5% BG band
     // #### mod 7b: misuse autosens_min to get the scale factor
-    // #### mod 7d: use standalone variables for autopISF
+    // #### mod 7d: use standalone variables for autoISF
     var dura05 = glucose_status.autoISF_duration;           // mod 7d
     var avg05 = glucose_status.autoISF_average;            // mod 7d
     //r weightISF = (1 - profile.autosens_min)*2;           // mod 7b: use 0.6 to get factor 0.8; use 1 to get factor 0, i.e. OFF
@@ -376,34 +376,33 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TIR1Below = meal_data.TIR1Below, TIR1InRange = meal_data.TIR1InRange, TIR1Above = meal_data.TIR1Above;
     var TIRBelow = Math.max((TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 1),profile.autosens_min), TIRInRange = round(TIR1InRange,2), TIRAbove = Math.min((TIR1Above > TIR3Above ? round(TIR1Above/TIR3Above,2) : 1),profile.autosens_max);
     enlog += "TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove+"\n";
-
+    enlog += "* iTime:\n";
     // iTime is minutes since last manual bolus correction or carbs
     var iTime = (( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000);
     var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
+    enlog += "iTime:"+iTime+",iTimeWindow:"+iTimeWindow+"\n";
     // iTimeMax is minutes since first manual bolus correction after EN starts
     var iTimeMax = (( new Date(systemTime).getTime() - Math.max(meal_data.firstBolusCorr, meal_data.firstCarbTime )) / 60000);
     var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
+    enlog += "iTimeMax:"+iTimeMax+",iTimeMaxWindow:"+iTimeMaxWindow+"\n";
     var iTimeOK = (iTime < iTimeWindow || iTimeMax < iTimeMaxWindow);
+    enlog += "iTimeOK:"+iTimeOK+"\n";
     // SMBTime last SMB in minutes
     var SMBTime = (( new Date(systemTime).getTime() - meal_data.lastSMBTime) / 60000);
     // CorrTime last manual bolus in minutes
     var CorrTime = (( new Date(systemTime).getTime() - meal_data.lastBolusCorrTime) / 60000);
-    // Threshold for ISF Boost
-    var EatingNowBGThreshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowBGThreshold * 18, 1).toFixed(1) : profile.EatingNowBGThreshold);
-    if (EatingNowBGThreshold == 0) EatingNowBGThreshold = 180 ; // default is 180 = 10 mmol
-    // Limit ISF to profile ISF with this scale
-    var ISF_Max = round (profile.sens * profile.ISF_Max_Scale,1);
-    enlog += "* advanced ISF:\n";
+    enlog += "SMBTime:"+SMBTime+",CorrTime:"+CorrTime+"\n";
 
-    if (TIRAbove >1 && TIRBelow == 1 && bg > EatingNowBGThreshold) {
-        enlog += "TIRAbove:" + TIRAbove+"\n";
-        enlog += "TIRBelow:" + TIRBelow+"\n";
-        ISF_Max = round(ISF_Max/TIRAbove,1);
-        enlog += "Increasing ISF_Max by " + TIRAbove + " = " +ISF_Max+"\n";
-    }
+//    if (TIRAbove >1 && TIRBelow == 1 && bg > EatingNowBGThreshold) {
+//        enlog += "TIRAbove:" + TIRAbove+"\n";
+//        enlog += "TIRBelow:" + TIRBelow+"\n";
+//        ISF_Max = round(ISF_Max/TIRAbove,1);
+//        enlog += "Increasing ISF_Max by " + TIRAbove + " = " +ISF_Max+"\n";
+//    }
     /* ************************
        ** TS AutoTDD code    **
        ************************ */
+    enlog += "* TDD:\n";
     if (now < 1) {
         now = 1;
     } else {
@@ -428,70 +427,43 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         enlog +="TDDAVG:"+round(tdd_avg,3)+", TDD Pump:"+round(tdd_pump,3)+" and TDD:"+round(TDD,3)+"\n";
     }
 
+    enlog += "* advanced ISF:\n";
     // ISF at normal target
     var sens_normalTarget = sens; // use profile for now * EXPERIMENT *
+    enlog += "sens_normalTarget:" + sens_normalTarget+"\n";
     var sens_TDD = (sensitivityRatio < 1 ? sens_normalTarget : round((277700 / (TDD * normalTarget)),1)); //sens_TDD if no sensitivity
+    enlog += "sens_TDD:" + sens_TDD+"\n";
     var sens_avg = (sens_normalTarget+sens_TDD)/2;
+    enlog += "sens_avg:" + sens_avg+"\n";
     var sens_normalTarget = sens_avg; // Try the average ISF, ISF Max will move with this avg
-
-    // Limit ISF with this scale like AS
-    var ISF_Max = round (sens_normalTarget / profile.ISF_Max_Scale,1);
-    enlog += "ISF_Max:" + ISF_Max+"\n";
-
-    // limit ISF adjustment when above EatingNowBGThreshold
-    // var sens_currentBG = (277700 / (TDD * Math.min(bg,EatingNowBGThreshold)));
-    // trying profile.sens for safety
+    enlog += "sens_normalTarget adjusted with avg:" + sens_normalTarget+"\n";
     var sens_currentBG = sens_normalTarget/(bg/normalTarget); // * EXPERIMENT *
     sens_currentBG = round(sens_currentBG,1);
-    //console.log("Current sensitivity is " +sens_currentBG+" based on current bg");
-
     enlog +="Current sensitivity is " +sens_currentBG+" based on current bg\n";
+
+    // Threshold for ISF Boost
+    var EatingNowBGThreshold = (profile.out_units === "mmol/L" ? round(profile.EatingNowBGThreshold * 18, 1).toFixed(1) : profile.EatingNowBGThreshold);
+    if (EatingNowBGThreshold == 0) EatingNowBGThreshold = 180 ; // default is 180 = 10 mmol
+    enlog += "EatingNowBGThreshold:"+EatingNowBGThreshold+"\n";
+    // Limit ISF with this scale like AS
+    var ISF_Max = round (sens_normalTarget / profile.ISF_Max_Scale,1);
+    enlog += "ISF_Max:"+ISF_Max+"\n";
 
     // disable variable ISF with a TT, when feature is disabled or if above EatingNowBGThreshold
     // EatingNowBGThreshold condition prevents unexpected increases triggering too much insulin at night
-    if (profile.temptargetSet || profile.use_autoisf || !eatingnow && bg > EatingNowBGThreshold) sens_currentBG = sens_normalTarget;
+    if (profile.temptargetSet || profile.use_autoisf || !eatingnow && bg > EatingNowBGThreshold) {
+        sens_currentBG = sens_normalTarget;
+        enlog += "sens_currentBG limited to sens_normalTarget:"+sens_currentBG+"\n";
+    }
+    sens = sens_currentBG;
+    enlog += "sens:"+sens+"\n";
+    sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
 
     // **********************************************************************************************
     // *****                           End of automated TDD code                                *****
     // **********************************************************************************************
 
-    sens = sens_currentBG;
-    sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
 
-
-//    //Target adjustment with HypoPredBG - TS
-//    var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
-//    var EBG = Math.max(0, round((0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg,2));
-//
-//    // dont adjust target bg at night
-//    if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && profile.ISFBoost_enabled && eatingnowtimeOK) {
-//        var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
-//        if (hypo_target <= 90) {
-//            hypo_target += 10;
-//            enlog += "target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+";\n";
-//        } else if (target_bg === hypo_target) {
-//            enlog += "target_bg unchanged: "+hypo_target+";\n";
-//        } else {
-//            enlog += "target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+";\n";
-//        }
-//
-//        target_bg = hypo_target;
-//        halfBasalTarget = 160;
-//        var c = halfBasalTarget - normalTarget;
-//        sensitivityRatio = c/(c+target_bg-normalTarget);
-//        // limit sensitivityRatio to profile.autosens_max (1.2x by default)
-//        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
-//        sensitivityRatio = round(sensitivityRatio,2);
-//        enlog += "Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
-//        basal = profile.current_basal * sensitivityRatio;
-//        basal = round_basal(basal, profile);
-//        if (basal !== profile_current_basal) {
-//            enlog += "Adjusting basal from "+profile_current_basal+" to "+basal+";\n";
-//        } else {
-//            enlog += "Basal unchanged: "+basal+";\n";
-//        }
-//    }
-//    var SR2 = sensitivityRatio; //MD Add AS to openaps reason for the app
 
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     var lastTempAge;
