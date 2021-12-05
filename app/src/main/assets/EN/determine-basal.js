@@ -913,7 +913,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var sens_future = sens, sens_future_max = false;
     if( glucose_status.delta >= 0) {
         //sens_future = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
-        sens_future = sens_normalTarget / (((Math.max(eventualBG,2.2) * 0.6) + (bg * 0.4)) /normalTarget); // safety * EXPERIMENT *
+        //sens_future = sens_normalTarget / (((Math.max(eventualBG,0.12) * 0.6) + (bg * 0.4)) /normalTarget); // safety * EXPERIMENT *
+        sens_future = sens_normalTarget / (((eventualBG * 0.6) + (bg * 0.4)) /normalTarget); // safety * EXPERIMENT *
         // at night or when not boosting use current bg to address -ve IOB predictions
         //if (!eatingnowtimeOK || !iTimeOK) sens_future = ( 277700 / (TDD * bg ));
         // at night use an average of target BG ISF and current BG ISF and use the highest ISF compared to BG ISF
@@ -921,7 +922,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("Future state sensitivity is " +sens_future+" based on a weighted average of bg & eventual bg");
     } else {
         //sens_future = ( 277700 / (TDD * eventualBG));
-        sens_future = sens_normalTarget / (Math.max(eventualBG,2.2)/normalTarget); // safety * EXPERIMENT *
+        sens_future = sens_normalTarget / (eventualBG/normalTarget); // safety * EXPERIMENT *
         sens_future = Math.max(sens_normalTarget,sens_future);
         console.log("Future state sensitivity is " +sens_future+" based on eventual bg due to -ve delta");
     }
