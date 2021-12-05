@@ -406,7 +406,7 @@ public class DetermineBasalAdapterENJS {
         mMealData.put("lastBolusCorrUnits",treatmentsPlugin.getLastBolusTypeUnits(false));
         mMealData.put("lastSMBTime",treatmentsPlugin.getLastBolusTypeTime(true));
         mMealData.put("lastSMBUnits",treatmentsPlugin.getLastBolusTypeUnits(true));
-        mMealData.put("firstBolusCorr",treatmentsPlugin.getFirstENBolusTime(sp.getInt(R.string.key_eatingnow_timestart, 9)));
+        mMealData.put("firstBolusCorrTime",treatmentsPlugin.getFirstENBolusTime(sp.getInt(R.string.key_eatingnow_timestart, 9)));
 
         tddAIMI = new TddCalculator(hasAndroidInjector,aapsLogger,rxBusWrapper,resourceHelper,mainApp,sp,activePluginProvider,profileFunction,fabricPrivacy,nsUpload,dateUtil,uploadQueue);
         mMealData.put("TDDAIMI1",tddAIMI.averageTDD(tddAIMI.calculate(1)).total);
