@@ -382,7 +382,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
     enlog += "iTime:"+iTime+",iTimeWindow:"+iTimeWindow+"\n";
     // iTimeMax is minutes since first manual bolus correction after EN starts
-    var iTimeMax = (( new Date(systemTime).getTime() - Math.max(meal_data.firstBolusCorr, meal_data.firstCarbTime )) / 60000);
+    var iTimeMax = 0;
+    if (meal_data.firstBolusCorr !==0 && meal_data.firstBolusCorr <= meal_data.firstCarbTime) iTimeMax = meal_data.firstBolusCorr;
+    if (meal_data.firstCarbTime !==0 && meal_data.firstCarbTime <= meal_data.firstBolusCorr) iTimeMax = meal_data.firstCarbTime;
+    iTimeMax = (new Date(systemTime).getTime() - iTimeMax) / 60000;
     var iTimeMaxWindow = profile.iTimeMaxWindow; // window for faster UAMBoostMAX
     enlog += "iTimeMax:"+iTimeMax+",iTimeMaxWindow:"+iTimeMaxWindow+"\n";
     var iTimeOK = (iTime < iTimeWindow || iTimeMax < iTimeMaxWindow);
