@@ -1490,12 +1490,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // END === if we are eating now and BGL prediction is higher than normal target ===
 
             // reduce maxBolus for SMB's if TIR has more lows today than 3 day avg
-            //if (TIRBelow < 1 && TIRInRange <1 && TIRAbove == 1 && SMBTime <=7 && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && EatingNowMaxSMB >= maxBolus && insulinReqPct !==0  ) {
-            if (eatingnowtimeOK && TIRBelow < 1 && TIRInRange < TIR3InRange && !UAMBoostMAX && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && insulinReqPct !==0 && insulinReq >0) {
-                maxBolus = round(maxBolus*TIRBelow,1);
-                UAMBoostReason += ", TIRLow: maxBolus "+round(TIRBelow*100,0)+"%";
-                //UAMBoostReason += ", TIRLow: SMB<7m";
-            }
+//            if (eatingnowtimeOK && TIRBelow < 1 && TIRInRange < TIR3InRange && !UAMBoostMAX && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && insulinReqPct !==0 && insulinReq >0) {
+//                maxBolus = round(maxBolus*TIRBelow,1);
+//                UAMBoostReason += ", TIRLow: maxBolus "+round(TIRBelow*100,0)+"%";
+//                //UAMBoostReason += ", TIRLow: SMB<7m";
+//            }
 
             // try spacing out the SMB's with TBR if ISF Max exceeded within the first half of a no preBolused rise ONLY FOR ISFBOOST >= maxBolus
             //if (sens_future <= ISF_Max && !UAMBoosted && (iTime > iTimeWindow/2 || preBolused) && SMBTime <=12 && EatingNowMaxSMB >= maxBolus && insulinReqPct !==0 && insulinReq >0) {
