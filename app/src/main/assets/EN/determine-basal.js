@@ -1331,8 +1331,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var insulinReqPctDefault = 0.65; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var insulinReqPct = insulinReqPctDefault; // this is the default insulinReqPct and maxBolus is respected outside of eating now
             var insulinReqOrig = insulinReq;
-            var UAMBoostReason = (!eatingnow ? "EN: inactive" : "EN: no boost"); //reason text for oaps pill is nothing to start
-            UAMBoostReason = (!iTimeOK ? "EN: no iTime" : "EN: no boost"); //reason text for oaps pill is nothing to start
+            var UAMBoostReason = (!iTimeOK ? "EN: no iTime" : "EN: no boost"); //reason text for oaps pill is nothing to start
+            UAMBoostReason = (!eatingnow ? "EN: inactive" : "EN: no boost"); //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
             var EatingNowMaxSMB = maxBolus, EatingNowMaxCOBSMB = 0;
             var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
