@@ -1337,7 +1337,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var EatingNowMaxSMB = maxBolus, EatingNowMaxCOBSMB = 0;
             var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
             // COBBoostOK is the when no SMB has been delivered since the COB entry
-            var COBBoostOK = !ignoreCOBPatch && meal_data.mealCOB > 0 && !preBolused && (SMBTime > cTime || cTime <= 30);
+            var COBBoostOK = !ignoreCOBPatch && meal_data.mealCOB > 0 && !preBolused && (SMBTime > cTime || cTime <= 20);
             console.log("COBBoostOK:"+COBBoostOK);
             // console.log("EatingNowBGThreshold: "+EatingNowBGThreshold);
 
