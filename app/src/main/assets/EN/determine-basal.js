@@ -913,19 +913,17 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // When Delta is -ve, eventual_bg alone is used.
     var sens_future = sens, sens_future_max = false;
     if( glucose_status.delta >= 0) {
-        //sens_future = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
-        //sens_future = sens_normalTarget / (((Math.max(eventualBG,0.12) * 0.6) + (bg * 0.4)) /normalTarget); // safety * EXPERIMENT *
-        sens_future = sens_normalTarget / (((eventualBG * 0.6) + (bg * 0.4)) /normalTarget); // safety * EXPERIMENT *
-        // at night or when not boosting use current bg to address -ve IOB predictions
-        //if (!eatingnowtimeOK || !iTimeOK) sens_future = ( 277700 / (TDD * bg ));
-        // at night use an average of target BG ISF and current BG ISF and use the highest ISF compared to BG ISF
-        if (!eatingnow || !iTimeOK) sens_future = Math.max(sens_normalTarget, sens_future); // safety * EXPERIMENT *
-        console.log("Future state sensitivity is " +sens_future+" based on a weighted average of bg & eventual bg");
+        sens_future = sens_normalTarget / (((eventualBG * 0.2) + (bg * 0.8)) /normalTarget);
+        // weighting to eventualBG in the COBBoost window
+        if (COBBoostOK) sens_future = sens_normalTarget / (((eventualBG * 0.7) + (bg * 0.3)) /normalTarget);
+        // at night use an average of currentBG and normalTarget ISF, may help with resistance
+        if (!eatingnow || !iTimeOK) sens_future = (sens_currentBG+sens_normalTarget)/2;
+        //console.log("Future state sensitivity is " +sens_future+" based on a weighted average of bg & eventual bg");
     } else {
         //sens_future = ( 277700 / (TDD * eventualBG));
         sens_future = sens_normalTarget / (eventualBG/normalTarget); // safety * EXPERIMENT *
         sens_future = Math.max(sens_normalTarget,sens_future);
-        console.log("Future state sensitivity is " +sens_future+" based on eventual bg due to -ve delta");
+        //console.log("Future state sensitivity is " +sens_future+" based on eventual bg due to -ve delta");
     }
 
     // if BG below threshold then take the max of the sens vars
