@@ -1392,7 +1392,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = maxBolus * ( UAMBoostMAX ? profile.UAMBoostMAX_SMBScale : profile.UAMBoost_SMBScale );
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
                     // recent SMB that was bigger than maxBolus restrict next UAM SMB size excludes COBBoostOK
-                    EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits && !COBBoostOK > maxBolus ? maxBolus : EatingNowMaxSMB);
+                    EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > maxBolus && !COBBoostOK  ? maxBolus : EatingNowMaxSMB);
                     // if COB allow increase UAMBoost max SMB if Carbs were less than 30m ago
                     //EatingNowMaxCOBSMB = (COBBoostOK || (meal_data.mealCOB > 0 && cTime < 30) && !ignoreCOBPatch ? (meal_data.mealCOB / profile.carb_ratio) * profile.EatingNowPrebolusPct : EatingNowMaxCOBSMB);
                     EatingNowMaxCOBSMB = (COBBoostOK ? (mealInsulinReq*profile.EatingNowPrebolusPct)-iob_data.iob : EatingNowMaxCOBSMB);
