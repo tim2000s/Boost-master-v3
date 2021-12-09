@@ -1333,7 +1333,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             UAMBoostReason += (eatingnow ? "active +" : "inactive +"); //reason text for oaps pill is nothing to start
             UAMBoostReason += (iTimeOK ? " iTime" : " no iTime"); //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
-            var EatingNowMaxSMB = maxBolus, EatingNowMaxCOBSMB = 0;
+            var EatingNowMaxSMB = maxBolus;
             var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
             // COBBoostOK is the when no SMB has been delivered since the COB entry
             var COBBoostOK = !ignoreCOBPatch && meal_data.mealCOB > 0 && !preBolused && (SMBTime > cTime || cTime <= 30);
@@ -1393,13 +1393,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
                     // recent SMB that was bigger than maxBolus restrict next UAM SMB size excludes COBBoostOK
                     EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > maxBolus && !COBBoostOK  ? maxBolus : EatingNowMaxSMB);
-                    // if COB allow increase UAMBoost max SMB if Carbs were less than 30m ago
-                    //EatingNowMaxCOBSMB = (COBBoostOK || (meal_data.mealCOB > 0 && cTime < 30) && !ignoreCOBPatch ? (meal_data.mealCOB / profile.carb_ratio) * profile.EatingNowPrebolusPct : EatingNowMaxCOBSMB);
-                    EatingNowMaxCOBSMB = (COBBoostOK ? (mealInsulinReq*profile.EatingNowPrebolusPct)-iob_data.iob : EatingNowMaxCOBSMB);
-                    insulinReqPct = (COBBoostOK ? 1 : insulinReqPct); // 100% insulinReqPct with COB or the first SMB, preBolusPct still applies
-                    EatingNowMaxSMB = Math.max(EatingNowMaxSMB,EatingNowMaxCOBSMB);
-                    // allow 100% insulinReqPct when initial rise is known to go higher EatingNowBGThreshold and not high already and no COB boosting
-                    // insulinReqPct = (eventualBG > EatingNowBGThreshold && bg < EatingNowBGThreshold && EatingNowMaxCOBSMB==0 ? 1 : insulinReqPct);
+                    // if COBBoostOK allow increase max SMB within the window
+                    if (COBBoostOK) {
+                        EatingNowMaxSMB = (mealInsulinReq*profile.EatingNowPrebolusPct)-iob_data.iob;
+                        EatingNowMaxSMB = Math.max(EatingNowMaxSMB, maxBolus);
+                        insulinReqPct = 1; // 100% insulinReqPct with COB or the first SMB, preBolusPct still applies
+                    }
                     // if there has been a prebolus limit the SMB
                     EatingNowMaxSMB = (preBolused ? maxBolus : EatingNowMaxSMB);
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
@@ -1413,13 +1412,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (profile.ISFBoost_enabled && !UAMBoosted && eventualBG > target_bg) {
                      // set SMB limit for ISFBoost
                     EatingNowMaxSMB = maxBolus * profile.ISFBoost_SMBScale;
-                    // if COB allow increase of max SMB if Carbs were less than 30m ago
-                    //EatingNowMaxCOBSMB = (COBBoostOK || (meal_data.mealCOB > 0 && cTime < 30 && !ignoreCOBPatch) ? (meal_data.mealCOB / profile.carb_ratio) * profile.EatingNowPrebolusPct : EatingNowMaxCOBSMB);
-                    EatingNowMaxCOBSMB = (COBBoostOK ? (mealInsulinReq*profile.EatingNowPrebolusPct)-iob_data.iob : EatingNowMaxCOBSMB);
-                    insulinReqPct = (COBBoostOK ? 1 : insulinReqPct); // 100% insulinReqPct with COB in the first 15 mins, preBolusPct still applies
+                    // if COBBoostOK allow increase max SMB within the window
+                    if (COBBoostOK) {
+                        EatingNowMaxSMB = (mealInsulinReq*profile.EatingNowPrebolusPct)-iob_data.iob;
+                        EatingNowMaxSMB = Math.max(EatingNowMaxSMB, maxBolus);
+                        insulinReqPct = 1; // 100% insulinReqPct with COB or the first SMB, preBolusPct still applies
+                    }
                     // use maxBolus for ISFBoost when boosting after a UAMBoost when bigger than ISFBoost bolus with no COBBoostOK
                     EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > EatingNowMaxSMB && !COBBoostOK ? maxBolus : EatingNowMaxSMB);
-                    EatingNowMaxSMB = Math.max(EatingNowMaxSMB,EatingNowMaxCOBSMB);
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     ISFBoosted = true;
                 }
@@ -1573,7 +1573,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (microBolus > 0) {
                     rT.units = microBolus;
                     rT.reason += "Microbolusing " + microBolus + "/" + maxBolus + "U";
-                    rT.reason += (EatingNowMaxCOBSMB > 0 ? " (COB@"+ round(profile.EatingNowPrebolusPct*100)+"%)." : ".");
+                    rT.reason += (COBBoostOK ? " (COB@"+ round(profile.EatingNowPrebolusPct*100)+"%)." : ".");
                     rT.SMBType = ( "SMB" );
                     rT.SMBType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : rT.SMBType );
                     rT.SMBType = (lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "UAM" : rT.SMBType );
