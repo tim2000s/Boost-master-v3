@@ -67,3 +67,12 @@ in this case a calculation : microBolus = (COB / eRatio)/2 => !!!!!consider if y
  -smbRatio function => this one will change the % of insulin required, start at 50% until 100%,
  for the variability, and you have a fixe % varaible too in the settings.
  -smb_max_range_extension who is  a scale of maxuamminutesbasale
+
+AIMI V12 05/12/2021
+-Fixed iTime bug
+-Fixed autobolus with the new logical. When the trigger for iTime is a manual Bolus, autobolus 
+will come if the conditions are true : iTime < iTimeProfile, iob < 2 * iTime_starting_bolus, 
+delta > 5 and long delta > 0
+-iTime_startings-bolus is a new variable in the settings, it's the limit to start iTime.
+Now iTime exist if trigger is manual bolus and iob > iTime_starting_bolus and bg + glucose_status.delta > profile.min_bg (min target in the profile) + profile.smb_delivery_ratio_bg_range (in advanced option)
+-merge 2.8.2.14 from Milos
