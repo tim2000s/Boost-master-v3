@@ -1336,7 +1336,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var EatingNowMaxSMB = maxBolus, EatingNowMaxCOBSMB = 0;
             var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
             // COBBoostOK is the when no SMB has been delivered since the COB entry
-            var COBBoostOK = !ignoreCOBPatch && meal_data.mealCOB > 0 && !preBolused && (SMBTime > cTime || cTime <= 20);
+            var COBBoostOK = !ignoreCOBPatch && meal_data.mealCOB > 0 && !preBolused && (SMBTime > cTime || cTime <= 30);
             console.log("COBBoostOK:"+COBBoostOK);
             // console.log("EatingNowBGThreshold: "+EatingNowBGThreshold);
 
@@ -1399,7 +1399,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinReqPct = (COBBoostOK ? 1 : insulinReqPct); // 100% insulinReqPct with COB or the first SMB, preBolusPct still applies
                     EatingNowMaxSMB = Math.max(EatingNowMaxSMB,EatingNowMaxCOBSMB);
                     // allow 100% insulinReqPct when initial rise is known to go higher EatingNowBGThreshold and not high already and no COB boosting
-                    insulinReqPct = (eventualBG > EatingNowBGThreshold && bg < EatingNowBGThreshold && EatingNowMaxCOBSMB==0 ? 1 : insulinReqPct);
+                    // insulinReqPct = (eventualBG > EatingNowBGThreshold && bg < EatingNowBGThreshold && EatingNowMaxCOBSMB==0 ? 1 : insulinReqPct);
                     // if there has been a prebolus limit the SMB
                     EatingNowMaxSMB = (preBolused ? maxBolus : EatingNowMaxSMB);
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
