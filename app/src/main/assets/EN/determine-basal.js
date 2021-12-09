@@ -435,7 +435,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // ISF at normal target
     var sens_normalTarget = sens; // use profile for now * EXPERIMENT *
     enlog += "sens_normalTarget:" + sens_normalTarget+"\n";
-    var sens_TDD = (sensitivityRatio < 1 ? sens_normalTarget : round((277700 / (TDD * normalTarget)),1)); //sens_TDD if no sensitivity
+    //var sens_TDD = (sensitivityRatio < 1 ? sens_normalTarget : round((277700 / (TDD * normalTarget)),1)); //sens_TDD if no sensitivity
+    var sens_TDD = round((277700 / (TDD * normalTarget)),1);
     enlog += "sens_TDD:" + sens_TDD+"\n";
     var sens_avg = (sens_normalTarget+sens_TDD)/2;
     enlog += "sens_avg:" + sens_avg+"\n";
