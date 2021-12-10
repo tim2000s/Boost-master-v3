@@ -470,6 +470,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         enlog += "sens_currentBG limited to sens_normalTarget:"+sens_currentBG+"\n";
     }
     sens = sens_currentBG;
+    sens = sens_normalTarget; // * EXPERIMENTAL *
     enlog += "sens:"+sens+"\n";
     sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
 
