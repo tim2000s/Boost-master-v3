@@ -396,6 +396,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // LastCorrTime last manual bolus in minutes
     var LastCorrTime = (( new Date(systemTime).getTime() - meal_data.lastBolusCorrTime) / 60000);
     enlog += "SMBTime:"+SMBTime+",LastCorrTime:"+LastCorrTime+"\n";
+    enlog += "* prebolusing:\n";
+    // cTime could be used for bolusing based on recent COB with Ghost COB
+    var cTime = (( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000);
+    var preBolused = (cTime-iTime)>0 && (cTime-iTime)<5 || meal_data.lastBolusCorrTime == meal_data.lastCarbTime;
+    enlog += "preBolused:" + preBolused + ", cTime:" +cTime+ ", iTime:" +iTime+ ", LastCorrTime:" +LastCorrTime+ ", lastCarbs:" +meal_data.lastCarbs+ ", firstBolusCorrTime:"+meal_data.firstBolusCorrTime+"\n";
+    // COBBoostOK is the when no SMB has been delivered since the COB entry
+    var COBBoostOK = !ignoreCOBPatch && meal_data.mealCOB > 0 && !preBolused && (SMBTime > cTime || cTime <= 30);
+    enlog += ("COBBoostOK:" + COBBoostOK);
+
 
 //    if (TIRAbove >1 && TIRBelow == 1 && bg > EatingNowBGThreshold) {
 //        enlog += "TIRAbove:" + TIRAbove+"\n";
@@ -619,10 +628,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // enable UAM (if enabled in preferences)
     var enableUAM=(profile.enableUAM);
 
-    // cTime could be used for bolusing based on recent COB with Ghost COB
-    var cTime = (( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000);
-    //var iTime = round(( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusCorrTime, meal_data.lastCarbTime)) / 60000,0);
-
     // if iTime is the same as cTime it means that the carb entry doesnt yet have a nearby correction. Also check for recent manual correction with CorrTime
     if (profile.temptargetSet && target_bg == normalTarget && profile.tt_duration == 5 && cTime < 5 && iTime == cTime && meal_data.lastCarbs > 0 && LastCorrTime > 5) {
         enableSMB = true;
@@ -636,9 +641,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.reason = esc_text(meal_data.lastCarbs +"g COB " + round(cTime) + "m ago, CR:"+ round(profile.carb_ratio)+" Bolusing " + round(preBolusPct*100) + "% = " + rT.units + "U");
         return rT;
     }
-    var preBolused = (cTime-iTime)>0 && (cTime-iTime)<5 || meal_data.lastBolusCorrTime == meal_data.lastCarbTime;
-    enlog += "* prebolusing:\n";
-    enlog += "preBolused:" + preBolused + ", cTime:" +cTime+ ", iTime:" +iTime+ ", LastCorrTime:" +LastCorrTime+ ", lastCarbs:" +meal_data.lastCarbs+ ", firstBolusCorrTime:"+meal_data.firstBolusCorrTime+"\n";
+
     //console.error(meal_data);
     // carb impact and duration are 0 unless changed below
     var ci = 0;
@@ -913,6 +916,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // future-sens is calculated using 0.6 * eventual_bg and 0.4 * current bg, to reduce the risk of overdosing.
     // When Delta is -ve, eventual_bg alone is used.
     var sens_future = sens, sens_future_max = false;
+
     if( glucose_status.delta >= 0) {
         sens_future = sens_normalTarget / (((eventualBG * 0.2) + (bg * 0.8)) /normalTarget);
         // weighting to eventualBG in the COBBoost window
@@ -1336,9 +1340,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var insulinReqBoost = 0; // no boost yet
             var EatingNowMaxSMB = maxBolus;
             var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
-            // COBBoostOK is the when no SMB has been delivered since the COB entry
-            var COBBoostOK = !ignoreCOBPatch && meal_data.mealCOB > 0 && !preBolused && (SMBTime > cTime || cTime <= 30);
-            console.log("COBBoostOK:"+COBBoostOK);
             // console.log("EatingNowBGThreshold: "+EatingNowBGThreshold);
 
             // Calculate percentage change in deltas, long to short and short to now
