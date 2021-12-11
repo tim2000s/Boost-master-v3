@@ -1400,8 +1400,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     if (COBBoostOK) {
                         EatingNowMaxSMB = (mealInsulinReq*profile.EatingNowPrebolusPct)-iob_data.iob;
                         // prevent UAMBoost overbolusing for fast rises with small COB in the COBBoost window
-                        insulinReqBoost = EatingNowMaxSMB;
-                        EatingNowMaxSMB = Math.max(EatingNowMaxSMB, maxBolus);
+                        // insulinReqBoost = EatingNowMaxSMB;
+                        // EatingNowMaxSMB = Math.max(EatingNowMaxSMB, maxBolus);
                         insulinReqPct = 1; // 100% insulinReqPct with COB or the first SMB, preBolusPct still applies
                     }
                     // if there has been a prebolus limit the SMB
