@@ -856,7 +856,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     @Suppress("UNUSED_PARAMETER")
     fun updateIobCob(from: String) {
         binding.infoLayout.iob.text = overviewData.iobText
-        var now = System.currentTimeMillis()
+       /* var now = System.currentTimeMillis()
         bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTime = bolus.timestamp }
         var iTimeSettings = (SafeParse.stringToDouble(sp.getString(R.string.key_iTime, "180")))
         var iTimeUpdate = (now - lastBolusNormalTime) / 60000
@@ -869,23 +869,23 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         val currentTIRRange = StatTIR.averageTIR(StatTIR.calculateDaily(80.0,180.0)).inRangePct()
         val currentTIRAbove = StatTIR.averageTIR(StatTIR.calculateDaily(80.0,180.0)).abovePct()
         val CurrentTIR_70_140_Above = StatTIR.averageTIR(StatTIR.calculateDaily(70.0,140.0)).abovePct()
-        /*if (mealData.carbs != null){
+        *//*if (mealData.carbs != null){
             iTimeUpdate = lastCarbTime
-        }*/
+        }*//*
         if (iTimeUpdate < iTimeSettings && currentTIRRange <= 96 && currentTIRAbove <= 1 && currentTIRLow >=4 && statinrange <= 95 && statTirBelow >= 4 && CurrentTIR_70_140_Above <= 20) run {
             iTimeSettings *=  0.7
-        }
+        }*/
         binding.infoLayout.iobLayout.setOnClickListener {
             activity?.let { OKDialog.show(it, rh.gs(R.string.iob), overviewData.iobDialogText) }
         }
 
 
-                if (iTimeUpdate < iTimeSettings && insulinAnimation?.isRunning == false) {
+                /*if (iTimeUpdate < iTimeSettings && insulinAnimation?.isRunning == false) {
                     insulinAnimation?.start()
                 }else{
                     insulinAnimation?.stop()
                     insulinAnimation?.selectDrawable(0)
-                }
+                }*/
 
                 // cob
                 var cobText = overviewData.cobInfo?.displayText(rh, dateUtil, buildHelper.isEngineeringMode()) ?: rh.gs(R.string.value_unavailable_short)
