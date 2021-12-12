@@ -1586,7 +1586,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.SMBType += (ISFBoosted && sens_future < sens_normalTarget && lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "+" : "" );
                     rT.SMBType += (ISFBoosted && sens_future < sens_normalTarget && lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "+" : "" );
                     // UAM related boost
-                    if (UAMBoosted && insulinReqBoost > insulinReq) rT.SMBType = ( UAMBoostMAX ? "UAMBoost-MAX" : "UAMBoost" );
+                    if (UAMBoosted && insulinReqBoost > insulinReqOrig) rT.SMBType = ( UAMBoostMAX ? "UAMBoost-MAX" : "UAMBoost" );
                     rT.insulinReqBoost = insulinReqBoost;
                     }
             } else {
