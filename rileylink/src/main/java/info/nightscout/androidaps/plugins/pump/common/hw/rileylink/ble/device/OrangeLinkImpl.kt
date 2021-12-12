@@ -10,15 +10,15 @@ import android.bluetooth.le.ScanSettings
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Message
-import info.nightscout.androidaps.logging.AAPSLogger
-import info.nightscout.androidaps.logging.LTag
+import info.nightscout.shared.logging.AAPSLogger
+import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.RileyLinkUtil
 import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.ble.RileyLinkBLE
 import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.ble.data.GattAttributes
 import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.ble.operations.BLECommOperationResult
 import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.service.RileyLinkServiceData
 import info.nightscout.androidaps.plugins.pump.common.utils.ByteUtil
-import info.nightscout.androidaps.utils.sharedPreferences.SP
+import info.nightscout.shared.sharedPreferences.SP
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -67,7 +67,7 @@ class OrangeLinkImpl @Inject constructor(
 
     fun enableNotifications(): Boolean {
         aapsLogger.info(LTag.PUMPBTCOMM, "OrangeLinkImpl::enableNotifications")
-        val result: BLECommOperationResult = rileyLinkBLE.setNotification_blocking(
+        val result: BLECommOperationResult = rileyLinkBLE.setNotificationBlocking(
             UUID.fromString(GattAttributes.SERVICE_RADIO_ORANGE),  //
             UUID.fromString(GattAttributes.CHARA_NOTIFICATION_ORANGE)
         )
@@ -156,7 +156,7 @@ class OrangeLinkImpl @Inject constructor(
     fun stopScan() {
         handler.removeMessages(TIME_OUT_WHAT)
 
-        val bluetoothAdapter = rileyLinkBLE.bluetoothAdapter ?: return
+        val bluetoothAdapter = rileyLinkBLE.bluetoothAdapter
 
         try {
             val bluetoothLeScanner: BluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
@@ -183,9 +183,7 @@ class OrangeLinkImpl @Inject constructor(
 
     private fun isBluetoothAvailable(): Boolean {
         val bluetoothAdapter = rileyLinkBLE.bluetoothAdapter
-        return bluetoothAdapter != null &&
-            bluetoothAdapter.isEnabled &&
-            bluetoothAdapter.state == BluetoothAdapter.STATE_ON
+        return bluetoothAdapter.isEnabled && bluetoothAdapter.state == BluetoothAdapter.STATE_ON
     }
 
     companion object {
