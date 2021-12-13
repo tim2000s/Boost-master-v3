@@ -820,12 +820,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             // set minPredBGs starting when currently-dosed insulin activity will peak
             // look ahead 60m (regardless of insulin type) so as to be less aggressive on slower insulins
-            // var insulinPeakTime = 60;
-            var insulinPeakTime = profile.insulinPeakTime;
+            var insulinPeakTime = 60;
+            //var insulinPeakTime = profile.insulinPeakTime;
             // add 30m to allow for insulin delivery (SMBs or temps)
-            // insulinPeakTime = 90;
-            // add 30m to allow for insulin delivery (SMBs or temps)
-            insulinPeakTime += 15;
+            insulinPeakTime += 30;
+            //insulinPeakTime += 15;
             var insulinPeak5m = (insulinPeakTime/60)*12;
             //console.error(insulinPeakTime, insulinPeak5m, profile.insulinPeakTime, profile.curve);
 
