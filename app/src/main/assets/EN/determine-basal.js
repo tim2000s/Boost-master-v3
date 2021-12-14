@@ -1407,7 +1407,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // if there has been a prebolus limit the SMB
                     EatingNowMaxSMB = (preBolused ? maxBolus : EatingNowMaxSMB);
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
-                    UAMBoosted = true;
+                    // if the boost amount was less than the original insulinReq we didn't boost so allow ISF Boost
+                    UAMBoosted = (insulinReqBoost > insulinReqOrig);
                     //EN_SMBInterval = profile.SMBInterval; // allow immediate SMB for UAMBoost
                 }
                 // ============== UAMBOOST ============== END ===
