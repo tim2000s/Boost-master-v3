@@ -402,7 +402,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var preBolused = (cTime-iTime)>0 && (cTime-iTime)<5 || meal_data.lastBolusCorrTime == meal_data.lastCarbTime;
     enlog += "preBolused:" + preBolused + ", cTime:" +cTime+ ", iTime:" +iTime+ ", LastCorrTime:" +LastCorrTime+ ", lastCarbs:" +meal_data.lastCarbs+ ", firstBolusCorrTime:"+meal_data.firstBolusCorrTime+"\n";
     // COBBoostOK is the when no SMB has been delivered since the COB entry
-    var COBBoostOK = !ignoreCOBPatch && meal_data.mealCOB > 0 && !preBolused && (SMBTime > cTime || cTime <= 30);
+    var COBBoostOK = !ignoreCOBPatch && meal_data.mealCOB > 0 && !preBolused && (SMBTime > cTime || cTime <= 25);
     enlog += ("COBBoostOK:" + COBBoostOK);
 
 
@@ -1412,9 +1412,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = maxBolus * profile.ISFBoost_SMBScale;
                     // if COBBoostOK allow increase max SMB within the window
                     if (COBBoostOK) {
-                        EatingNowMaxSMB = (mealInsulinReq*profile.EatingNowPrebolusPct)-iob_data.iob;
-                        EatingNowMaxSMB = Math.max(EatingNowMaxSMB, maxBolus);
-                        insulinReqPct = 1; // 100% insulinReqPct with COB or the first SMB, preBolusPct still applies
+                        //EatingNowMaxSMB = (mealInsulinReq*profile.EatingNowPrebolusPct)-iob_data.iob;
+                        //EatingNowMaxSMB = Math.max(EatingNowMaxSMB, maxBolus);
+                        EatingNowMaxSMB = insulinReq; // max SMB can be all of insulinReq as it will be restricted by ENinsulinReqPct
+                        insulinReqPct = ENinsulinReqPct; // enforce EN insulinReq as we are allowing more during COB
                     }
                     // use maxBolus for ISFBoost when boosting after a UAMBoost when bigger than ISFBoost bolus with no COBBoostOK
                     // EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > EatingNowMaxSMB && !COBBoostOK ? maxBolus : EatingNowMaxSMB);
