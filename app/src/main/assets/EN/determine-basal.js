@@ -1356,6 +1356,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //console.log("UAM_deltaAvgRise: " + UAM_deltaAvgRise);
             //console.log("UAMBoost: " + UAMBoost);
 
+            // * EXPERIMENT * insulinReq allows boost
+            if (eatingnow && eatingnowtimeOK && !iTimeOK && insulinReq > 1) iTimeOK = true;
+
             // START === if we are eating now and BGL prediction is higher than normal target ===
             if (eatingnow && eventualBG > normalTarget && iTimeOK) {
                 UAMBoostReason = ""; //blank boost reason to prepare for boost info
