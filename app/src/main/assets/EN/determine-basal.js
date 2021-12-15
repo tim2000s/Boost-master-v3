@@ -1374,7 +1374,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // default is UAMBoost is NOT OK. Sensitive threshold is low normal is high
                 var UAMBoostOK = false, UAMBoost_threshold = 1.2;
                 // Recent manual bolus or having COB will allow faster UAMBoost response
-                if (UAM_delta > 5 && iTimeOK) {
+                if (UAM_delta >= 5 && iTimeOK) {
                     UAMBoostOK = true;
                 }
 
