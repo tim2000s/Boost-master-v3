@@ -1575,7 +1575,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (microBolus > 0) {
                     rT.units = microBolus;
                     rT.reason += "Microbolusing " + microBolus + "/" + maxBolus + "U";
-                    rT.reason += (COBBoostOK ? " (COB@"+ round(profile.EatingNowPrebolusPct*100)+"%)." : ".");
+                    rT.reason += (COBBoostOK ? " (COBBoostOK)" : ".");
                     rT.SMBType = ( "SMB" );
                     rT.SMBType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : rT.SMBType );
                     rT.SMBType = (lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "UAM" : rT.SMBType );
