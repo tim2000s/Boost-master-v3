@@ -1376,8 +1376,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var UAMBoost_bolus_scale = (UAMBoostMAX ? profile.UAMBoostMAX_Bolus_Scale : profile.UAMBoost_Bolus_Scale);
                 // default is UAMBoost is NOT OK. Sensitive threshold is low normal is high
                 var UAMBoostOK = false, UAMBoost_threshold = 1.2;
-                // Recent manual bolus or having COB will allow faster UAMBoost response
-                if (UAM_delta >= 5 && iTimeOK) {
+                // Recent manual bolus will allow faster UAMBoost response
+                if (UAM_delta >= 5 && iTimeOK && meal_data.mealCOB==0 ) {
                     UAMBoostOK = true;
                 }
 
