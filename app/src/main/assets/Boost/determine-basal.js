@@ -488,17 +488,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     //console.error(reservoir_data);
 
-    rT = {
-        'temp': 'absolute'
-        , 'bg': bg
-        , 'tick': tick
-        , 'eventualBG': eventualBG
-        , 'targetBG': target_bg
-        , 'insulinReq': 0
-        , 'reservoir' : reservoir_data // The expected reservoir volume at which to deliver the microbolus (the reservoir volume from right before the last pumphistory run)
-        , 'deliverAt' : deliverAt // The time at which the microbolus should be delivered
-        , 'sensitivityRatio' : sensitivityRatio // autosens ratio (fraction of normal basal)
-    };
+        rT = {
+            'temp': 'absolute'
+            , 'bg': bg
+            , 'tick': tick
+            , 'eventualBG': eventualBG
+            , 'targetBG': target_bg
+            , 'insulinReq': 0
+            , 'reservoir' : reservoir_data // The expected reservoir volume at which to deliver the microbolus (the reservoir volume from right before the last pumphistory run)
+            , 'deliverAt' : deliverAt // The time at which the microbolus should be delivered
+            , 'sensitivityRatio' : sensitivityRatio // autosens ratio (fraction of normal basal)
+            , 'minimum delta' : minDelta // minimum delta
+            , 'Expected Delta' : expectedDelta //expected delta
+        };
 
     // generate predicted future BGs based on IOB, COB, and current absorption rate
 
@@ -1189,26 +1191,26 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 durationReq = 0;
             }
 
-            var smbLowTempReq = 0;
-            if (durationReq <= 0) {
-                durationReq = 0;
-            // don't set an SMB zero temp longer than 60 minutes
-            } else if (durationReq >= 30) {
-                durationReq = round(durationReq/30)*30;
-                durationReq = Math.min(60,Math.max(0,durationReq));
-            } else {
-                // if SMB durationReq is less than 30m, set a nonzero low temp
-                smbLowTempReq = round( basal * durationReq/30 ,2);
-                durationReq = 30;
-            }
-            rT.reason += " insulinReq " + insulinReq;
-            if (microBolus >= maxBolus) {
-                rT.reason +=  "; maxBolus " + maxBolus;
-            }
-            if (durationReq > 0) {
-                rT.reason += "; setting " + durationReq + "m low temp of " + smbLowTempReq + "U/h";
-            }
-            rT.reason += ". ";
+                var smbLowTempReq = 0;
+                if (durationReq <= 0) {
+                    durationReq = 0;
+                // don't set an SMB zero temp longer than 60 minutes
+                } else if (durationReq >= 30) {
+                    durationReq = round(durationReq/30)*30;
+                    durationReq = Math.min(60,Math.max(0,durationReq));
+                } else {
+                    // if SMB durationReq is less than 30m, set a nonzero low temp
+                    smbLowTempReq = round( basal * durationReq/30 ,2);
+                    durationReq = 30;
+                }
+                rT.reason += " insulinReq " + insulinReq;
+                if (microBolus >= maxBolus) {
+                    rT.reason +=  "; standardMaxBolus " + maxBolus;
+                }
+                if (durationReq > 0) {
+                    rT.reason += "; setting " + durationReq + "m low temp of " + smbLowTempReq + "U/h";
+                }
+                rT.reason += ". ";
 
             //allow SMBs every 3 minutes by default
             var SMBInterval = 3;
