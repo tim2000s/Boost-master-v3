@@ -376,41 +376,103 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     sens = variable_sens;
 
-    var lastTempAge;
-    if (typeof iob_data.lastTemp !== 'undefined' ) {
-        lastTempAge = round(( new Date(systemTime).getTime() - iob_data.lastTemp.date ) / 60000); // in minutes
-    } else {
-        lastTempAge = 0;
-    }
-    //console.error("currenttemp:",currenttemp,"lastTemp:",JSON.stringify(iob_data.lastTemp),"lastTempAge:",lastTempAge,"m");
-    var tempModulus = (lastTempAge + currenttemp.duration) % 30;
-    console.error("currenttemp:",currenttemp,"lastTempAge:",lastTempAge,"m","tempModulus:",tempModulus,"m");
-    rT.temp = 'absolute';
-    rT.deliverAt = deliverAt;
-    if ( microBolusAllowed && currenttemp && iob_data.lastTemp && currenttemp.rate !== iob_data.lastTemp.rate && lastTempAge > 10 && currenttemp.duration ) {
-        rT.reason = "Warning: currenttemp rate "+currenttemp.rate+" != lastTemp rate "+iob_data.lastTemp.rate+" from pumphistory; canceling temp";
-        return tempBasalFunctions.setTempBasal(0, 0, profile, rT, currenttemp);
-    }
-    if ( currenttemp && iob_data.lastTemp && currenttemp.duration > 0 ) {
-        // TODO: fix this (lastTemp.duration is how long it has run; currenttemp.duration is time left
-        //if ( currenttemp.duration < iob_data.lastTemp.duration - 2) {
-            //rT.reason = "Warning: currenttemp duration "+currenttemp.duration+" << lastTemp duration "+round(iob_data.lastTemp.duration,1)+" from pumphistory; setting neutral temp of "+basal+".";
-            //return tempBasalFunctions.setTempBasal(basal, 30, profile, rT, currenttemp);
-        //}
-        //console.error(lastTempAge, round(iob_data.lastTemp.duration,1), round(lastTempAge - iob_data.lastTemp.duration,1));
-        var lastTempEnded = lastTempAge - iob_data.lastTemp.duration
-        if ( lastTempEnded > 5 && lastTempAge > 10 ) {
-            rT.reason = "Warning: currenttemp running but lastTemp from pumphistory ended "+lastTempEnded+"m ago; canceling temp";
-            //console.error(currenttemp, round(iob_data.lastTemp,1), round(lastTempAge,1));
+    //var eRatio = round((bg/0.16)/sens,2);
+    var eRatio = round(sens / 13.2);
+    console.error("CR:",eRatio);
+    //var iob_scale = (profile.W2_IOB_threshold/100) * max_iob;
+    var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var HyperPredBGTest = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var HyperPredBGTest2 = round( bg - (iob_data.iob * sens) ) + round( 180 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var HyperPredBGTest3 = round( bg - (iob_data.iob * sens) ) + round( 120 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+    var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
+    var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
+
+    var csf = profile.sens / profile.carb_ratio ;
+
+    var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
+
+        sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
+        // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
+        //Target adjustment with HypoPredBG - TS
+
+        var EBG = (0.02 * glucose_status.delta * glucose_status.delta) + (0.58 * glucose_status.long_avgdelta) + bg;
+        var REBG = EBG / min_bg;
+        console.log("Experimental test, EBG : "+EBG+" REBG : "+REBG+" ; ");
+        console.log ("HypoPredBG = "+HypoPredBG+"; ");
+               if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target ){//&& glucose_status.delta <= 0
+               /*var hypo_target = round ((target_bg - 60) * profile.autosens_max) + 60;
+               if (glucose_status.delta < 0){
+               hypo_target = hypo_target + 10;
+               }
+               hypo_target = Math.min ( 130, hypo_target);
+               if (now <= MealTimeStart && now >= MealTimeEnd){
+               hypo_target = Math.min(100,hypo_target);
+               }*/
+               var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
+                   if (hypo_target <= 90) {
+                    hypo_target += 10;
+                    console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+"; ");
+                    }
+
+                   else if (target_bg === hypo_target){
+                   console.log("target_bg unchanged: "+hypo_target+"; ");
+                   }else{
+                   console.log("target_bg from "+target_bg+" to "+hypo_target+" because HypoPredBG is lesser than 125 : "+HypoPredBG+"; ");
+                   }
+                   target_bg = hypo_target;
+                   halfBasalTarget = 160;
+                                  var c = halfBasalTarget - normalTarget;
+                                  //sensitivityRatio = c/(c+target_bg-normalTarget);
+                                  sensitivityRatio = REBG;
+                               // limit sensitivityRatio to profile.autosens_max (1.2x by default)
+                                  sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+                                  sensitivityRatio = round(sensitivityRatio,2);
+                                  console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
+                                  basal = profile.current_basal * sensitivityRatio;
+                                  basal = round_basal(basal, profile);
+                                  if (basal !== profile_current_basal) {
+                                       console.log("Adjusting basal from "+profile_current_basal+" to "+basal+"; ");
+                                  } else {
+                                       console.log("Basal unchanged: "+basal+"; ");
+                                  }
+               }
+
+        var lastTempAge;
+        if (typeof iob_data.lastTemp !== 'undefined' ) {
+            lastTempAge = round(( new Date(systemTime).getTime() - iob_data.lastTemp.date ) / 60000); // in minutes
+        } else {
+            lastTempAge = 0;
+        }
+        //console.error("currenttemp:",currenttemp,"lastTemp:",JSON.stringify(iob_data.lastTemp),"lastTempAge:",lastTempAge,"m");
+        var tempModulus = (lastTempAge + currenttemp.duration) % 30;
+        console.error("currenttemp:",currenttemp,"lastTempAge:",lastTempAge,"m","tempModulus:",tempModulus,"m");
+        rT.temp = 'absolute';
+        rT.deliverAt = deliverAt;
+        if ( microBolusAllowed && currenttemp && iob_data.lastTemp && currenttemp.rate !== iob_data.lastTemp.rate && lastTempAge > 10 && currenttemp.duration ) {
+            rT.reason = "Warning: currenttemp rate "+currenttemp.rate+" != lastTemp rate "+iob_data.lastTemp.rate+" from pumphistory; canceling temp";
             return tempBasalFunctions.setTempBasal(0, 0, profile, rT, currenttemp);
         }
-        // TODO: figure out a way to do this check that doesn't fail across basal schedule boundaries
-        //if ( tempModulus < 25 && tempModulus > 5 ) {
-            //rT.reason = "Warning: currenttemp duration "+currenttemp.duration+" + lastTempAge "+lastTempAge+" isn't a multiple of 30m; setting neutral temp of "+basal+".";
-            //console.error(rT.reason);
-            //return tempBasalFunctions.setTempBasal(basal, 30, profile, rT, currenttemp);
-        //}
-    }
+        if ( currenttemp && iob_data.lastTemp && currenttemp.duration > 0 ) {
+            // TODO: fix this (lastTemp.duration is how long it has run; currenttemp.duration is time left
+            //if ( currenttemp.duration < iob_data.lastTemp.duration - 2) {
+                //rT.reason = "Warning: currenttemp duration "+currenttemp.duration+" << lastTemp duration "+round(iob_data.lastTemp.duration,1)+" from pumphistory; setting neutral temp of "+basal+".";
+                //return tempBasalFunctions.setTempBasal(basal, 30, profile, rT, currenttemp);
+            //}
+            //console.error(lastTempAge, round(iob_data.lastTemp.duration,1), round(lastTempAge - iob_data.lastTemp.duration,1));
+            var lastTempEnded = lastTempAge - iob_data.lastTemp.duration
+            if ( lastTempEnded > 5 && lastTempAge > 10 ) {
+                rT.reason = "Warning: currenttemp running but lastTemp from pumphistory ended "+lastTempEnded+"m ago; canceling temp";
+                //console.error(currenttemp, round(iob_data.lastTemp,1), round(lastTempAge,1));
+                return tempBasalFunctions.setTempBasal(0, 0, profile, rT, currenttemp);
+            }
+            // TODO: figure out a way to do this check that doesn't fail across basal schedule boundaries
+            //if ( tempModulus < 25 && tempModulus > 5 ) {
+                //rT.reason = "Warning: currenttemp duration "+currenttemp.duration+" + lastTempAge "+lastTempAge+" isn't a multiple of 30m; setting neutral temp of "+basal+".";
+                //console.error(rT.reason);
+                //return tempBasalFunctions.setTempBasal(basal, 30, profile, rT, currenttemp);
+            //}
+        }
 
     //calculate BG impact: the amount BG "should" be rising or falling based on insulin activity alone
     var bgi = round(( -iob_data.activity * sens * 5 ), 2);
