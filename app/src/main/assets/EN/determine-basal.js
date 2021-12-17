@@ -1360,7 +1360,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (eatingnow && eatingnowtimeOK && !iTimeOK && insulinReq > 1) iTimeOK = true;
 
             // START === if we are eating now and BGL prediction is higher than normal target ===
-            if (eatingnow && eventualBG > normalTarget && iTimeOK) {
+            if (eatingnow && eventualBG > target_bg && iTimeOK) {
                 UAMBoostReason = ""; //blank boost reason to prepare for boost info
 
                 // EN insulinReqPct is used from the profile
@@ -1423,6 +1423,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // use maxBolus for ISFBoost when boosting after a UAMBoost when bigger than ISFBoost bolus with no COBBoostOK
                     // EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > EatingNowMaxSMB && !COBBoostOK ? maxBolus : EatingNowMaxSMB);
                     EatingNowMaxSMB = round (EatingNowMaxSMB,1);
+                    insulinReqPct = (UAMBoost > UAMBoost_threshold ? 1 : ENinsulinReqPct); // enforce EN insulinReq unless sudden delta
                     ISFBoosted = true;
                 }
                 // ============== ISF BOOST ============== END ===
