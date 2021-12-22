@@ -244,6 +244,32 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.error ='Error: could not determine target_bg. ';
         return rT;
     }
+
+    // patches ==== START
+    var ignoreCOBPatch = profile.enableGhostCOB; //MD#01: Ignore any COB and rely purely on UAM
+
+    // Eating Now Variables
+    var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false, enlog = ""; // nah not eating yet
+    var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
+    // eating now time can be delayed if there is no first bolus or carbs
+    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.firstBolusCorrTime !== 0 || meal_data.firstCarbTime !==0)) eatingnowtimeOK = true;
+    if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
+
+    // If we have UAM and GhostCOB enabled with low enough IOB we will enable eating now mode
+    if (profile.enableUAM && eatingnowMaxIOBOK) {
+        // enable eatingnow if no TT and within safe hours
+        if (eatingnowtimeOK) eatingnow = true;
+        // If there are COB enable eating now
+        if (meal_data.mealCOB >0) eatingnow = true;
+        // no EN with a TT
+        if (profile.temptargetSet) eatingnow = false;
+        if (eatingnow) max_iob *= profile.EatingNowIOBMax; // set maxIOB using the EN percentage
+        max_iob = round(max_iob,2);
+    }
+    //eatingnow = false; //DEBUG
+    enlog += "eatingnow: " + eatingnow + ", eatingnowtimeOK: " + eatingnowtimeOK+"\n";
+    // patches ===== END
+
     var sensitivityRatio;
     var high_temptarget_raises_sensitivity = profile.exercise_mode || profile.high_temptarget_raises_sensitivity;
     var normalTarget = profile.normal_target_bg; // evaluate high/low temptarget against 100, not scheduled target (which might change)
@@ -269,8 +295,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
     } else if (typeof autosens_data !== 'undefined' && autosens_data) {
         sensitivityRatio = autosens_data.ratio;
-        // restrict SR to 1 max if using advanced ISF hence sens_currentBG may help with overnight low allowing basal to be adjusted
-        sensitivityRatio = (profile.ISFBoost_enabled ? Math.min(sensitivityRatio,1) : sensitivityRatio);
+        // restrict SR to 1 max if using advanced ISF unless overnight allowing basal to be adjusted
+        sensitivityRatio = (profile.ISFBoost_enabled && eatingnowtimeOK ? Math.min(sensitivityRatio,1) : sensitivityRatio);
         console.log("Autosens ratio: "+sensitivityRatio+"; ");
     }
     if (sensitivityRatio) {
@@ -318,31 +344,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.error ='Error: iob_data missing some property. ';
         return rT;
     }
-
-    // patches ==== START
-    var ignoreCOBPatch = profile.enableGhostCOB; //MD#01: Ignore any COB and rely purely on UAM
-
-    // Eating Now Variables
-    var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false, enlog = ""; // nah not eating yet
-    var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
-    // eating now time can be delayed if there is no first bolus or carbs
-    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.firstBolusCorrTime !== 0 || meal_data.firstCarbTime !==0)) eatingnowtimeOK = true;
-    if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
-
-    // If we have UAM and GhostCOB enabled with low enough IOB we will enable eating now mode
-    if (profile.enableUAM && eatingnowMaxIOBOK) {
-        // enable eatingnow if no TT and within safe hours
-        if (eatingnowtimeOK) eatingnow = true;
-        // If there are COB enable eating now
-        if (meal_data.mealCOB >0) eatingnow = true;
-        // no EN with a TT
-        if (profile.temptargetSet) eatingnow = false;
-        if (eatingnow) max_iob *= profile.EatingNowIOBMax; // set maxIOB using the EN percentage
-        max_iob = round(max_iob,2);
-    }
-    //eatingnow = false; //DEBUG
-    enlog += "eatingnow: " + eatingnow + ", eatingnowtimeOK: " + eatingnowtimeOK+"\n";
-    // patches ===== END
 
     var tick;
 
