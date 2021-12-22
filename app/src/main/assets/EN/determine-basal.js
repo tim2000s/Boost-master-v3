@@ -466,10 +466,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // disable variable ISF with a TT, when feature is disabled or if above EatingNowBGThreshold
     // EatingNowBGThreshold condition prevents unexpected increases triggering too much insulin at night
     if (profile.temptargetSet || profile.use_autoisf || !eatingnow && bg > EatingNowBGThreshold) {
-        sens_currentBG = sens_normalTarget;
-        enlog += "sens_currentBG limited to sens_normalTarget:"+sens_currentBG+"\n";
+        //sens_currentBG = sens_normalTarget;
+        sens_currentBG = sens_normalTarget/(Math.min(bg,EatingNowBGThreshold)/normalTarget);
+        enlog += "sens_currentBG limited to max BG of EatingNowBGThreshold:"+sens_currentBG+"\n";
     }
-    sens = sens_currentBG;
+    //sens = sens_currentBG;
     sens = sens_normalTarget; // * EXPERIMENTAL *
     enlog += "sens:"+sens+"\n";
     sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
