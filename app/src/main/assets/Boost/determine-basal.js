@@ -1255,7 +1255,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
             // bolus insulinReqPCT the insulinReq, up to maxBolus, rounding down to nearest bolus
-            increment
+            //increment
             var roundSMBTo = 1 / profile.bolus_increment;
             var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,maxBolus)*roundSMBTo)
             /roundSMBTo;
