@@ -1293,11 +1293,46 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("Boost start time is "+(boost_start)+"hrs and boost end time is "+(boost_end)+"hrs; ");
                 console.error("Base boost insulin is "+boostInsulinReq+" iu; ");
 
+                //cARB HANDLING INSULIN UPTICK CODE.
+                //With COB, allow a large initial bolus
+                 if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 15  ){
+                    //var cob_boost_max = Math.max((( COB / CR ) / insulinReqPCT),boost_max);
+                    rT.reason += "boost_max due to COB = " + insulinReq + "; ";
+                    rT.reason += "Last carb age is: " + lastCarbAge + "; ";
+                    rT.reason += "Primary carb handling code operating; "
+                    if (insulinReq > boostMaxIOB-iob_data.iob) {
+                        insulinReq = boostMaxIOB-iob_data.iob;
+                          }
+                    else {
+                          insulinReq = insulinReq;
+                         }
+                    var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,insulinReq)*roundSMBTo)/roundSMBTo;
+                    console.error("Insulin required % ("+((1/insulinReqPCT) * 100)+"%) applied.");
+                    }
+                 //Aafter initial period, allow larger carb based bolusing with some restrictions
+                 else if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 40  ){
+                       var cob_boost_max = Math.max((( COB / CR ) / insulinReqPCT),boost_max);
+                       rT.reason += "boost_max due to COB = " + cob_boost_max + "; ";
+                       rT.reason += "Last carb age is: " + lastCarbAge + "; ";
+                       rT.reason += "Secondary carb handling code operating; "
+                       if (insulinReq > boostMaxIOB-iob_data.iob) {
+                       insulinReq = boostMaxIOB-iob_data.iob;
+                          }
+                    else {
+                          insulinReq = insulinReq;
+                         }
+                    var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,cob_boost_max)*roundSMBTo)/roundSMBTo;
+                    console.error("Insulin required % ("+((1/insulinReqPCT) * 100)+"%) applied.");
+                 }
+                 //End of Carb handling uptick code.
+            else {
+
             // bolus insulinReqPCT the insulinReq, up to maxBolus, rounding down to nearest bolus
             //increment
             var roundSMBTo = 1 / profile.bolus_increment;
-            var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,maxBolus)*roundSMBTo)
-            /roundSMBTo;
+            var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,maxBolus)*roundSMBTo)/roundSMBTo;
+
+            }
             // calculate a long enough zero temp to eventually correct back up to target
             var smbTarget = target_bg;
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
