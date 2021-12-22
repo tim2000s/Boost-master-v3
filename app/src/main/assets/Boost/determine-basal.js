@@ -852,13 +852,17 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         console.log("EventualBG is" +eventualBG+" ;");
 
-        if( glucose_status.delta >= 5 && meal_data.mealCOB > 0) {
-            var future_sens = ( 277700 / (TDD * ( (eventualBG * 0.7) + (bg * 0.3) )));
+        if( glucose_status.delta >= 6 && meal_data.mealCOB > 0) {
+            var future_sens = ( 277700 / (TDD * ( (eventualBG * 0.75) + (bg * 0.25) )));
             console.log("Future state sensitivity is " +future_sens+" weighted on eventual BG due to COB");
             }
-        else if( glucose_status.delta > 5 ) {
-            var future_sens = ( 277700 / (TDD * ( (eventualBG * 0.2) + (bg * 0.8) )));
+        else if( glucose_status.delta > 6 ) {
+            var future_sens = ( 277700 / (TDD * ( (eventualBG * 0.25) + (bg * 0.75) )));
             console.log("Future state sensitivity is " +future_sens+" weighted on current bg due to no COB");
+            }
+        else if( glucose_status.delta > 0 ) {
+            var future_sens = ( 277700 / (TDD * bg) );
+            console.log("Future state sensitivity is " +future_sens+" using current bg due to no COB & small delta");
             }
         else {
             var future_sens = ( 277700 / (TDD * eventualBG));
