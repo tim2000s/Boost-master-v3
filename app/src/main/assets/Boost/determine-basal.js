@@ -1213,37 +1213,37 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 insulinReq = max_iob-iob_data.iob;
             }
 
-        // rate required to deliver insulinReq more insulin over 30m:
-        rate = basal + (2 * insulinReq);
-        rate = round_basal(rate, profile);
-        insulinReq = round(insulinReq,3);
-        rT.insulinReq = insulinReq;
-        //console.error(iob_data.lastBolusTime);
-        // minutes since last bolus
-        var lastBolusAge = round(( new Date(systemTime).getTime() - iob_data.lastBolusTime ) / 60000,1);
-        //console.error(lastBolusAge);
-        //console.error(profile.temptargetSet, target_bg, rT.COB);
-        // only allow microboluses with COB or low temp targets, or within DIA hours of a bolus
-        if (microBolusAllowed && enableSMB && bg > threshold) {
-            // never bolus more than maxSMBBasalMinutes worth of basal
-            var mealInsulinReq = round( meal_data.mealCOB / profile.carb_ratio ,3);
-            if (typeof profile.maxSMBBasalMinutes === 'undefined' ) {
-                var maxBolus = round( profile.current_basal * 30 / 60 ,1);
-                console.error("profile.maxSMBBasalMinutes undefined: defaulting to 30m");
-            // if IOB covers more than COB, limit maxBolus to 30m of basal
-            } else if ( iob_data.iob > mealInsulinReq && iob_data.iob > 0 ) {
-                console.error("IOB",iob_data.iob,"> COB",meal_data.mealCOB+"; mealInsulinReq =",mealInsulinReq);
-                if (profile.maxUAMSMBBasalMinutes) {
-                    console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"profile.current_basal:",profile.current_basal);
-                    maxBolus = round( profile.current_basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
+            // rate required to deliver insulinReq more insulin over 30m:
+            rate = basal + (2 * insulinReq);
+            rate = round_basal(rate, profile);
+            insulinReq = round(insulinReq,3);
+            rT.insulinReq = insulinReq;
+            //console.error(iob_data.lastBolusTime);
+            // minutes since last bolus
+            var lastBolusAge = round(( new Date(systemTime).getTime() - iob_data.lastBolusTime ) / 60000,1);
+            //console.error(lastBolusAge);
+            //console.error(profile.temptargetSet, target_bg, rT.COB);
+            // only allow microboluses with COB or low temp targets, or within DIA hours of a bolus
+            if (microBolusAllowed && enableSMB && bg > threshold) {
+                // never bolus more than maxSMBBasalMinutes worth of basal
+                var mealInsulinReq = round( meal_data.mealCOB / profile.carb_ratio ,3);
+                if (typeof profile.maxSMBBasalMinutes === 'undefined' ) {
+                    var maxBolus = round( profile.current_basal * 30 / 60 ,1);
+                    console.error("profile.maxSMBBasalMinutes undefined: defaulting to 30m");
+                // if IOB covers more than COB, limit maxBolus to 30m of basal
+                } else if ( /*iob_data.iob > mealInsulinReq && */ iob_data.iob > -0.2 ) {
+                    console.error("IOB",iob_data.iob,"> COB",meal_data.mealCOB+"; mealInsulinReq =",mealInsulinReq);
+                    if (profile.maxUAMSMBBasalMinutes) {
+                        console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"profile.current_basal:",profile.current_basal);
+                        maxBolus = round( profile.current_basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
+                    } else {
+                        console.error("profile.maxUAMSMBBasalMinutes undefined: defaulting to 30m");
+                        maxBolus = round( profile.current_basal * 30 / 60 ,1);
+                    }
                 } else {
-                    console.error("profile.maxUAMSMBBasalMinutes undefined: defaulting to 30m");
-                    maxBolus = round( profile.current_basal * 30 / 60 ,1);
+                    console.error("profile.maxSMBBasalMinutes:",profile.maxSMBBasalMinutes,"profile.current_basal:",profile.current_basal);
+                    maxBolus = round( profile.current_basal * profile.maxSMBBasalMinutes / 60 ,1);
                 }
-            } else {
-                console.error("profile.maxSMBBasalMinutes:",profile.maxSMBBasalMinutes,"profile.current_basal:",profile.current_basal);
-                maxBolus = round( profile.current_basal * profile.maxSMBBasalMinutes / 60 ,1);
-            }
 // Start of TS experimental closed loop code to enable scaling of SMBs to increase insulin early in glucose rise
                 var roundSMBTo = 1 / profile.bolus_increment;
                 var scaleSMB = (target_bg/(eventualBG-target_bg));
@@ -1252,6 +1252,26 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("Insulin required ="+((1/insulinReqPCT) * 100)+"%: ");
 
                 var insulinPCTsubtract = ( insulinReqPCT - 1 );
+
+                //Calculate variables for sliding scale microbolus increase
+                var bg_adjust = (bg - 108) / 72;
+                //console.error("bg_adjust value is "+bg_adjust+"; ");
+                var insulinDivisor = insulinReqPCT - Math.min((insulinPCTsubtract * bg_adjust),insulinPCTsubtract);
+                console.error("Insulin Divisor is:"+insulinDivisor+"; ");
+                console.error("Value is "+((1/insulinDivisor) * 100)+"% of insulin required; ");
+                console.error("insulinRequired is: "+insulinReq+"; ");
+                //Set boost factors to check whether it's appropriate to use a hardcoded bolus
+                var uamBoost1 = (glucose_status.delta / glucose_status.short_avgdelta);
+                console.error("UAM Boost 1 value is "+uamBoost1+"; ");
+                var uamBoost2 = (glucose_status.delta / glucose_status.long_avgdelta);
+                var uamBoost2 = Math.abs(uamBoost2);
+                console.error("UAM Boost 2 value is "+uamBoost2+"; ");
+                rT.reason += ("UAM Boost 1 value is "+uamBoost1+"; ");
+                rT.reason += ("UAM Boost 2 value is "+uamBoost2+"; ");
+
+                var boostMaxIOB = profile.boost_maxIOB;
+                console.error("Max IOB from automated boluses = "+boostMaxIOB+"; ");
+
 
 
             // bolus insulinReqPCT the insulinReq, up to maxBolus, rounding down to nearest bolus
