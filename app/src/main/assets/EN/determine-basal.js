@@ -432,7 +432,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (tdd_pump < (0.5 * tdd_avg)){
         TDD = (tdd_avg * 0.2) + (tdd_pump * 0.8);
         enlog += "TDD weighted to pump due to low insulin usage. TDD:"+round(TDD,3)+"\n";
-    } else if (tdd_pump > (1.3 * tdd_avg)) {
+    } else if (tdd_pump > (1.3 * tdd_avg) && TIRAbove==1) {
         TDD = (tdd_avg * 0.8) + (tdd_pump * 0.2);
         //console.error("TDD weighted to TDD7 due to high insulin usage. TDD = "+TDD+"; ");
         enlog += "TDD weighted to 80% TDDAVG due to high insulin usage. TDDAVG:"+round(tdd_avg,3)+", TDD:"+round(TDD,3)+"\n";
