@@ -263,16 +263,21 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sensitivityRatio = sensitivityRatio * autosens_data.ratio; //now apply existing sensitivity or resistance
         // limit sensitivityRatio to profile.autosens_max
         sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
-        // restrict SR to 1 max if using advanced ISF hence sens_currentBG may help with overnight low allowing basal to be adjusted
-        sensitivityRatio = (profile.ISFBoost_enabled ? Math.min(sensitivityRatio,1) : sensitivityRatio);
         sensitivityRatio = round(sensitivityRatio,2);
         console.log("Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+"; ");
     } else if (typeof autosens_data !== 'undefined' && autosens_data) {
         sensitivityRatio = autosens_data.ratio;
-        // restrict SR to 1 max if using advanced ISF hence sens_currentBG may help with overnight low allowing basal to be adjusted
-        sensitivityRatio = (profile.ISFBoost_enabled ? Math.min(sensitivityRatio,1) : sensitivityRatio);
         console.log("Autosens ratio: "+sensitivityRatio+"; ");
     }
+
+    // Eating Now Variables, relocated for SR
+    var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false, enlog = ""; // nah not eating yet
+    var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
+    // eating now time can be delayed if there is no first bolus or carbs
+    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.firstBolusCorrTime !== 0 || meal_data.firstCarbTime !==0)) eatingnowtimeOK = true;
+    // restrict SR to 1 max if using advanced ISF and not overnight allowing basal to be adjusted
+    sensitivityRatio = (profile.ISFBoost_enabled && eatingnowtimeOK ? Math.min(sensitivityRatio,1) : sensitivityRatio);
+
     if (sensitivityRatio) {
         basal = profile.current_basal * sensitivityRatio;
         basal = round_basal(basal, profile);
@@ -322,11 +327,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // patches ==== START
     var ignoreCOBPatch = profile.enableGhostCOB; //MD#01: Ignore any COB and rely purely on UAM
 
-    // Eating Now Variables
-    var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false, enlog = ""; // nah not eating yet
-    var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
-    // eating now time can be delayed if there is no first bolus or carbs
-    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.firstBolusCorrTime !== 0 || meal_data.firstCarbTime !==0)) eatingnowtimeOK = true;
+    // Check that max iob is OK
     if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
 
     // If we have UAM and GhostCOB enabled with low enough IOB we will enable eating now mode
