@@ -1285,6 +1285,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var boost_max = profile.boost_bolus;
                 console.error("Max automated bolus is "+boost_max+"; ");
 
+                var boost_scale = profile.boost_scale;
+                var boostInsulinReq = ((TDD * 0.4) / 24 );
+                var COB = meal_data.mealCOB;
+                var CR = profile.carb_ratio;
+
+                console.error("Boost start time is "+(boost_start)+"hrs and boost end time is "+(boost_end)+"hrs; ");
+                console.error("Base boost insulin is "+boostInsulinReq+" iu; ");
+
             // bolus insulinReqPCT the insulinReq, up to maxBolus, rounding down to nearest bolus
             //increment
             var roundSMBTo = 1 / profile.bolus_increment;
