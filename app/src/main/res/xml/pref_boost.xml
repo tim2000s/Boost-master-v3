@@ -29,14 +29,14 @@
             validate:testType="floatNumericRange" />
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-            android:defaultValue="65"
+            android:defaultValue="50"
             android:enabled="true"
-            android:dialogMessage="@string/UAM_InsulinReq_summary"
+            android:dialogMessage="@string/Boost_InsulinReq_summary"
             android:inputType="numberDecimal"
-            android:key="@string/key_UAM_InsulinReq"
-            android:title="@string/UAM_InsulinReq_title"
+            android:key="@string/key_Boost_InsulinReq"
+            android:title="@string/Boost_InsulinReq_title"
             validate:floatmaxNumber="100"
-            validate:floatminNumber="50"
+            validate:floatminNumber="30"
             validate:testType="floatNumericRange" />
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference

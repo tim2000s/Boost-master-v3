@@ -1244,9 +1244,21 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("profile.maxSMBBasalMinutes:",profile.maxSMBBasalMinutes,"profile.current_basal:",profile.current_basal);
                 maxBolus = round( profile.current_basal * profile.maxSMBBasalMinutes / 60 ,1);
             }
-            // bolus 1/2 the insulinReq, up to maxBolus, rounding down to nearest bolus increment
+// Start of TS experimental closed loop code to enable scaling of SMBs to increase insulin early in glucose rise
+                var roundSMBTo = 1 / profile.bolus_increment;
+                var scaleSMB = (target_bg/(eventualBG-target_bg));
+
+                var insulinReqPCT = ( 100 / profile.Boost_InsulinReq );
+                console.error("Insulin required ="+((1/insulinReqPCT) * 100)+"%: ");
+
+                var insulinPCTsubtract = ( insulinReqPCT - 1 );
+
+
+            // bolus insulinReqPCT the insulinReq, up to maxBolus, rounding down to nearest bolus
+            increment
             var roundSMBTo = 1 / profile.bolus_increment;
-            var microBolus = Math.floor(Math.min(insulinReq/2,maxBolus)*roundSMBTo)/roundSMBTo;
+            var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,maxBolus)*roundSMBTo)
+            /roundSMBTo;
             // calculate a long enough zero temp to eventually correct back up to target
             var smbTarget = target_bg;
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;

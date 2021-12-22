@@ -1176,6 +1176,9 @@
     <string name="key_UAM_InsulinReq" translatable="false">UAM_InsulinReq</string>
     <string name="UAM_InsulinReq_title">AIMI iTime SMB Power %</string>
     <string name="UAM_InsulinReq_summary">percentage of the AIMI response during the iTime duration</string>
+    <string name="key_Boost_InsulinReq" translatable="false">Boost_InsulinReq</string>
+    <string name="Boost_InsulinReq_title">Boost Insulin required %</string>
+    <string name="Boost_InsulinReq_summary">percentage of the algos determined insulin to give</string>
     <string name="key_iTime_MaxBolus_minutes" translatable="false">iTime_MaxBolus_minutes</string>
     <string name="iTime_MaxBolus_minutes_title">iTime_MaxBolus_minutes</string>
     <string name="iTime_MaxBolus_minutes_summary">iTime give a duration of the meal who allow larger smb and maxbolus. this variable give the higher maxbolus (basal * iTime_MaxBolus_minutes / 60)</string>
