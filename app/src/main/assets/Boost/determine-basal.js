@@ -1280,6 +1280,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     console.error("Hours are now "+now1+", so UAM Boost is disabled;");
                 }
 
+                var boost_start = profile.boost_start;
+                var boost_end = profile.boost_end;
+                var boost_max = profile.boost_bolus;
+                console.error("Max automated bolus is "+boost_max+"; ");
 
             // bolus insulinReqPCT the insulinReq, up to maxBolus, rounding down to nearest bolus
             //increment
