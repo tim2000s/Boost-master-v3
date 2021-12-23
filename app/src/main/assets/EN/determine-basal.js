@@ -430,7 +430,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TDD = (tdd_avg * 0.4) + (tdd_pump * 0.6);
     //console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
     enlog += "Pump extrapolated TDD:"+round(tdd_pump,3)+"\n";
-    if (tdd_pump < (0.5 * tdd_avg)){
+    if (tdd_pump < (0.5 * tdd_avg) && TIRBelow < 1){
         TDD = (tdd_avg * 0.2) + (tdd_pump * 0.8);
         enlog += "TDD weighted to pump due to low insulin usage. TDD:"+round(TDD,3)+"\n";
     } else if (tdd_pump > (1.3 * tdd_avg) && TIRAbove==1) {
