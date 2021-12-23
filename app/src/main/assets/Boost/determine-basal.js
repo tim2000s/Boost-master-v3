@@ -1268,6 +1268,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("UAM Boost 2 value is "+uamBoost2+"; ");
                 rT.reason += ("UAM Boost 1 value is "+uamBoost1+"; ");
                 rT.reason += ("UAM Boost 2 value is "+uamBoost2+"; ");
+                console.error("bg_adjust value is "+bg_adjust+"; ");
+                console.error("Delta value is "+glucose_status.delta+"; ");
+                console.error("InsulinDivisor value is "+insulinDivisor+"; ");
 
                 var boostMaxIOB = profile.boost_maxIOB;
                 console.error("Max IOB from automated boluses = "+boostMaxIOB+"; ");
