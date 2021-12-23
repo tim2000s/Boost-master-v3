@@ -1313,8 +1313,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     console.error("Insulin required % ("+((1/insulinReqPCT) * 100)+"%) applied.");
                     }
                  //Aafter initial period, allow larger carb based bolusing with some restrictions
-                 else if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 40 && glucose_status.delta > 5 )
-                  ){
+                 else if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 40 && glucose_status.delta > 5 ){
                        var cob_boost_max = Math.max((( COB / CR ) / insulinReqPCT),boost_max);
                        rT.reason += "boost_max due to COB = " + cob_boost_max + "; ";
                        rT.reason += "Last carb age is: " + lastCarbAge + "; ";
