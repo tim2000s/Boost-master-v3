@@ -1328,6 +1328,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     console.error("Insulin required % ("+((1/insulinReqPCT) * 100)+"%) applied.");
                  }
                  //End of Carb handling uptick code.
+
+            else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 4 && COB < 1){
+
+            var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,boost_max)*roundSMBTo)/roundSMBTo;
+
+            }
             else {
 
             // bolus insulinReqPCT the insulinReq, up to maxBolus, rounding down to nearest bolus
