@@ -75,12 +75,6 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:key="key_use_ghostcob"
-            android:title="Enable GhostCOB"
-            android:summary="Ignore COB after initial rise and rely on UAM predictions.\nInitial rise window currently 25 mins.\nWhen disabled COB predictions will be as normal." />
-
-        <SwitchPreference
-            android:defaultValue="false"
             android:key="@string/key_use_smb"
             android:summary="@string/enablesmb_summary"
             android:title="@string/enablesmb" />
@@ -314,6 +308,29 @@
                     validate:floatminNumber="6.0"
                     validate:testType="floatNumericRange" />
 
+            </PreferenceCategory>
+
+            <PreferenceCategory
+                android:title="COBBoost"
+                app:initialExpandedChildrenCount="0">
+
+                <SwitchPreference
+                    android:defaultValue="false"
+                    android:key="key_use_ghostcob"
+                    android:title="Enable GhostCOB"
+                    android:summary="Ignore COB after COBBoost window and rely on UAM predictions.\nWhen disabled COB predictions will be as normal." />
+
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="15"
+                    android:digits="0123456789"
+                    android:inputType="number"
+                    android:key="@string/key_eatingnow_cobboostminutes"
+                    android:title="COBBoost Window"
+                    android:dialogMessage="Window in minutes for increased maxBolus with COB"
+                    validate:maxNumber="60"
+                    validate:minNumber="15"
+                    validate:testType="numericRange" />
+
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                     android:defaultValue="0.1"
                     android:inputType="numberDecimal"
@@ -325,6 +342,7 @@
                     validate:testType="floatNumericRange"/>
 
             </PreferenceCategory>
+
 
             <PreferenceCategory
                 android:title="UAMBoost"

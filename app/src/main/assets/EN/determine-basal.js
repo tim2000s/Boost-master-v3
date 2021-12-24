@@ -403,7 +403,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var preBolused = (cTime-iTime)>0 && (cTime-iTime)<5 || meal_data.lastBolusCorrTime == meal_data.lastCarbTime;
     enlog += "preBolused:" + preBolused + ", cTime:" +cTime+ ", iTime:" +iTime+ ", LastCorrTime:" +LastCorrTime+ ", lastCarbs:" +meal_data.lastCarbs+ ", firstBolusCorrTime:"+meal_data.firstBolusCorrTime+"\n";
     // COBBoostOK is the when no SMB has been delivered since the COB entry
-    var COBBoostOK = meal_data.mealCOB > 0 && !preBolused && (SMBTime > cTime || cTime <= 25);
+    var COBBoostOK = meal_data.mealCOB > 0 && !preBolused && (SMBTime > cTime || cTime <= profile.COBBoostWindow);
     enlog += ("COBBoostOK:" + COBBoostOK);
     // If GhostCOB is enabled we will use COB when COBBoostOK but outside this window UAM will be used
     if (ignoreCOB && COBBoostOK) ignoreCOB = false;

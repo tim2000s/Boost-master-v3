@@ -328,6 +328,9 @@ public class DetermineBasalAdapterENJS {
 
         // patches ==== START
         mProfile.put("enableGhostCOB", sp.getBoolean(R.string.key_use_ghostcob, false));
+        mProfile.put("COBBoostWindow", sp.getInt(R.string.key_eatingnow_cobboostminutes, 15));
+        mProfile.put("EatingNowPrebolusPct", sp.getDouble(R.string.key_eatingnow_preboluspct, 0.1));
+
         mProfile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3));
         mProfile.put("EatingNowTimeStart", sp.getInt(R.string.key_eatingnow_timestart, 9));
         mProfile.put("EatingNowTimeEnd", sp.getInt(R.string.key_eatingnow_timeend, 17));
@@ -345,7 +348,6 @@ public class DetermineBasalAdapterENJS {
         mProfile.put("ISFBoost_SMBScale", sp.getDouble(R.string.key_eatingnow_isfboost_smbscale, 1));
         mProfile.put("ISF_Max_Scale", sp.getDouble(R.string.key_eatingnow_isf_max_scale, 1));
         mProfile.put("EatingNowBGThreshold", sp.getDouble(R.string.key_eatingnow_bgthreshold, 0));
-        mProfile.put("EatingNowPrebolusPct", sp.getDouble(R.string.key_eatingnow_preboluspct, 0.1));
 
         TempTarget tempTarget = treatmentsPlugin.getTempTargetFromHistory(System.currentTimeMillis());
         if (tempTarget != null) {
