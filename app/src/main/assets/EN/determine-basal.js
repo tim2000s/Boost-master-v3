@@ -325,7 +325,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
 
     // patches ==== START
-    var ignoreCOBPatch = profile.enableGhostCOB; //MD#01: Ignore any COB and rely purely on UAM
+    var ignoreCOB = profile.enableGhostCOB; //MD#01: Ignore any COB and rely purely on UAM after initial rise
 
     // Check that max iob is OK
     if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
@@ -403,9 +403,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var preBolused = (cTime-iTime)>0 && (cTime-iTime)<5 || meal_data.lastBolusCorrTime == meal_data.lastCarbTime;
     enlog += "preBolused:" + preBolused + ", cTime:" +cTime+ ", iTime:" +iTime+ ", LastCorrTime:" +LastCorrTime+ ", lastCarbs:" +meal_data.lastCarbs+ ", firstBolusCorrTime:"+meal_data.firstBolusCorrTime+"\n";
     // COBBoostOK is the when no SMB has been delivered since the COB entry
-    var COBBoostOK = !ignoreCOBPatch && meal_data.mealCOB > 0 && !preBolused && (SMBTime > cTime || cTime <= 25);
+    var COBBoostOK = meal_data.mealCOB > 0 && !preBolused && (SMBTime > cTime || cTime <= 25);
     enlog += ("COBBoostOK:" + COBBoostOK);
-
+    // If GhostCOB is enabled we will use COB when COBBoostOK but outside this window UAM will be used
+    if (ignoreCOB && COBBoostOK) ignoreCOB = false;
 
 //    if (TIRAbove >1 && TIRBelow == 1 && bg > EatingNowBGThreshold) {
 //        enlog += "TIRAbove:" + TIRAbove+"\n";
@@ -887,7 +888,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
         rT.predBGs.COB = COBpredBGs;
         lastCOBpredBG=round(COBpredBGs[COBpredBGs.length-1]);
-        if (!ignoreCOBPatch) eventualBG = Math.max(eventualBG, round(COBpredBGs[COBpredBGs.length-1]) ); //MD#01: Dont use COB eventualBG if ignoring COB
+        if (!ignoreCOB) eventualBG = Math.max(eventualBG, round(COBpredBGs[COBpredBGs.length-1]) ); //MD#01: Dont use COB eventualBG if ignoring COB
     }
     if (ci > 0 || remainingCIpeak > 0) {
         if (enableUAM) {
@@ -962,7 +963,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     } else {
         avgPredBG = round( IOBpredBG );
     }
-    if (ignoreCOBPatch && enableUAM) avgPredBG = round( (IOBpredBG + UAMpredBG)/2 );  //MD#01: If we are ignoring COB and we have UAM, average IOB and UAM as above
+    if (ignoreCOB && enableUAM) avgPredBG = round( (IOBpredBG + UAMpredBG)/2 );  //MD#01: If we are ignoring COB and we have UAM, average IOB and UAM as above
     // if avgPredBG is below minZTGuardBG, bring it up to that level
     if ( minZTGuardBG > avgPredBG ) {
         avgPredBG = minZTGuardBG;
@@ -980,7 +981,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     } else {
         minGuardBG = minIOBGuardBG;
     }
-    if (ignoreCOBPatch && enableUAM) minGuardBG = minUAMGuardBG; //MD#01: if we are ignoring COB and have UAM just use minUAMGuardBG as above
+    if (ignoreCOB && enableUAM) minGuardBG = minUAMGuardBG; //MD#01: if we are ignoring COB and have UAM just use minUAMGuardBG as above
     minGuardBG = round(minGuardBG);
     //console.error(minCOBGuardBG, minUAMGuardBG, minIOBGuardBG, minGuardBG);
 
@@ -1025,7 +1026,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     } else if ( enableUAM ) {
         minPredBG = round(Math.max(minIOBPredBG,minZTUAMPredBG));
     }
-    if (ignoreCOBPatch && enableUAM) minPredBG = round(Math.max(minIOBPredBG,minZTUAMPredBG)); //MD#01 If we are ignoring COB with UAM enabled use pure UAM mode like above
+    if (ignoreCOB && enableUAM) minPredBG = round(Math.max(minIOBPredBG,minZTUAMPredBG)); //MD#01 If we are ignoring COB with UAM enabled use pure UAM mode like above
 
     // make sure minPredBG isn't higher than avgPredBG
     minPredBG = Math.min( minPredBG, avgPredBG );
@@ -1039,7 +1040,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.error(" avgPredBG:",avgPredBG,"COB:",meal_data.mealCOB,"/",meal_data.carbs);
     // But if the COB line falls off a cliff, don't trust UAM too much:
     // use maxCOBPredBG if it's been set and lower than minPredBG
-    if ( maxCOBPredBG > bg && !ignoreCOBPatch ) { //MD#01 Only if we aren't using GhostCOB
+    if ( maxCOBPredBG > bg && !ignoreCOB ) { //MD#01 Only if we aren't using GhostCOB
         minPredBG = Math.min(minPredBG, maxCOBPredBG);
     }
 
@@ -1054,6 +1055,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         rT.reason += ", UAMpredBG " + convert_bg(lastUAMpredBG, profile); //MD Missing ;
     }
     // extra reason text
+    rT.reason += (ignoreCOB && !COBBoostOK ? " (GhostCOB)" : "");
     if (liftISF > 1) rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     rT.reason += ", SR: " + sensitivityRatio;
     //rT.reason += ", TDD: " + round(TDD, 2) + " ("+convert_bg(sens_TDD, profile)+"/"+convert_bg(sens_avg, profile)+")";
@@ -1525,6 +1527,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (!eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0)  {
                 microBolus = 0;
                 UAMBoostReason += ", no SMB";
+                UAMBoostReason += ", no SMB"
             }
 
 //            // Daytime TBR if below threshold and not in a boost window ** EXPERIMENTAL **

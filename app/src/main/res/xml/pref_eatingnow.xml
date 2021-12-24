@@ -77,7 +77,7 @@
             android:defaultValue="false"
             android:key="key_use_ghostcob"
             android:title="Enable GhostCOB"
-            android:summary="Ignore COB and rely on UAM predictions" />
+            android:summary="Ignore COB after initial rise and rely on UAM predictions.\nInitial rise window currently 25 mins.\nWhen disabled COB predictions will be as normal." />
 
         <SwitchPreference
             android:defaultValue="false"
