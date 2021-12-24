@@ -1343,6 +1343,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             UAMBoostReason += (iTimeOK ? " iTime" : " no iTime"); //reason text for oaps pill is nothing to start
             var insulinReqBoost = 0; // no boost yet
             var EatingNowMaxSMB = maxBolus;
+            var maxBolusOrig = maxBolus;
             var UAMBoosted = false, ISFBoosted = false, UAMBoostMAX = false;
             // console.log("EatingNowBGThreshold: "+EatingNowBGThreshold);
 
@@ -1557,7 +1558,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
             rT.reason += " insulinReq " + insulinReq + (insulinReq > insulinReqOrig ? "(" + insulinReqOrig + ")" : "") + "@"+round(insulinReqPct*100,0)+"%";
             if (microBolus >= maxBolus) {
-                rT.reason +=  "; maxBolus" + (maxBolus == EatingNowMaxSMB ? "^ ": " ") + maxBolus;
+                rT.reason +=  "; maxBolus" + (maxBolus > maxBolusOrig ? "^ ": " ") + maxBolus;
             }
             if (durationReq > 0) {
                 rT.reason += "; setting " + durationReq + "m low temp of " + smbLowTempReq + "U/h";
