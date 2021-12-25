@@ -1362,7 +1362,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //console.log("UAMBoost: " + UAMBoost);
 
             // * EXPERIMENT * insulinReq allows boost
-            if (eatingnow && eatingnowtimeOK && !iTimeOK && insulinReq > 1) iTimeOK = true;
+            if (eatingnow && eatingnowtimeOK && !iTimeOK && insulinReq > 1) {
+                iTimeOK = true; // this will allow boost code
+                COBBoostOK = true; // this will allow all of insulinReq - Merry Xmas
+            }
 
             // START === if we are eating now and BGL prediction is higher than normal target ===
             if (eatingnow && eventualBG > target_bg && iTimeOK) {
