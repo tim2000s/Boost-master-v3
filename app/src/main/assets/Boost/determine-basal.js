@@ -1328,8 +1328,33 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     console.error("Insulin required % ("+((1/insulinReqPCT) * 100)+"%) applied.");
                  }
                  //End of Carb handling uptick code.*/
+                 //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
+                 if (COB = 0 && glucose_status.delta >= 5 && glucose_status.short_avgdelta >= 3 && uamBoost1 > 1.2 && uamBoost2 > 2 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 5 && eventualBG > target_bg && bg > 80 && insulinReq > 0) {
+                     console.error("Profile Boost Scale value is "+boost_scale+": ");
+                     //console.error("Automated Boost Scale value is "+scaleSMB+": ");
+                     //document the pre-boost insulin required recommendation
+                     console.error("Insulin required pre-boost is "+insulinReq+": ");
+                     //Boost insulin required variable set to 1 hour of insulin based on TDD, and possible to scale using profile scaling factor.
+                     boostInsulinReq = Math.min(boost_scale * boostInsulinReq,boost_max);
+                        if (boostInsulinReq > boostMaxIOB-iob_data.iob) {
+                            boostInsulinReq = boostMaxIOB-iob_data.iob;
+                        }
+                     else {
+                     boostInsulinReq = boostInsulinReq;
+                     }
+                     if (boostInsulinReq < (insulinReq/insulinReqPCT)) {
+                     var microBolus = Math.floor(Math.min((insulinReq/insulinReqPCT),boost_max)*roundSMBTo)/roundSMBTo;
+                     }
+                     else {
+                     var microBolus = Math.floor(Math.min(boostInsulinReq)*roundSMBTo)/roundSMBTo;
+                     }
+                     console.error("UAM Boost enacted; SMB equals "+boostInsulinReq+" ; Original insulin requirement was "+insulinReq+"; Boost is " +(boostInsulinReq/insulinReq)+" times increase" );
+                     rT.reason += "UAM Boost enacted; SMB equals" + boostInsulinReq + "; ";
+                 }
 
-            if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 4 && COB < 1){
+
+            else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 4 && COB <
+            1){
 
             var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,boost_max)*roundSMBTo)/roundSMBTo;
 
