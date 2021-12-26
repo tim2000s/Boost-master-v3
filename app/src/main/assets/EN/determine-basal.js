@@ -1505,7 +1505,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== UAMBoost Reason ==============
                 // If max window exists we dont need to show iTime
                 if (COBBoostOK) {
-                    UAMBoostReason += ", COBBoost: " + round(cTime)+"/"+profile.COBBoostWindow"m");
+                    UAMBoostReason += ", COBBoost: " + round(cTime)+"/"+profile.COBBoostWindow+"m";
                 }
             }
             // END === if we are eating now and BGL prediction is higher than normal target ===
