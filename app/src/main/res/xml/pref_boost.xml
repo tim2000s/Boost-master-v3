@@ -53,6 +53,7 @@
             validate:minNumber="15"
             validate:testType="numericRange" />
 
+
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="0.1"
             android:dialogMessage="@string/openapsama_boost_bolus_summary"
@@ -66,7 +67,7 @@
             validate:floatmaxNumber="10"
             validate:floatminNumber="0.1"
             validate:testType="floatNumericRange" />
-
+        <!--
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="1.0"
             android:dialogMessage="@string/openapsama_boost_scale_summary"
@@ -93,7 +94,7 @@
             android:title="@string/openapsama_boost_max_iob_title"
             validate:floatmaxNumber="12"
             validate:floatminNumber="0.1"
-            validate:testType="floatNumericRange" />
+            validate:testType="floatNumericRange" /> -->
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="7"

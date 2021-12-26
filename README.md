@@ -76,3 +76,14 @@ delta > 5 and long delta > 0
 -iTime_startings-bolus is a new variable in the settings, it's the limit to start iTime.
 Now iTime exist if trigger is manual bolus and iob > iTime_starting_bolus and bg + glucose_status.delta > profile.min_bg (min target in the profile) + profile.smb_delivery_ratio_bg_range (in advanced option)
 -merge 2.8.2.14 from Milos
+
+Boost v3
+
+Boost v3 uses an updated version of the TDD ISF calculation, with a weighting of 20% to future Bg
+ and 80% to current BG when delta is >6, current bg when delta 0 < 6 and future bg when delta is
+ 0 or negative.v3
+
+ It also has variable insulin percentage determined by the user, and while boost time is valid,
+ an the algorithm can bolus up to a maximum bolus defined by the user in preferences.
+
+ The rest is oref1 standard.
