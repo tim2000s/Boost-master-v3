@@ -1049,13 +1049,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + ", Exp Delta: " + expectedDelta + ", ISF: " + convert_bg(sens_currentBG, profile) + (profile.ISFBoost_enabled ? "(" + convert_bg(sens_normalTarget, profile) + ")" + convert_bg(sens_future, profile) : "") + (sens_future_max ? "*" : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
 
     if (lastCOBpredBG > 0) {
-        rT.reason += ", COBpredBG " + convert_bg(lastCOBpredBG, profile);
+        rT.reason += ", " + (ignoreCOB && !COBBoostOK ? "!" : "") + "COBpredBG " + convert_bg(lastCOBpredBG, profile);
     }
     if (lastUAMpredBG > 0) {
         rT.reason += ", UAMpredBG " + convert_bg(lastUAMpredBG, profile); //MD Missing ;
     }
     // extra reason text
-    rT.reason += (ignoreCOB && !COBBoostOK ? " (GhostCOB)" : "");
+    // rT.reason += (ignoreCOB && !COBBoostOK ? " (GhostCOB)" : "");
     if (liftISF > 1) rT.reason += ", autoISF: " + round(liftISF,2); //autoISF reason
     rT.reason += ", SR: " + sensitivityRatio;
     //rT.reason += ", TDD: " + round(TDD, 2) + " ("+convert_bg(sens_TDD, profile)+"/"+convert_bg(sens_avg, profile)+")";
@@ -1501,6 +1501,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 } else {
                     UAMBoostReason += ", iTime Expired"
                 }
+
+                // ============== UAMBoost Reason ==============
+                // If max window exists we dont need to show iTime
+                if (COBBoostOK) {
+                    UAMBoostReason += ", COBBoost: " + round(cTime)+"/"+profile.COBBoostWindow"m");
+                }
             }
             // END === if we are eating now and BGL prediction is higher than normal target ===
 
@@ -1531,7 +1537,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (!eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0)  {
                 microBolus = 0;
                 UAMBoostReason += ", no SMB";
-                UAMBoostReason += ", no SMB"
             }
 
 //            // Daytime TBR if below threshold and not in a boost window ** EXPERIMENTAL **
@@ -1584,8 +1589,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (lastBolusAge > SMBInterval) {
                 if (microBolus > 0) {
                     rT.units = microBolus;
-                    rT.reason += "Microbolusing " + microBolus + "/" + maxBolus + "U";
-                    rT.reason += (COBBoostOK ? " (COBBoostOK)" : ".");
+                    rT.reason += "Microbolusing " + microBolus + "/" + maxBolus + "U.";
+                    //rT.reason += (COBBoostOK ? " (COBBoost)" : ".");
                     rT.SMBType = ( "SMB" );
                     rT.SMBType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : rT.SMBType );
                     rT.SMBType = (lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "UAM" : rT.SMBType );
