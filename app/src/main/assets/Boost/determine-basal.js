@@ -348,6 +348,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
            }
            else if ( tdd_pump > tdd7 && now < 6 ){
                         TDD = ( 0.8 * tdd7 );
+                        console.log("Excess insulin from pump so TDD set to "+TDD+" based on TDD 7; ");
                 }
           else {
                         console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
