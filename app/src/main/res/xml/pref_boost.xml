@@ -40,21 +40,6 @@
             validate:testType="floatNumericRange" />
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-            android:defaultValue="30"
-            android:dialogMessage="@string/uamsmbmaxminutes"
-            android:digits="0123456789"
-            android:inputType="number"
-            android:key="@string/key_uamsmbmaxminutes"
-            android:maxLines="20"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/uamsmbmaxminutes_summary"
-            validate:maxNumber="300"
-            validate:minNumber="15"
-            validate:testType="numericRange" />
-
-
-        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="0.1"
             android:dialogMessage="@string/openapsama_boost_bolus_summary"
             android:digits="0123456789.,"
