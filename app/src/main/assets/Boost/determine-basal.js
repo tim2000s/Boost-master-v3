@@ -315,7 +315,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     var profile_sens = round(profile.sens,1)
     var sens = profile.sens;
-    if (typeof autosens_data !== 'undefined' && autosens_data) {
+    /*if (typeof autosens_data !== 'undefined' && autosens_data) {
         sens = profile.sens / sensitivityRatio;
         sens = round(sens, 1);
         if (sens !== profile_sens) {
@@ -324,7 +324,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.log("Profile ISF unchanged by Autosens: "+sens+". TDD based ISF will now start");
         }
         //console.log(" (autosens ratio "+sensitivityRatio+")");
-    }
+    }*/
 
     /* ************************
        ** TS AutoTDD code    **
@@ -561,8 +561,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             , 'reservoir' : reservoir_data // The expected reservoir volume at which to deliver the microbolus (the reservoir volume from right before the last pumphistory run)
             , 'deliverAt' : deliverAt // The time at which the microbolus should be delivered
             , 'sensitivityRatio' : sensitivityRatio // autosens ratio (fraction of normal basal)
-            , 'minimum delta' : minDelta // minimum delta
-            , 'Expected Delta' : expectedDelta //expected delta
+            , 'Total Daily Dose Pump' : tdd_pump // pump based tdd
+            , 'Total Daily Dose 7-day Ave' : tdd7 //7 day average tdd
         };
 
     // generate predicted future BGs based on IOB, COB, and current absorption rate
@@ -861,9 +861,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var future_sens = ( 277700 / (TDD * ( (eventualBG * 0.25) + (bg * 0.75) )));
             console.log("Future state sensitivity is " +future_sens+" weighted on current bg due to no COB");
             }
-        else if( glucose_status.delta > 0 ) {
+        else if( glucose_status.delta > 0 || bg > 60 && glucose_status.delta < 2 && glucose_status.delta > -2 && glucose_status.short_avgdelta > -2 && glucose_status.short_avgdelta < 2 && glucose_status.long_avgdelta > -2 && glucose_status.long_avgdelta < 2 ) {
             var future_sens = ( 277700 / (TDD * bg) );
-            console.log("Future state sensitivity is " +future_sens+" using current bg due to no COB & small delta");
+            console.log("Future state sensitivity is " +future_sens+" using current bg due to no COB & small delta or variation");
             }
         else {
             var future_sens = ( 277700 / (TDD * eventualBG));
