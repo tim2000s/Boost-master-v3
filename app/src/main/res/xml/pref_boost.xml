@@ -211,8 +211,9 @@
             android:defaultValue="false"
             android:key="@string/key_resistance_lowers_target"
             android:summary="@string/resistance_lowers_target_summary"
-            android:title="@string/resistance_lowers_target_title" />
-        < TODO AS-FIX -->
+            android:title="@string/resistance_lowers_target_title" /> -->
+
+        <!-- TODO AS-FIX -->
         <SwitchPreference
             android:defaultValue="false"
             android:enabled="true"

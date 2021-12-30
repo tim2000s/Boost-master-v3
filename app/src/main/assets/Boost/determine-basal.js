@@ -110,7 +110,8 @@ function enable_smb(
     return false;
 }
 
-function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio)
+/*function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data,
+sensitivityRatio)
 {   // #### mod 7e: added switch fr autoISF ON/OFF
     if ( !profile.use_autoisf ) {
         console.error("autoISF disabled in Preferences");
@@ -145,7 +146,7 @@ function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_d
         console.error("autoISF by-passed; BG is only "+dura05+"m at level "+avg05);
     }
     return sens;
-}
+}*/
 
 
 var determine_basal = function determine_basal(glucose_status, currenttemp, iob_data, profile, autosens_data, meal_data, tempBasalFunctions, microBolusAllowed, reservoir_data, currentTime, isSaveCgmSource) {
@@ -393,7 +394,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
 
-        sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
+        //sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
         // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
         //Target adjustment with HypoPredBG - TS
 
