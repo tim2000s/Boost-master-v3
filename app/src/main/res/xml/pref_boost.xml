@@ -109,10 +109,10 @@
             validate:floatminNumber="0"
             validate:testType="floatNumericRange" />
 
-        <SwitchPreference
+        <!--<SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_openapsama_useautosens"
-            android:title="@string/openapsama_useautosens" />
+            android:title="@string/openapsama_useautosens" /> -->
 
         <SwitchPreference
             android:defaultValue="false"
@@ -201,7 +201,7 @@
             android:summary="@string/enableuam_summary"
             android:title="@string/enableuam" />
 
-
+<!--
         <SwitchPreference
             android:defaultValue="true"
             android:key="@string/key_sensitivity_raises_target"
@@ -212,7 +212,7 @@
             android:key="@string/key_resistance_lowers_target"
             android:summary="@string/resistance_lowers_target_summary"
             android:title="@string/resistance_lowers_target_title" />
-        <!-- TODO AS-FIX -->
+        < TODO AS-FIX -->
         <SwitchPreference
             android:defaultValue="false"
             android:enabled="true"
