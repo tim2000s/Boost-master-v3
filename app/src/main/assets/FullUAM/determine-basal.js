@@ -344,6 +344,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         iTime = iTimeProfile + 1 ;
         enlog += "A manual bolus was done, but iTime is disable, iob < iTime_start_bolus : "+iob_data.iob+"<"+iTime_Start_Bolus+"\n";
         }
+        enlog += "C1 = "+C1+" and C2 = "+C2+"\n";
 
 
         if (meal_data.carbs) {
