@@ -340,7 +340,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var C1 = bg + glucose_status.delta;
         var C2 = profile.min_bg + profile.smb_delivery_ratio_bg_range;
-        if (iob_data.iob <= iTime_Start_Bolus && iTime < iTimeProfile && C2 <= C1){
+        if (iob_data.iob <= iTime_Start_Bolus && iTime < iTimeProfile && C1 <= C2){
         iTime = iTimeProfile + 1 ;
         enlog += "A manual bolus was done, but iTime is disable, iob < iTime_start_bolus : "+iob_data.iob+"<"+iTime_Start_Bolus+"\n";
         }
