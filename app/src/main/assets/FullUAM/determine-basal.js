@@ -1403,11 +1403,13 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 var microBolus =  profile.iTime_Bolus;
 
             }else if (iTime < iTimeProfile && smbTDD === 0 && ! profile.temptargetSet){
-
                 insulinReq = insulinReq + InsulinTDD;
+                insulinReqPCT = smb_ratio * 3;
                 maxBolusTT = round(basal * profile.iTime_MaxBolus_minutes * smb_max_range / 60 ,1);
+                maxBolusTT *= 3;
+                var microBolus = Math.min(insulinReq*insulinReqPCT, maxBolusTT);
                 console.log("iTime_MaxBolus_minutes : "+profile.iTime_MaxBolus_minutes+ "maxBolus : "+maxBolusTT);
-                var microBolus = Math.min(insulinReq*smb_ratio*insulinReqPCT, maxBolusTT);
+                //var microBolus = Math.min(insulinReq*smb_ratio*insulinReqPCT, maxBolusTT);
 
             /*}else if (iTime < iTimeProfile && smbTDD ===0 && ! profile.temptargetSet && TriggerPredSMB < 400 && TriggerPredSMB_future_sens_60 > 120){
 
