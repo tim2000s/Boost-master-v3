@@ -65,6 +65,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
     private var currentTime: Long = 0
     private var saveCgmSource = false
     private var lastBolusNormalTime: Long = 0
+    private var lastBolusNormalTimeValue: Double = 0.0
     private val millsToThePast = T.hours(4).msecs()
     private var tddAIMI: TddCalculator? = null
     private var StatTIR: TirCalculator? = null
@@ -281,6 +282,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
             mGlucoseStatus.put("delta", glucoseStatus.delta)
         }
         bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTime = bolus.timestamp }
+        bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTimeValue = bolus.amount }
 
         mGlucoseStatus.put("short_avgdelta", glucoseStatus.shortAvgDelta)
         mGlucoseStatus.put("long_avgdelta", glucoseStatus.longAvgDelta)
@@ -291,6 +293,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.mealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation)
         this.mealData.put("lastBolusTime", mealData.lastBolusTime)
         this.mealData.put("lastBolusNormalTime", lastBolusNormalTime)
+        this.mealData.put("lastBolusNormalTimeValue",lastBolusNormalTimeValue)
         this.mealData.put("lastCarbTime", mealData.lastCarbTime)
 
         tddAIMI = TddCalculator(aapsLogger,rh,activePlugin,profileFunction,dateUtil,iobCobCalculator, repository)
