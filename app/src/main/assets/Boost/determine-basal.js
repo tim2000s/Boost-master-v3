@@ -342,16 +342,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
         console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
         //if (tdd7 > 0){
-        if (tdd_pump < (0.33 * tdd7)){
-           TDD = (tdd7 * 0.3) + (tdd_pump * 0.7);
+
+        if ( tdd_pump > tdd7 && now < 5 || now < 5 && TDD < ( 0.5 * tdd7 ) ){
+          TDD = ( 0.8 * tdd7 );
+          console.log("Excess or too low insulin from pump so TDD set to "+TDD+" based on 75% of TDD7; ");
+          }
+
+        else if (tdd_pump < (0.33 * tdd7)){
+           TDD = (tdd7 * 0.25) + (tdd_pump * 0.75);
            console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
            rT.reason += "TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ";
            }
-           else if ( tdd_pump > tdd7 && now < 6 ){
-                        TDD = ( 0.8 * tdd7 );
-                        console.log("Excess insulin from pump so TDD set to "+TDD+" based on TDD 7; ");
-                }
-          else {
+
+        else {
                         console.log("TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";");
                         rT.reason += "TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";";
                     }
