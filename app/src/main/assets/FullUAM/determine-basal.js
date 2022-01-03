@@ -424,13 +424,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var EBX = Math.max(0,round(Math.min(EBG,EBG60),2));
     var REBX = Math.max(0.5,round(Math.min(REBG60,REBG),2));
 
-     if (iTime < iTimeProfile && glucose_status.delta > 2 && smbTDD === 0 && ! profile.temptargetSet ){
+    /* if (iTime < iTimeProfile && glucose_status.delta > 2 && smbTDD === 0 && ! profile.temptargetSet ){
         sens = round(sens / (profile.autosens_max / sensitivityRatio),1);
         enlog +="###Scale ISF during iTime : "+sens+"\n";
         }else if (iTime < iTimeProfile && glucose_status.delta > 2 && smbTDD === 0 && ! profile.temptargetSet && TriggerPredSMB > 400){
         sens /= REBG60;
         enlog +="### Scale ISF during iTime when rise started : "+sens+"\n";
-        }
+        }*/
 
     if (iTime < iTimeProfile && glucose_status.delta > 2) {
             var hyper_target = 80;
@@ -972,7 +972,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log(" AIMI V13 02/01/2022 ");
+                console.log(" AIMI V13 03/01/2022 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log(enlog);
@@ -1395,7 +1395,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var roundSMBTo = 1 / profile.bolus_increment;
             var smb_ratio = determine_varSMBratio(profile, bg, target_bg);
 
-            if (meal_data.carbs > 30 && meal_data.carbs && iTime >= 15 && iTime <= 19 && ! profile.temptargetSet){
+            if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < (2 * iTime_Start_Bolus) && ! profile.temptargetSet){
 
                 var microBolus =  profile.iTime_Bolus;
 
