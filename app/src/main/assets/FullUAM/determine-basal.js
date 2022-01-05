@@ -226,8 +226,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         halfBasalTarget = 160; // when temptarget is 160 mg/dL, run 50% basal (120 = 75%; 140 = 60%)
         // 80 mg/dL with low_temptarget_lowers_sensitivity would give 1.5x basal, but is limited to autosens_max (1.2x by default)
     }
-    if ( high_temptarget_raises_sensitivity && profile.temptargetSet && target_bg > normalTarget
-        || profile.low_temptarget_lowers_sensitivity && profile.temptargetSet && target_bg < normalTarget ) {
+    if ( high_temptarget_raises_sensitivity && profile.temptargetSet && target_bg > normalTarget || profile.low_temptarget_lowers_sensitivity && profile.temptargetSet && target_bg < normalTarget ) {
         // w/ target 100, temp target 110 = .89, 120 = 0.8, 140 = 0.67, 160 = .57, and 200 = .44
         // e.g.: Sensitivity ratio set to 0.8 based on temp target of 120; Adjusting basal from 1.65 to 1.35; ISF from 58.9 to 73.6
         //sensitivityRatio = 2/(2+(target_bg-normalTarget)/40);
@@ -432,7 +431,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         enlog +="### Scale ISF during iTime when rise started : "+sens+"\n";
         }*/
 
-    if (iTime < iTimeProfile && glucose_status.delta > 2) {
+    /*if (iTime < iTimeProfile && glucose_status.delta > 2) {
             var hyper_target = 80;
             //console.log("target_bg from "+target_bg+" to "+hyper_target+" because TriggerPredSMB > 450 : "+TriggerPredSMB+" ; ");
             target_bg = hyper_target;
@@ -451,8 +450,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             } else {
                 console.log("Basal unchanged: "+basal+"; ");
             }
-  }else if (! profile.temptargetSet && (bg + glucose_status.long_avgdelta) <= 100){
-            var hypo_target = 100;
+  }else */if (! profile.temptargetSet && (bg + glucose_status.long_avgdelta) <= 100){
+            var hypo_target = 110;
             enlog += "to avoid a strong correction after an hypo target is now : "+hypo_target+"\n";
              target_bg = hypo_target;
              halfBasalTarget = 160;
@@ -1412,15 +1411,15 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 var microBolus = mealIns;
                 console.log("third mealIns shot : "+mealIns);
 
-            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < (2 * iTime_Start_Bolus) && ! profile.temptargetSet){
+            }else if (meal_data.carbs > 30 && meal_data.carbs && profile.iTime_Bolus > 0 && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < iTime_Start_Bolus && ! profile.temptargetSet){
 
                 var microBolus =  profile.iTime_Bolus;
 
-            }else if (! meal_data.carbs && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < iTime_Start_Bolus && ! profile.temptargetSet){
+            }else if (! meal_data.carbs && profile.iTime_Bolus > 0 && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < (2*iTime_Start_Bolus) && ! profile.temptargetSet){
 
                 var microBolus =  profile.iTime_Bolus;
 
-            }else if (iTime < iTimeProfile && smbTDD === 0 && ! profile.temptargetSet){
+            }else if (! meal_data.carbs && iTime < iTimeProfile && smbTDD === 0 && ! profile.temptargetSet){
                 insulinReq = insulinReq + InsulinTDD;
                 //smb_ratio *= 3;
                 maxBolusTT = round(basal * profile.iTime_MaxBolus_minutes * smb_max_range / 60 ,1);
