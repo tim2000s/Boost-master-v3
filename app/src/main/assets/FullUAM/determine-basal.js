@@ -972,7 +972,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log(" AIMI V13 03/01/2022 ");
+                console.log(" AIMI V13 05/01/2022 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log(enlog);
@@ -1394,8 +1394,25 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var maxBolusTT = maxBolus;
             var roundSMBTo = 1 / profile.bolus_increment;
             var smb_ratio = determine_varSMBratio(profile, bg, target_bg);
+            var mealM = meal_data.carbs / 3;
+            var mealIns = mealM / profile.carb_ratio;
 
-            if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < (2 * iTime_Start_Bolus) && ! profile.temptargetSet){
+            if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime < 6 && iob_data.iob <= mealIns){
+
+                var microBolus = mealIns;
+                console.log("first mealIns shot : "+mealIns);
+
+            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime < 30 && iob_data.iob <= (2*mealIns)){
+
+                var microBolus = mealIns;
+                console.log("second mealIns shot : "+mealIns);
+
+            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime >= 40 && iTime <= 60 && iob_data.iob <= (3*mealIns) && glucose_status.delta >= 2 && C1 > C2){
+
+                var microBolus = mealIns;
+                console.log("third mealIns shot : "+mealIns);
+
+            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < (2 * iTime_Start_Bolus) && ! profile.temptargetSet){
 
                 var microBolus =  profile.iTime_Bolus;
 
