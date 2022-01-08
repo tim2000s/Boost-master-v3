@@ -342,7 +342,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
         console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
         //if (tdd7 > 0){
-        if ( tdd_pump > tdd7 && now < 5 || now < 5 && TDD < ( 0.8 * tdd7 ) ){
+        if ( tdd_pump > tdd7 && now < 5 || now < 7 && TDD < ( 0.8 * tdd7 ) ){
           TDD = ( 0.8 * tdd7 );
           console.log("Excess or too low insulin from pump so TDD set to "+TDD+" based on 75% of TDD7; ");
           }
@@ -1347,6 +1347,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      }
                      if (boostInsulinReq < (insulinReq/insulinReqPCT)) {
                      var microBolus = Math.floor(Math.min((insulinReq/insulinReqPCT),boost_max)*roundSMBTo)/roundSMBTo;
+                     rT.reason += "UAM Boost enacted; SMB equals" + microBolus + "; ";
                      }
                      else {
                      var microBolus = Math.floor(Math.min(boostInsulinReq)*roundSMBTo)/roundSMBTo;
@@ -1356,11 +1357,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  }
 
 
-            else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 4 && COB <
-            1){
+            else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 4 && COB < 1){
 
             var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,boost_max)*roundSMBTo)/roundSMBTo;
-
+            rT.reason += "Enhanced oref1 triggered; SMB equals" + microBolus + "; ";
             }
             else {
 
@@ -1368,7 +1368,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //increment
             var roundSMBTo = 1 / profile.bolus_increment;
             var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,maxBolus)*roundSMBTo)/roundSMBTo;
-
+            rT.reason += "Regular oref1 triggered; SMB equals" + microBolus + "; ";
             }
             // calculate a long enough zero temp to eventually correct back up to target
             var smbTarget = target_bg;
