@@ -226,8 +226,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         halfBasalTarget = 160; // when temptarget is 160 mg/dL, run 50% basal (120 = 75%; 140 = 60%)
         // 80 mg/dL with low_temptarget_lowers_sensitivity would give 1.5x basal, but is limited to autosens_max (1.2x by default)
     }
-    if ( high_temptarget_raises_sensitivity && profile.temptargetSet && target_bg > normalTarget
-        || profile.low_temptarget_lowers_sensitivity && profile.temptargetSet && target_bg < normalTarget ) {
+    if ( high_temptarget_raises_sensitivity && profile.temptargetSet && target_bg > normalTarget || profile.low_temptarget_lowers_sensitivity && profile.temptargetSet && target_bg < normalTarget ) {
         // w/ target 100, temp target 110 = .89, 120 = 0.8, 140 = 0.67, 160 = .57, and 200 = .44
         // e.g.: Sensitivity ratio set to 0.8 based on temp target of 120; Adjusting basal from 1.65 to 1.35; ISF from 58.9 to 73.6
         //sensitivityRatio = 2/(2+(target_bg-normalTarget)/40);
@@ -424,15 +423,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var EBX = Math.max(0,round(Math.min(EBG,EBG60),2));
     var REBX = Math.max(0.5,round(Math.min(REBG60,REBG),2));
 
-     if (iTime < iTimeProfile && glucose_status.delta > 2 && smbTDD === 0 && ! profile.temptargetSet ){
+    /* if (iTime < iTimeProfile && glucose_status.delta > 2 && smbTDD === 0 && ! profile.temptargetSet ){
         sens = round(sens / (profile.autosens_max / sensitivityRatio),1);
         enlog +="###Scale ISF during iTime : "+sens+"\n";
         }else if (iTime < iTimeProfile && glucose_status.delta > 2 && smbTDD === 0 && ! profile.temptargetSet && TriggerPredSMB > 400){
         sens /= REBG60;
         enlog +="### Scale ISF during iTime when rise started : "+sens+"\n";
-        }
+        }*/
 
-    if (iTime < iTimeProfile && glucose_status.delta > 2) {
+    /*if (iTime < iTimeProfile && glucose_status.delta > 2) {
             var hyper_target = 80;
             //console.log("target_bg from "+target_bg+" to "+hyper_target+" because TriggerPredSMB > 450 : "+TriggerPredSMB+" ; ");
             target_bg = hyper_target;
@@ -451,8 +450,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             } else {
                 console.log("Basal unchanged: "+basal+"; ");
             }
-  }else if (! profile.temptargetSet && (bg + glucose_status.long_avgdelta) <= 100){
-            var hypo_target = 100;
+  }else */if (! profile.temptargetSet && (bg + glucose_status.long_avgdelta) <= 100){
+            var hypo_target = 110;
             enlog += "to avoid a strong correction after an hypo target is now : "+hypo_target+"\n";
              target_bg = hypo_target;
              halfBasalTarget = 160;
@@ -972,7 +971,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log(" AIMI V13 01/01/2022 ");
+                console.log(" AIMI V14 06/01/2022 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log(enlog);
@@ -1394,21 +1393,38 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var maxBolusTT = maxBolus;
             var roundSMBTo = 1 / profile.bolus_increment;
             var smb_ratio = determine_varSMBratio(profile, bg, target_bg);
+            var mealM = meal_data.carbs / 3;
+            var mealIns = mealM / profile.carb_ratio;
 
-            if (meal_data.carbs > 30 && meal_data.carbs && iTime >= 15 && iTime <= 19 && ! profile.temptargetSet){
+            if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime < 6 && iob_data.iob <= mealIns){
+
+                var microBolus = mealIns;
+                console.log("first mealIns shot : "+mealIns);
+
+            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime < 30 && iob_data.iob <= (2*mealIns)){
+
+                var microBolus = mealIns;
+                console.log("second mealIns shot : "+mealIns);
+
+            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime >= 40 && iTime <= 60 && iob_data.iob <= (3*mealIns) && glucose_status.delta >= 2 && C1 > C2){
+
+                var microBolus = mealIns;
+                console.log("third mealIns shot : "+mealIns);
+
+            }else if (meal_data.carbs > 30 && meal_data.carbs && profile.iTime_Bolus > 0 && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < iTime_Start_Bolus && ! profile.temptargetSet){
 
                 var microBolus =  profile.iTime_Bolus;
 
-            }else if (! meal_data.carbs && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < (2 * iTime_Start_Bolus) && ! profile.temptargetSet){
+            }else if (! meal_data.carbs && profile.iTime_Bolus > 0 && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < (2*iTime_Start_Bolus) && ! profile.temptargetSet){
 
                 var microBolus =  profile.iTime_Bolus;
 
-            }else if (iTime < iTimeProfile && smbTDD === 0 && ! profile.temptargetSet){
+            }else if (! meal_data.carbs && iTime < iTimeProfile && smbTDD === 0 && ! profile.temptargetSet){
                 insulinReq = insulinReq + InsulinTDD;
-                insulinReqPCT = smb_ratio * 3;
+                //smb_ratio *= 3;
                 maxBolusTT = round(basal * profile.iTime_MaxBolus_minutes * smb_max_range / 60 ,1);
-                maxBolusTT *= 3;
-                var microBolus = Math.min(insulinReq*insulinReqPCT, maxBolusTT);
+                //maxBolusTT *= 3;
+                var microBolus = Math.min(insulinReq*insulinReqPCT*smb_ratio, maxBolusTT);
                 console.log("iTime_MaxBolus_minutes : "+profile.iTime_MaxBolus_minutes+ "maxBolus : "+maxBolusTT);
                 //var microBolus = Math.min(insulinReq*smb_ratio*insulinReqPCT, maxBolusTT);
 
