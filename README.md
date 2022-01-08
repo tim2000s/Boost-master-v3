@@ -81,7 +81,11 @@ Boost v3
 
 Boost v3 uses an updated version of the TDD ISF calculation, with a weighting of 20% to future Bg
  and 80% to current BG when delta is >6, current bg when delta 0 < 6 and future bg when delta is
- 0 or negative.v3
+ 0 or negative.
+
+ You can use Boost when announcing carbs or without announcing carbs. There is no special code
+ that differentiaties behaviour when doing either. Similarly, if you prefer to manually bolus, it
+  fully supports that as well.
 
  It also has variable insulin percentage determined by the user, and while boost time is valid,
  the algorithm can bolus up to a maximum bolus defined by the user in preferences.
