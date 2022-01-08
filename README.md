@@ -84,7 +84,7 @@ Boost v3 uses an updated version of the TDD ISF calculation, with a weighting of
  0 or negative.v3
 
  It also has variable insulin percentage determined by the user, and while boost time is valid,
- an the algorithm can bolus up to a maximum bolus defined by the user in preferences.
+ the algorithm can bolus up to a maximum bolus defined by the user in preferences.
 
 The intention of this code is to deliver an early, larger bolus when rises are detected to
 intiate UAM deviations and to allow the algorithm to be more aggressive. Other than Boost, it
@@ -107,13 +107,14 @@ The short and long average delta clauses disable boost once delta and the averag
 
 If none of the conditions are met, standard SMB logic is used to size SMBs, with the insulin required PCT entered in preferences.
 
-Once you are outside the Boost hours, max minutes of basal to limit SMB to for UAM is enabled.
+Once you are outside the Boost hours, "max minutes of basal to limit SMB to for UAM" is enabled.
 
 Settings that have been added to the BOOST settings are:
 
 Note that the default settings are designed to disable most of the functions, and you will need
 to adjust them.
 
+Boost insulin required percent - defaults to 50% can be increased, but increasing increases hypo risk.
 Boost Scale Value - defaults to 1.0. Only increase multiplier once you have trialled.
 Boost Bolus Cap - defaults to 0.1
 UAM Boost max IOB - defaults to 0.1
@@ -125,3 +126,4 @@ Recommended Settings
 Boost Bolus Cap - Start at 2.5% of TDD and increase to no more than 5% of total daily dose.
 UAM Boost max IOB - Start at 5% of TDD and increase to no more than 10% of total daily dose.
 UAMSMBBasalMinutes - 60 mins. This is only used overnight when IOB is large enough to trigger UAM, so it doesn't need to be a large value.
+Boost insulin required percent - recommended not to exceed 75%. Start at 50% and increase as necessary.
