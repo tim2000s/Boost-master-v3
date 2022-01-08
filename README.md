@@ -86,4 +86,42 @@ Boost v3 uses an updated version of the TDD ISF calculation, with a weighting of
  It also has variable insulin percentage determined by the user, and while boost time is valid,
  an the algorithm can bolus up to a maximum bolus defined by the user in preferences.
 
- The rest is oref1 standard.
+The intention of this code is to deliver an early, larger bolus when rises are detected to
+intiate UAM deviations and to allow the algorithm to be more aggressive. Other than Boost, it
+relies on oref1 adjusted to use the variable ISF function based on TDD.
+
+All of the additional code outside of the standard SMB calculation requires a time period to be
+specified within which it is active. The default time settings disable the code. The time period
+is specified in hours using a 24 hour clock in the Boost preferences section.
+
+When an initial rise is detected with a meal, delta, short_avgDelta and long_avgDelta are used to
+ trigger the early bolus (assuming IOB is below a user defined amount). The early bolus value is
+ one hour of average basal requirement and is calculated by using the TDD as described earlier,
+ using (TDD * 0.4) / 24, unless thi sis smaller than "Insulin Required" when that is used instead.
+
+The user defined Boost Scale Value can be used to increase the boost bolus if the user requires, however, users should be aware that this increases the risk of hypos when small rises occur.
+
+If Boost Scale Value is less than 3, Boost is enabled.
+
+The short and long average delta clauses disable boost once delta and the average deltas are aligned. There is a preferences setting (Boost Bolus Cap) that limits the maximum bolus that can be delivered by Boost outside of the standard UAMSMBBasalMinutes limit.
+
+If none of the conditions are met, standard SMB logic is used to size SMBs, with the insulin required PCT entered in preferences.
+
+Once you are outside the Boost hours, max minutes of basal to limit SMB to for UAM is enabled.
+
+Settings that have been added to the BOOST settings are:
+
+Note that the default settings are designed to disable most of the functions, and you will need
+to adjust them.
+
+Boost Scale Value - defaults to 1.0. Only increase multiplier once you have trialled.
+Boost Bolus Cap - defaults to 0.1
+UAM Boost max IOB - defaults to 0.1
+UAM Boost Start Time (in hours) - defaults to 7
+UAM Boost end time (in hours) - defaults to 8
+
+Recommended Settings
+
+Boost Bolus Cap - Start at 2.5% of TDD and increase to no more than 5% of total daily dose.
+UAM Boost max IOB - Start at 5% of TDD and increase to no more than 10% of total daily dose.
+UAMSMBBasalMinutes - 60 mins. This is only used overnight when IOB is large enough to trigger UAM, so it doesn't need to be a large value.
