@@ -1401,7 +1401,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 var microBolus = mealIns;
                 console.log("first mealIns shot : "+mealIns);
 
-            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime < 30 && iob_data.iob <= (2*mealIns) && glucose_status.dela >= 2){
+            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime < 30 && iob_data.iob <= (2*mealIns)){
 
                 var microBolus = mealIns;
                 console.log("second mealIns shot : "+mealIns);
