@@ -971,7 +971,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log(" AIMI V14 06/01/2022 ");
+                console.log(" AIMI V14 09/01/2022 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log(enlog);
@@ -1406,7 +1406,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 var microBolus = mealIns;
                 console.log("second mealIns shot : "+mealIns);
 
-            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime >= 40 && iTime <= 60 && iob_data.iob <= (3*mealIns) && glucose_status.delta >= 2 && C1 > C2){
+            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime >= 40 && iTime <= 60 && iob_data.iob <= (3*mealIns) && glucose_status.delta >= 5 && C1 > C2){
 
                 var microBolus = mealIns;
                 console.log("third mealIns shot : "+mealIns);
