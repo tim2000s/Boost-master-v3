@@ -1297,7 +1297,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("Max automated bolus is "+boost_max+"; ");
 
                 var boost_scale = profile.boost_scale;
-                var boostInsulinReq = ((TDD * 0.4) / 24 );
+                //var boostInsulinReq = ((TDD * 0.4) / 24 );
+                var boostInsulinReq = basal;
+
                 var COB = meal_data.mealCOB;
                 var CR = profile.carb_ratio;
 
