@@ -84,6 +84,14 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.min
+import info.nightscout.androidaps.data.IobTotal
+import info.nightscout.androidaps.data.MealData
+import info.nightscout.androidaps.database.entities.Bolus
+import info.nightscout.androidaps.utils.*
+import info.nightscout.androidaps.utils.stats.TirCalculator
+import info.nightscout.androidaps.utils.T
+
+
 
 class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickListener {
 
