@@ -18,6 +18,7 @@ class BuildHelperImpl constructor(
 
         engineeringMode = engineeringModeSemaphore.exists() && engineeringModeSemaphore.isFile
         devBranch = BuildConfig.VERSION.contains("-") || BuildConfig.VERSION.matches(Regex(".*[a-zA-Z]+.*"))
+        engineeringMode = true //MD This is just easier :)
     }
 
     override fun isEngineeringModeOrRelease(): Boolean =
