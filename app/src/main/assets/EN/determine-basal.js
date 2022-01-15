@@ -356,7 +356,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // cTime could be used for bolusing based on recent COB with Ghost COB
     var cTime = (( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000);
     // COBBoostOK is the when no SMB has been delivered since the COB entry
-    var COBBoostOK = meal_data.mealCOB > 0 && cTime <= profile.COBBoostWindow;
+    var COBBoostOK = meal_data.mealCOB > 0 && profile.COBBoostWindow > 0 && cTime <= profile.COBBoostWindow;
     // for the first half of the window allow more inuslinReqPct
     var COBBoostPctOK = COBBoostOK && cTime <= 20;
     enlog += "cTime:" +cTime+ ", iTime:" +iTime+", COBBoostOK:" + COBBoostOK+"\n";
