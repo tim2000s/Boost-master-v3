@@ -297,15 +297,15 @@
                     validate:minNumber="0"
                     validate:testType="numericRange" />
 
-                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                    android:defaultValue="0.1"
-                    android:inputType="numberDecimal"
-                    android:key="@string/key_eatingnow_preboluspct"
-                    android:dialogMessage="When using GhostCOB any COB entered with a TT of normal target will bolus using CR and apply this percentage ie. 0.5 is 50%"
-                    android:title="Prebolus Percentage"
-                    validate:floatmaxNumber="1"
-                    validate:floatminNumber="0.1"
-                    validate:testType="floatNumericRange"/>
+<!--                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
+<!--                    android:defaultValue="0.1"-->
+<!--                    android:inputType="numberDecimal"-->
+<!--                    android:key="@string/key_eatingnow_preboluspct"-->
+<!--                    android:dialogMessage="When using GhostCOB any COB entered with a TT of normal target will bolus using CR and apply this percentage ie. 0.5 is 50%"-->
+<!--                    android:title="Prebolus Percentage"-->
+<!--                    validate:floatmaxNumber="1"-->
+<!--                    validate:floatminNumber="0.1"-->
+<!--                    validate:testType="floatNumericRange"/>-->
 
             </PreferenceCategory>
 
