@@ -380,7 +380,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TDDReason="";
     //console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
     enlog += "Pump extrapolated TDD:"+round(tdd_pump,3)+"\n";
-    if (!eatingnowtimeOK) {
+    if (!eatingnowtimeOK && !iTimeOverride) {
         TDD = tdd_avg;
         TDDReason = "Night";
     } else if (tdd_pump < (0.5 * tdd_avg) && TIRBelow < 1){
