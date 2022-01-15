@@ -853,7 +853,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // weighting to eventualBG in the COBBoost window
         if (glucose_status.delta >=6 && (COBBoostOK || iTimeOverride)) sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
         // at night use sens
-        if (!eatingnow || !iTimeOK) sens_future = sens;
+        if (!iTimeOverride && (!eatingnow || !iTimeOK)) sens_future = sens;
         //if (!eatingnow || !iTimeOK) sens_future = (sens_currentBG+sens_normalTarget)/2;
         //console.log("Future state sensitivity is " +sens_future+" based on a weighted average of bg & eventual bg");
     } else {
