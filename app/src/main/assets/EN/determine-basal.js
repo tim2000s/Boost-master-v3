@@ -1322,22 +1322,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     // calculate the insulin boost
                     insulinReqBoost = UAMBoost * UAMBoost_bolus * UAMBoost_bolus_scale;
                     // set SMB limit for UAMBoost
-                    EatingNowMaxSMB = maxBolus * profile.UAMBoost_SMBScale;
+                    EatingNowMaxSMB = profile.UAMBoost_maxBolus;
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
-                    // recent SMB that was bigger than maxBolus restrict next UAM SMB size excludes COBBoostOK
-                    //EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > maxBolus && !COBBoostOK  ? maxBolus : EatingNowMaxSMB);
-                    // if COBBoostOK allow increase max SMB within the window
-                    if (COBBoostOK) {
-                        EatingNowMaxSMB = (mealInsulinReq*profile.EatingNowPrebolusPct)-iob_data.iob;
-                        // prevent UAMBoost overbolusing for fast rises with small COB in the COBBoost window unless breakie
-                        insulinReqBoost = Math.min(EatingNowMaxSMB,insulinReqBoost);
-                    }
-                    // if there has been a prebolus limit the SMB
-                    //EatingNowMaxSMB = (preBolused ? maxBolus : EatingNowMaxSMB);
-                    EatingNowMaxSMB = round (EatingNowMaxSMB,1);
                     // if the boost amount was less than the original insulinReq we didn't boost so allow ISF Boost
                     UAMBoosted = (insulinReqBoost > insulinReqOrig);
-                    //EN_SMBInterval = profile.SMBInterval; // allow immediate SMB for UAMBoost
                 }
                 // ============== UAMBOOST ============== END ===
 
@@ -1345,18 +1333,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // For BG rises that dont meet the UAMBoost criteria using adjusted target_bg
                 if (profile.ISFBoost_enabled && !UAMBoosted && eventualBG > target_bg) {
                      // set SMB limit for ISFBoost
-                    EatingNowMaxSMB = maxBolus * profile.ISFBoost_SMBScale;
+                    EatingNowMaxSMB = profile.ISFBoost_maxBolus;
+                    EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
                     // if COBBoostOK allow increase max SMB within the window
                     if (COBBoostOK) {
-                        //EatingNowMaxSMB = (mealInsulinReq*profile.EatingNowPrebolusPct)-iob_data.iob;
-                        //EatingNowMaxSMB = Math.max(EatingNowMaxSMB, maxBolus);
-                        EatingNowMaxSMB = insulinReq; // max SMB can be all of insulinReq as it will be restricted by ENinsulinReqPct
-                        //insulinReqPct = (COBBoostPctOK ? 0.90 : ENinsulinReqPct); // 100% insulinReqPct for the first part of the rise
+                        EatingNowMaxSMB = insulinReq; // max SMB can be all of insulinReq as it will be restricted by ENinsulinReqPct and treatmentssafety_maxbolus
                     }
-                    // use maxBolus for ISFBoost when boosting after a UAMBoost when bigger than ISFBoost bolus with no COBBoostOK
-                    // EatingNowMaxSMB = ( SMBTime <=7 && meal_data.lastSMBUnits > EatingNowMaxSMB && !COBBoostOK ? maxBolus : EatingNowMaxSMB);
-                    EatingNowMaxSMB = round (EatingNowMaxSMB,1);
-                    //insulinReqPct = (UAMBoost > UAMBoost_threshold ? 1 : ENinsulinReqPct); // enforce EN insulinReq unless sudden delta
                     ISFBoosted = true;
                 }
                 // ============== ISF BOOST ============== END ===
@@ -1364,9 +1346,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // ============== MAXBOLUS RESTRICTIONS ==============
                 // allow EatingNowMaxSMB with COB or iTime window OK else restrict to maxBolus
                 if ( iTimeOK ) {
-                    EatingNowMaxSMB = EatingNowMaxSMB; // use EN SMB Limit
+                    EatingNowMaxSMB = round(EatingNowMaxSMB,1); // use EN SMB Limit
                 } else {
-                    EatingNowMaxSMB = Math.min(maxBolus,EatingNowMaxSMB); // use the most restrictive
+                    EatingNowMaxSMB = round(Math.min(maxBolus,EatingNowMaxSMB),1); // use the most restrictive
                 }
                 // ===================================================
 
