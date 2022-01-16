@@ -850,7 +850,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if( glucose_status.delta > 0) {
         // for rises by default the current bg
         sens_future = sens_normalTarget / (((eventualBG * 0.0) + (bg * 1)) /normalTarget);
-        if (glucose_status.delta >=6 {
+        if (glucose_status.delta >=6) {
             // favour eventualBG more due to delta
             sens_future = sens_normalTarget / (((eventualBG * 0.25) + (bg * 0.75)) /normalTarget);
             // weighting to eventualBG in the COBBoost window as COBPredBG is trusted
