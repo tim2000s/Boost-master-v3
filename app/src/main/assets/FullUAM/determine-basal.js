@@ -450,7 +450,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             } else {
                 console.log("Basal unchanged: "+basal+"; ");
             }
-  }else */if (! profile.temptargetSet && (bg + glucose_status.long_avgdelta) <= 100){
+  }else *//*if (! profile.temptargetSet && (bg + glucose_status.long_avgdelta) <= 100){
             var hypo_target = 110;
             enlog += "to avoid a strong correction after an hypo target is now : "+hypo_target+"\n";
              target_bg = hypo_target;
@@ -470,7 +470,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  enlog +="Basal unchanged: "+basal+";\n ";
              }
 
-   }else if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && iTime > iTimeProfile ) {//&& glucose_status.delta <= 0
+   }else*/ if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && iTime > iTimeProfile ) {//&& glucose_status.delta <= 0
 
         var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
        if (EBG <= 100 && HypoPredBG < 80) {
@@ -971,7 +971,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log(" AIMI V14 09/01/2022 ");
+                console.log(" AIMI V14 13/01/2022 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log(enlog);
@@ -1401,7 +1401,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 var microBolus = mealIns;
                 console.log("first mealIns shot : "+mealIns);
 
-            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime < 30 && iob_data.iob <= (2*mealIns)){
+            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime < 30 && iTime > 20 && iob_data.iob <= (2*mealIns)){
 
                 var microBolus = mealIns;
                 console.log("second mealIns shot : "+mealIns);
@@ -1419,7 +1419,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
 
                 var microBolus =  profile.iTime_Bolus;
 
-            }else if (! meal_data.carbs && iTime < iTimeProfile && smbTDD === 0 && ! profile.temptargetSet){
+            }else if ( iTime < iTimeProfile && smbTDD === 0 && ! profile.temptargetSet){
                 insulinReq = insulinReq + InsulinTDD;
                 //smb_ratio *= 3;
                 maxBolusTT = round(basal * profile.iTime_MaxBolus_minutes * smb_max_range / 60 ,1);
