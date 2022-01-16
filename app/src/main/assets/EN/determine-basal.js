@@ -848,19 +848,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var sens_future = sens, sens_future_max = false;
 
     if( glucose_status.delta > 0) {
-        sens_future = sens_normalTarget / (((eventualBG * 0.25) + (bg * 0.75)) /normalTarget);
-        // weighting to eventualBG in the COBBoost window
-        if (glucose_status.delta >=6 && (COBBoostOK || iTimeOverride)) sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
-        // at night use sens
+        // for rises by default the current bg
+        sens_future = sens_normalTarget / (((eventualBG * 0.0) + (bg * 1)) /normalTarget);
+        if (glucose_status.delta >=6 {
+            // favour eventualBG more due to delta
+            sens_future = sens_normalTarget / (((eventualBG * 0.25) + (bg * 0.75)) /normalTarget);
+            // weighting to eventualBG in the COBBoost window as COBPredBG is trusted
+            if (COBBoostOK) sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
+        }
+        // at night use sens unless using override
         if (!iTimeOverride && (!eatingnow || !iTimeOK)) sens_future = sens;
-        //if (!eatingnow || !iTimeOK) sens_future = (sens_currentBG+sens_normalTarget)/2;
-        //console.log("Future state sensitivity is " +sens_future+" based on a weighted average of bg & eventual bg");
     } else {
-        //sens_future = ( 277700 / (TDD * eventualBG));
         sens_future = sens_normalTarget / (eventualBG/normalTarget); // safety * EXPERIMENT *
         sens_future = Math.max(sens,sens_future);
-        //sens_future = Math.max(sens_normalTarget,sens_future);
-        //console.log("Future state sensitivity is " +sens_future+" based on eventual bg due to -ve delta");
     }
 
     // if BG below threshold then take the max of the sens vars
@@ -870,7 +870,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sens_future = Math.max(sens_future, ISF_Max);
         sens_future_max = (sens_future == ISF_Max);
     }
-
 
     // disable sens_future with a TT or when feature not enabled
     if (profile.temptargetSet && !iTimeOverride || !profile.ISFBoost_enabled) sens_future = sens;
