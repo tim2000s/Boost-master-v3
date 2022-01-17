@@ -1394,7 +1394,8 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var roundSMBTo = 1 / profile.bolus_increment;
             var smb_ratio = determine_varSMBratio(profile, bg, target_bg);
             var mealM = meal_data.carbs / 3;
-            var mealIns = mealM / profile.carb_ratio;
+            //var mealIns = mealM / profile.carb_ratio;
+            var mealIns = mealM / eRatio ;
 
             if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime < 6 && iob_data.iob <= mealIns){
 
