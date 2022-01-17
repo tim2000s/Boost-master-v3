@@ -1407,20 +1407,20 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 var microBolus = mealIns;
                 console.log("second mealIns shot : "+mealIns);
 
-            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime >= 40 && iTime <= 60 && iob_data.iob <= (3*mealIns) && glucose_status.delta >= 5 && C1 > C2){
+            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime >= 40 && iTime <= 60 && iob_data.iob <= (3*mealIns) && glucose_status.delta >= 5 && C1 > C2 && HypoPredBG > 100){
 
                 var microBolus = mealIns;
                 console.log("third mealIns shot : "+mealIns);
 
-            }else if (meal_data.carbs > 30 && meal_data.carbs && profile.iTime_Bolus > 0 && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < iTime_Start_Bolus && ! profile.temptargetSet){
+            }else if (meal_data.carbs > 30 && meal_data.carbs && profile.iTime_Bolus > 0 && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < iTime_Start_Bolus && ! profile.temptargetSet && HypoPredBG > 100){
 
                 var microBolus =  profile.iTime_Bolus;
 
-            }else if (! meal_data.carbs && profile.iTime_Bolus > 0 && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < (2*iTime_Start_Bolus) && ! profile.temptargetSet){
+            }else if (! meal_data.carbs && profile.iTime_Bolus > 0 && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < (2*iTime_Start_Bolus) && ! profile.temptargetSet && HypoPredBG > 100){
 
                 var microBolus =  profile.iTime_Bolus;
 
-            }else if ( iTime < iTimeProfile && smbTDD === 0 && ! profile.temptargetSet){
+            }else if ( iTime < iTimeProfile && smbTDD === 0 && ! profile.temptargetSet && HypoPredBG > 100){
                 insulinReq = insulinReq + InsulinTDD;
                 //smb_ratio *= 3;
                 maxBolusTT = round(basal * profile.iTime_MaxBolus_minutes * smb_max_range / 60 ,1);
