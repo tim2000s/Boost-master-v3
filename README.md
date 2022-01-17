@@ -77,7 +77,7 @@ delta > 5 and long delta > 0
 Now iTime exist if trigger is manual bolus and iob > iTime_starting_bolus and bg + glucose_status.delta > profile.min_bg (min target in the profile) + profile.smb_delivery_ratio_bg_range (in advanced option)
 -merge 2.8.2.14 from Milos
 
-AAPS-V3-RC2-AIMI V14 17/01/2022
+AAPS-V3-RC3-AIMI V14 17/01/2022
 this version is base on V3 RC2 from milos.
 Was added in the v13, style true in the v14, the possibility to entry the carbs instead of 
 making a prebolus or doing nothing.
