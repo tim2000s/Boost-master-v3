@@ -376,24 +376,28 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // adding a weighted avg favouring the last 3 days
     var tdd_avg = (tdd3 * 0.8) + (tdd7 * 0.2);
     var tdd_pump = ( tdd_pump_now / (now / 24));
-    var TDD = (tdd_avg * 0.4) + (tdd_pump * 0.6);
+    //var TDD = (tdd_avg * 0.4) + (tdd_pump * 0.6);
     var TDDReason="";
     //console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
     enlog += "Pump extrapolated TDD:"+round(tdd_pump,3)+"\n";
 
-    if (!eatingnowtimeOK && !iTimeOverride) {
-        // overnight just use the average as pump extrapolation can vary after midnight
-        TDD = tdd_avg;
-        TDDReason = "Night";
-    } else if (tdd_pump < (0.5 * tdd_avg)){
-        // low insulin usage during EN hours
-        TDD = (tdd_avg * 0.25) + (tdd_pump * 0.75);
-        TDDReason = "Pump";
-        enlog += "TDD weighted to pump due to low insulin usage. TDD:"+round(TDD,3)+"\n";
-    } else {
-        // no weighting change
-        enlog +="TDDAVG:"+round(tdd_avg,3)+", TDD Pump:"+round(tdd_pump,3)+" and TDD:"+round(TDD,3)+"\n";
-    }
+//    if (!eatingnowtimeOK && !iTimeOverride) {
+//        // overnight just use the average as pump extrapolation can vary after midnight
+//        TDD = tdd_avg;
+//        TDDReason = "Night";
+//    } else if (tdd_pump < (0.5 * tdd_avg)){
+//        // low insulin usage during EN hours
+//        TDD = (tdd_avg * 0.25) + (tdd_pump * 0.75);
+//        TDDReason = "Pump";
+//        enlog += "TDD weighted to pump due to low insulin usage. TDD:"+round(TDD,3)+"\n";
+//    } else {
+//        // no weighting change
+//        enlog +="TDDAVG:"+round(tdd_avg,3)+", TDD Pump:"+round(tdd_pump,3)+" and TDD:"+round(TDD,3)+"\n";
+//    }
+
+    // no weighting change
+    var TDD = tdd_avg; // trying simple TDD avg
+    enlog +="TDDAVG:"+round(tdd_avg,3)+", TDD Pump:"+round(tdd_pump,3)+" and TDD:"+round(TDD,3)+"\n";
 
     enlog += "* advanced ISF:\n";
     // ISF at normal target
