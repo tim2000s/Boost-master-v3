@@ -30,7 +30,7 @@ import javax.inject.Singleton
 
 @OpenForTesting
 @Singleton
-open class BoostPlugin @Inject constructor(
+class BoostPlugin @Inject constructor(
     injector: HasAndroidInjector,
     aapsLogger: AAPSLogger,
     private val rxBus: RxBus,
@@ -202,7 +202,7 @@ open class BoostPlugin @Inject constructor(
     }
 
     override fun isSuperBolusEnabled(value: Constraint<Boolean>): Constraint<Boolean> {
-        value[aapsLogger] = false
+        value.set(aapsLogger, false)
         return value
     }
 }
