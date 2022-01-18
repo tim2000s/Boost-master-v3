@@ -1332,6 +1332,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
                     // if the boost amount was less than the original insulinReq we didn't boost so allow ISF Boost
                     UAMBoosted = (insulinReqBoost > insulinReqOrig);
+                    // Experimental for slower insulin types
+                    insulinReqPct = 1;
                 }
                 // ============== UAMBOOST ============== END ===
 
