@@ -18,7 +18,7 @@
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/openapsama_min_5m_carbimpact"
-            validate:floatmaxNumber="20.0"
+            validate:floatmaxNumber="12.0"
             validate:floatminNumber="0.1"
             validate:testType="floatNumericRange" />
 

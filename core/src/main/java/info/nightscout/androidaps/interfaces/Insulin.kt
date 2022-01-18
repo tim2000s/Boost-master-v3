@@ -27,7 +27,6 @@ interface Insulin : ConfigExportImport {
     val friendlyName: String
     val comment: String
     val dia: Double
-    val peak: Int
 
     fun iobCalcForTreatment(bolus: Bolus, time: Long, dia: Double): Iob
 

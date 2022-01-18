@@ -152,7 +152,7 @@
                 android:key="@string/key_eatingsoon_duration"
                 android:title="@string/eatingsoon_duration"
                 validate:maxNumber="120"
-                validate:minNumber="5"
+                validate:minNumber="15"
                 validate:testType="numericRange" />
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
