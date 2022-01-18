@@ -346,7 +346,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         enlog += "C1 = "+C1+" and C2 = "+C2+"\n";
 
 
-        if (meal_data.carbs) {
+        if (meal_data.carbs > 30) {
                 var lastCarbAgebis = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime ) / 60000);
                 //console.error(meal_data.lastCarbTime, lastCarbAge);
              var iTime = lastCarbAgebis;
@@ -971,7 +971,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log(" AAPS-V3-RC3-AIMI V14 17/01/2022 ");
+                console.log(" AAPS-V3-RC3-AIMI V14 18/01/2022 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log(enlog);
