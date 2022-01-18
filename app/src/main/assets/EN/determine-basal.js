@@ -1318,8 +1318,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var UAMBoostOK = false, UAMBoost_threshold = 1.2;
                 // Recent manual bolus will allow faster UAMBoost response
                 //if (UAM_delta >= 5 && iTimeOK && meal_data.mealCOB==0 ) {
-                // try 7 delta for safer operation as slightly larger SMB needed on slower insulin
-                if (UAM_delta >= 7 && iTimeOK && meal_data.mealCOB==0 ) {
+                // try 9 delta for safer operation as slightly larger SMB needed on slower insulin
+                if (UAM_delta >= 9 && iTimeOK && meal_data.mealCOB==0 ) {
                     UAMBoostOK = true;
                 }
 
