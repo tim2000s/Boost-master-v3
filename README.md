@@ -55,7 +55,7 @@ in this case a calculation : microBolus = (COB / eRatio)/2 => !!!!!consider if y
  it's not necessary to be really precise.
 
  Now come the TDD subject :
- Initially TDD was calculated by usind an average on the last 7 days and the current daily dose
+ Initially TDD was calculated by using an average on the last 7 days and the current daily dose
  of insulin. But in some rare case TDD can be higher and if you start for the first time the aaps
   v3 or beta dev actually, no TDD possible. Then i think about this pb and decide to test a
   projection of the current daily insulin. my last two days were working great. i will make it
@@ -76,6 +76,24 @@ delta > 5 and long delta > 0
 -iTime_startings-bolus is a new variable in the settings, it's the limit to start iTime.
 Now iTime exist if trigger is manual bolus and iob > iTime_starting_bolus and bg + glucose_status.delta > profile.min_bg (min target in the profile) + profile.smb_delivery_ratio_bg_range (in advanced option)
 -merge 2.8.2.14 from Milos
+
+AAPS-V3-RC3-AIMI V14 17/01/2022
+this version is base on V3 RC2 from milos.
+Was added in the v13, style true in the v14, the possibility to entry the carbs instead of 
+making a prebolus or doing nothing.
+if you make the choice to entry a quantity of carbs, the code will be activate only if carbs > 30
+in this case, the quantity will be divided by 3 and three bolus will be define and delivred if 
+the condition are good enough. 
+In the V13, IC in the profile was use, but i decide, like ISF come from TDD to let the code 
+define the IC in function of the ISF evolution. 
+The first SMBcarbs will come at 5 minutes, the second one between 10 and 20, the third one only 
+if the conditions are true. IOB is check for each SMBCarbs, to be sure the quantity of insulin 
+follow the need. 
+Since the IC evolve, the result is for me amazing and no hypo after lunch or dinner. 
+Of course, the prebolus way is style working great, i just add a new possibility with carbs entry.
+
+
+
 
 Boost v3
 
