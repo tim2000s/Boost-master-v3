@@ -172,63 +172,67 @@
             validate:minNumber="1"
             validate:testType="numericRange" />
 
-        <PreferenceCategory
-            android:title="Eating Now Options"
-            app:initialExpandedChildrenCount="0">
+        <androidx.preference.PreferenceScreen
+            android:key="eating_now_options"
+            android:title="Eating Now Options">
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="9"
-                android:dialogMessage="Enter Eating Now start time in 24h e.g. 9AM is 9"
-                android:inputType="number"
-                android:key="@string/key_eatingnow_timestart"
-                android:title="Active Start Time"
-                validate:maxNumber="23"
-                validate:minNumber="0"
-                validate:testType="numericRange" />
+            <PreferenceCategory
+                android:title="General"
+                app:initialExpandedChildrenCount="0">
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="17"
-                android:dialogMessage="Enter Eating Now end time in 24h e.g. 5PM is 17"
-                android:inputType="number"
-                android:key="@string/key_eatingnow_timeend"
-                android:title="Active End Time"
-                validate:maxNumber="23"
-                validate:minNumber="0"
-                validate:testType="numericRange" />
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="9"
+                    android:dialogMessage="Enter Eating Now start time in 24h e.g. 9AM is 9"
+                    android:inputType="number"
+                    android:key="@string/key_eatingnow_timestart"
+                    android:title="Active Start Time"
+                    validate:maxNumber="23"
+                    validate:minNumber="0"
+                    validate:testType="numericRange" />
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="65"
-                android:enabled="true"
-                android:summary="Percentage of Insulin Required to be available for SMB"
-                android:dialogMessage="Percentage of Insulin Required. AAPS default is 50%. Setting to 70 will make this 70%"
-                android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_insulinreqpct"
-                android:title="InsulinReqPct for EN"
-                validate:floatmaxNumber="75"
-                validate:floatminNumber="50"
-                validate:testType="floatNumericRange" />
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="17"
+                    android:dialogMessage="Enter Eating Now end time in 24h e.g. 5PM is 17"
+                    android:inputType="number"
+                    android:key="@string/key_eatingnow_timeend"
+                    android:title="Active End Time"
+                    validate:maxNumber="23"
+                    validate:minNumber="0"
+                    validate:testType="numericRange" />
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0.3"
-                android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_iobmax"
-                android:dialogMessage="This will use a percentage of max-iob and suspend EatingNow until IOB limit is lower."
-                android:title="Max IOB Percentage"
-                validate:floatmaxNumber="1"
-                validate:floatminNumber="0.1"
-                validate:testType="floatNumericRange"/>
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="65"
+                    android:enabled="true"
+                    android:summary="Percentage of Insulin Required to be available for SMB"
+                    android:dialogMessage="Percentage of Insulin Required. AAPS default is 50%. Setting to 70 will make this 70%"
+                    android:inputType="numberDecimal"
+                    android:key="@string/key_eatingnow_insulinreqpct"
+                    android:title="InsulinReqPct for EN"
+                    validate:floatmaxNumber="75"
+                    validate:floatminNumber="50"
+                    validate:testType="floatNumericRange" />
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0"
-                android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_bgthreshold"
-                android:title="BG Threshold"
-                android:dialogMessage="No SMB below this threshold at night with no COB."
-                validate:floatmaxNumber="270.0"
-                validate:floatminNumber="6.0"
-                validate:testType="floatNumericRange" />
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="0.3"
+                    android:inputType="numberDecimal"
+                    android:key="@string/key_eatingnow_iobmax"
+                    android:dialogMessage="This will use a percentage of max-iob and suspend EatingNow until IOB limit is lower."
+                    android:title="Max IOB Percentage"
+                    validate:floatmaxNumber="1"
+                    validate:floatminNumber="0.1"
+                    validate:testType="floatNumericRange"/>
 
-        </PreferenceCategory>
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="0"
+                    android:inputType="numberDecimal"
+                    android:key="@string/key_eatingnow_bgthreshold"
+                    android:title="BG Threshold"
+                    android:dialogMessage="No SMB below this threshold at night with no COB."
+                    validate:floatmaxNumber="270.0"
+                    validate:floatminNumber="6.0"
+                    validate:testType="floatNumericRange" />
+            </PreferenceCategory>
+
 
         <PreferenceCategory
             android:title="COBBoost"
@@ -325,6 +329,8 @@
                 validate:testType="floatNumericRange"/>
 
         </PreferenceCategory>
+
+        </androidx.preference.PreferenceScreen>
 
         <androidx.preference.PreferenceScreen
             android:key="absorption_smb_advanced"
