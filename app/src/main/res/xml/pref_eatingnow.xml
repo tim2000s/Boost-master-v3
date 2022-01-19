@@ -172,7 +172,7 @@
             validate:minNumber="1"
             validate:testType="numericRange" />
 
-        <PreferenceCategory
+        <androidx.preference.PreferenceScreen
             android:title="Eating Now Options"
             app:initialExpandedChildrenCount="0">
 
@@ -227,8 +227,6 @@
                 validate:floatmaxNumber="270.0"
                 validate:floatminNumber="6.0"
                 validate:testType="floatNumericRange" />
-
-        </PreferenceCategory>
 
         <PreferenceCategory
             android:title="COBBoost"
@@ -325,6 +323,8 @@
                 validate:testType="floatNumericRange"/>
 
         </PreferenceCategory>
+
+        </androidx.preference.PreferenceScreen>
 
         <androidx.preference.PreferenceScreen
             android:key="absorption_smb_advanced"
