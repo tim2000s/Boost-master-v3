@@ -235,9 +235,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false, enlog = ""; // nah not eating yet
     var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
     var ENStartTime = new Date().setHours(profile.EatingNowTimeStart,0,0);
-    var iTimeOverride = profile.temptargetSet && target_bg == normalTarget;
+    //var iTimeOverride = profile.temptargetSet && target_bg == normalTarget;
     // eating now time can be delayed if there is no first bolus or carbs
-    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.lastCarbTime >= ENStartTime || meal_data.lastBolusNormalTime >= ENStartTime || iTimeOverride)) eatingnowtimeOK = true;
+    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.lastCarbTime >= ENStartTime || meal_data.lastBolusNormalTime >= ENStartTime)) eatingnowtimeOK = true;
+    var iTimeOverride = eatingnowtimeOK && !profile.temptargetSet;
     // restrict SR to 1 max if no carbs have been entered using advanced ISF during the day
     sensitivityRatio = (profile.ISFBoost_enabled && eatingnowtimeOK && meal_data.carbs == 0 ? Math.min(sensitivityRatio,1) : sensitivityRatio);
 
@@ -300,7 +301,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // If there are COB enable eating now
         if (meal_data.mealCOB >0) eatingnow = true;
         // no EN with a TT other than normal target
-        if (profile.temptargetSet && !iTimeOverride) eatingnow = false;
+        if (profile.temptargetSet) eatingnow = false;
         if (eatingnow) max_iob *= profile.EatingNowIOBMax; // set maxIOB using the EN percentage
         max_iob = round(max_iob,2);
     }
