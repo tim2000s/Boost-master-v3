@@ -380,7 +380,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // no weighting change
     var TDD = tdd_avg; // trying simple TDD avg
-    TDD = tdd_pump; // CUNT
     enlog +="TDDAVG:"+round(tdd_avg,3)+", TDD Pump:"+round(tdd_pump,3)+" and TDD:"+round(TDD,3)+"\n";
 
     enlog += "* advanced ISF:\n";
@@ -388,6 +387,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var sens_normalTarget = sens; // use profile sens
     enlog += "sens_normalTarget:" + sens_normalTarget+"\n";
     var sens_TDD = round((277700 / (TDD * normalTarget)),1);
+    sens_TDD = (sens_TDD > sens*3 ? sens : sens_TDD); // fresh install of v3
     enlog += "sens_TDD:" + sens_TDD+"\n";
     var sens_avg = (sens_normalTarget+sens_TDD)/2;
     enlog += "sens_avg:" + sens_avg+"\n";
