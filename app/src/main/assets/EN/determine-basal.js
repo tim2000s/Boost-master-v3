@@ -374,7 +374,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // adding a weighted avg favouring the last 3 days
     var tdd_avg = (tdd3 * 0.8) + (tdd7 * 0.2);
     var tdd_pump = ( tdd_pump_now / (now / 24));
-    //var TDD = (tdd_avg * 0.4) + (tdd_pump * 0.6);
     var TDDReason="";
     //console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
     enlog += "Pump extrapolated TDD:"+round(tdd_pump,3)+"\n";
@@ -388,6 +387,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var sens_normalTarget = sens; // use profile sens
     enlog += "sens_normalTarget:" + sens_normalTarget+"\n";
     var sens_TDD = round((277700 / (TDD * normalTarget)),1);
+    sens_TDD = (sens_TDD > sens*3 ? sens : sens_TDD); // fresh install of v3
     enlog += "sens_TDD:" + sens_TDD+"\n";
     var sens_avg = (sens_normalTarget+sens_TDD)/2;
     enlog += "sens_avg:" + sens_avg+"\n";
