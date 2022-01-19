@@ -1401,7 +1401,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             durationReq = round(60*worstCaseInsulinReq / profile.current_basal);
 
             // Nightmode TBR when below EatingNowBGThreshold with now resistance and no COB
-            if (!eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0 && sensitivityRatio <=1)  {
+            if (!eatingnow && !eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0 && sensitivityRatio <=1)  {
             //if (!eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0)  {
                 //var maxBolus = round( profile.current_basal * 30 / 60 ,1);
                 microBolus = 0;
