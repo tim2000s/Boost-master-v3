@@ -235,9 +235,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var eatingnow = false, eatingnowtimeOK = false, eatingnowMaxIOBOK = false, enlog = ""; // nah not eating yet
     var now = new Date().getHours();  //Create the time variable to be used to allow the Boost function only between certain hours
     var ENStartTime = new Date().setHours(profile.EatingNowTimeStart,0,0);
-    var iTimeOverride = profile.temptargetSet && target_bg == normalTarget;
+    //var iTimeOverride = profile.temptargetSet && target_bg == normalTarget;
     // eating now time can be delayed if there is no first bolus or carbs
-    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.lastCarbTime >= ENStartTime || meal_data.lastBolusNormalTime >= ENStartTime || iTimeOverride)) eatingnowtimeOK = true;
+    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.lastCarbTime >= ENStartTime || meal_data.lastBolusNormalTime >= ENStartTime)) eatingnowtimeOK = true;
+//    var iTimeOverride = eatingnowtimeOK;
     // restrict SR to 1 max if no carbs have been entered using advanced ISF during the day
     sensitivityRatio = (profile.ISFBoost_enabled && eatingnowtimeOK && meal_data.carbs == 0 ? Math.min(sensitivityRatio,1) : sensitivityRatio);
 
@@ -300,13 +301,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // If there are COB enable eating now
         if (meal_data.mealCOB >0) eatingnow = true;
         // no EN with a TT other than normal target
-        if (profile.temptargetSet && !iTimeOverride) eatingnow = false;
+        if (profile.temptargetSet) eatingnow = false;
         if (eatingnow) max_iob *= profile.EatingNowIOBMax; // set maxIOB using the EN percentage
         max_iob = round(max_iob,2);
     }
     //eatingnow = false; //DEBUG
     enlog += "eatingnow: " + eatingnow + ", eatingnowtimeOK: " + eatingnowtimeOK+"\n";
-    enlog += "iTimeOverride: " + iTimeOverride+"\n";
+//    enlog += "iTimeOverride: " + iTimeOverride+"\n";
     // patches ===== END
 
     var tick;
@@ -351,7 +352,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var iTime = (( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusNormalTime, meal_data.lastCarbTime)) / 60000);
     var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
     enlog += "iTime:"+iTime+",iTimeWindow:"+iTimeWindow+"\n";
-    var iTimeOK = (iTime < iTimeWindow || iTimeOverride);
+    var iTimeOK = (iTime < iTimeWindow);
     enlog += "iTimeOK:"+iTimeOK+"\n";
     // cTime could be used for bolusing based on recent COB with Ghost COB
     var cTime = (( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000);
@@ -861,7 +862,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             if (COBBoostOK) sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
         }
         // at night use sens unless using override
-        if (!iTimeOverride && (!eatingnow || !iTimeOK)) sens_future = sens;
+        if (!eatingnow || !iTimeOK) sens_future = sens;
     } else {
         sens_future = sens_normalTarget / (eventualBG/normalTarget); // safety * EXPERIMENT *
         sens_future = Math.max(sens,sens_future);
@@ -870,14 +871,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // if BG below threshold then take the max of the sens vars
     sens_future = (bg <= threshold ? Math.max(sens_normalTarget, sens_currentBG, sens_future) : sens_future);
     // limit sens_future to ISF_Max with no iTimeOverride or COBBoost
-    if (!iTimeOverride && !iTimeOK ) {
+    if (eatingnow) {
         sens_future = Math.max(sens_future, ISF_Max);
         // set sens_future_max to true for reason asterisk
         sens_future_max = (sens_future == ISF_Max);
     }
 
     // disable sens_future with a TT or when feature not enabled
-    if (profile.temptargetSet && !iTimeOverride || !profile.ISFBoost_enabled) sens_future = sens;
+    if (!eatingnow || !profile.ISFBoost_enabled) sens_future = sens;
     sens_future = round(sens_future,1);
 
     minIOBPredBG = Math.max(39,minIOBPredBG);
@@ -1302,7 +1303,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 //            }
 
             // START === if we are eating now and BGL prediction is higher than normal target ===
-            if (eatingnow && eventualBG > target_bg && iTimeOK) {
+            if (eatingnow && eventualBG > target_bg) {
                 UAMBoostReason = ""; //blank boost reason to prepare for boost info
 
                 // EN insulinReqPct is used from the profile
@@ -1319,7 +1320,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // Recent manual bolus will allow faster UAMBoost response
                 //if (UAM_delta >= 5 && iTimeOK && meal_data.mealCOB==0 ) {
                 // try 9 delta for safer operation as slightly larger SMB needed on slower insulin
-                if (UAM_delta >= 9 && iTimeOK && meal_data.mealCOB==0 ) {
+                if (UAM_delta >= 9 && (meal_data.mealCOB==0 || cTime > iTimeWindow) ) {
                     UAMBoostOK = true;
                 }
 
@@ -1354,13 +1355,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== MAXBOLUS RESTRICTIONS ==============
                 // allow EatingNowMaxSMB with COB or iTime window OK else restrict to maxBolus
-                if ( iTimeOK ) {
+//                if ( iTimeOK ) {
                     EatingNowMaxSMB = round(EatingNowMaxSMB,1); // use EN SMB Limit
                      // Testing iTimeOverride with restricted maxBolus 2.5% TDD
                     //if (iTimeOverride) EatingNowMaxSMB = round(TDD * 0.025,1);
-                } else {
-                    EatingNowMaxSMB = round(Math.min(maxBolus,EatingNowMaxSMB),1); // use the most restrictive
-                }
+//                } else {
+//                    EatingNowMaxSMB = round(Math.min(maxBolus,EatingNowMaxSMB),1); // use the most restrictive
+//                }
                 // ===================================================
 
                 // ============== RISE RESTRICTIONS ==============
