@@ -871,7 +871,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // if BG below threshold then take the max of the sens vars
     sens_future = (bg <= threshold ? Math.max(sens_normalTarget, sens_currentBG, sens_future) : sens_future);
     // limit sens_future to ISF_Max with no iTimeOverride or COBBoost
-    if (eatingnow) {
+    if (!eatingnow) {
         sens_future = Math.max(sens_future, ISF_Max);
         // set sens_future_max to true for reason asterisk
         sens_future_max = (sens_future == ISF_Max);
