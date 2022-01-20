@@ -411,8 +411,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     sens_avg = (sens_avg+sens_currentBG)/2;
     sens_avg = sens_currentBG;
 
-    // use normal sens at night when eatingnow not active
-    sens = (eatingnow || eatingnowtimeOK ? sens_avg : sens_normalTarget);
+    // use normal sens when EN not active at night or TT not normalTarget
+    sens = (eatingnow ? sens_avg : sens_normalTarget);
     // at night with SR use the sens_avg
     sens = (!eatingnow && !eatingnowtimeOK && sensitivityRatio > 1 ? sens_avg : sens);
     enlog += "sens:"+sens+"\n";
@@ -983,7 +983,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     rT.reason += ", SR: " + sensitivityRatio;
     rT.reason += ", TDD" + TDDReason + ": " + round(TDD, 2) + " ("+convert_bg(sens_TDD, profile)+")";
     rT.reason += ", TIR3v1:L" + TIR3Below + "/" + TIR1Below + "="+ TIRBelow + ",H" + TIR3Above+ "/" + TIR1Above + "=" + TIRAbove;
-    rT.reason += ", EN: " + (eatingnow ? "active" : "inactive");
+    rT.reason += ", EN: " + (eatingnow ? "Active" : "Inactive");
+    rT.reason += (meal_data.mealCOB > 0  ? " COB" : "");
+    rT.reason += (profile.temptargetSet && target_bg == normalTarget ? " TT " : "");
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
     var carbsReqBG = naive_eventualBG;
