@@ -64,8 +64,8 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
     private var smbAlwaysAllowed = false
     private var currentTime: Long = 0
     private var saveCgmSource = false
-    private var lastBolusNormalTime: Long = 0
-    private val millsToThePast = T.hours(4).msecs()
+    // private var lastBolusNormalTime: Long = 0
+    // private val millsToThePast = T.hours(4).msecs()
     private var tddAIMI: TddCalculator? = null
     private var StatTIR: TirCalculator? = null
 
@@ -293,7 +293,7 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
         } else {
             mGlucoseStatus.put("delta", glucoseStatus.delta)
         }
-        bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTime = bolus.timestamp }
+        // bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTime = bolus.timestamp }
 
         mGlucoseStatus.put("short_avgdelta", glucoseStatus.shortAvgDelta)
         mGlucoseStatus.put("long_avgdelta", glucoseStatus.longAvgDelta)
@@ -305,13 +305,13 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
         this.mealData.put("lastBolusTime", mealData.lastBolusTime)
         // get the last bolus time of a manual bolus for EN activation
         val getlastBolusNormalTime = repository.getLastBolusRecordOfTypeWrapped(Bolus.Type.NORMAL).blockingGet()
-        lastBolusNormalTime = if (getlastBolusNormalTime is ValueWrapper.Existing) getlastBolusNormalTime.value.timestamp else 0L
+        val lastBolusNormalTime = if (getlastBolusNormalTime is ValueWrapper.Existing) getlastBolusNormalTime.value.timestamp else 0L
         this.mealData.put("lastBolusNormalTime", lastBolusNormalTime)
         // get the last carb time for EN activation
         val getlastCarbs = repository.getLastCarbsRecordWrapped().blockingGet()
         val lastCarbTime = if (getlastCarbs is ValueWrapper.Existing) getlastCarbs.value.timestamp else 0L
+        this.mealData.put("lastNormalCarbTime", lastCarbTime)
         this.mealData.put("lastCarbTime", mealData.lastCarbTime)
-        this.mealData.put("lastCarbTime2", lastCarbTime)
 
         // this.mealData.put("firstCarbTime", treatmentsPlugin.getFirstCarbTime(sp.getInt(R.string.key_eatingnow_timestart, 9)))
         // this.mealData.put("lastCarbs", treatmentsPlugin.getLastCarbs())
@@ -367,7 +367,7 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
         return NativeJSON.parse(rhino, scope, jsonArray.toString()) { _: Context?, _: Scriptable?, _: Scriptable?, objects: Array<Any?> -> objects[1] }
     }
 
-    private fun bolusMealLinks(now: Long) = repository.getBolusesDataFromTime(now - millsToThePast, false).blockingGet()
+    // private fun bolusMealLinks(now: Long) = repository.getBolusesDataFromTime(now - millsToThePast, false).blockingGet()
 
     @Throws(IOException::class) private fun readFile(filename: String): String {
         val bytes = scriptReader.readFile(filename)
