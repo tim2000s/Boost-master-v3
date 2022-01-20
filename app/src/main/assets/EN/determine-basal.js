@@ -414,7 +414,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // use normal sens when EN not active at night or TT not normalTarget
     sens = (eatingnow ? sens_avg : sens_normalTarget);
     // at night with SR use the sens_avg
-    sens = (!eatingnow && !eatingnowtimeOK && sensitivityRatio > 1 ? sens_avg : sens);
+    //sens = (!eatingnow && !eatingnowtimeOK && sensitivityRatio > 1 ? sens_avg : sens);
+    sens = (!eatingnow && !eatingnowtimeOK ? sens_avg : sens); // at night use sens_currentBG without SR
     enlog += "sens:"+sens+"\n";
 
     // **********************************************************************************************
