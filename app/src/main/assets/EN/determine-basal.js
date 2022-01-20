@@ -237,8 +237,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var ENStartTime = new Date().setHours(profile.EatingNowTimeStart,0,0);
 
     // eating now time can be delayed if there is no first bolus or carbs
-    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.lastCarbTime >= ENStartTime || meal_data.lastBolusNormalTime >= ENStartTime)) eatingnowtimeOK = true;
-    enlog += ", now: " + now + ", ENStartTime: " + ENStartTime + ", lastCarbTime: " + meal_data.lastCarbTime + ", lastBolusNormalTime: " + meal_data.lastBolusNormalTime +"\n";
+    if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.lastNormalCarbTime >= ENStartTime || meal_data.lastBolusNormalTime >= ENStartTime)) eatingnowtimeOK = true;
+    enlog += ", now: " + now + ", ENStartTime: " + ENStartTime + ", lastNormalCarbTime: " + meal_data.lastNormalCarbTime + ", lastBolusNormalTime: " + meal_data.lastBolusNormalTime +"\n";
     // restrict SR to 1 max if no carbs have been entered using advanced ISF during the day
     sensitivityRatio = (profile.ISFBoost_enabled && eatingnowtimeOK && meal_data.carbs == 0 ? Math.min(sensitivityRatio,1) : sensitivityRatio);
 
