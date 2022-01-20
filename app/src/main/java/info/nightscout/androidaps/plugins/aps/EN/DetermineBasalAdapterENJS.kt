@@ -5,6 +5,7 @@ import info.nightscout.androidaps.R
 import info.nightscout.androidaps.data.IobTotal
 import info.nightscout.androidaps.data.MealData
 import info.nightscout.androidaps.database.AppRepository
+import info.nightscout.androidaps.database.ValueWrapper
 import info.nightscout.androidaps.database.entities.Bolus
 import info.nightscout.androidaps.extensions.convertedToAbsolute
 import info.nightscout.androidaps.extensions.getPassedDurationToTimeInMinutes
@@ -302,6 +303,11 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
         this.mealData.put("slopeFromMaxDeviation", mealData.slopeFromMaxDeviation)
         this.mealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation)
         this.mealData.put("lastBolusTime", mealData.lastBolusTime)
+
+        // val GetlastBolusNormalTime = repository.getLastBolusRecordWrapped().blockingGet()
+        val getlastBolusNormalTime = repository.getLastBolusRecordOfTypeWrapped(Bolus.Type.NORMAL).blockingGet()
+        lastBolusNormalTime = if (getlastBolusNormalTime is ValueWrapper.Existing) getlastBolusNormalTime.value.timestamp else 0L
+
         this.mealData.put("lastBolusNormalTime", lastBolusNormalTime)
         this.mealData.put("lastCarbTime", mealData.lastCarbTime)
 
