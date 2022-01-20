@@ -37,7 +37,6 @@ import java.lang.reflect.InvocationTargetException
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 import info.nightscout.androidaps.utils.stats.TirCalculator
-//import info.nightscout.androidaps.dana.DanaPump
 
 
 class DetermineBasalAdapterENJS internal constructor(private val scriptReader: ScriptReader, private val injector: HasAndroidInjector) {
@@ -64,8 +63,6 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
     private var smbAlwaysAllowed = false
     private var currentTime: Long = 0
     private var saveCgmSource = false
-    // private var lastBolusNormalTime: Long = 0
-    // private val millsToThePast = T.hours(4).msecs()
     private var tddAIMI: TddCalculator? = null
     private var StatTIR: TirCalculator? = null
 
@@ -247,7 +244,6 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
         this.profile.put("enableGhostCOB", sp.getBoolean(R.string.key_use_ghostcob, false))
         this.profile.put("COBBoostWindow", sp.getInt(R.string.key_eatingnow_cobboostminutes, 0))
         this.profile.put("COBBoost_maxBolus", sp.getDouble(R.string.key_eatingnow_cobboost_maxbolus, 0.0))
-        // this.profile.put("EatingNowPrebolusPct", sp.getDouble(R.string.key_eatingnow_preboluspct, 0.1))
 
         this.profile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3))
         this.profile.put("EatingNowTimeStart", sp.getInt(R.string.key_eatingnow_timestart, 9))
@@ -258,20 +254,11 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
         this.profile.put("UAMBoost_maxBolus", sp.getDouble(R.string.key_eatingnow_uamboost_maxbolus, 0.0))
         this.profile.put("iTimeWindow", sp.getInt(R.string.key_eatingnow_itimeminutes, 15))
 
-        //this.profile.put("UAMBoostMAX_Bolus_Scale", sp.getDouble(R.string.key_eatingnow_uamboostmax_bolus_scale, 0.0))
-        //this.profile.put("UAMBoostMAX_SMBScale", sp.getDouble(R.string.key_eatingnow_uamboostmax_smbscale, 1.0))
-        //this.profile.put("iTimeMaxWindow", sp.getInt(R.string.key_eatingnow_itime1minutes, 15))
-
         this.profile.put("ISFBoost_enabled", sp.getBoolean(R.string.key_eatingnow_use_advanced_isf, false))
         this.profile.put("ISFBoost_maxBolus", sp.getDouble(R.string.key_eatingnow_isfboost_maxbolus, 0.0))
         this.profile.put("ISF_Max_Scale", sp.getDouble(R.string.key_eatingnow_isf_max_scale, 1.0))
         this.profile.put("EatingNowBGThreshold", Profile.toMgdl(sp.getDouble(R.string.key_eatingnow_bgthreshold, 0.0),profileFunction.getUnits()))
 
-        // TempTarget tempTarget = treatmentsPlugin.getTempTargetFromHistory(System.currentTimeMillis());
-        // if (tempTarget != null) {
-        //     this.profile.put("tt_duration", tempTarget.durationInMinutes);
-        //     this.profile.put("tt_mins_active", tempTarget.getRealTTDuration());
-        // }
         // patches ==== END
 //**********************************************************************************************************************************************
         if (profileFunction.getUnits() == GlucoseUnit.MMOL) {
@@ -293,7 +280,6 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
         } else {
             mGlucoseStatus.put("delta", glucoseStatus.delta)
         }
-        // bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTime = bolus.timestamp }
 
         mGlucoseStatus.put("short_avgdelta", glucoseStatus.shortAvgDelta)
         mGlucoseStatus.put("long_avgdelta", glucoseStatus.longAvgDelta)
@@ -316,14 +302,6 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
         this.mealData.put("lastNormalCarbTime", lastCarbTime)
         this.mealData.put("lastCarbTime", mealData.lastCarbTime)
 
-        // this.mealData.put("firstCarbTime", treatmentsPlugin.getFirstCarbTime(sp.getInt(R.string.key_eatingnow_timestart, 9)))
-        // this.mealData.put("lastCarbs", treatmentsPlugin.getLastCarbs())
-        // this.mealData.put("lastBolusCorrTime",treatmentsPlugin.getLastBolusTypeTime(false))
-        // this.mealData.put("lastBolusCorrUnits",treatmentsPlugin.getLastBolusTypeUnits(false))
-        // this.mealData.put("lastSMBTime",treatmentsPlugin.getLastBolusTypeTime(true))
-        // this.mealData.put("lastSMBUnits",treatmentsPlugin.getLastBolusTypeUnits(true))
-        // this.mealData.put("firstBolusCorrTime",treatmentsPlugin.getFirstENBolusTime(sp.getInt(R.string.key_eatingnow_timestart, 9)))
-
         tddAIMI = TddCalculator(aapsLogger,rh,activePlugin,profileFunction,dateUtil,iobCobCalculator, repository)
         this.mealData.put("TDDAIMI1", tddAIMI!!.averageTDD(tddAIMI!!.calculate(1)).totalAmount)
         this.mealData.put("TDDAIMI3", tddAIMI!!.averageTDD(tddAIMI!!.calculate(3)).totalAmount)
@@ -342,13 +320,6 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
         this.mealData.put("TIR1Above",StatTIR!!.averageTIR(StatTIR!!.calculateDaily(lowMgdl,highMgdl)).abovePct())
         this.mealData.put("TIR1InRange",StatTIR!!.averageTIR(StatTIR!!.calculateDaily(lowMgdl,highMgdl)).inRangePct())
         this.mealData.put("TIR1Below",StatTIR!!.averageTIR(StatTIR!!.calculateDaily(lowMgdl,highMgdl)).belowPct())
-        // this.mealData.put("StatLow7", StatTIR!!.averageTIR(StatTIR!!.calculate(7, 70.0, 180.0)).belowPct())
-        // this.mealData.put("StatInRange7", StatTIR!!.averageTIR(StatTIR!!.calculate(7, 70.0, 180.0)).inRangePct())
-        // this.mealData.put("StatAbove7", StatTIR!!.averageTIR(StatTIR!!.calculate(7, 70.0, 180.0)).abovePct())
-        // this.mealData.put("currentTIRLow", StatTIR!!.averageTIR(StatTIR!!.calculateDaily(80.0, 180.0)).belowPct())
-        // this.mealData.put("currentTIRRange", StatTIR!!.averageTIR(StatTIR!!.calculateDaily(80.0, 180.0)).inRangePct())
-        // this.mealData.put("currentTIRAbove", StatTIR!!.averageTIR(StatTIR!!.calculateDaily(80.0, 180.0)).abovePct())
-        // this.mealData.put("currentTIR_70_140_Above", StatTIR!!.averageTIR(StatTIR!!.calculateDaily(70.0, 140.0)).abovePct())
 
         if (constraintChecker.isAutosensModeEnabled().value()) {
             autosensData.put("ratio", autosensDataRatio)
@@ -369,8 +340,6 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
     private fun makeParamArray(jsonArray: JSONArray?, rhino: Context, scope: Scriptable): Any {
         return NativeJSON.parse(rhino, scope, jsonArray.toString()) { _: Context?, _: Scriptable?, _: Scriptable?, objects: Array<Any?> -> objects[1] }
     }
-
-    // private fun bolusMealLinks(now: Long) = repository.getBolusesDataFromTime(now - millsToThePast, false).blockingGet()
 
     @Throws(IOException::class) private fun readFile(filename: String): String {
         val bytes = scriptReader.readFile(filename)
