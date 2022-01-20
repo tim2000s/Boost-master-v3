@@ -409,6 +409,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // incorporate sens_currentBG into the sens_avg
     sens_avg = (sens_avg+sens_currentBG)/2;
+    sens_avg = sens_currentBG;
+
     // use normal sens at night when eatingnow not active
     sens = (eatingnow || eatingnowtimeOK ? sens_avg : sens_normalTarget);
     // at night with SR use the sens_avg
