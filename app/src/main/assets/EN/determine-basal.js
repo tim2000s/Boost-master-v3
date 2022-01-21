@@ -1334,6 +1334,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                         EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
                     }
                     ISFBoosted = true;
+                    insulinReqPct = ENinsulinReqPct;
                 }
                 // ============== ISF BOOST ============== END ===
 
