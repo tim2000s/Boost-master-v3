@@ -253,7 +253,6 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
         this.profile.put("UAMBoost_maxBolus", sp.getDouble(R.string.key_eatingnow_uamboost_maxbolus, 0.0))
         this.profile.put("iTimeWindow", sp.getInt(R.string.key_eatingnow_itimeminutes, 15))
 
-        this.profile.put("ISFBoost_enabled", sp.getBoolean(R.string.key_eatingnow_use_advanced_isf, false))
         this.profile.put("ISFBoost_maxBolus", sp.getDouble(R.string.key_eatingnow_isfboost_maxbolus, 0.0))
         this.profile.put("ISF_Max_Scale", sp.getDouble(R.string.key_eatingnow_isf_max_scale, 1.0))
         this.profile.put("EatingNowBGThreshold", Profile.toMgdl(sp.getDouble(R.string.key_eatingnow_bgthreshold, 0.0),profileFunction.getUnits()))

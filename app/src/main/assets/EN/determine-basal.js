@@ -240,7 +240,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.lastNormalCarbTime >= ENStartTime || meal_data.lastBolusNormalTime >= ENStartTime)) eatingnowtimeOK = true;
     enlog += ", now: " + now + ", ENStartTime: " + ENStartTime + ", lastNormalCarbTime: " + meal_data.lastNormalCarbTime + ", lastBolusNormalTime: " + meal_data.lastBolusNormalTime +"\n";
     // restrict SR to 1 max if no carbs have been entered using advanced ISF during the day
-    sensitivityRatio = (profile.ISFBoost_enabled && eatingnowtimeOK && meal_data.carbs == 0 ? Math.min(sensitivityRatio,1) : sensitivityRatio);
+    sensitivityRatio = (eatingnowtimeOK && meal_data.carbs == 0 ? Math.min(sensitivityRatio,1) : sensitivityRatio);
 
     if (sensitivityRatio) {
         basal = profile.current_basal * sensitivityRatio;
@@ -253,7 +253,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
 
     // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
-    if (profile.temptargetSet || profile.ISFBoost_enabled ) {
+    if (profile.temptargetSet) {
         //console.log("Temp Target set, not adjusting with autosens; ");
     } else if (typeof autosens_data !== 'undefined' && autosens_data) {
         if ( profile.sensitivity_raises_target && autosens_data.ratio < 1 || profile.resistance_lowers_target && autosens_data.ratio > 1 ) {
@@ -330,7 +330,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (sens !== profile_sens) {
             console.log("Profile ISF from "+profile_sens+" to "+sens);
         } else {
-            console.log("Profile ISF unchanged by Autosens: "+sens+". TDD based ISF "+(profile.temptargetSet || !profile.ISFBoost_enabled ? "disabled" : "enabled"));
+            console.log("Profile ISF unchanged: "+sens);
         }
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
@@ -972,7 +972,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + ", Exp Delta: " + expectedDelta + ", ISF: " + convert_bg(sens_currentBG, profile) + (profile.ISFBoost_enabled ? "(" + convert_bg(sens, profile) + ")" + convert_bg(sens_future, profile) : "") + (sens_future_max ? "*" : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + ", Exp Delta: " + expectedDelta + ", ISF: " + convert_bg(sens_currentBG, profile) + "(" + convert_bg(sens, profile) + ")" + convert_bg(sens_future, profile) + (sens_future_max ? "*" : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
 
     if (lastCOBpredBG > 0) {
         rT.reason += ", " + (ignoreCOB && !COBBoostOK ? "!" : "") + "COBpredBG " + convert_bg(lastCOBpredBG, profile);
@@ -1324,7 +1324,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== ISF BOOST ============== START ===
                 // For BG rises that dont meet the UAMBoost criteria using adjusted target_bg
-                if (profile.ISFBoost_enabled && !UAMBoosted && eventualBG > target_bg && insulinReq > 0) {
+                if (!UAMBoosted && eventualBG > target_bg && insulinReq > 0) {
                      // set SMB limit for ISFBoost
                     EatingNowMaxSMB = profile.ISFBoost_maxBolus;
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );

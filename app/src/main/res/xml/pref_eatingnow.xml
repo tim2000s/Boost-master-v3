@@ -35,12 +35,6 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:summary="Use ISF based on TDD and current BG. Predictions will use ISF for eventualBG."
-            android:key="@string/key_eatingnow_use_advanced_isf"
-            android:title="Use advanced ISF features" />
-
-        <SwitchPreference
-            android:defaultValue="false"
             android:key="@string/key_use_smb"
             android:summary="@string/enablesmb_summary"
             android:title="@string/enablesmb" />
