@@ -308,8 +308,11 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         // get the last carb time for EN activation
         val getlastCarbs = repository.getLastCarbsRecordWrapped().blockingGet()
         val lastCarbTime = if (getlastCarbs is ValueWrapper.Existing) getlastCarbs.value.timestamp else 0L
+        val lastCarbUnits = if (getlastCarbs is ValueWrapper.Existing) getlastCarbs.value.amount else 0L
         this.mealData.put("lastNormalCarbTime", lastCarbTime)
         this.mealData.put("lastCarbTime", mealData.lastCarbTime)
+        this.mealData.put("lastCarbUnits", lastCarbUnits)
+
 
 
         tddAIMI = TddCalculator(aapsLogger,rh,activePlugin,profileFunction,dateUtil,iobCobCalculator, repository)
