@@ -339,14 +339,18 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var C1 = bg + glucose_status.delta;
         var C2 = profile.min_bg + profile.smb_delivery_ratio_bg_range;
-        if (iob_data.iob <= iTime_Start_Bolus && iTime < iTimeProfile && C1 <= C2){
+        /*if (meal_data.lastBolusNormalUnits <= iTime_Start_Bolus && iTime < iTimeProfile && C1 <= C2){
         iTime = iTimeProfile + 1 ;
         enlog += "A manual bolus was done, but iTime is disable, iob < iTime_start_bolus : "+iob_data.iob+"<"+iTime_Start_Bolus+"\n";
+        }*/
+        if (meal_data.lastBolusNormalUnits >= iTime_Start_Bolus){
+        var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
+        enlog += "iTime is running : "+iTime+" because manual bolus ("+meal_data.lastBolusNormalUnits+") >= iTime_Starting_Bolus ("+iTime_Start_Bolus+")\n";
         }
         enlog += "C1 = "+C1+" and C2 = "+C2+"\n";
 
 
-        if (meal_data.carbs > 30) {
+        if (meal_data.lastCarbUnits > 30) {
                 var lastCarbAgebis = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime ) / 60000);
                 //console.error(meal_data.lastCarbTime, lastCarbAge);
              var iTime = lastCarbAgebis;
@@ -1397,22 +1401,22 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             //var mealIns = mealM / profile.carb_ratio;
             var mealIns = mealM / eRatio ;
 
-            if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime < 6 && iob_data.iob <= mealIns){
+            if (meal_data.lastCarbUnits > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime < 6 && iob_data.iob <= mealIns){
 
                 var microBolus = mealIns+basal;
                 console.log("first mealIns shot : "+mealIns);
 
-            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime > 10 && iTime < 20 && iob_data.iob <= (2*mealIns)){
+            }else if (meal_data.lastCarbUnits > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime > 10 && iTime < 20 && iob_data.iob <= (2*mealIns)){
 
                 var microBolus = mealIns;
                 console.log("second mealIns shot : "+mealIns);
 
-            }else if (meal_data.carbs > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime >= 40 && iTime <= 60 && iob_data.iob <= (3*mealIns) && glucose_status.delta >= 5 && C1 > C2 && HypoPredBG > 120){
+            }else if (meal_data.lastCarbUnits > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime >= 40 && iTime <= 60 && iob_data.iob <= (3*mealIns) && glucose_status.delta >= 5 && C1 > C2 && HypoPredBG > 120){
 
                 var microBolus = mealIns;
                 console.log("third mealIns shot : "+mealIns);
 
-            }else if (meal_data.carbs > 30 && meal_data.carbs && profile.iTime_Bolus > 0 && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < iTime_Start_Bolus && ! profile.temptargetSet && HypoPredBG > 120){
+            }else if (meal_data.lastCarbUnits > 30 && meal_data.carbs && profile.iTime_Bolus > 0 && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < iTime_Start_Bolus && ! profile.temptargetSet && HypoPredBG > 120){
 
                 var microBolus =  profile.iTime_Bolus;
 
