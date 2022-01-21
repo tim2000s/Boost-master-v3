@@ -92,6 +92,12 @@ follow the need.
 Since the IC evolve, the result is for me amazing and no hypo after lunch or dinner. 
 Of course, the prebolus way is style working great, i just add a new possibility with carbs entry.
 
+AAPS-V3-RC3-AIMI V14 21/01/2022
+Small change for better behavior
+iTime will start in this condition : 
+The size of the manual bolus is >= the variable iTime_Starting_Bolus and not anymore base one the value of total IOB. 
+The quantity of carbs > 30. This time, i create an independant variable from the database, it will take the last carb entry. That means too, if you entry 45 carbs, and 60 minutes later 
+10 carbs, it will stop iTime, because the last entry is 10 and not 45 carbs. For me it's not nécessary to entry 10 carbs when iTime is running with carbs, it will manage it without add 10.
 
 
 
