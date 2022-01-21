@@ -58,6 +58,7 @@ class HardLimits @Inject constructor(
         val MAX_IOB_SMB = doubleArrayOf(3.0, 7.0, 12.0, 25.0, 40.0)
         val MAX_IOB_BOOST = doubleArrayOf(3.0, 7.0, 15.0, 30.0, 40.0)
         val MAX_IOB_FULLUAM = doubleArrayOf(3.0, 7.0, 12.0, 25.0, 40.0)
+        val MAX_IOB_EN = doubleArrayOf(3.0, 7.0, 12.0, 25.0, 40.0)
         val MAX_BASAL = doubleArrayOf(2.0, 5.0, 10.0, 12.0, 25.0)
 
         //LGS Hard limits
@@ -80,6 +81,7 @@ class HardLimits @Inject constructor(
     fun maxIobSMB(): Double = MAX_IOB_SMB[loadAge()]
     fun maxIobFullUAM(): Double = MAX_IOB_FULLUAM[loadAge()]
     fun maxIobBoost(): Double = MAX_IOB_BOOST[loadAge()]
+    fun maxIobEN(): Double = MAX_IOB_EN[loadAge()]
     fun maxBasal(): Double = MAX_BASAL[loadAge()]
     fun minDia(): Double = MIN_DIA[loadAge()]
     fun maxDia(): Double = MAX_DIA[loadAge()]

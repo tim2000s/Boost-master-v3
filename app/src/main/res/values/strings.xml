@@ -82,6 +82,7 @@
     <string name="description_smb">Most recent algorithm for advanced users</string>
     <string name="description_fulluam">Automated Insulin Management Interface</string>
     <string name="description_Boost">Boost based accelerated bolusing</string>
+    <string name="description_EN">Eating Now bolusing method</string>
     <string name="description_overview">Displays the current state of your loop and buttons for most common actions</string>
     <string name="description_persistent_notification">Shows an ongoing notification with a short overview of what your loop is doing</string>
     <string name="description_profile_local">Define a profile which is available offline.</string>
@@ -1206,4 +1207,29 @@
     <string name="openapsama_smb_max_range_extension">SMB/UAM max range extension</string>
 
 
+    <!-- Eating Now-->
+    <string name="EN">Eating Now</string>
+    <string name="EN_shortname">EN</string>
+    <string name="pref_en">EN</string>
+    <string name="key_use_eatingnow">key_use_eatingnow</string>
+    <string name="key_eatingnow_iob">key_eatingnow_iob</string>
+    <string name="key_eatingnow_bgthreshold">key_eatingnow_bgthreshold</string>
+    <string name="key_use_ghostcob" translatable="false">key_use_ghostcob</string>
+    <string name="key_eatingnow_cobboostminutes" translatable="false">key_eatingnow_cobboostminutes</string>
+    <string name="key_eatingnow_cobboost_maxbolus">key_eatingnow_cobboost_maxbolus</string>
+    <string name="key_eatingnow_preboluspct">key_eatingnow_preboluspct</string>
+    <string name="key_eatingnow_insulinreqpct">key_eatingnow_insulinreqpct</string>
+    <string name="key_eatingnow_uamboost_bolus_scale">key_eatingnow_uamboost_bolus_scale</string>
+    <string name="key_eatingnow_uamboost_maxbolus">key_eatingnow_uamboost_maxbolus</string>
+    <string name="key_eatingnow_itimeminutes">key_eatingnow_itimeminutes</string>
+<!--    <string name="key_eatingnow_uamboostmax_bolus_scale">key_eatingnow_uamboostmax_bolus_scale</string>-->
+<!--    <string name="key_eatingnow_uamboostmax_smbscale">key_eatingnow_uamboostmax_smbscale</string>-->
+<!--    <string name="key_eatingnow_itime1minutes">key_eatingnow_itime1minutes</string>-->
+    <string name="key_eatingnow_isfboost_maxbolus">key_eatingnow_isfboost_maxbolus</string>
+    <string name="key_eatingnow_isf_max_scale">key_eatingnow_isf_max_scale</string>
+    <string name="key_eatingnow_use_advanced_isf">key_eatingnow_use_advanced_isf</string>
+    <string name="key_eatingnow_iobmax">key_eatingnow_iobmax</string>
+    <string name="key_eatingnow_timestart">key_eatingnow_timestart</string>
+    <string name="key_eatingnow_timeend">key_eatingnow_timeend</string>
+    <string name="key_openapsama_TDD" translatable="false">7 day average Total Daily Dose</string>
 </resources>

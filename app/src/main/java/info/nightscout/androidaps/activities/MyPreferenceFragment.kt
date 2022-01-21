@@ -26,6 +26,7 @@ import info.nightscout.androidaps.plugins.aps.Boost.BoostPlugin
 import info.nightscout.androidaps.plugins.aps.loop.LoopPlugin
 import info.nightscout.androidaps.plugins.aps.openAPSAMA.OpenAPSAMAPlugin
 import info.nightscout.androidaps.plugins.aps.openAPSSMB.OpenAPSSMBPlugin
+import info.nightscout.androidaps.plugins.aps.EN.ENPlugin
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.configBuilder.PluginStore
 import info.nightscout.androidaps.plugins.constraints.safety.SafetyPlugin
@@ -86,6 +87,7 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
     @Inject lateinit var openAPSSMBPlugin: OpenAPSSMBPlugin
     @Inject lateinit var fullUAMPlugin: FullUAMPlugin
     @Inject lateinit var BoostPlugin: BoostPlugin
+    @Inject lateinit var ENPlugin: ENPlugin
     @Inject lateinit var safetyPlugin: SafetyPlugin
     @Inject lateinit var sensitivityAAPSPlugin: SensitivityAAPSPlugin
     @Inject lateinit var sensitivityOref1Plugin: SensitivityOref1Plugin
@@ -174,6 +176,7 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
             addPreferencesFromResourceIfEnabled(openAPSSMBPlugin, rootKey, config.APS)
             addPreferencesFromResourceIfEnabled(fullUAMPlugin, rootKey, config.APS)
             addPreferencesFromResourceIfEnabled(BoostPlugin, rootKey, config.APS)
+            addPreferencesFromResourceIfEnabled(ENPlugin, rootKey, config.APS)
             addPreferencesFromResourceIfEnabled(sensitivityAAPSPlugin, rootKey)
             addPreferencesFromResourceIfEnabled(sensitivityWeightedAveragePlugin, rootKey)
             addPreferencesFromResourceIfEnabled(sensitivityOref1Plugin, rootKey)
