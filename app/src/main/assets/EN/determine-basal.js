@@ -292,7 +292,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var ignoreCOB = profile.enableGhostCOB; //MD#01: Ignore any COB and rely purely on UAM after initial rise
 
     // Check that max iob is OK
-    if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
+    if (iob_data.iob <= (max_iob * (profile.EatingNowIOBMax/100))) eatingnowMaxIOBOK = true;
 
     // If we have UAM and GhostCOB enabled with low enough IOB we will enable eating now mode
     if (profile.enableUAM && eatingnowMaxIOBOK) {

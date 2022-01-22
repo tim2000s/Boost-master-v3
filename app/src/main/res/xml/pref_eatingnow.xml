@@ -138,7 +138,7 @@
             android:enabled="true"
             android:key="@string/key_high_temptarget_raises_sensitivity"
             android:summary="@string/high_temptarget_raises_sensitivity_summary"
-            android:title="High temptarget raises sensitivity - ALWAYS ON" />
+            android:title="High temptarget raises sensitivity" />
 <!--            android:title="@string/high_temptarget_raises_sensitivity_title" />-->
 
 
@@ -148,7 +148,7 @@
             android:enabled="true"
             android:key="@string/key_low_temptarget_lowers_sensitivity"
             android:summary="@string/low_temptarget_lowers_sensitivity_summary"
-            android:title="Low temptarget lowers sensitivity - ALWAYS ON" />
+            android:title="Low temptarget lowers sensitivity" />
 <!--            android:title="@string/low_temptarget_lowers_sensitivity_title" />-->
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
@@ -207,13 +207,13 @@
                     validate:testType="floatNumericRange" />
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                    android:defaultValue="0.3"
+                    android:defaultValue="30"
                     android:inputType="numberDecimal"
                     android:key="@string/key_eatingnow_iobmax"
-                    android:dialogMessage="This will use a percentage of max-iob and suspend EatingNow until IOB limit is lower."
+                    android:dialogMessage="This will use a percentage of max-iob and suspend EatingNow until IOB limit is lower. Setting to 70 will make this 70%"
                     android:title="Max IOB Percentage"
-                    validate:floatmaxNumber="1"
-                    validate:floatminNumber="0.1"
+                    validate:floatmaxNumber="100"
+                    validate:floatminNumber="10"
                     validate:testType="floatNumericRange"/>
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
