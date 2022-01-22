@@ -92,8 +92,11 @@ follow the need.
 Since the IC evolve, the result is for me amazing and no hypo after lunch or dinner. 
 Of course, the prebolus way is style working great, i just add a new possibility with carbs entry.
 
+If you change your insulin from U100 for U200 concentration, you need to reset database and use openapsplugin for several days before to come back in AIMI, TDD calculation is looking the quantity of insulin on 7 days and the current day.
 
+It's true too U200 to U100 concentration.
 
+Here the part of the log who explain how it's working.
 
 Boost v3
 
@@ -149,3 +152,78 @@ Boost Bolus Cap - Start at 2.5% of TDD and increase to no more than 5% of total 
 UAM Boost max IOB - Start at 5% of TDD and increase to no more than 10% of total daily dose.
 UAMSMBBasalMinutes - 60 mins. This is only used overnight when IOB is large enough to trigger UAM, so it doesn't need to be a large value.
 Boost insulin required percent - recommended not to exceed 75%. Start at 50% and increase as necessary.
+
+########################################
+This version of AAPS has evolved over time using elements from AIMI and Boost.
+This AAPS variation is called "Eating Now" (EN) as it is a reactive operating mode without needing to inform the system.
+The intent of this plugin is the same, to deliver insulin earlier using mostly openAPS predictions.
+This has been tested successfully with a blend of Fiasp 80% and Novorapid 20% (F80N).
+The code can be used with or without bolusing or COB entries.
+However it will not become active until a treatment has been performed after the active start time.
+Allowing a delayed start time for example if you sleep in. :)
+This treatment can be 1g or 0.1U for example.
+After this the EN mode is active until the end time specified in the preferences.
+It is recommended to set maxSMBBasalMinutes and maxUAMSMBBasalMinutes to 60 minutes max as these will be used when EN is not active.
+
+These are the methods utilised within this version:
+
+COBBoost:
+When carbs are entered there is a time window like AIMI.
+The COBpredBG prediction uses the dynamic ISF from Boost to increase insulinReq.
+If within the COBBoost Window the calculated insulinReq may be delivered via a larger SMB using the COBBoost maxBolus.
+Once the time window has elapsed COBBoost maxBolus is no longer used.
+
+UAMBoost:
+This is based upon Boost and is used when there is a sudden increase in BGL.
+When the delta is >=9 (0.5 mmol) or when the last COB entry was longer than the iTime window ago (eg 2h).
+Essentially UAMBoost will only operate when there are no COB or COB within close proximity.
+UAMBoost like the Boost plugin will use the TDD as a reference point for initial insulin dose that can be scaled within preferences.
+
+ISFBoost:
+All other predictions based on future eventualBG will use ISFBoost.
+This leverages the dynamic ISF concept within the Boost plugin.
+Using the eventualBG mostly to determine the insulinReq.
+The main difference with ISFBoost from the Boost plugin is the initial ISF used to determine the predictions is based on the profile ISF.
+If BG is currently the normalTarget BG from the profile the ISF will be the same as the profile.
+Once BG rises the ISF number reduces, and as BG lowers the ISF number will increase.
+
+These are the preferences utilised for EN mode:
+
+General:
+Start Time:     The time the EN mode will start in hours as 24h clock format
+EN mode will be active after this time when there has been a COB or manual bolus entry of any size
+
+    End Time:       The time that EN mode will finish. Normal maxBolus of 65% is resumed.
+                    If there are COB or a TT of normalTarget EN will be active after this time, however AAPS maxBolus will be used.
+                    No SMB will be given when inactive unless there is detected resistance from autosens or BG is above BG Threshold.
+
+    InsulinReqPct:  Percentage that will be used for EN insulinReq as SMB to utilise prior to maxBolus restriction.
+                    This will be 65% when EN is not active.
+
+    Max IOB:        The percentage of current max-iob setting that will be used as the limit for EN.
+                    EN will not add insulin when above this limit.
+
+    BG Threshold:   No SMB will be given when EN is outside operating hours and BG below this threshold.
+                    If there is detected resistance from autosens or BG exceeds this threshold SMB will be resumed using normal AAPS maxBolus.
+
+COBBoost:
+Use GhostCOB:       Ignore COB predictions after the COBBoost Window and rely purely on UAM. This setting can be handy when COB lingers for too long.
+
+    COBBoost Window:    If within the COBBoost Window the calculated insulinReq from COBPredBG may be delivered via a larger SMB using the COBBoost maxBolus.
+                        Once the time window has elapsed COBBoost maxBolus is no longer used.
+                        0 minutes will disable this functionality.
+
+    COBBoost maxBolus:  maxBolus to use within the COBBoost Window. 0 will use AAPS maxBolus.
+
+UAMBoost:
+UAMBoost Bolus Scale:   Multiply the initial UAMBoost bolus by this amount. 0 will disable UAMBoost.
+
+    UAMBoost maxBolus:      maxBolus to use for UAMBoost.  0 will use maxSMBBasalMinutes or maxUAMSMBBasalMinutes.
+
+    COB Proximity:          UAMBoost will only operate when there are no COB or COB within close proximity. This setting will allow UAMBoost with COB is the COB entry was this more than this many minutes ago.
+
+ISFBoost:
+ISFBoost maxBolus:    maxBolus to use for ISFBoost. 0 will use maxSMBBasalMinutes or maxUAMSMBBasalMinutes.
+
+    ISFBoost Max Scale:   Limit the ISF when EN is not active.
+                          e.g. 1 will use profile ISF as the maximum and 2 will use half the ISF and allow a lower ISF number hence stronger.

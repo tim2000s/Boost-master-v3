@@ -238,9 +238,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // eating now time can be delayed if there is no first bolus or carbs
     if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.lastNormalCarbTime >= ENStartTime || meal_data.lastBolusNormalTime >= ENStartTime)) eatingnowtimeOK = true;
-    enlog += ", now: " + now + ", ENStartTime: " + ENStartTime + ", lastNormalCarbTime: " + meal_data.lastNormalCarbTime + ", lastBolusNormalTime: " + meal_data.lastBolusNormalTime +"\n";
+    enlog += "Now: " + now + ", ENStartTime: " + ENStartTime + ", lastNormalCarbTime: " + meal_data.lastNormalCarbTime + ", lastBolusNormalTime: " + meal_data.lastBolusNormalTime +"\n";
     // restrict SR to 1 max if no carbs have been entered using advanced ISF during the day
-    sensitivityRatio = (profile.ISFBoost_enabled && eatingnowtimeOK && meal_data.carbs == 0 ? Math.min(sensitivityRatio,1) : sensitivityRatio);
+    sensitivityRatio = (eatingnowtimeOK && meal_data.carbs == 0 ? Math.min(sensitivityRatio,1) : sensitivityRatio);
 
     if (sensitivityRatio) {
         basal = profile.current_basal * sensitivityRatio;
@@ -253,7 +253,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
 
     // adjust min, max, and target BG for sensitivity, such that 50% increase in ISF raises target from 100 to 120
-    if (profile.temptargetSet || profile.ISFBoost_enabled ) {
+    if (profile.temptargetSet) {
         //console.log("Temp Target set, not adjusting with autosens; ");
     } else if (typeof autosens_data !== 'undefined' && autosens_data) {
         if ( profile.sensitivity_raises_target && autosens_data.ratio < 1 || profile.resistance_lowers_target && autosens_data.ratio > 1 ) {
@@ -292,7 +292,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var ignoreCOB = profile.enableGhostCOB; //MD#01: Ignore any COB and rely purely on UAM after initial rise
 
     // Check that max iob is OK
-    if (iob_data.iob <= (max_iob * profile.EatingNowIOBMax)) eatingnowMaxIOBOK = true;
+    if (iob_data.iob <= (max_iob * (profile.EatingNowIOBMax/100))) eatingnowMaxIOBOK = true;
 
     // If we have UAM and GhostCOB enabled with low enough IOB we will enable eating now mode
     if (profile.enableUAM && eatingnowMaxIOBOK) {
@@ -303,11 +303,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // no EN with a TT other than normal target
         if (profile.temptargetSet) eatingnow = false;
         if (profile.temptargetSet && target_bg == normalTarget) eatingnow = true;
-        if (eatingnow) max_iob *= profile.EatingNowIOBMax; // set maxIOB using the EN percentage
+        if (eatingnow) max_iob *= (profile.EatingNowIOBMax/100); // set maxIOB using the EN percentage
         max_iob = round(max_iob,2);
     }
     //eatingnow = false; //DEBUG
     enlog += "eatingnow: " + eatingnow + ", eatingnowtimeOK: " + eatingnowtimeOK+"\n";
+    enlog += "eatingnowMaxIOBOK: " + eatingnowMaxIOBOK + ", max_iob: " + max_iob+"\n";
+
     // patches ===== END
 
     var tick;
@@ -330,7 +332,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (sens !== profile_sens) {
             console.log("Profile ISF from "+profile_sens+" to "+sens);
         } else {
-            console.log("Profile ISF unchanged by Autosens: "+sens+". TDD based ISF "+(profile.temptargetSet || !profile.ISFBoost_enabled ? "disabled" : "enabled"));
+            console.log("Profile ISF unchanged: "+sens);
         }
         //console.log(" (autosens ratio "+sensitivityRatio+")");
     }
@@ -392,13 +394,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var sens_TDD = round((277700 / (TDD * normalTarget)),1);
     sens_TDD = (sens_TDD > sens*3 ? sens : sens_TDD); // fresh install of v3
     enlog += "sens_TDD:" + sens_TDD+"\n";
-    var sens_avg = (sens_normalTarget+sens_TDD)/2;
-    enlog += "sens_avg:" + sens_avg+"\n";
-    //sens_normalTarget = sens_avg; // Try the average ISF, ISF Max will move with this avg
-    //enlog += "sens_normalTarget adjusted with avg:" + sens_normalTarget+"\n";
-    var sens_currentBG = sens_normalTarget/(bg/normalTarget); // * EXPERIMENT *
+    // set sens_currentBG using profile
+    var sens_currentBG = sens_normalTarget/(bg/normalTarget);
     sens_currentBG = round(sens_currentBG,1);
     enlog +="Current sensitivity is " +sens_currentBG+" based on current bg\n";
+    // use sens_currentBG as the sens_avg
+    var sens_avg = sens_currentBG;
+    //var sens_avg = (sens_normalTarget+sens_TDD)/2;
+    enlog += "sens_avg:" + sens_avg+"\n";
 
     // Threshold for ISF Boost
     var EatingNowBGThreshold = profile.EatingNowBGThreshold;
@@ -406,10 +409,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // Limit ISF with this scale like AS
     var ISF_Max = round (sens_normalTarget / profile.ISF_Max_Scale,1);
     enlog += "ISF_Max:"+ISF_Max+"\n";
-
-    // incorporate sens_currentBG into the sens_avg
-    sens_avg = (sens_avg+sens_currentBG)/2;
-    sens_avg = sens_currentBG;
 
     // use normal sens when EN not active at night or TT not normalTarget
     sens = (eatingnow ? sens_avg : sens_normalTarget);
@@ -972,7 +971,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + ", Exp Delta: " + expectedDelta + ", ISF: " + convert_bg(sens_currentBG, profile) + (profile.ISFBoost_enabled ? "(" + convert_bg(sens, profile) + ")" + convert_bg(sens_future, profile) : "") + (sens_future_max ? "*" : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + ", Exp Delta: " + expectedDelta + ", ISF: " + convert_bg(sens, profile) + "=" + convert_bg(sens_future, profile) + (sens_future_max ? "*" : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
 
     if (lastCOBpredBG > 0) {
         rT.reason += ", " + (ignoreCOB && !COBBoostOK ? "!" : "") + "COBpredBG " + convert_bg(lastCOBpredBG, profile);
@@ -1324,7 +1323,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 // ============== ISF BOOST ============== START ===
                 // For BG rises that dont meet the UAMBoost criteria using adjusted target_bg
-                if (profile.ISFBoost_enabled && !UAMBoosted && eventualBG > target_bg && insulinReq > 0) {
+                if (!UAMBoosted && eventualBG > target_bg && insulinReq > 0) {
                      // set SMB limit for ISFBoost
                     EatingNowMaxSMB = profile.ISFBoost_maxBolus;
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
@@ -1334,6 +1333,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                         EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
                     }
                     ISFBoosted = true;
+                    insulinReqPct = ENinsulinReqPct;
                 }
                 // ============== ISF BOOST ============== END ===
 

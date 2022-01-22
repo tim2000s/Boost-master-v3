@@ -35,12 +35,6 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:summary="Use ISF based on TDD and current BG. Predictions will use ISF for eventualBG."
-            android:key="@string/key_eatingnow_use_advanced_isf"
-            android:title="Use advanced ISF features" />
-
-        <SwitchPreference
-            android:defaultValue="false"
             android:key="@string/key_use_smb"
             android:summary="@string/enablesmb_summary"
             android:title="@string/enablesmb" />
@@ -144,7 +138,7 @@
             android:enabled="true"
             android:key="@string/key_high_temptarget_raises_sensitivity"
             android:summary="@string/high_temptarget_raises_sensitivity_summary"
-            android:title="High temptarget raises sensitivity - ALWAYS ON" />
+            android:title="High temptarget raises sensitivity" />
 <!--            android:title="@string/high_temptarget_raises_sensitivity_title" />-->
 
 
@@ -154,7 +148,7 @@
             android:enabled="true"
             android:key="@string/key_low_temptarget_lowers_sensitivity"
             android:summary="@string/low_temptarget_lowers_sensitivity_summary"
-            android:title="Low temptarget lowers sensitivity - ALWAYS ON" />
+            android:title="Low temptarget lowers sensitivity" />
 <!--            android:title="@string/low_temptarget_lowers_sensitivity_title" />-->
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
@@ -185,7 +179,7 @@
                     android:dialogMessage="Enter Eating Now start time in 24h e.g. 9AM is 9"
                     android:inputType="number"
                     android:key="@string/key_eatingnow_timestart"
-                    android:title="Active Start Time"
+                    android:title="Start Time"
                     validate:maxNumber="23"
                     validate:minNumber="0"
                     validate:testType="numericRange" />
@@ -195,7 +189,7 @@
                     android:dialogMessage="Enter Eating Now end time in 24h e.g. 5PM is 17"
                     android:inputType="number"
                     android:key="@string/key_eatingnow_timeend"
-                    android:title="Active End Time"
+                    android:title="End Time"
                     validate:maxNumber="23"
                     validate:minNumber="0"
                     validate:testType="numericRange" />
@@ -207,19 +201,19 @@
                     android:dialogMessage="Percentage of Insulin Required. AAPS default is 50%. Setting to 70 will make this 70%"
                     android:inputType="numberDecimal"
                     android:key="@string/key_eatingnow_insulinreqpct"
-                    android:title="InsulinReqPct for EN"
+                    android:title="insulinReqPct"
                     validate:floatmaxNumber="75"
                     validate:floatminNumber="50"
                     validate:testType="floatNumericRange" />
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                    android:defaultValue="0.3"
+                    android:defaultValue="30"
                     android:inputType="numberDecimal"
                     android:key="@string/key_eatingnow_iobmax"
-                    android:dialogMessage="This will use a percentage of max-iob and suspend EatingNow until IOB limit is lower."
+                    android:dialogMessage="This will use a percentage of max-iob and suspend EatingNow until IOB limit is lower. Setting to 70 will make this 70%"
                     android:title="Max IOB Percentage"
-                    validate:floatmaxNumber="1"
-                    validate:floatminNumber="0.1"
+                    validate:floatmaxNumber="100"
+                    validate:floatminNumber="10"
                     validate:testType="floatNumericRange"/>
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
@@ -241,7 +235,7 @@
             <SwitchPreference
                 android:defaultValue="false"
                 android:key="key_use_ghostcob"
-                android:title="Enable GhostCOB"
+                android:title="Use GhostCOB"
                 android:summary="Ignore COB after COBBoost window and rely on UAM predictions.\nWhen disabled COB predictions will be as normal." />
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
@@ -259,7 +253,7 @@
                 android:defaultValue="0"
                 android:inputType="numberDecimal"
                 android:key="@string/key_eatingnow_cobboost_maxbolus"
-                android:title="COBBoost maxBolus Limit"
+                android:title="COBBoost maxBolus"
                 android:dialogMessage="COBBoost maxBolus for BGL rises within the COBBoost Window.\n0 will use existing maxBolus limit"
                 validate:floatmaxNumber="5"
                 validate:floatminNumber="0"
@@ -285,21 +279,21 @@
                 android:defaultValue="0"
                 android:inputType="numberDecimal"
                 android:key="@string/key_eatingnow_uamboost_maxbolus"
-                android:title="UAMBoost maxBolus Limit"
+                android:title="UAMBoost maxBolus"
                 android:dialogMessage="UAMBoost maxBolus for BGL rises.\n0 will use existing maxBolus limit"
                 validate:floatmaxNumber="5"
                 validate:floatminNumber="0"
                 validate:testType="floatNumericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="15"
+                android:defaultValue="120"
                 android:digits="0123456789"
                 android:inputType="number"
                 android:key="@string/key_eatingnow_itimeminutes"
-                android:title="iTime Minutes Window"
-                android:dialogMessage="Minutes since last manual bolus for faster UAMBoost"
+                android:title="COB Proximity"
+                android:dialogMessage="UAMBoost does not usually operate with COB. This setting is the minutes since last COB entry that will allow UAMBoost."
                 validate:maxNumber="240"
-                validate:minNumber="15"
+                validate:minNumber="30"
                 validate:testType="numericRange" />
 
         </PreferenceCategory>
@@ -322,8 +316,8 @@
                 android:defaultValue="1"
                 android:inputType="numberDecimal"
                 android:key="@string/key_eatingnow_isf_max_scale"
-                android:title="ISF Max Scale"
-                android:dialogMessage="Divide current ISF when advanced ISF is being used\n1 is no adjustment, 2 is half the ISF"
+                android:title="ISF Max"
+                android:dialogMessage="Limit the ISF when EN is not active\n1 is no adjustment, 2 will use half the ISF and allow stronger"
                 validate:floatmaxNumber="3"
                 validate:floatminNumber="1"
                 validate:testType="floatNumericRange"/>

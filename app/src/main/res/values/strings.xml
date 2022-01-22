@@ -1222,12 +1222,8 @@
     <string name="key_eatingnow_uamboost_bolus_scale">key_eatingnow_uamboost_bolus_scale</string>
     <string name="key_eatingnow_uamboost_maxbolus">key_eatingnow_uamboost_maxbolus</string>
     <string name="key_eatingnow_itimeminutes">key_eatingnow_itimeminutes</string>
-<!--    <string name="key_eatingnow_uamboostmax_bolus_scale">key_eatingnow_uamboostmax_bolus_scale</string>-->
-<!--    <string name="key_eatingnow_uamboostmax_smbscale">key_eatingnow_uamboostmax_smbscale</string>-->
-<!--    <string name="key_eatingnow_itime1minutes">key_eatingnow_itime1minutes</string>-->
     <string name="key_eatingnow_isfboost_maxbolus">key_eatingnow_isfboost_maxbolus</string>
     <string name="key_eatingnow_isf_max_scale">key_eatingnow_isf_max_scale</string>
-    <string name="key_eatingnow_use_advanced_isf">key_eatingnow_use_advanced_isf</string>
     <string name="key_eatingnow_iobmax">key_eatingnow_iobmax</string>
     <string name="key_eatingnow_timestart">key_eatingnow_timestart</string>
     <string name="key_eatingnow_timeend">key_eatingnow_timeend</string>

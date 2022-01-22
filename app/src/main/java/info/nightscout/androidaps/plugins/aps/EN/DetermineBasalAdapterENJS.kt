@@ -244,16 +244,15 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
         this.profile.put("COBBoostWindow", sp.getInt(R.string.key_eatingnow_cobboostminutes, 0))
         this.profile.put("COBBoost_maxBolus", sp.getDouble(R.string.key_eatingnow_cobboost_maxbolus, 0.0))
 
-        this.profile.put("EatingNowIOBMax", sp.getDouble(R.string.key_eatingnow_iobmax, 0.3))
+        this.profile.put("EatingNowIOBMax", sp.getInt(R.string.key_eatingnow_iobmax, 30))
         this.profile.put("EatingNowTimeStart", sp.getInt(R.string.key_eatingnow_timestart, 9))
         this.profile.put("EatingNowTimeEnd", sp.getInt(R.string.key_eatingnow_timeend, 17))
         this.profile.put("EatingNowinsulinReqPct",SafeParse.stringToDouble(sp.getString(R.string.key_eatingnow_insulinreqpct,"65")))
 
         this.profile.put("UAMBoost_Bolus_Scale", sp.getDouble(R.string.key_eatingnow_uamboost_bolus_scale, 0.0))
         this.profile.put("UAMBoost_maxBolus", sp.getDouble(R.string.key_eatingnow_uamboost_maxbolus, 0.0))
-        this.profile.put("iTimeWindow", sp.getInt(R.string.key_eatingnow_itimeminutes, 15))
+        this.profile.put("iTimeWindow", sp.getInt(R.string.key_eatingnow_itimeminutes, 120))
 
-        this.profile.put("ISFBoost_enabled", sp.getBoolean(R.string.key_eatingnow_use_advanced_isf, false))
         this.profile.put("ISFBoost_maxBolus", sp.getDouble(R.string.key_eatingnow_isfboost_maxbolus, 0.0))
         this.profile.put("ISF_Max_Scale", sp.getDouble(R.string.key_eatingnow_isf_max_scale, 1.0))
         this.profile.put("EatingNowBGThreshold", Profile.toMgdl(sp.getDouble(R.string.key_eatingnow_bgthreshold, 0.0),profileFunction.getUnits()))
