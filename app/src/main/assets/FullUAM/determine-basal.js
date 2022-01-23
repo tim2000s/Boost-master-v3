@@ -302,7 +302,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         else {
             console.error("Time now is "+now+"; ");
         }
-    if ( meal_data.TDDPUMP ){
+    //if ( meal_data.TDDPUMP ){
         var statTirBelow = meal_data.StatLow7;
         var statinrange = meal_data.StatInRange7;
         var currentTIRLow = meal_data.currentTIRLow;
@@ -339,23 +339,28 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var C1 = bg + glucose_status.delta;
         var C2 = profile.min_bg + profile.smb_delivery_ratio_bg_range;
-        if (meal_data.lastBolusNormalUnits <= iTime_Start_Bolus && iTime < iTimeProfile && C1 <= C2){
+        /*if (meal_data.lastBolusNormalUnits <= iTime_Start_Bolus && iTime < iTimeProfile && C1 <= C2){
         iTime = iTimeProfile + 1 ;
         enlog += "A manual bolus was done, but iTime is disable, iob < iTime_start_bolus : "+iob_data.iob+"<"+iTime_Start_Bolus+"\n";
-        }
-        /*if (meal_data.lastBolusNormalUnits >= iTime_Start_Bolus){
-        var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
-        enlog += "iTime is running : "+iTime+" because manual bolus ("+meal_data.lastBolusNormalUnits+") >= iTime_Starting_Bolus ("+iTime_Start_Bolus+")\n";
         }*/
+        if (meal_data.lastBolusNormalUnits >= iTime_Start_Bolus && iTime <= iTimeProfile){
+        //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
+        enlog += "iTime is running : "+iTime+" because manual bolus ("+meal_data.lastBolusNormalUnits+") >= iTime_Starting_Bolus ("+iTime_Start_Bolus+")\n";
+        }else if (meal_data.lastBolusNormalUnits <= iTime_Start_Bolus && iTime <= iTimeProfile){
+        iTime = iTimeProfile + 1 ;
+        enlog += "iTime is not running : "+iTime+" because manual bolus ("+meal_data.lastBolusNormalUnits+") <= iTime_Starting_Bolus ("+iTime_Start_Bolus+")\n";
+        }else{
+        enlog += "iTime is not activate \n";
+        }
         enlog += "iTime :"+iTime+"\n";
         enlog +="lastBolusnormalUnits : "+meal_data.lastBolusNormalUnits+"\n";
         enlog += "C1 = "+C1+" and C2 = "+C2+"\n";
 
 
         if (meal_data.lastCarbUnits > 30) {
-                var lastCarbAgebis = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime ) / 60000);
-                //console.error(meal_data.lastCarbTime, lastCarbAge);
-             var iTime = lastCarbAgebis;
+             var lastCarbAgebis = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime ) / 60000);
+             //console.error(meal_data.lastCarbTime, lastCarbAge);
+             iTime = lastCarbAgebis;
              enlog +="lastCarbAgebis =  iTime : "+iTime+"\n";
 
             }
@@ -395,10 +400,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     sens_currentBG = round(sens_currentBG,1);
     sens = sens_currentBG;
     enlog +="Current sensitivity is " +sens_currentBG+" based on current bg\n";
-    }else{
+    /*}else{
     sens = profile.sens;
     enlog +="######--TDD and TIR don't have data, the ISF come from the profile--######\n";
-    }
+    }*/
 
 
 
@@ -1001,14 +1006,14 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 console.log("Adjusting basal from "+profile_current_basal+" to "+basal);
                 console.log("Future state sensitivity is " +future_sens+" based on eventual bg");
                 console.log("-------------");
-                if ( meal_data.TDDPUMP ){
+
                     if (iTime <= iTimeProfile){
                     console.log("iTime : "+iTime);
                     console.log("iTimeProfile : "+iTimeProfile);
                     console.log("smbTDD : "+smbTDD);
                     console.log("-------------");
                     }
-                }
+
 
 
     //console.error(insulinPeakTime, insulinPeak5m, profile.insulinPeakTime, profile.curve);
@@ -1454,7 +1459,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             microBolus = Math.floor(microBolus*roundSMBTo)/roundSMBTo;
             //var microBolus = Math.floor(Math.min(insulinReq * insulinReqPCT,maxBolusTT)*roundSMBTo)/roundSMBTo;
             // calculate a long enough zero temp to eventually correct back up to target
-    if ( meal_data.TDDPUMP ){
+
             if (iTime < iTimeProfile ){
             console.log("--- if iTime < "+iTimeProfile+" -----");
                             console.log("TriggerPredSMB : "+TriggerPredSMB);
@@ -1471,7 +1476,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                             console.log("microBolus : "+microBolus);
         console.log("------------------------------");
         }
-    }
+
 
 
             var smbTarget = target_bg;
