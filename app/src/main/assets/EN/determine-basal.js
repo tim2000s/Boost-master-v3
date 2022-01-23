@@ -348,6 +348,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TIRInRange = round(TIR1InRange,2);
     var TIRAbove = Math.min((TIR1Above > TIR3Above ? round(TIR1Above/TIR3Above,2) : 1),profile.autosens_max);
     TIRAbove = (isNaN(TIRAbove) ? 1 : TIRAbove);
+    enlog += "* TIR Stats:\n";
+    enlog += "TIR7LIH: " + TIR7Below + "/" + TIR7InRange + "/" + TIR7Above+"\n";
+    enlog += "TIR3LIH: " + TIR3Below + "/" + TIR3InRange + "/" + TIR3Above+"\n";
+    enlog += "TIR1LIH: " + TIR1Below + "/" + TIR1InRange + "/" + TIR1Above+"\n";
     enlog += "TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove+"\n";
     enlog += "* iTime:\n";
     // iTime is minutes since last manual bolus correction or carbs
