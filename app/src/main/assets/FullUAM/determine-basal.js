@@ -339,14 +339,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var C1 = bg + glucose_status.delta;
         var C2 = profile.min_bg + profile.smb_delivery_ratio_bg_range;
-        /*if (meal_data.lastBolusNormalUnits <= iTime_Start_Bolus && iTime < iTimeProfile && C1 <= C2){
+        if (meal_data.lastBolusNormalUnits <= iTime_Start_Bolus && iTime < iTimeProfile && C1 <= C2){
         iTime = iTimeProfile + 1 ;
         enlog += "A manual bolus was done, but iTime is disable, iob < iTime_start_bolus : "+iob_data.iob+"<"+iTime_Start_Bolus+"\n";
-        }*/
-        if (meal_data.lastBolusNormalUnits >= iTime_Start_Bolus){
+        }
+        /*if (meal_data.lastBolusNormalUnits >= iTime_Start_Bolus){
         var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         enlog += "iTime is running : "+iTime+" because manual bolus ("+meal_data.lastBolusNormalUnits+") >= iTime_Starting_Bolus ("+iTime_Start_Bolus+")\n";
-        }
+        }*/
+        enlog += "iTime :"+iTime+"\n";
+        enlog +="lastBolusnormalUnits : "+meal_data.lastBolusNormalUnits+"\n";
         enlog += "C1 = "+C1+" and C2 = "+C2+"\n";
 
 
