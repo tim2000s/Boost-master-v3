@@ -851,7 +851,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // at night use sens unless using eatingnow override
         if (!eatingnow) sens_future = sens;
     } else {
-        sens_future = sens_normalTarget / (eventualBG/normalTarget); // safety * EXPERIMENT *
+        sens_future = sens_normalTarget / (Math.max(eventualBG,40)/normalTarget); // safety * EXPERIMENT *
         sens_future = Math.max(sens,sens_future);
     }
 
