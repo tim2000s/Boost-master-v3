@@ -227,6 +227,33 @@
                     validate:testType="floatNumericRange" />
             </PreferenceCategory>
 
+        <PreferenceCategory
+                android:title="UAMBoost"
+                android:summary="All settings related to BG rises without COB."
+                app:initialExpandedChildrenCount="0">
+
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="0"
+                    android:inputType="numberDecimal"
+                    android:key="@string/key_eatingnow_uamboost_bolus_scale"
+                    android:title="UAMBoost Bolus Scale"
+                    android:dialogMessage="Scale Bolus for UAMBoost for sudden BGL rises.\nThis setting will scale the multiply the initial UAMBoost bolus by this amount.\n0 will not boost"
+                    validate:floatmaxNumber="3.0"
+                    validate:floatminNumber="0"
+                    validate:testType="floatNumericRange"/>
+
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="0"
+                    android:inputType="numberDecimal"
+                    android:key="@string/key_eatingnow_uamboost_maxbolus"
+                    android:title="UAMBoost maxBolus"
+                    android:dialogMessage="UAMBoost maxBolus for all BGL rises without COB.\n0 will use existing maxBolus limit"
+                    validate:floatmaxNumber="5"
+                    validate:floatminNumber="0"
+                    validate:testType="floatNumericRange"/>
+
+            </PreferenceCategory>
+
 
         <PreferenceCategory
             android:title="COBBoost"
@@ -262,32 +289,6 @@
         </PreferenceCategory>
 
         <PreferenceCategory
-            android:title="UAMBoost"
-            app:initialExpandedChildrenCount="0">
-
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0"
-                android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_uamboost_bolus_scale"
-                android:title="UAMBoost Bolus Scale"
-                android:dialogMessage="Scale Bolus for UAMBoost for sudden BGL rises.\nThis setting will scale the multiply the initial UAMBoost bolus by this amount.\n0 will not boost"
-                validate:floatmaxNumber="3.0"
-                validate:floatminNumber="0"
-                validate:testType="floatNumericRange"/>
-
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0"
-                android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_uamboost_maxbolus"
-                android:title="UAMBoost maxBolus"
-                android:dialogMessage="UAMBoost maxBolus for BGL rises.\n0 will use existing maxBolus limit"
-                validate:floatmaxNumber="5"
-                validate:floatminNumber="0"
-                validate:testType="floatNumericRange"/>
-
-        </PreferenceCategory>
-
-        <PreferenceCategory
             android:title="ISFBoost"
             app:initialExpandedChildrenCount="0">
 
@@ -296,7 +297,7 @@
                 android:inputType="numberDecimal"
                 android:key="@string/key_eatingnow_isfboost_maxbolus"
                 android:title="ISFBoost maxBolus"
-                android:dialogMessage="ISFBoost maxBolus for BGL rises.\n0 will use existing maxBolus limit"
+                android:dialogMessage="ISFBoost maxBolus for all BGL rises with COB outside of the COBBoost Window.\n0 will use existing maxBolus limit"
                 validate:floatmaxNumber="5"
                 validate:floatminNumber="0"
                 validate:testType="floatNumericRange"/>
