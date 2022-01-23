@@ -865,7 +865,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
 
     // disable sens_future with a TT or when feature not enabled
-    if (!eatingnow || !profile.ISFBoost_enabled) sens_future = sens;
+    if (!eatingnow) sens_future = sens;
     sens_future = round(sens_future,1);
 
     minIOBPredBG = Math.max(39,minIOBPredBG);
