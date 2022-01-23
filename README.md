@@ -35,10 +35,9 @@ If within the COBBoost Window the calculated insulinReq may be delivered via a l
 Once the time window has elapsed COBBoost maxBolus is no longer used.
 
 UAMBoost:
-This is based upon Boost and is used when there is a sudden increase in BGL.
-When the delta is >=9 (0.5 mmol) or when the last COB entry was longer than the iTime window ago (eg 2h).
-Essentially UAMBoost will only operate when there are no COB or COB within close proximity.
-UAMBoost like the Boost plugin will use the TDD as a reference point for initial insulin dose that can be scaled within preferences.
+This is based upon Boost and is used when there is a sudden increase in BGL of >=9 (0.5 mmol)
+UAMBoost will only operate when there are no COB.
+TDD is used as a reference point for initial insulin dose that can be scaled within preferences.
 
 ISFBoost:
 All other predictions based on future eventualBG will use ISFBoost.
@@ -80,8 +79,6 @@ UAMBoost:
     UAMBoost Bolus Scale:   Multiply the initial UAMBoost bolus by this amount. 0 will disable UAMBoost.
 
     UAMBoost maxBolus:      maxBolus to use for UAMBoost.  0 will use maxSMBBasalMinutes or maxUAMSMBBasalMinutes.
-
-    COB Proximity:          UAMBoost will only operate when there are no COB or COB within close proximity. This setting will allow UAMBoost with COB is the COB entry was this more than this many minutes ago.
 
 ISFBoost:
     ISFBoost maxBolus:    maxBolus to use for ISFBoost. 0 will use maxSMBBasalMinutes or maxUAMSMBBasalMinutes.

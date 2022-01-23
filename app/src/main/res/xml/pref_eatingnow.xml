@@ -285,17 +285,6 @@
                 validate:floatminNumber="0"
                 validate:testType="floatNumericRange"/>
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="120"
-                android:digits="0123456789"
-                android:inputType="number"
-                android:key="@string/key_eatingnow_itimeminutes"
-                android:title="COB Proximity"
-                android:dialogMessage="UAMBoost does not usually operate with COB. This setting is the minutes since last COB entry that will allow UAMBoost."
-                validate:maxNumber="240"
-                validate:minNumber="30"
-                validate:testType="numericRange" />
-
         </PreferenceCategory>
 
         <PreferenceCategory

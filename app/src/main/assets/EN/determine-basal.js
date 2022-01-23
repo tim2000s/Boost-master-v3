@@ -353,13 +353,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     enlog += "TIR3LIH: " + TIR3Below + "/" + TIR3InRange + "/" + TIR3Above+"\n";
     enlog += "TIR1LIH: " + TIR1Below + "/" + TIR1InRange + "/" + TIR1Above+"\n";
     enlog += "TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove+"\n";
-    enlog += "* iTime:\n";
     // iTime is minutes since last manual bolus correction or carbs
     var iTime = (( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusNormalTime, meal_data.lastCarbTime)) / 60000);
-    var iTimeWindow = profile.iTimeWindow; // window for faster UAMBoost
-    enlog += "iTime:"+iTime+",iTimeWindow:"+iTimeWindow+"\n";
-    var iTimeOK = (iTime < iTimeWindow);
-    enlog += "iTimeOK:"+iTimeOK+"\n";
     // cTime could be used for bolusing based on recent COB with Ghost COB
     var cTime = (( new Date(systemTime).getTime() - meal_data.lastCarbTime) / 60000);
     // COBBoostOK is the when no SMB has been delivered since the COB entry
@@ -1304,10 +1299,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var UAMBoost_bolus_scale = profile.UAMBoost_Bolus_Scale;
                 // default is UAMBoost is NOT OK. Sensitive threshold is low normal is high
                 var UAMBoostOK = false, UAMBoost_threshold = 1.2;
-                // Recent manual bolus will allow faster UAMBoost response
-                //if (UAM_delta >= 5 && iTimeOK && meal_data.mealCOB==0 ) {
                 // try 9 delta for safer operation as slightly larger SMB needed on slower insulin
-                if (UAM_delta >= 9 && (meal_data.mealCOB==0 || cTime > iTimeWindow) ) {
+                if (UAM_delta >= 9 && (meal_data.mealCOB==0) ) {
                     UAMBoostOK = true;
                 }
 
