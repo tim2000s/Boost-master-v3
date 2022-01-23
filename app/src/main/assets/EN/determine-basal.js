@@ -1360,10 +1360,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
                 // ============== TIME RESTRICTIONS ==============
-                 // if we just had a loop iteration only allow TBR's
-                 if (minAgo > 1) {
+                 // if we just had a loop iteration only allow TBR's for UAMBoost
+                 if (minAgo > 1 && UAMBoosted) {
                      insulinReqPct = 0;
-                     UAMBoostReason ="; recent loop iteration: no SMB";
+                     UAMBoostReason ="; recent loop iteration: no UAMBoost";
                  }
 
                 if (eatingnowtimeOK) {
