@@ -283,7 +283,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
             mGlucoseStatus.put("delta", glucoseStatus.delta)
         }
         bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTime = bolus.timestamp }
-        bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTimeValue = bolus.amount }
+        //bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTimeValue = bolus.amount }
 
 
         mGlucoseStatus.put("short_avgdelta", glucoseStatus.shortAvgDelta)
@@ -295,13 +295,13 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.mealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation)
         this.mealData.put("lastBolusTime", mealData.lastBolusTime)
         this.mealData.put("lastBolusNormalTime", lastBolusNormalTime)
-        this.mealData.put("lastBolusNormalTimeValue",lastBolusNormalTimeValue)
+        //this.mealData.put("lastBolusNormalTimeValue",lastBolusNormalTimeValue)
         this.mealData.put("lastCarbTime", mealData.lastCarbTime)
 
         // get the last bolus time of a manual bolus for EN activation
         val getlastBolusNormal = repository.getLastBolusRecordOfTypeWrapped(Bolus.Type.NORMAL).blockingGet()
-        val lastBolusNormalTimeBis = if (getlastBolusNormal is ValueWrapper.Existing) getlastBolusNormal.value.timestamp else 0L
-        this.mealData.put("lastBolusNormalTimeBIS", lastBolusNormalTimeBis)
+        //val lastBolusNormalTimeBis = if (getlastBolusNormal is ValueWrapper.Existing) getlastBolusNormal.value.timestamp else 0L
+        //this.mealData.put("lastBolusNormalTimeBIS", lastBolusNormalTimeBis)
         val lastBolusNormalUnits = if (getlastBolusNormal is ValueWrapper.Existing) getlastBolusNormal.value.amount else 0L
         this.mealData.put("lastBolusNormalUnits", lastBolusNormalUnits)
 
