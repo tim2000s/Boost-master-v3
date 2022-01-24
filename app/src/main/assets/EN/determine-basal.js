@@ -399,7 +399,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     enlog +="Current sensitivity is " +sens_currentBG+" based on current bg\n";
     // use sens_currentBG as the sens_avg
     var sens_avg = sens_currentBG;
-    //var sens_avg = (sens_normalTarget+sens_TDD)/2;
+    //var sens_avg = (sens_normalTargetsens_normalTarget+sens_TDD)/2;
     enlog += "sens_avg:" + sens_avg+"\n";
 
     // Threshold for ISF Boost
@@ -1404,8 +1404,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
             durationReq = round(60*worstCaseInsulinReq / profile.current_basal);
 
-            // Nightmode TBR when below EatingNowBGThreshold with now resistance and no COB
-            if (!eatingnow && !eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0 && sensitivityRatio <=1)  {
+            // Nightmode TBR when below EatingNowBGThreshold with no resistance and no COB
+            if (!eatingnow && !eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0 && sensitivityRatio < 1.05)  {
             //if (!eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0)  {
                 //var maxBolus = round( profile.current_basal * 30 / 60 ,1);
                 microBolus = 0;
