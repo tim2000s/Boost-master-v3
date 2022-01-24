@@ -985,7 +985,7 @@ var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 
         console.log("------------------------------");
-                console.log(" AAPS-V3-RC3-AIMI V14 21/01/2022 ");
+                console.log(" AAPS-V3-RC3-AIMI V14 24/01/2022 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log(enlog);
@@ -1407,7 +1407,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var maxBolusTT = maxBolus;
             var roundSMBTo = 1 / profile.bolus_increment;
             var smb_ratio = determine_varSMBratio(profile, bg, target_bg);
-            var mealM = meal_data.carbs / 3;
+            var mealM = meal_data.lastCarbUnits / 3;
             //var mealIns = mealM / profile.carb_ratio;
             var mealIns = mealM / eRatio ;
 
