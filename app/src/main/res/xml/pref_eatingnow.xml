@@ -266,6 +266,18 @@
                 android:summary="Ignore COB after COBBoost window and rely on UAM predictions.\nWhen disabled COB predictions will be as normal." />
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="65"
+                android:enabled="true"
+                android:summary="Percentage of Insulin Required to be available for COBBoost SMB"
+                android:dialogMessage="Percentage of insulin required for COBBoost. This will overide the EN insulinReqPct in the COBBoost Window. Setting to 70 will make this 70%"
+                android:inputType="numberDecimal"
+                android:key="@string/key_eatingnow_cobinsulinreqpct"
+                android:title="COBBoost insulinReqPct"
+                validate:floatmaxNumber="100"
+                validate:floatminNumber="50"
+                validate:testType="floatNumericRange" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="0"
                 android:digits="0123456789"
                 android:inputType="number"

@@ -1149,6 +1149,7 @@
     <string name="key_eatingnow_iob">key_eatingnow_iob</string>
     <string name="key_eatingnow_bgthreshold">key_eatingnow_bgthreshold</string>
     <string name="key_use_ghostcob" translatable="false">key_use_ghostcob</string>
+    <string name="key_eatingnow_cobinsulinreqpct">key_eatingnow_cobinsulinreqpct</string>
     <string name="key_eatingnow_cobboostminutes" translatable="false">key_eatingnow_cobboostminutes</string>
     <string name="key_eatingnow_cobboost_maxbolus">key_eatingnow_cobboost_maxbolus</string>
     <string name="key_eatingnow_preboluspct">key_eatingnow_preboluspct</string>
