@@ -334,7 +334,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
 
 
-        var iTime_Start_Bolus = profile.iTime_Start_Bolus;
+         var iTime_Start_Bolus = profile.iTime_Start_Bolus;
         var iTimeProfile = profile.iTime;
         var LastManualBolus = meal_data.lastBolusNormalUnits;
         //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
