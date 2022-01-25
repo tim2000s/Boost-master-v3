@@ -845,10 +845,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // favour eventualBG more due to delta
             sens_future = sens_normalTarget / (((eventualBG * 0.25) + (bg * 0.75)) /normalTarget);
             // weighting to eventualBG in the COBBoost window as COBPredBG is trusted
-            if (COBBoostOK) sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
+            //if (COBBoostOK) sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
         }
-        // at night use sens unless using eatingnow override
-        if (!eatingnow) sens_future = sens;
+        // weighting to eventualBG in the COBBoost window as COBPredBG is trusted *EXPERIMENT FOR EARLIER BOLUSING OF ANY POSITIVE DELTA*
+        if (COBBoostOK) sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
     } else {
         sens_future = sens_normalTarget / (Math.max(eventualBG,40)/normalTarget); // safety * EXPERIMENT *
         sens_future = Math.max(sens,sens_future);
@@ -856,15 +856,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // if BG below threshold then take the max of the sens vars
     sens_future = (bg <= threshold ? Math.max(sens_normalTarget, sens_currentBG, sens_future) : sens_future);
+
     // limit sens_future to ISF_Max if not eating now
+    // at night or when en disabled use sens unless using eatingnow override
     if (!eatingnow) {
+        sens_future = sens;
         sens_future = Math.max(sens_future, ISF_Max);
         // set sens_future_max to true for reason asterisk
         sens_future_max = (sens_future == ISF_Max);
     }
-
-    // disable sens_future with a TT or when feature not enabled
-    if (!eatingnow) sens_future = sens;
     sens_future = round(sens_future,1);
 
     minIOBPredBG = Math.max(39,minIOBPredBG);
