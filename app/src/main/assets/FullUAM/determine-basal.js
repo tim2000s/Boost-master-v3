@@ -532,12 +532,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
         sensitivityRatio = round(sensitivityRatio,2);
         enlog +="Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
+        if (iTime < iTimeProfile){
         basal = profile.current_basal * sensitivityRatio;
         basal = round_basal(basal, profile);
+
         if (basal !== profile_current_basal) {
             enlog +="Adjusting basal from "+profile_current_basal+" to "+basal+";\n";
         } else {
             enlog +="Basal unchanged: "+basal+";\n";
+        }
         }
     }
 
