@@ -836,7 +836,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // Eventual BG based future sensitivity modified such that when delta is >= 0,
     // future-sens is calculated using 0.6 * eventual_bg and 0.4 * current bg, to reduce the risk of overdosing.
     // When Delta is -ve, eventual_bg alone is used.
-    var sens_future = sens, sens_future_max = false;
+    var sens_future = sens, sens_future_max = false, sens_predType = "UAM";
+    sens_predType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : sens_predType );
 
     if( glucose_status.delta > 0) {
         // for rises by default the current bg
@@ -845,10 +846,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // favour eventualBG more due to delta
             sens_future = sens_normalTarget / (((eventualBG * 0.25) + (bg * 0.75)) /normalTarget);
             // weighting to eventualBG for COB as COBPredBG is trusted more
-            if (meal_data.mealCOB > 0) sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
+            if (sens_predType == "COB") sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
         }
         // weighting to eventualBG in the COBBoost window as COBPredBG is trusted *EXPERIMENT FOR EARLIER BOLUSING OF ANY POSITIVE DELTA*
-        if (COBBoostOK) sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
+        if (COBBoostOK && sens_predType == "COB") sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
     } else {
         sens_future = sens_normalTarget / (Math.max(eventualBG,40)/normalTarget); // safety * EXPERIMENT *
         sens_future = Math.max(sens,sens_future);
@@ -970,7 +971,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + ", Exp Delta: " + expectedDelta + ", ISF: " + convert_bg(sens, profile) + (sens_future != sens ? "=" + convert_bg(sens_future, profile) + (sens_future_max ? "*" : "") : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + ", Exp Delta: " + expectedDelta + ", ISF: " + convert_bg(sens, profile) + (sens_future != sens ? "=" + convert_bg(sens_future, profile) +"("+sens_predType")" + (sens_future_max ? "*" : "") : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
 
     if (lastCOBpredBG > 0) {
         rT.reason += ", " + (ignoreCOB && !COBBoostOK ? "!" : "") + "COBpredBG " + convert_bg(lastCOBpredBG, profile);
@@ -1322,7 +1323,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 // For BG rises that dont meet the UAMBoost criteria using adjusted target_bg
                 if (!UAMBoosted && eventualBG > target_bg && insulinReq > 0) {
                      // set SMB limit for ISFBoost determine if UAM or COB maxBolus will be used
-                    EatingNowMaxSMB = (meal_data.mealCOB==0 ? profile.UAMBoost_maxBolus : profile.ISFBoost_maxBolus);
+                    EatingNowMaxSMB = (sens_predType == "COB" ? profile.ISFBoost_maxBolus : profile.UAMBoost_maxBolus);
                     EatingNowMaxSMB = ( EatingNowMaxSMB > 0 ? EatingNowMaxSMB : maxBolus );
                     // if COBBoostOK allow increase max SMB within the window
                     if (COBBoostOK) {
