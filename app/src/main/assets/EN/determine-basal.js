@@ -987,6 +987,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     rT.reason += ", TDD" + TDDReason + ": " + round(TDD, 2) + " ("+convert_bg(sens_TDD, profile)+")";
     rT.reason += ", TIR3v1:L" + TIR3Below + "/" + TIR1Below + "="+ TIRBelow + ",H" + TIR3Above+ "/" + TIR1Above + "=" + TIRAbove;
     rT.reason += ", EN: " + (eatingnow ? "Active" : "Inactive");
+    rT.reason += (!eatingnowMaxIOBOK ? " IOB" : "");
     rT.reason += (meal_data.mealCOB > 0  ? " COB" : "");
     rT.reason += (profile.temptargetSet && target_bg == normalTarget ? " TT" : "");
     rT.reason += "; ";
