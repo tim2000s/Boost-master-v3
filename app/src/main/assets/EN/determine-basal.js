@@ -844,8 +844,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (glucose_status.delta >=6) {
             // favour eventualBG more due to delta
             sens_future = sens_normalTarget / (((eventualBG * 0.25) + (bg * 0.75)) /normalTarget);
-            // weighting to eventualBG in the COBBoost window as COBPredBG is trusted
-            //if (COBBoostOK) sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
+            // weighting to eventualBG for COB as COBPredBG is trusted more
+            if (meal_data.mealCOB > 0) sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
         }
         // weighting to eventualBG in the COBBoost window as COBPredBG is trusted *EXPERIMENT FOR EARLIER BOLUSING OF ANY POSITIVE DELTA*
         if (COBBoostOK) sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
