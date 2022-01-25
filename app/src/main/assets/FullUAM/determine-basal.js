@@ -334,7 +334,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
 
 
-        var iTime_Start_Bolus = profile.iTime_Start_Bolus;
+         var iTime_Start_Bolus = profile.iTime_Start_Bolus;
         var iTimeProfile = profile.iTime;
         var LastManualBolus = meal_data.lastBolusNormalUnits;
         //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
@@ -487,7 +487,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
    }else*/ if (!profile.temptargetSet && HypoPredBG <= 125 && profile.sensitivity_raises_target && iTime > iTimeProfile ) {//&& glucose_status.delta <= 0
 
         var hypo_target = round(Math.min(200, min_bg + (EBG - min_bg)/3 ),0);
-       if (EBG <= 100 && HypoPredBG < 80) {
+       if (EBG <= 120 && HypoPredBG < 90) {
             hypo_target = 130;
             enlog +="target_bg from "+target_bg+" to "+hypo_target+" because EBG is lesser than 100 and HypoPredBG < 80 : "+EBG+"; \n";
         }else if (EBG60 <= 90 && EBG60 >0 && smbTDD === 1) {
