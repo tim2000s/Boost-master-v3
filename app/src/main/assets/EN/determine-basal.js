@@ -836,20 +836,23 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // Eventual BG based future sensitivity modified such that when delta is >= 0,
     // future-sens is calculated using 0.6 * eventual_bg and 0.4 * current bg, to reduce the risk of overdosing.
     // When Delta is -ve, eventual_bg alone is used.
-    var sens_future = sens, sens_future_max = false, sens_predType = "UAM";
+    var sens_future = sens, sens_future_max = false;
+    // categorize the eventualBG prediction type for more accurate weighting
+    var sens_predType = "?", sens_eBGweight = 0;
     sens_predType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : sens_predType );
+    sens_predType = (lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "UAM" : sens_predType );
+
 
     if( glucose_status.delta > 0) {
-        // for rises by default the current bg
-        sens_future = sens_normalTarget / (((eventualBG * 0.0) + (bg * 1)) /normalTarget);
+        // for rises by default sens_future will remain as the current bg ie. sens with eBGweight = 0
         if (glucose_status.delta >=6) {
-            // favour eventualBG more due to delta
-            sens_future = sens_normalTarget / (((eventualBG * 0.25) + (bg * 0.75)) /normalTarget);
-            // weighting to eventualBG for COB as COBPredBG is trusted more
-            if (sens_predType == "COB") sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
+            // favour eventualBG more due to delta based on the sens_predType using sens_eBGweight
+            sens_eBGweight = (sens_predType=="COB" ? 0.75 : sens_eBGweight);
+            sens_eBGweight = (sens_predType=="UAM" ? 0.25 : sens_eBGweight);
         }
-        // weighting to eventualBG in the COBBoost window as COBPredBG is trusted *EXPERIMENT FOR EARLIER BOLUSING OF ANY POSITIVE DELTA*
-        if (COBBoostOK && sens_predType == "COB") sens_future = sens_normalTarget / (((eventualBG * 0.75) + (bg * 0.25)) /normalTarget);
+        // allow any rise to use COB sens_eBGweight for COBBoostOK
+        sens_eBGweight = (COBBoostOK ? 0.75 : sens_eBGweight);
+        sens_future = sens_normalTarget / (((eventualBG * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
     } else {
         sens_future = sens_normalTarget / (Math.max(eventualBG,40)/normalTarget); // safety * EXPERIMENT *
         sens_future = Math.max(sens,sens_future);
@@ -971,7 +974,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + ", Exp Delta: " + expectedDelta + ", ISF: " + convert_bg(sens, profile) + (sens_future != sens ? "=" + convert_bg(sens_future, profile) +"("+sens_predType+")" + (sens_future_max ? "*" : "") : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + ", Exp Delta: " + expectedDelta + ", ISF: " + convert_bg(sens, profile) + (sens_future != sens ? "=" + convert_bg(sens_future, profile) +" ("+sens_predType+":"+sens_eBGweight+")" + (sens_future_max ? "*" : "") : "") + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
 
     if (lastCOBpredBG > 0) {
         rT.reason += ", " + (ignoreCOB && !COBBoostOK ? "!" : "") + "COBpredBG " + convert_bg(lastCOBpredBG, profile);
