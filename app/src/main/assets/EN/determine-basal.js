@@ -848,7 +848,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // favour eventualBG more due to delta based on the sens_predType using sens_eBGweight
         // scale sens_eBGweight based on delta with a max for each prediction type
         sens_eBGweight = (sens_predType=="COB" ? Math.min(glucose_status.delta*.15,0.75) : sens_eBGweight);
-        sens_eBGweight = (sens_predType=="UAM" ? Math.min(glucose_status.delta*.05,0.75) : sens_eBGweight);
+        sens_eBGweight = (sens_predType=="UAM" ? Math.min(glucose_status.delta*.05,0.35) : sens_eBGweight);
         // allow any rise to use COB sens_eBGweight for COBBoostOK
         sens_eBGweight = (COBBoostOK ? 0.75 : sens_eBGweight);
         sens_future = sens_normalTarget / (((eventualBG * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
