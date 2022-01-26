@@ -834,7 +834,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.error("UAM Impact:",uci,"mg/dL per 5m; UAM Duration:",UAMduration,"hours");
 
     // Eventual BG based future sensitivity modified such that when delta is >= 0,
-    // future-sens is calculated using 0.6 * eventual_bg and 0.4 * current bg, to reduce the risk of overdosing.
+    // future-sens is calculated using a percentage of eventual_bg (sens_eBGweight) with the rest as current bg, to reduce the risk of overdosing.
     // When Delta is -ve, eventual_bg alone is used.
     var sens_future = sens, sens_future_max = false;
     // categorize the eventualBG prediction type for more accurate weighting
@@ -845,11 +845,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     if( glucose_status.delta > 0) {
         // for rises by default sens_future will remain as the current bg ie. sens with eBGweight = 0
-        if (glucose_status.delta >=6) {
-            // favour eventualBG more due to delta based on the sens_predType using sens_eBGweight
-            sens_eBGweight = (sens_predType=="COB" ? 0.75 : sens_eBGweight);
-            sens_eBGweight = (sens_predType=="UAM" ? 0.35 : sens_eBGweight);
-        }
+        // favour eventualBG more due to delta based on the sens_predType using sens_eBGweight
+        // scale sens_eBGweight based on delta with a max for each prediction type
+        sens_eBGweight = (sens_predType=="COB" ? Math.min(glucose_status.delta*.15,0.75) : sens_eBGweight);
+        sens_eBGweight = (sens_predType=="UAM" ? Math.min(glucose_status.delta*.05,0.75) : sens_eBGweight);
         // allow any rise to use COB sens_eBGweight for COBBoostOK
         sens_eBGweight = (COBBoostOK ? 0.75 : sens_eBGweight);
         sens_future = sens_normalTarget / (((eventualBG * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
