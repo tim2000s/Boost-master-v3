@@ -1274,9 +1274,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("UAM Boost 1 value is "+uamBoost1+"; ");
                 var uamBoost2 = (glucose_status.delta / glucose_status.long_avgdelta);
                 var uamBoost2 = Math.abs(uamBoost2);
+                var report_delta = glucose_status.delta;
+                var report_ShortAvg = glucose_status.short_avgdelta;
                 console.error("UAM Boost 2 value is "+uamBoost2+"; ");
                 rT.reason += ("UAM Boost 1 value is "+uamBoost1+"; ");
                 rT.reason += ("UAM Boost 2 value is "+uamBoost2+"; ");
+                rT.reason += ("Delta is "+report_delta+"; ");
+                rT.reason += ("Short Avg Delta "+report_ShortAvg+"; ");
                 console.error("bg_adjust value is "+bg_adjust+"; ");
                 console.error("Delta value is "+glucose_status.delta+"; ");
                 console.error("InsulinDivisor value is "+insulinDivisor+"; ");
