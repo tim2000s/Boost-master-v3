@@ -833,35 +833,33 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // When Delta is -ve, eventual_bg alone is used.
     var sens_future = sens, sens_future_max = false;
     // categorize the eventualBG prediction type for more accurate weighting
-    var sens_predType = "?", sens_eBGweight = 0;
+    var sens_predType = "BGL", sens_eBGweight = 0;
     sens_predType = (lastUAMpredBG > 0 && eventualBG >= lastUAMpredBG ? "UAM" : sens_predType ); // UAM or any prediction > UAM is the default
     sens_predType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : sens_predType ); // if COB prediction is present and aligns use this
+    sens_predType = (bg > threshold && minDelta > -2 && minDelta < 2 && sens_predType == "UAM" ? "BGL" : sens_predType); // small delta use current bg
 
     var minDelta = Math.min(glucose_status.delta, glucose_status.short_avgdelta);
     var minAvgDelta = Math.min(glucose_status.short_avgdelta, glucose_status.long_avgdelta);
     var maxDelta = Math.max(glucose_status.delta, glucose_status.short_avgdelta, glucose_status.long_avgdelta);
 
-    if( glucose_status.delta > 0) {
+    if (glucose_status.delta >=0 && eatingnow) {
         // for rises by default sens_future will remain as the current bg ie. sens with eBGweight = 0
         // favour eventualBG more due to delta based on the sens_predType using sens_eBGweight
         // scale sens_eBGweight based on delta with a max for each prediction type
-        sens_eBGweight = (sens_predType=="COB" ? Math.min(glucose_status.delta*.15,0.75) : sens_eBGweight); // 15% increments max 75%
         sens_eBGweight = (sens_predType=="UAM" ? Math.min((glucose_status.delta*.03)+0.10,0.55) : sens_eBGweight); // 3% increments max 55% starting at 10%
-        // eventualBG lower than current BG
-        sens_eBGweight = (eventualBG < bg ? 1 : sens_eBGweight);
-        // small delta use current bg
-        sens_eBGweight = (bg > threshold && minDelta > -2 && minDelta < 2 ? 0 : sens_eBGweight);
+        sens_eBGweight = (sens_predType=="COB" ? Math.min(glucose_status.delta*.15,0.75) : sens_eBGweight); // 15% increments max 75%
+        sens_eBGweight = (sens_predType=="BGL" ? 0 : sens_eBGweight); // small delta uses current bg
+        // eventualBG lower than current BG * NEGATES SMALL DELTA CONDITION *
+        // sens_eBGweight = (eventualBG < bg ? 1 : sens_eBGweight);
         // allow any rise to use COB sens_eBGweight for COBBoostOK
         sens_eBGweight = (COBBoostOK ? 0.75 : sens_eBGweight); // max out at 75% for the COBBoost window
-        sens_future = sens_normalTarget / (((eventualBG * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
-    } else {
+        sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
+    } else if (glucose_status.delta < 0 && eatingnow){
         sens_eBGweight = 1; // usually -ve delta is lower eventualBG so trust it
-        // small delta use current bg
-        sens_eBGweight = (bg > threshold && minDelta > -2 && minDelta < 2 ? 0 : sens_eBGweight);
+        sens_eBGweight = (sens_predType=="BGL" ? 0 : sens_eBGweight); // small delta uses current bg
         sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
         sens_future = Math.max(sens,sens_future);
     }
-
 
     // if BG below threshold then take the max of the sens vars
     sens_future = (bg <= threshold ? Math.max(sens_normalTarget, sens_currentBG, sens_future) : sens_future);
@@ -869,6 +867,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // limit sens_future to ISF_Max if not eating now
     // at night or when en disabled use sens unless using eatingnow override
     if (!eatingnow) {
+        // Current bg at night
+        sens_predType = "BGL";
+        sens_eBGweight = 0;
         sens_future = sens;
         sens_future = Math.max(sens_future, ISF_Max);
         // set sens_future_max to true for reason asterisk
