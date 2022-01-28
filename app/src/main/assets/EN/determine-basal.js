@@ -858,7 +858,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sens_eBGweight = 1; // usually -ve delta is lower eventualBG so trust it
         sens_eBGweight = (sens_predType=="BGL" ? 0 : sens_eBGweight); // small delta uses current bg
         sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
-        sens_future = Math.max(sens,sens_future);
+        sens_future = Math.max(sens,sens_future); // even with COB this will limit ISF as we are dropping
     }
 
     // if BG below threshold then take the max of the sens vars
