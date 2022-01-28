@@ -566,6 +566,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             , 'sensitivityRatio' : sensitivityRatio // autosens ratio (fraction of normal basal)
             , 'Total Daily Dose Pump' : tdd_pump // pump based tdd
             , 'Total Daily Dose 7-day Ave' : tdd7 //7 day average tdd
+            , 'Boost v3.1'
         };
 
     // generate predicted future BGs based on IOB, COB, and current absorption rate
