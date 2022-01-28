@@ -393,14 +393,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var sens_TDD = round((277700 / (TDD * normalTarget)),1);
     sens_TDD = (sens_TDD > sens*3 ? sens : sens_TDD); // fresh install of v3
     enlog += "sens_TDD:" + sens_TDD+"\n";
-    // set sens_currentBG using profile
-    var sens_currentBG = sens_normalTarget/(bg/normalTarget);
+    // set sens_currentBG using profile sens for the current target_bg allowing a low TT to scale more
+    var sens_currentBG = sens_normalTarget/(bg/target_bg);
     sens_currentBG = round(sens_currentBG,1);
     enlog +="Current sensitivity is " +sens_currentBG+" based on current bg\n";
-    // use sens_currentBG as the sens_avg
-    var sens_avg = sens_currentBG;
-    //var sens_avg = (sens_normalTargetsens_normalTarget+sens_TDD)/2;
-    enlog += "sens_avg:" + sens_avg+"\n";
 
     // Threshold for ISF Boost
     var EatingNowBGThreshold = profile.EatingNowBGThreshold;
@@ -410,10 +406,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     enlog += "ISF_Max:"+ISF_Max+"\n";
 
     // use normal sens when EN not active at night or TT not normalTarget
-    sens = (eatingnow ? sens_avg : sens_normalTarget);
-    // at night with SR use the sens_avg
-    //sens = (!eatingnow && !eatingnowtimeOK && sensitivityRatio > 1 ? sens_avg : sens);
-    sens = (!eatingnow && !eatingnowtimeOK ? sens_avg : sens); // at night use sens_currentBG without SR
+    sens = (eatingnow ? sens_currentBG : sens_normalTarget);
+    // at night with SR use the sens_currentBG
+    sens = (!eatingnow && !eatingnowtimeOK ? sens_currentBG : sens); // at night use sens_currentBG without SR
     enlog += "sens:"+sens+"\n";
 
     // **********************************************************************************************
