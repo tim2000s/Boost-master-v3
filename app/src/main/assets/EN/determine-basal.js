@@ -839,8 +839,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var sens_future = sens, sens_future_max = false;
     // categorize the eventualBG prediction type for more accurate weighting
     var sens_predType = "?", sens_eBGweight = 0;
-    sens_predType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : sens_predType );
-    sens_predType = (lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "UAM" : sens_predType );
+    sens_predType = (lastUAMpredBG > 0 && eventualBG >= lastUAMpredBG ? "UAM" : sens_predType ); // UAM or any prediction > UAM is the default
+    sens_predType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : sens_predType ); // if COB prediction is present and aligns use this
 
     if( glucose_status.delta > 0) {
         // for rises by default sens_future will remain as the current bg ie. sens with eBGweight = 0
