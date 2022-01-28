@@ -842,6 +842,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     sens_predType = (lastUAMpredBG > 0 && eventualBG >= lastUAMpredBG ? "UAM" : sens_predType ); // UAM or any prediction > UAM is the default
     sens_predType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : sens_predType ); // if COB prediction is present and aligns use this
 
+    var minDelta = Math.min(glucose_status.delta, glucose_status.short_avgdelta);
+    var minAvgDelta = Math.min(glucose_status.short_avgdelta, glucose_status.long_avgdelta);
+    var maxDelta = Math.max(glucose_status.delta, glucose_status.short_avgdelta, glucose_status.long_avgdelta);
+
     if( glucose_status.delta > 0) {
         // for rises by default sens_future will remain as the current bg ie. sens with eBGweight = 0
         // favour eventualBG more due to delta based on the sens_predType using sens_eBGweight
@@ -850,6 +854,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sens_eBGweight = (sens_predType=="UAM" ? Math.min((glucose_status.delta*.03)+0.10,0.55) : sens_eBGweight); // 3% increments max 55% starting at 10%
         // eventualBG lower than current BG
         sens_eBGweight = (eventualBG < bg ? 1 : sens_eBGweight);
+        // small delta use current bg
+        sens_eBGweight = (bg > threshold && minDelta > -2 && minDelta < 2 ? 0 : sens_eBGweight);
         // allow any rise to use COB sens_eBGweight for COBBoostOK
         sens_eBGweight = (COBBoostOK ? 0.75 : sens_eBGweight); // max out at 75% for the COBBoost window
         sens_future = sens_normalTarget / (((eventualBG * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
@@ -858,6 +864,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sens_future = sens_normalTarget / (Math.max(eventualBG,40)/normalTarget); // safety * EXPERIMENT *
         sens_future = Math.max(sens,sens_future);
     }
+
 
     // if BG below threshold then take the max of the sens vars
     sens_future = (bg <= threshold ? Math.max(sens_normalTarget, sens_currentBG, sens_future) : sens_future);
