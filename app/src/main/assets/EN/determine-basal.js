@@ -855,8 +855,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sens_eBGweight = (COBBoostOK ? 0.75 : sens_eBGweight); // max out at 75% for the COBBoost window
         sens_future = sens_normalTarget / (((eventualBG * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
     } else {
-        sens_eBGweight = 1; // only used for reason
-        sens_future = sens_normalTarget / (Math.max(eventualBG,40)/normalTarget); // safety * EXPERIMENT *
+        sens_eBGweight = 1; // usually -ve delta is lower eventualBG so trust it
+        // small delta use current bg
+        sens_eBGweight = (bg > threshold && minDelta > -2 && minDelta < 2 ? 0 : sens_eBGweight);
+        sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
         sens_future = Math.max(sens,sens_future);
     }
 
