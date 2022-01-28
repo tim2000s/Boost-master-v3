@@ -1308,7 +1308,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 //cARB HANDLING INSULIN UPTICK CODE.
                 //With COB, allow a large initial bolus
-                /* if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 15  ){
+                if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 15  ){
                     //var cob_boost_max = Math.max((( COB / CR ) / insulinReqPCT),boost_max);
                     rT.reason += "boost_max due to COB = " + insulinReq + "; ";
                     rT.reason += "Last carb age is: " + lastCarbAge + "; ";
@@ -1337,9 +1337,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,cob_boost_max)*roundSMBTo)/roundSMBTo;
                     console.error("Insulin required % ("+((1/insulinReqPCT) * 100)+"%) applied.");
                  }
-                 //End of Carb handling uptick code.*/
+                 //End of Carb handling uptick code.
                  //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
-                 if (glucose_status.delta >= 5 && glucose_status.short_avgdelta >= 3 && uamBoost1 > 1.2 && uamBoost2 > 2 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 5 && eventualBG > target_bg && bg > 80 && insulinReq > 0) {
+                 else if (glucose_status.delta >= 5 && glucose_status.short_avgdelta >= 3 &&
+                 uamBoost1 > 1.2 && uamBoost2 > 2 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 5 && eventualBG > target_bg && bg > 80 && insulinReq > 0) {
                      console.error("Profile Boost Scale value is "+boost_scale+": ");
                      //console.error("Automated Boost Scale value is "+scaleSMB+": ");
                      //document the pre-boost insulin required recommendation
