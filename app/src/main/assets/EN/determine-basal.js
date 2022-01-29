@@ -343,16 +343,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TIR3Below = meal_data.TIR3Below, TIR3InRange = meal_data.TIR3InRange, TIR3Above = meal_data.TIR3Above;
     var TIR1Below = meal_data.TIR1Below, TIR1InRange = meal_data.TIR1InRange, TIR1Above = meal_data.TIR1Above;
     // pct difference may be able to use like AS
-    var TIRBelow = Math.max((TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 1),profile.autosens_min);
-    TIRBelow = (isNaN(TIRBelow) ? 1 : TIRBelow);
-    var TIRInRange = round(TIR1InRange,2);
-    var TIRAbove = Math.min((TIR1Above > TIR3Above ? round(TIR1Above/TIR3Above,2) : 1),profile.autosens_max);
-    TIRAbove = (isNaN(TIRAbove) ? 1 : TIRAbove);
+    //var TIRBelow = Math.max((TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 1),profile.autosens_min);
+    //TIRBelow = (isNaN(TIRBelow) ? 1 : TIRBelow);
+    //var TIRInRange = round(TIR1InRange,2);
+    //var TIRAbove = Math.min((TIR1Above > TIR3Above ? round(TIR1Above/TIR3Above,2) : 1),profile.autosens_max);
+    //TIRAbove = (isNaN(TIRAbove) ? 1 : TIRAbove);
     enlog += "* TIR Stats:\n";
     enlog += "TIR7LIH: " + TIR7Below + "/" + TIR7InRange + "/" + TIR7Above+"\n";
     enlog += "TIR3LIH: " + TIR3Below + "/" + TIR3InRange + "/" + TIR3Above+"\n";
     enlog += "TIR1LIH: " + TIR1Below + "/" + TIR1InRange + "/" + TIR1Above+"\n";
-    enlog += "TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove+"\n";
+    //enlog += "TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove+"\n";
     // iTime is minutes since last manual bolus correction or carbs
     var iTime = (( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusNormalTime, meal_data.lastCarbTime)) / 60000);
     // cTime could be used for bolusing based on recent COB with Ghost COB
@@ -996,7 +996,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // extra reason text
     rT.reason += ", SR: " + sensitivityRatio;
     rT.reason += ", TDD" + TDDReason + ": " + round(TDD, 2) + " ("+convert_bg(sens_TDD, profile)+")";
-    rT.reason += ", TIR3v1:L" + TIR3Below + "/" + TIR1Below + "="+ TIRBelow + ",H" + TIR3Above+ "/" + TIR1Above + "=" + TIRAbove;
+    rT.reason += ", TIR3v1:L" + TIR3Below + "/" + TIR1Below + ",H" + TIR3Above+ "/" + TIR1Above;
     rT.reason += ", EN: " + (eatingnow ? "Active" : "Inactive");
     rT.reason += (!eatingnowMaxIOBOK ? " IOB" : "");
     rT.reason += (meal_data.mealCOB > 0  ? " COB" : "");
