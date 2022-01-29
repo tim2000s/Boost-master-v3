@@ -851,14 +851,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sens_eBGweight = (sens_predType=="BGL" ? 0 : sens_eBGweight); // small delta uses current bg
         // eventualBG lower than current BG * NEGATES SMALL DELTA CONDITION *
         // sens_eBGweight = (eventualBG < bg ? 1 : sens_eBGweight);
-        // allow any rise to use COB sens_eBGweight for COBBoostOK
-        sens_eBGweight = (COBBoostOK ? 0.75 : sens_eBGweight); // max out at 75% for the COBBoost window
         sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
     } else if (glucose_status.delta < 0 && eatingnow){
-        sens_eBGweight = 1; // usually -ve delta is lower eventualBG so trust it
+        sens_eBGweight = 1; // usually -ve delta is lower eventualBG so trust it unless COB
         sens_eBGweight = (sens_predType=="BGL" ? 0 : sens_eBGweight); // small delta uses current bg
         sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
-        sens_future = Math.max(sens,sens_future); // even with COB this will limit ISF as we are dropping
+        sens_future = Math.max(sens,sens_future); // use maximum ISF as we are dropping
+    }
+
+    // Overrides for COBBoost window regardless of delta for faster delivery
+    if (COBBoostOK) {
+        // allow any delta to use COB sens_eBGweight for COBBoostOK
+        sens_eBGweight = 0.75; // max out at 75% immediately for the COBBoost window
+        sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
     }
 
     // if BG below threshold then take the max of the sens vars
