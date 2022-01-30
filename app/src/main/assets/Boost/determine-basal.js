@@ -392,7 +392,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var PredAnalise = HyperPredBGTest - HyperPredBGTest2 - HyperPredBGTest3;
     var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
 
-    var csf = profile.sens / profile.carb_ratio ;
+    var csf = sens / profile.carb_ratio ;
 
     var HypoPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
 
@@ -1266,22 +1266,33 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 //console.error("bg_adjust value is "+bg_adjust+"; ");
                 var insulinDivisor = insulinReqPCT - Math.min((insulinPCTsubtract * bg_adjust),insulinPCTsubtract);
                 console.error("Insulin Divisor is:"+insulinDivisor+"; ");
+                console.error("            ");
+                console.error("Version: Boost v3.1.1; ");
+                console.error("            ");
                 console.error("Value is "+((1/insulinDivisor) * 100)+"% of insulin required; ");
                 console.error("insulinRequired is: "+insulinReq+"; ");
+                console.error("            ");
                 //Set boost factors to check whether it's appropriate to use a hardcoded bolus
                 var uamBoost1 = (glucose_status.delta / glucose_status.short_avgdelta);
                 console.error("UAM Boost 1 value is "+uamBoost1+"; ");
                 var uamBoost2 = (glucose_status.delta / glucose_status.long_avgdelta);
                 var uamBoost2 = Math.abs(uamBoost2);
+                var report_delta = glucose_status.delta;
+                var report_ShortAvg = glucose_status.short_avgdelta;
                 console.error("UAM Boost 2 value is "+uamBoost2+"; ");
                 rT.reason += ("UAM Boost 1 value is "+uamBoost1+"; ");
                 rT.reason += ("UAM Boost 2 value is "+uamBoost2+"; ");
+                rT.reason += ("Delta is "+report_delta+"; ");
+                rT.reason += ("Short Avg Delta "+report_ShortAvg+"; ");
+                console.error("            ");
                 console.error("bg_adjust value is "+bg_adjust+"; ");
                 console.error("Delta value is "+glucose_status.delta+"; ");
                 console.error("InsulinDivisor value is "+insulinDivisor+"; ");
+                console.error("            ");
 
                 var boostMaxIOB = profile.boost_maxIOB;
                 console.error("Max IOB from automated boluses = "+boostMaxIOB+"; ");
+                console.error("            ");
 
                 var now1 = new Date().getHours();
 
@@ -1294,7 +1305,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var boost_start = profile.boost_start;
                 var boost_end = profile.boost_end;
                 var boost_max = profile.boost_bolus;
+                console.error("            ");
                 console.error("Max automated bolus is "+boost_max+"; ");
+                console.error("            ");
 
                 var boost_scale = profile.boost_scale;
                 //var boostInsulinReq = ((TDD * 0.4) / 24 );
@@ -1305,10 +1318,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 console.error("Boost start time is "+(boost_start)+"hrs and boost end time is "+(boost_end)+"hrs; ");
                 console.error("Base boost insulin is "+boostInsulinReq+" iu; ");
+                console.error("            ");
 
                 //cARB HANDLING INSULIN UPTICK CODE.
                 //With COB, allow a large initial bolus
-                /* if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 15  ){
+                if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 15  ){
                     //var cob_boost_max = Math.max((( COB / CR ) / insulinReqPCT),boost_max);
                     rT.reason += "boost_max due to COB = " + insulinReq + "; ";
                     rT.reason += "Last carb age is: " + lastCarbAge + "; ";
@@ -1337,9 +1351,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,cob_boost_max)*roundSMBTo)/roundSMBTo;
                     console.error("Insulin required % ("+((1/insulinReqPCT) * 100)+"%) applied.");
                  }
-                 //End of Carb handling uptick code.*/
+                 //End of Carb handling uptick code.
                  //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
-                 if (COB = 0 && glucose_status.delta >= 5 && glucose_status.short_avgdelta >= 3 && uamBoost1 > 1.2 && uamBoost2 > 2 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 5 && eventualBG > target_bg && bg > 80 && insulinReq > 0) {
+                 else if (glucose_status.delta >= 5 && glucose_status.short_avgdelta >= 3 &&
+                 uamBoost1 > 1.2 && uamBoost2 > 2 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 5 && eventualBG > target_bg && bg > 80 && insulinReq > 0) {
                      console.error("Profile Boost Scale value is "+boost_scale+": ");
                      //console.error("Automated Boost Scale value is "+scaleSMB+": ");
                      //document the pre-boost insulin required recommendation
