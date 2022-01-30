@@ -395,6 +395,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     enlog += "sens_TDD:" + sens_TDD+"\n";
     // set sens_currentBG using profile sens for the current target_bg allowing a low TT to scale more
     var sens_currentBG = sens_normalTarget/(bg/target_bg);
+    // in the COBBoost window allow normal ISF as minimum
+    sens_currentBG = (COBBoostOK ? Math.min(sens_currentBG,sens_normalTarget) : sens_currentBG);
     sens_currentBG = round(sens_currentBG,1);
     enlog +="Current sensitivity is " +sens_currentBG+" based on current bg\n";
 
