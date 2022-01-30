@@ -340,7 +340,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var lastbolusAge = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var C1 = bg + glucose_status.delta;
-        var C2 = profile.min_bg + profile.smb_delivery_ratio_bg_range;
+        var C2 = profile.min_bg * 1.618;
+        var AIMI_UAM = profile.enable_AIMI_UAM;
         /*if (meal_data.lastBolusNormalUnits <= iTime_Start_Bolus && iTime < iTimeProfile && C1 <= C2){
         iTime = iTimeProfile + 1 ;
         enlog += "A manual bolus was done, but iTime is disable, iob < iTime_start_bolus : "+iob_data.iob+"<"+iTime_Start_Bolus+"\n";
@@ -524,6 +525,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             enlog +="target_bg from "+target_bg+" to "+hyper_target+" because HyperPredBG > 180 : "+HyperPredBG+" ;\n";
         }
         target_bg = hyper_target;
+        C1 = bg + (glucose_status.delta*1.618);
+        C2 = target_bg * 1.618;
         halfBasalTarget = 160;
         var c = halfBasalTarget - normalTarget;
         sensitivityRatio = c/(c+target_bg-normalTarget);
@@ -1414,6 +1417,8 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             //var mealIns = mealM / profile.carb_ratio;
             var mealIns = mealM / eRatio ;
             var carbslimitsmb = meal_data.lastCarbUnits / profile.carb_ratio;
+            var limitIOB = (bg * 1.618) / sens;
+            var TrigPredAIMI =  (TriggerPredSMB_future_sens_60 + TriggerPredSMB_future_sens_35) / 1.618;
 
             if (meal_data.lastCarbUnits < 30 && meal_data.lastCarbUnits > 0 && iob_data.iob < carbslimitsmb){
                 maxBolusTT = round(smb_max_range * profile.current_basal * (profile.maxSMBBasalMinutes + glucose_status.delta + glucose_status.short_avgdelta) / 60 ,1);
@@ -1459,10 +1464,18 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 console.log("iTime_MaxBolus_minutes / 2 : "+(profile.iTime_MaxBolus_minutes / 2)+ "maxBolus : "+maxBolusTT);
                 var microBolus = Math.min(insulinReq*smb_ratio*insulinReqPCT, maxBolusTT);*/
 
-            }else if(smbTDD === 1 || profile.temptargetSet && target_bg > normalTarget && iTime < iTimeProfile ){
+            }else if (smbTDD === 1 || profile.temptargetSet && target_bg > normalTarget && iTime < iTimeProfile ){
 
                 insulinReqPCT = 0.8;
                 var microBolus = Math.min(insulinReq*insulinReqPCT, maxBolusTT);
+
+            }else if (AIMI_UAM && ! profile.temptargetSet && ! meal_data.carbs && TrigPredAIMI > C2 && glucose_status.delta > 5 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (smb_ratio*limitIOB)){
+
+                              insulinReq = round((((glucose_status.delta * 3.1416) + (bg*0.52) ) / sens) * smb_ratio,2);
+                              //maxBolusTT = round(((smb_max_range * profile.current_basal * profile.maxUAMSMBBasalMinutes * 1.618)+(glucose_status.delta * 1.618) / 60) *(insulinReq/1.618) ,1);
+
+                              var microBolus = insulinReq;
+                              console.log("***FullUAM*** InsulinReq("+insulinReq+"), limitIOB("+limitIOB+"), smb_ratio("+smb_ratio+"), TrigPredAIMI("+TrigPredAIMI+")\n");
 
             }else{
 
@@ -1528,6 +1541,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
                 // allow SMBIntervals between 1 and 10 minutes
                 SMBInterval = Math.min(10,Math.max(1,profile.SMBInterval));
             }
+            if (AIMI_UAM && ! profile.temptargetSet && ! meal_data.carbs && iTime > iTimeProfile && iob_data > 0.5 * max_iob){SMBInterval = 10;}
             var nextBolusMins = round(SMBInterval-lastBolusAge,0);
             var nextBolusSeconds = round((SMBInterval - lastBolusAge) * 60, 0) % 60;
             //console.error(naive_eventualBG, insulinReq, worstCaseInsulinReq, durationReq);

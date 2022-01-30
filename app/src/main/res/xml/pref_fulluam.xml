@@ -83,6 +83,13 @@
             android:key="@string/key_openapsama_useautosens"
             android:title="@string/openapsama_useautosens" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="key_use_AimiUAM"
+            android:title="Use AIMI FULL UAM"
+            android:summary="Enable the Full UAM code to define the size of the SMB" />
+
+
 
         <SwitchPreference
             android:defaultValue="false"
