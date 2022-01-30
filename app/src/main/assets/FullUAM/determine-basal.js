@@ -342,23 +342,26 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var C1 = bg + glucose_status.delta;
         var C2 = profile.min_bg * 1.618;
         var AIMI_UAM = profile.enable_AIMI_UAM;
+        var AIMI_COB = profile.key_use_AIMI_COB;
+        var AIMI_UAM_U200 = profile.enable_AIMI_UAM_U200;
+        var AIMI_PBolus = profile.key_use_AIMI_PBolus;
         /*if (meal_data.lastBolusNormalUnits <= iTime_Start_Bolus && iTime < iTimeProfile && C1 <= C2){
         iTime = iTimeProfile + 1 ;
         enlog += "A manual bolus was done, but iTime is disable, iob < iTime_start_bolus : "+iob_data.iob+"<"+iTime_Start_Bolus+"\n";
         }*/
-        if (meal_data.lastCarbUnits > 30) {
+        if (AIMI_COB && !AIMI_PBolus && meal_data.lastCarbUnits > 30) {
 
                          var lastCarbAgebis = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime ) / 60000);
                          //console.error(meal_data.lastCarbTime, lastCarbAge);
                          var iTime = lastCarbAgebis;
                          enlog +="lastCarbAgebis =  iTime : "+iTime+"\n";
 
-        }else if (LastManualBolus >= iTime_Start_Bolus && lastbolusAge < iTimeProfile){
+        }else if (AIMI_PBolus && !AIMI_COB && LastManualBolus >= iTime_Start_Bolus && lastbolusAge < iTimeProfile){
 
                 var iTime = lastbolusAge;
                 enlog += "iTime is running : "+iTime+" because manual bolus ("+LastManualBolus+") >= iTime_Starting_Bolus ("+iTime_Start_Bolus+")\n";
 
-        }else if (LastManualBolus <= iTime_Start_Bolus && lastbolusAge < iTimeProfile){
+        }else if (AIMI_PBolus && !AIMI_COB && LastManualBolus <= iTime_Start_Bolus && lastbolusAge < iTimeProfile){
 
                          iTime = iTimeProfile + 1 ;
                          enlog += "A manual bolus was done, but iTime is disable, LastManualBolus < iTime_start_bolus : "+LastManualBolus+"<"+iTime_Start_Bolus+"\n";
@@ -970,7 +973,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.error("UAM Impact:",uci,"mg/dL per 5m; UAM Duration:",UAMduration,"hours");
     console.log("EventualBG is" +eventualBG+" ;");
     var TrigPredAIMI =  (TriggerPredSMB_future_sens_60 + TriggerPredSMB_future_sens_35) / 1.618;
-    var AIMI_ISF = profile.key_use_AimiUAM_ISF;
+    //var AIMI_ISF = profile.key_use_AimiUAM_ISF;
     if ( meal_data.TDDPUMP ){
         //var future_sens = ( 277700 / (TDD * eventualBG));
         //var future_sens = round(future_sens,1);
@@ -980,12 +983,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }else if (iTime < iTimeProfile){
         var future_sens = ( 277700 / (TDD * eventualBG));
         console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
-        }else if(AIMI_ISF && C1 > C2 && iTime > iTimeProfile){
+        }/*else if(AIMI_ISF && C1 > C2 && iTime > iTimeProfile){
 
             var future_sens = ( 277700 / (TDD * TrigPredAIMI));
             console.log("*****Future state sensitivity is " +future_sens+" based on TrigPredAIMI("+TrigPredAIMI+")\n");
 
-        }else{
+        }*/else{
         var future_sens = sens;
         }
     }else{
@@ -996,9 +999,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 var TriggerPredSMB_future_sens_60 = round( bg - (iob_data.iob * future_sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) + round( 45 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
-
+var TrigPredAIMI =  (TriggerPredSMB_future_sens_60 + TriggerPredSMB_future_sens_35) / 1.618;
+var AIMI_ISF = profile.key_use_AimiUAM_ISF;
+if(AIMI_ISF && AIMI_UAM && !AIMI_PBolus && !AIMI_COB && C1 > C2){
+var future_sens = ( 277700 / (TDD * TrigPredAIMI));
+console.log("*****Future state sensitivity is " +future_sens+" based on TrigPredAIMI("+TrigPredAIMI+")\n");
+}
         console.log("------------------------------");
-                console.log(" AAPS-V3-RC3-AIMI V14 27/01/2022 ");
+                console.log(" AAPS-V3-RC3-AIMI V15 30/01/2022 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log(enlog);
@@ -1425,9 +1433,7 @@ var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) +
             var mealIns = mealM / eRatio ;
             var carbslimitsmb = meal_data.lastCarbUnits / profile.carb_ratio;
             var limitIOB = (bg * 1.618) / sens;
-            var AIMI_COB = profile.key_use_AIMI_COB;
-            var AIMI_UAM_U200 = profile.enable_AIMI_UAM_U200;
-            var AIMI_PBolus = profile.key_use_AIMI_PBolus;
+
             //var TrigPredAIMI =  (TriggerPredSMB_future_sens_60 + TriggerPredSMB_future_sens_35) / 1.618;
 
             if (AIMI_COB && meal_data.lastCarbUnits < 30 && meal_data.lastCarbUnits > 0 && iob_data.iob < carbslimitsmb){
