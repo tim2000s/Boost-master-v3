@@ -260,8 +260,10 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.profile.put("smb_delivery_ratio_bg_range", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio_bg_range, "40")))
         this.profile.put("smb_max_range_extension", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_max_range_extension, "1.2")))
         this.profile.put("enable_AIMI_UAM", sp.getBoolean(R.string.key_use_AimiUAM, false))
-
-
+        this.profile.put("enable_AIMI_UAM_U200", sp.getBoolean(R.string.key_use_LuymjevU200, false))
+        this.profile.put("key_use_AimiUAM_ISF", sp.getBoolean(R.string.key_use_AimiUAM_ISF, false))
+        this.profile.put("key_use_AIMI_COB", sp.getBoolean(R.string.key_use_AIMI_COB, false))
+        this.profile.put("key_use_AIMI_PBolus", sp.getBoolean(R.string.key_use_AIMI_PBolus, false))
 
 
 //**********************************************************************************************************************************************

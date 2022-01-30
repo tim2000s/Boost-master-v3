@@ -85,17 +85,41 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:key="key_use_AimiUAM"
+            android:key="@string/key_use_AimiUAM"
             android:title="Use AIMI FULL UAM"
             android:summary="Enable the Full UAM code to define the size of the SMB" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_use_AIMI_COB"
+            android:title="Use AIMI with COB"
+            android:summary="Enable AIMI code with COB > 30" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_use_AIMI_PBolus"
+            android:title="Use AIMI with a Pre-Bolus"
+            android:summary="Enable AIMI code with a PBolus > iTime_Starting_Bolus" />
 
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_use_smb"
             android:summary="@string/enablesmb_summary"
             android:title="@string/enablesmb" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/key_use_AimiUAM"
+            android:key="@string/key_use_LuymjevU200"
+            android:summary="Only AIMI FULL UAM Mode, specify Luymjev U200"
+            android:title="AIMI UAM with Luymjev U200" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/key_use_AimiUAM"
+            android:key="@string/key_use_AimiUAM_ISF"
+            android:summary="Active with AIMI FULL UAM mode a super ISF"
+            android:title="AIMI UAM Super ISF" />
 
         <SwitchPreference
             android:defaultValue="false"
