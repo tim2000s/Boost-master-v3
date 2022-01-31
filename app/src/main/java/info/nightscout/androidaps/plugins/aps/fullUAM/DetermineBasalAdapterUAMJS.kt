@@ -66,7 +66,6 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
     private var currentTime: Long = 0
     private var saveCgmSource = false
     private var lastBolusNormalTime: Long = 0
-    private var lastBolusNormalTimeValue: Double = 0.0
     private val millsToThePast = T.hours(4).msecs()
     private var tddAIMI: TddCalculator? = null
     private var StatTIR: TirCalculator? = null
@@ -232,6 +231,7 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         //}
         this.profile.put("remainingCarbsCap", UAMDefaults.remainingCarbsCap)
         this.profile.put("enableUAM", uamAllowed)
+
         this.profile.put("A52_risk_enable", UAMDefaults.A52_risk_enable)
         val smbEnabled = sp.getBoolean(R.string.key_use_smb, false)
         this.profile.put("SMBInterval", sp.getInt(R.string.key_smbinterval, UAMDefaults.SMBInterval))
@@ -259,8 +259,14 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.profile.put("smb_delivery_ratio_max", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio_max, "0.9")))
         this.profile.put("smb_delivery_ratio_bg_range", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_delivery_ratio_bg_range, "40")))
         this.profile.put("smb_max_range_extension", SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_smb_max_range_extension, "1.2")))
-
-
+        this.profile.put("enable_AIMI_UAM", sp.getBoolean(R.string.key_use_AimiUAM, false))
+        this.profile.put("enable_AIMI_UAM_U200", sp.getBoolean(R.string.key_use_LuymjevU200, false))
+        this.profile.put("key_use_AimiUAM_ISF", sp.getBoolean(R.string.key_use_AimiUAM_ISF, false))
+        this.profile.put("key_use_AIMI_COB", sp.getBoolean(R.string.key_use_AIMI_COB, false))
+        this.profile.put("key_use_AIMI_PBolus", sp.getBoolean(R.string.key_use_AIMI_PBolus, false))
+        this.profile.put("key_use_AIMI_BreakFastLight", sp.getBoolean(R.string.key_use_AIMI_BreakFastLight, false))
+        this.profile.put("key_AIMI_BreakFastLight_timestart", SafeParse.stringToDouble(sp.getString(R.string.key_AIMI_BreakFastLight_timestart, "6")))
+        this.profile.put("key_AIMI_BreakFastLight_timeend", SafeParse.stringToDouble(sp.getString(R.string.key_AIMI_BreakFastLight_timeend, "10")))
 
 
 //**********************************************************************************************************************************************

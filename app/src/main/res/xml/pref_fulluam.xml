@@ -83,12 +83,72 @@
             android:key="@string/key_openapsama_useautosens"
             android:title="@string/openapsama_useautosens" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_use_AimiUAM"
+            android:title="Use AIMI FULL UAM"
+            android:summary="Enable the Full UAM code to define the size of the SMB. Disable AIMI_COB and AIMI_PBolus" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_use_AIMI_COB"
+            android:title="Use AIMI with COB"
+            android:summary="Enable AIMI code with COB > 30, Disable AIMI_UAM and AIMI_PBolus." />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_use_AIMI_PBolus"
+            android:title="Use AIMI with a Pre-Bolus"
+            android:summary="Enable AIMI code with a PBolus > iTime_Starting_Bolus, Disable AIMI_UAM and AIMI_COB." />
 
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_use_smb"
             android:summary="@string/enablesmb_summary"
             android:title="@string/enablesmb" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/key_use_AimiUAM"
+            android:key="@string/key_use_LuymjevU200"
+            android:summary="Dependency AIMI_UAM Mode, specify Luymjev U200"
+            android:title="AIMI UAM with Luymjev U200" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/key_use_AimiUAM"
+            android:key="@string/key_use_AimiUAM_ISF"
+            android:summary="Dependency with AIMI_UAM mode, active a super ISF"
+            android:title="AIMI UAM Super ISF" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/key_use_AimiUAM"
+            android:key="@string/key_use_AIMI_BreakFastLight"
+            android:summary="Active with AIMI FULL UAM mode a smaller answer during the morning"
+            android:title="AIMI UAM BreakFast Light" />
+
+        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+            android:defaultValue="6"
+            android:dependency="@string/key_use_AimiUAM"
+            android:dialogMessage="Enter AIMI UAM Light Breakfast start time in 24h e.g. 6AM is 6"
+            android:inputType="number"
+            android:key="@string/key_AIMI_BreakFastLight_timestart"
+            android:title="Start Time AIMI UAM Breakfast Light "
+            validate:maxNumber="23"
+            validate:minNumber="0"
+            validate:testType="numericRange" />
+
+        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+            android:defaultValue="10"
+            android:dependency="@string/key_use_AimiUAM"
+            android:dialogMessage="Enter AIMI UAM Light Breakfast end time in 24h e.g. 5AM is 10"
+            android:inputType="number"
+            android:key="@string/key_AIMI_BreakFastLight_timeend"
+            android:title="End Time AIMI UAM Breakfast Light"
+            validate:maxNumber="23"
+            validate:minNumber="0"
+            validate:testType="numericRange" />
 
         <SwitchPreference
             android:defaultValue="false"
