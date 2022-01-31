@@ -1220,6 +1220,9 @@
     <string name="key_use_LuymjevU200" translatable="false">key_use_LuymjevU200</string>
     <string name="key_use_AIMI_COB" translatable="false">key_use_AIMI_COB</string>
     <string name="key_use_AIMI_PBolus" translatable="false">key_use_AIMI_PBolus</string>
+    <string name="key_use_AIMI_BreakFastLight" translatable="false">key_use_AIMI_BreakfastLight</string>
+    <string name="key_AIMI_BreakFastLight_timestart">key_AIMI_BreakFastLight_timestart</string>
+    <string name="key_AIMI_BreakFastLight_timeend">key_AIMI_BreakFastLight_timeend</string>
     <string name="key_eatingnow_cobinsulinreqpct">key_eatingnow_cobinsulinreqpct</string>
     <string name="key_eatingnow_cobboostminutes" translatable="false">key_eatingnow_cobboostminutes</string>
     <string name="key_eatingnow_cobboost_maxbolus">key_eatingnow_cobboost_maxbolus</string>
