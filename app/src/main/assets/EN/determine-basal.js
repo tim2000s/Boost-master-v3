@@ -302,7 +302,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (meal_data.mealCOB >0) eatingnow = true;
         // no EN with a TT other than normal target
         if (profile.temptargetSet) eatingnow = false;
-        if (profile.temptargetSet && target_bg == normalTarget) eatingnow = true;
+        if (profile.temptargetSet && target_bg <= normalTarget) eatingnow = true;
         if (eatingnow) max_iob *= (profile.EatingNowIOBMax/100); // set maxIOB using the EN percentage
         max_iob = round(max_iob,2);
     }
@@ -343,16 +343,16 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TIR3Below = meal_data.TIR3Below, TIR3InRange = meal_data.TIR3InRange, TIR3Above = meal_data.TIR3Above;
     var TIR1Below = meal_data.TIR1Below, TIR1InRange = meal_data.TIR1InRange, TIR1Above = meal_data.TIR1Above;
     // pct difference may be able to use like AS
-    var TIRBelow = Math.max((TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 1),profile.autosens_min);
-    TIRBelow = (isNaN(TIRBelow) ? 1 : TIRBelow);
-    var TIRInRange = round(TIR1InRange,2);
-    var TIRAbove = Math.min((TIR1Above > TIR3Above ? round(TIR1Above/TIR3Above,2) : 1),profile.autosens_max);
-    TIRAbove = (isNaN(TIRAbove) ? 1 : TIRAbove);
+    //var TIRBelow = Math.max((TIR1Below > TIR3Below ? round(TIR3Below/TIR1Below,2) : 1),profile.autosens_min);
+    //TIRBelow = (isNaN(TIRBelow) ? 1 : TIRBelow);
+    //var TIRInRange = round(TIR1InRange,2);
+    //var TIRAbove = Math.min((TIR1Above > TIR3Above ? round(TIR1Above/TIR3Above,2) : 1),profile.autosens_max);
+    //TIRAbove = (isNaN(TIRAbove) ? 1 : TIRAbove);
     enlog += "* TIR Stats:\n";
     enlog += "TIR7LIH: " + TIR7Below + "/" + TIR7InRange + "/" + TIR7Above+"\n";
     enlog += "TIR3LIH: " + TIR3Below + "/" + TIR3InRange + "/" + TIR3Above+"\n";
     enlog += "TIR1LIH: " + TIR1Below + "/" + TIR1InRange + "/" + TIR1Above+"\n";
-    enlog += "TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove+"\n";
+    //enlog += "TIRLIH: " + TIRBelow + "/" + TIRInRange + "/" + TIRAbove+"\n";
     // iTime is minutes since last manual bolus correction or carbs
     var iTime = (( new Date(systemTime).getTime() - Math.max(meal_data.lastBolusNormalTime, meal_data.lastCarbTime)) / 60000);
     // cTime could be used for bolusing based on recent COB with Ghost COB
@@ -393,14 +393,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var sens_TDD = round((277700 / (TDD * normalTarget)),1);
     sens_TDD = (sens_TDD > sens*3 ? sens : sens_TDD); // fresh install of v3
     enlog += "sens_TDD:" + sens_TDD+"\n";
-    // set sens_currentBG using profile
-    var sens_currentBG = sens_normalTarget/(bg/normalTarget);
+    // set sens_currentBG using profile sens for the current target_bg allowing a low TT to scale more
+    var sens_currentBG = sens_normalTarget/(bg/target_bg);
+    // in the COBBoost window allow normal ISF as minimum
+    sens_currentBG = (COBBoostOK ? Math.min(sens_currentBG,sens_normalTarget) : sens_currentBG);
     sens_currentBG = round(sens_currentBG,1);
     enlog +="Current sensitivity is " +sens_currentBG+" based on current bg\n";
-    // use sens_currentBG as the sens_avg
-    var sens_avg = sens_currentBG;
-    //var sens_avg = (sens_normalTargetsens_normalTarget+sens_TDD)/2;
-    enlog += "sens_avg:" + sens_avg+"\n";
 
     // Threshold for ISF Boost
     var EatingNowBGThreshold = profile.EatingNowBGThreshold;
@@ -410,10 +408,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     enlog += "ISF_Max:"+ISF_Max+"\n";
 
     // use normal sens when EN not active at night or TT not normalTarget
-    sens = (eatingnow ? sens_avg : sens_normalTarget);
-    // at night with SR use the sens_avg
-    //sens = (!eatingnow && !eatingnowtimeOK && sensitivityRatio > 1 ? sens_avg : sens);
-    sens = (!eatingnow && !eatingnowtimeOK ? sens_avg : sens); // at night use sens_currentBG without SR
+    sens = (eatingnow ? sens_currentBG : sens_normalTarget);
+    // at night with SR use the sens_currentBG
+    sens = (!eatingnow && !eatingnowtimeOK ? sens_currentBG : sens); // at night use sens_currentBG without SR
     enlog += "sens:"+sens+"\n";
 
     // **********************************************************************************************
@@ -838,26 +835,37 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // When Delta is -ve, eventual_bg alone is used.
     var sens_future = sens, sens_future_max = false;
     // categorize the eventualBG prediction type for more accurate weighting
-    var sens_predType = "?", sens_eBGweight = 0;
-    sens_predType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : sens_predType );
-    sens_predType = (lastUAMpredBG > 0 && eventualBG == lastUAMpredBG ? "UAM" : sens_predType );
+    var sens_predType = "BGL", sens_eBGweight = 0;
+    sens_predType = (lastUAMpredBG > 0 && eventualBG >= lastUAMpredBG ? "UAM" : sens_predType ); // UAM or any prediction > UAM is the default
+    sens_predType = (lastCOBpredBG > 0 && eventualBG == lastCOBpredBG ? "COB" : sens_predType ); // if COB prediction is present and aligns use this
+    sens_predType = (bg > threshold && minDelta > -2 && minDelta < 2 && sens_predType == "UAM" ? "BGL" : sens_predType); // small delta use current bg
 
-    if( glucose_status.delta > 0) {
+    var minDelta = Math.min(glucose_status.delta, glucose_status.short_avgdelta);
+    var minAvgDelta = Math.min(glucose_status.short_avgdelta, glucose_status.long_avgdelta);
+    var maxDelta = Math.max(glucose_status.delta, glucose_status.short_avgdelta, glucose_status.long_avgdelta);
+
+    if (glucose_status.delta >=0 && eatingnow) {
         // for rises by default sens_future will remain as the current bg ie. sens with eBGweight = 0
         // favour eventualBG more due to delta based on the sens_predType using sens_eBGweight
         // scale sens_eBGweight based on delta with a max for each prediction type
-        sens_eBGweight = (sens_predType=="COB" ? Math.min(glucose_status.delta*.15,0.75) : sens_eBGweight); // 15% increments max 75%
-        sens_eBGweight = (sens_predType=="UAM" ? Math.min((glucose_status.delta*.05)+0.1,0.65) : sens_eBGweight); // 5% increments max 65% starting at 15%
-        //sens_eBGweight = (sens_predType=="UAM" ? Math.min(0.65-(glucose_status.delta*.05),0.25) : sens_eBGweight); // 5% increments max 75%
-        // eventualBG lower than current BG
-        sens_eBGweight = (eventualBG < bg ? 1 : sens_eBGweight);
-        // allow any rise to use COB sens_eBGweight for COBBoostOK
-        sens_eBGweight = (COBBoostOK ? 0.75 : sens_eBGweight); // max out at 75% for the COBBoost window
-        sens_future = sens_normalTarget / (((eventualBG * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
-    } else {
-        sens_eBGweight = 1;
-        sens_future = sens_normalTarget / (Math.max(eventualBG,40)/normalTarget); // safety * EXPERIMENT *
-        sens_future = Math.max(sens,sens_future);
+        sens_eBGweight = (sens_predType=="UAM" ? Math.min((glucose_status.delta*.05)+0.05,0.30) : sens_eBGweight); // 3% increments max 55% starting at 10%
+        sens_eBGweight = (sens_predType=="COB" ? Math.min(glucose_status.delta*.15,0.50) : sens_eBGweight); // 15% increments max 75%
+        sens_eBGweight = (sens_predType=="BGL" ? 0 : sens_eBGweight); // small delta uses current bg
+        // eventualBG lower than current BG * NEGATES SMALL DELTA CONDITION *
+        // sens_eBGweight = (eventualBG < bg ? 1 : sens_eBGweight);
+        sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
+    } else if (glucose_status.delta < 0 && eatingnow){
+        sens_eBGweight = 1; // usually -ve delta is lower eventualBG so trust it unless COB
+        sens_eBGweight = (sens_predType=="BGL" ? 0 : sens_eBGweight); // small delta uses current bg
+        sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
+        sens_future = Math.max(sens,sens_future); // use maximum ISF as we are dropping
+    }
+
+    // Overrides for COBBoost window regardless of delta for faster delivery
+    if (COBBoostOK && sens_predType == "COB") {
+        // allow any delta to use COB sens_eBGweight for COBBoostOK
+        sens_eBGweight = 0.75; // max out at 75% immediately for the COBBoost window
+        sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
     }
 
     // if BG below threshold then take the max of the sens vars
@@ -866,6 +874,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // limit sens_future to ISF_Max if not eating now
     // at night or when en disabled use sens unless using eatingnow override
     if (!eatingnow) {
+        // Current bg at night
+        sens_predType = "BGL";
+        sens_eBGweight = 0;
         sens_future = sens;
         sens_future = Math.max(sens_future, ISF_Max);
         // set sens_future_max to true for reason asterisk
@@ -987,11 +998,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // extra reason text
     rT.reason += ", SR: " + sensitivityRatio;
     rT.reason += ", TDD" + TDDReason + ": " + round(TDD, 2) + " ("+convert_bg(sens_TDD, profile)+")";
-    rT.reason += ", TIR3v1:L" + TIR3Below + "/" + TIR1Below + "="+ TIRBelow + ",H" + TIR3Above+ "/" + TIR1Above + "=" + TIRAbove;
+    rT.reason += ", TIR3v1:L" + TIR3Below + "/" + TIR1Below + ",H" + TIR3Above+ "/" + TIR1Above;
     rT.reason += ", EN: " + (eatingnow ? "Active" : "Inactive");
     rT.reason += (!eatingnowMaxIOBOK ? " IOB" : "");
     rT.reason += (meal_data.mealCOB > 0  ? " COB" : "");
-    rT.reason += (profile.temptargetSet && target_bg == normalTarget ? " TT" : "");
+    rT.reason += (profile.temptargetSet ? " TT="+convert_bg(target_bg, profile) : "");
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
     var carbsReqBG = naive_eventualBG;
