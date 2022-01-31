@@ -228,7 +228,7 @@
             </PreferenceCategory>
 
         <PreferenceCategory
-                android:title="UAMBoost"
+                android:title="UAM"
                 android:summary="All settings related to BG rises without COB."
                 app:initialExpandedChildrenCount="0">
 
@@ -256,7 +256,7 @@
 
 
         <PreferenceCategory
-            android:title="COBBoost"
+            android:title="COB"
             app:initialExpandedChildrenCount="0">
 
             <SwitchPreference
@@ -298,18 +298,12 @@
                 validate:floatminNumber="0"
                 validate:testType="floatNumericRange"/>
 
-        </PreferenceCategory>
-
-        <PreferenceCategory
-            android:title="ISFBoost"
-            app:initialExpandedChildrenCount="0">
-
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="0"
                 android:inputType="numberDecimal"
                 android:key="@string/key_eatingnow_isfboost_maxbolus"
-                android:title="ISFBoost maxBolus"
-                android:dialogMessage="ISFBoost maxBolus for all BGL rises with COB outside of the COBBoost Window.\n0 will use existing maxBolus limit"
+                android:title="COB maxBolus"
+                android:dialogMessage="COB maxBolus for all BGL rises with COB outside of the COBBoost Window.\n0 will use existing maxBolus limit"
                 validate:floatmaxNumber="5"
                 validate:floatminNumber="0"
                 validate:testType="floatNumericRange"/>
@@ -318,8 +312,8 @@
                 android:defaultValue="1"
                 android:inputType="numberDecimal"
                 android:key="@string/key_eatingnow_isf_max_scale"
-                android:title="ISF Max"
-                android:dialogMessage="Limit the ISF for predictions\n1 is profile ISF, 1.5 would be like a profile switch of 150%"
+                android:title="COB ISF Limit"
+                android:dialogMessage="Limit the ISF for predictions with COB outside of the COBBoost Window\n1 is profile ISF, 1.5 would be like a profile switch of 150%"
                 validate:floatmaxNumber="2"
                 validate:floatminNumber="1"
                 validate:testType="floatNumericRange"/>
