@@ -319,8 +319,8 @@
                 android:inputType="numberDecimal"
                 android:key="@string/key_eatingnow_isf_max_scale"
                 android:title="ISF Max"
-                android:dialogMessage="Limit the ISF when EN is not active\n1 is no adjustment, 2 will use half the ISF and allow stronger"
-                validate:floatmaxNumber="3"
+                android:dialogMessage="Limit the ISF for predictions\n1 is profile ISF, 1.5 would be like a profile switch of 150%"
+                validate:floatmaxNumber="2"
                 validate:floatminNumber="1"
                 validate:testType="floatNumericRange"/>
 
