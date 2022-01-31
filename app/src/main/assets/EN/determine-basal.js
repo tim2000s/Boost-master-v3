@@ -868,6 +868,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
     }
 
+    // Outside of the COBBoost Window with COB limit the ISF
+    if (!COBBoostOK && sens_predType == "COB") {
+        // limit sens_future to ISF_Max with COB outside of COBBoost Window
+        sens_future = Math.max(sens_future, ISF_Max);
+        // set sens_future_max to true for reason asterisk
+        sens_future_max = (sens_future == ISF_Max);
+    }
+
     // if BG below threshold then take the max of the sens vars
     sens_future = (bg <= threshold ? Math.max(sens_normalTarget, sens_currentBG, sens_future) : sens_future);
 
@@ -878,12 +886,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sens_predType = "BGL";
         sens_eBGweight = 0;
         sens_future = sens;
+        // limit sens_future to autosens max
+        sens_future = Math.max(sens_future, sens_normalTarget/autosens_max);
+        // set sens_future_max to true for reason asterisk
+        sens_future_max = (sens_future == ISF_Max);
     }
-
-    // limit sens_future to ISF_Max all the time
-    sens_future = Math.max(sens_future, ISF_Max);
-    // set sens_future_max to true for reason asterisk
-    sens_future_max = (sens_future == ISF_Max);
 
     sens_future = round(sens_future,1);
 
