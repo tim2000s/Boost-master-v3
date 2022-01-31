@@ -64,6 +64,15 @@
     <string name="key_pregnant" translatable="false">pregnant</string>
     <string name="key_app_expiration" translatable="false">app_expiration</string>
 
+    <string name="key_fulluam_settings" translatable="false">fulluam_settings</string>
+    <string name="key_Boost_settings" translatable="false">Boost_settings</string>
+    <string name="key_fulluam_max_iob" translatable="false">fulluam_max_iob</string>
+    <string name="key_Boost_max_iob" translatable="false">Boost_max_iob</string>
+    <string name="fulluam_maxiob_title">Maximum total IOB AIMI can\'t go over [U]</string>
+    <string name="fulluam_maxiob_summary">This value is called Max IOB in AIMI context\nAIMI will not add more insulin if current IOB is greater than this value</string>
+
+
+
     <!--    General-->
     <string name="refresh">Refresh</string>
     <string name="error">Error</string>
@@ -310,6 +319,8 @@
     <string name="insulin_unit_shortname">U</string>
     <string name="waitingforpumpresult">Waiting for result</string>
     <string name="smb_shortname">SMB</string>
+    <string name="fulluam_shortname">AIMI</string>
+    <string name="Boost_shortname">Boost</string>
 
     <!--    CarbsReq-->
     <string name="carbsreq">%1$d g Additional Carbs Required Within %2$d Minutes</string>

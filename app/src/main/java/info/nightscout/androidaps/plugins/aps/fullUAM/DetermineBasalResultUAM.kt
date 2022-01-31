@@ -1,4 +1,4 @@
-package info.nightscout.androidaps.plugins.aps.openAPSSMB
+package info.nightscout.androidaps.plugins.aps.fullUAM
 
 import dagger.android.HasAndroidInjector
 import info.nightscout.shared.logging.LTag
@@ -6,7 +6,7 @@ import info.nightscout.androidaps.plugins.aps.loop.APSResult
 import org.json.JSONException
 import org.json.JSONObject
 
-class DetermineBasalResultSMB private constructor(injector: HasAndroidInjector) : APSResult(injector) {
+class DetermineBasalResultUAM private constructor(injector: HasAndroidInjector) : APSResult(injector) {
 
     private var eventualBG = 0.0
     private var snoozeBG = 0.0
@@ -55,8 +55,8 @@ class DetermineBasalResultSMB private constructor(injector: HasAndroidInjector) 
         }
     }
 
-    override fun newAndClone(injector: HasAndroidInjector): DetermineBasalResultSMB {
-        val newResult = DetermineBasalResultSMB(injector)
+    override fun newAndClone(injector: HasAndroidInjector): DetermineBasalResultUAM {
+        val newResult = DetermineBasalResultUAM(injector)
         doClone(newResult)
         newResult.eventualBG = eventualBG
         newResult.snoozeBG = snoozeBG
