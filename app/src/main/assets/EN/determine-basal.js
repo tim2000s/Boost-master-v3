@@ -889,7 +889,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // limit sens_future to autosens max
         sens_future = Math.max(sens_future, sens_normalTarget/profile.autosens_max);
         // set sens_future_max to true for reason asterisk
-        sens_future_max = (sens_future == ISF_Max);
+        sens_future_max = (sens_future == sens_normalTarget/profile.autosens_max);
     }
 
     sens_future = round(sens_future,1);
