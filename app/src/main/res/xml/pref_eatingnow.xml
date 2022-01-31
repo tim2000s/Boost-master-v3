@@ -229,7 +229,7 @@
 
         <PreferenceCategory
                 android:title="UAM"
-                android:summary="All settings related to BG rises without COB."
+                android:summary="BG rises without COB."
                 app:initialExpandedChildrenCount="0">
 
                 <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
@@ -257,6 +257,7 @@
 
         <PreferenceCategory
             android:title="COB"
+            android:summary="BG rises with COB."
             app:initialExpandedChildrenCount="0">
 
             <SwitchPreference
