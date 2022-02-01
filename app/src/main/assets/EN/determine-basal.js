@@ -848,7 +848,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         // for rises by default sens_future will remain as the current bg ie. sens with eBGweight = 0
         // favour eventualBG more due to delta based on the sens_predType using sens_eBGweight
         // scale sens_eBGweight based on delta with a max for each prediction type
-        sens_eBGweight = (sens_predType=="UAM" ? Math.min((glucose_status.delta*.05)+0.05,0.30) : sens_eBGweight); // 3% increments max 55% starting at 10%
+        //sens_eBGweight = (sens_predType=="UAM" ? Math.min((glucose_status.delta*.05)+0.05,0.30) : sens_eBGweight); // 3% increments max 55% starting at 10%
+         // * EXPERIMENTAL *
+        sens_eBGweight = (sens_predType=="UAM" ? Math.max((sens_currentBG/sens_normalTarget)-0.5,0) : sens_eBGweight); // eBGw start at 50% and decreases with ISF scaling
+         // * EXPERIMENTAL *
         sens_eBGweight = (sens_predType=="COB" ? Math.min(glucose_status.delta*.15,0.50) : sens_eBGweight); // 15% increments max 75%
         sens_eBGweight = (sens_predType=="BGL" ? 0 : sens_eBGweight); // small delta uses current bg
         // eventualBG lower than current BG * NEGATES SMALL DELTA CONDITION *
