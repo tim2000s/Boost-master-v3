@@ -868,7 +868,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // Overrides for COBBoost window regardless of delta for faster delivery
     if (COBBoostOK && sens_predType == "COB") {
         // allow any delta to use COB sens_eBGweight for COBBoostOK
-        sens_eBGweight = 0.75; // max out at 75% immediately for the COBBoost window
+        sens_eBGweight = Math.max(0.75,sens_eBGweight); // max out at 75% immediately for the COBBoost window
         sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /normalTarget);
     }
 
