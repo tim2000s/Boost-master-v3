@@ -101,7 +101,7 @@ The quantity of carbs > 30. This time, i create an independant variable from the
 
 
 
-Boost v3
+Boost v3.1.1
 
 Boost v3 uses an updated version of the TDD ISF calculation, with a weighting of 20% to future Bg
  and 80% to current BG when delta is >6, current bg when delta 0 < 6 and future bg when delta is
@@ -122,10 +122,11 @@ All of the additional code outside of the standard SMB calculation requires a ti
 specified within which it is active. The default time settings disable the code. The time period
 is specified in hours using a 24 hour clock in the Boost preferences section.
 
+COB: With Carbs on Board, Boost has a 15 minute window to deliver a larger bolus than would normally be expected, up to InsulinRequired calculated by the oref1 algorithm, taking carbs into account, and limited by the user set "insulin Required percent". In the following 40 mins after the carbs are added, it can do additional larger boluses, as long as there is a delta >5 and COB > 25.
+
 When an initial rise is detected with a meal, delta, short_avgDelta and long_avgDelta are used to
  trigger the early bolus (assuming IOB is below a user defined amount). The early bolus value is
- one hour of average basal requirement and is calculated by using the TDD as described earlier,
- using (TDD * 0.4) / 24, unless thi sis smaller than "Insulin Required" when that is used instead.
+ one hour of basal requirement and is based on the current period basal rate, unless this is smaller than "Insulin Required" when that is used instead.
 
 The user defined Boost Scale Value can be used to increase the boost bolus if the user requires, however, users should be aware that this increases the risk of hypos when small rises occur.
 
