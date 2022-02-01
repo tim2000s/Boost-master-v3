@@ -1315,7 +1315,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 var COB = meal_data.mealCOB;
                 var CR = profile.carb_ratio;
+                var delta_accl = ( glucose_status.delta - glucose_status.short_avgdelta );
 
+                console.error("Delta variance is "+delta_accl+"; "):
                 console.error("Boost start time is "+(boost_start)+"hrs and boost end time is "+(boost_end)+"hrs; ");
                 console.error("Base boost insulin is "+boostInsulinReq+" iu; ");
                 console.error("            ");
@@ -1378,6 +1380,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      rT.reason += "UAM Boost enacted; SMB equals" + boostInsulinReq + "; ";
                  }
 
+            else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl > 0 && COB < 1){
+
+                        var microBolus = Math.floor(Math.min(insulinReq,boost_max)*roundSMBTo)/roundSMBTo;
+                        rT.reason += "Boost extra bolusing triggered; SMB equals" + microBolus + "; ";
+                        }
 
             else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 4 && COB < 1){
 
