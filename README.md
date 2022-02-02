@@ -210,14 +210,12 @@ EN mode will be active after this time when there has been a COB or manual bolus
 
     InsulinReqPct:  Percentage that will be used for EN insulinReq as SMB to utilise prior to maxBolus restriction.
                     This will be 65% when EN is not active.
-
     Max IOB:        The percentage of current max-iob setting that will be used as the limit for EN.
                     EN will not add insulin when above this limit.
-
     BG Threshold:   No SMB will be given when EN is outside operating hours and BG below this threshold.
                     If there is detected resistance from autosens or BG exceeds this threshold SMB will be resumed using normal AAPS maxBolus.
 
-UAMBoost:
+UAM:
     UAMBoost Bolus Scale: Multiply the initial UAMBoost bolus by this amount. 0 will disable UAMBoost.
     UAMBoost maxBolus:  maxBolus to use for all BG rises without COB.  0 will use maxSMBBasalMinutes or maxUAMSMBBasalMinutes.
 
@@ -246,3 +244,13 @@ ISFBoost maxBolus:    maxBolus to use for ISFBoost. 0 will use maxSMBBasalMinute
                           e.g. 1 will use profile ISF as the maximum and 2 will use half the ISF and allow a lower ISF number hence stronger.
 
 
+COB:
+    Use GhostCOB:           Ignore COB predictions after the COBBoost Window and rely purely on UAM. This setting can be handy when COB lingers for too long.
+    COBBoost InsulinReqPct: Percentage that will be used for EN insulinReq within the COBBoost Window.
+    COBBoost Window:        If within the COBBoost Window the calculated insulinReq from COBPredBG may be delivered via a larger SMB using the COBBoost maxBolus.
+                            Once the time window has elapsed COBBoost maxBolus is no longer used.
+                            0 minutes will disable this functionality.
+    COBBoost maxBolus:      maxBolus to use within the COBBoost Window. 0 will use AAPS maxBolus.
+    COB maxBolus:           maxBolus to use with COB outside of the initial COBBoost Window. 0 will use AAPS maxBolus.
+    COB ISF Limit:          Limit the ISF with COB outside of the initial COBBoost Window.
+                            e.g. 1 will use profile ISF as the maximum and 1.5 will be the equivalent of a 150% profile switch as the max ISF.
