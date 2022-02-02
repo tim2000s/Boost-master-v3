@@ -1315,9 +1315,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 var COB = meal_data.mealCOB;
                 var CR = profile.carb_ratio;
-                var delta_accl = ( glucose_status.delta - glucose_status.short_avgdelta );
+                var delta_accl = glucose_status.delta - glucose_status.short_avgdelta;
 
-                console.error("Delta variance is "+delta_accl+"; "):
+                console.error("Delta variance is "+delta_accl+"; ");
                 console.error("Boost start time is "+(boost_start)+"hrs and boost end time is "+(boost_end)+"hrs; ");
                 console.error("Base boost insulin is "+boostInsulinReq+" iu; ");
                 console.error("            ");
