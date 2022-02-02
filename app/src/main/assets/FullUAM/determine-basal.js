@@ -1466,6 +1466,7 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
             limitIOB *= bgDegree;
             var UAMAIMIReason = "";
 
+
             //var TrigPredAIMI =  (TriggerPredSMB_future_sens_60 + TriggerPredSMB_future_sens_35) / 1.618;
 
             if (AIMI_COB && meal_data.lastCarbUnits < 30 && meal_data.lastCarbUnits > 0 && iob_data.iob < carbslimitsmb){
@@ -1593,7 +1594,7 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
             //if (!eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0)  {
                 //var maxBolus = round( profile.current_basal * 30 / 60 ,1);
                 microBolus = 0;
-                UAMAIMIReason += ", no SMB";
+                UAMAIMIReason += ", no SMB, ";
             }
 
             // if insulinReq > 0 but not enough for a microBolus, don't set an SMB zero temp
