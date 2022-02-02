@@ -349,7 +349,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var AIMI_BL_StartTime = profile.key_AIMI_BreakFastLight_timestart;
         var AIMI_BL_EndTime = profile.key_AIMI_BreakFastLight_timeend;
         if (now <= AIMI_BL_StartTime && now >= AIMI_BL_EndTime){
-        key_use_AIMI_BreakFastLight = false;
+            AIMI_BreakFastLight = false;
         }
 
         if (AIMI_UAM && AIMI_COB && AIMI_PBolus){
