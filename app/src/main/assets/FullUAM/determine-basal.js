@@ -1464,6 +1464,7 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
             console.log("####limitIOB : "+limitIOB+"\n")
             var bgDegree = round((bg + glucose_status.delta) / 161.8,2);
             limitIOB *= bgDegree;
+            var UAMAIMIReason = "";
 
             //var TrigPredAIMI =  (TriggerPredSMB_future_sens_60 + TriggerPredSMB_future_sens_35) / 1.618;
 
@@ -1620,6 +1621,7 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
                 rT.reason += "; setting " + durationReq + "m low temp of " + smbLowTempReq + "U/h";
             }
             rT.reason += ". ";
+            rT.reason += UAMAIMIReason;
 
             //allow SMBs every 3 minutes by default
             var SMBInterval = 3;
