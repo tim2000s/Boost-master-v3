@@ -1267,7 +1267,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var insulinDivisor = insulinReqPCT - Math.min((insulinPCTsubtract * bg_adjust),insulinPCTsubtract);
                 console.error("Insulin Divisor is:"+insulinDivisor+"; ");
                 console.error("            ");
-                console.error("Version: Boost v3.1.1; ");
+                console.error("Version: Boost v3.2.0; ");
                 console.error("            ");
                 console.error("Value is "+((1/insulinDivisor) * 100)+"% of insulin required; ");
                 console.error("insulinRequired is: "+insulinReq+"; ");
