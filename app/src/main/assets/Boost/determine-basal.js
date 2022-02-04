@@ -378,7 +378,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     // compare currenttemp to iob_data.lastTemp and cancel temp if they don't match
     sens = variable_sens;
-
+    if ( high_temptarget_raises_sensitivity && profile.temptargetSet && target_bg > normalTarget || profile.low_temptarget_lowers_sensitivity && profile.temptargetSet && target_bg < normalTarget ) {
+        sens =  sens / sensitivityRatio ;
+        sens = round(sens, 1);
+        console.log("ISF from "+variable_sens+" to "+sens+ "due to temp target; ");
+    } else {
+        sens = sens;
+        sens = round(sens, 1);
+    }
     //var eRatio = round((bg/0.16)/sens,2);
     var eRatio = round(sens / 13.2);
     console.error("CR:",eRatio);
