@@ -241,8 +241,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         halfBasalTarget = 160; // when temptarget is 160 mg/dL, run 50% basal (120 = 75%; 140 = 60%)
         // 80 mg/dL with low_temptarget_lowers_sensitivity would give 1.5x basal, but is limited to autosens_max (1.2x by default)
     }
-    if ( high_temptarget_raises_sensitivity && profile.temptargetSet && target_bg > normalTarget
-        || profile.low_temptarget_lowers_sensitivity && profile.temptargetSet && target_bg < normalTarget ) {
+    if ( high_temptarget_raises_sensitivity && profile.temptargetSet && target_bg > normalTarget || profile.low_temptarget_lowers_sensitivity && profile.temptargetSet && target_bg < normalTarget ) {
         // w/ target 100, temp target 110 = .89, 120 = 0.8, 140 = 0.67, 160 = .57, and 200 = .44
         // e.g.: Sensitivity ratio set to 0.8 based on temp target of 120; Adjusting basal from 1.65 to 1.35; ISF from 58.9 to 73.6
         //sensitivityRatio = 2/(2+(target_bg-normalTarget)/40);
@@ -1355,8 +1354,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  }
                  //End of Carb handling uptick code.
                  //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
-                 else if (glucose_status.delta >= 5 && glucose_status.short_avgdelta >= 3 &&
-                 uamBoost1 > 1.2 && uamBoost2 > 2 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 3 && eventualBG > target_bg && bg > 80 && insulinReq > 0) {
+                 else if (glucose_status.delta >= 5 && glucose_status.short_avgdelta >= 3 && uamBoost1 > 1.2 && uamBoost2 > 2 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 3 && eventualBG > target_bg && bg > 80 && insulinReq > 0) {
                      console.error("Profile Boost Scale value is "+boost_scale+": ");
                      //console.error("Automated Boost Scale value is "+scaleSMB+": ");
                      //document the pre-boost insulin required recommendation
