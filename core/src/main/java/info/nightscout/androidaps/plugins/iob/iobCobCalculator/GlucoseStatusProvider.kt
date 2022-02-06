@@ -134,10 +134,7 @@ class GlucoseStatusProvider @Inject constructor(
 
         //MP: Adjust smoothing window if database size is smaller than the default value + 1 (+1 because the reading before the oldest reading to be smoothed will be used in the calculations
         if (sizeRecords <= windowsize) { //MP standard smoothing window
-            windowsize = (sizeRecords - 1).coerceAtLeast(0) //MP Adjust smoothing window to the size of database if it is smaller than the original window size; -1 to always have at least one older
-            //windowsize = sizeRecords
-        // value
-        // to compare against as a buffer to prevent app crashes
+            windowsize = (sizeRecords - 1).coerceAtLeast(0) //MP Adjust smoothing window to the size of database if it is smaller than the original window size; -1 to always have at least one older value to compare against as a buffer to prevent app crashes
         }
 
         //MP: Adjust smoothing window further if a gap in the BG database is detected, e.g. due to sensor errors of sensor swaps, or if 38 mg/dl are reported (xDrip error state)
