@@ -134,11 +134,12 @@ class GlucoseStatusProvider @Inject constructor(
 
         //MP: Adjust smoothing window if database size is smaller than the default value + 1 (+1 because the reading before the oldest reading to be smoothed will be used in the calculations
         if (sizeRecords < windowsize) { //MP standard smoothing window
-            windowsize = sizeRecords //MP Adjust smoothing window to the size of database if it is smaller than the original window size
+            windowsize = Math.max(sizeRecords - 1, 0) //MP Adjust smoothing window to the size of database if it is smaller than the original window size; -1 to always have at least one older value
+        // to compare against as a buffer to prevent app crashes
         }
 
         //MP: Adjust smoothing window further if a gap in the BG database is detected, e.g. due to sensor errors of sensor swaps, or if 38 mg/dl are reported (xDrip error state)
-        for (i in 0 until windowsize - 1) {
+        for (i in 0 until windowsize) {
             if (Math.round((data[i].timestamp - data[i + 1].timestamp) / (1000.0 * 60)) >= 12) { //MP: 12 min because a missed reading (i.e. readings coming in after 10 min) can occur for various reasons, like walking away from the phone or reinstalling AAPS
                 //if (Math.round((data.get(i).date - data.get(i + 1).date) / 60000L) <= 7) { //MP crashes the app, useful for testing
                 windowsize = i + 1 //MP: If time difference between two readings exceeds 7 min, adjust windowsize to *include* the more recent reading (i = reading; +1 because windowsize reflects number of valid readings);
