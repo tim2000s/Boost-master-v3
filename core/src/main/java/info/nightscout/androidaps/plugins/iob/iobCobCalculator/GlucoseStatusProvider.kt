@@ -149,7 +149,7 @@ class GlucoseStatusProvider @Inject constructor(
             }
         }
 */
-        windowsize = 1
+        windowsize = 4
 // CALCULATE SMOOTHING WINDOW - 1st order exponential smoothing
         o1_smoothbg.clear() // MP reset smoothed bg array
 
