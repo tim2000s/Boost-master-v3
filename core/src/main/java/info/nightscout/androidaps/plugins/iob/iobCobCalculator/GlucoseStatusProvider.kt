@@ -5,7 +5,6 @@ import info.nightscout.androidaps.interfaces.IobCobCalculator
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.utils.DateUtil
-import info.nightscout.androidaps.utils.DecimalFormatter
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
