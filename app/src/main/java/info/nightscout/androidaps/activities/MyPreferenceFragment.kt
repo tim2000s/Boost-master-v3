@@ -24,6 +24,7 @@ import info.nightscout.androidaps.plugin.general.openhumans.OpenHumansUploader
 import info.nightscout.androidaps.plugins.aps.loop.LoopPlugin
 import info.nightscout.androidaps.plugins.aps.openAPSAMA.OpenAPSAMAPlugin
 import info.nightscout.androidaps.plugins.aps.openAPSSMB.OpenAPSSMBPlugin
+import info.nightscout.androidaps.plugins.aps.tsunami.TsunamiPlugin
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.configBuilder.PluginStore
 import info.nightscout.androidaps.plugins.constraints.safety.SafetyPlugin
@@ -82,6 +83,7 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
     @Inject lateinit var nsClientPlugin: NSClientPlugin
     @Inject lateinit var openAPSAMAPlugin: OpenAPSAMAPlugin
     @Inject lateinit var openAPSSMBPlugin: OpenAPSSMBPlugin
+    @Inject lateinit var TsunamiPlugin: TsunamiPlugin
     @Inject lateinit var safetyPlugin: SafetyPlugin
     @Inject lateinit var sensitivityAAPSPlugin: SensitivityAAPSPlugin
     @Inject lateinit var sensitivityOref1Plugin: SensitivityOref1Plugin
@@ -168,6 +170,7 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
             addPreferencesFromResourceIfEnabled(loopPlugin, rootKey, config.APS)
             addPreferencesFromResourceIfEnabled(openAPSAMAPlugin, rootKey, config.APS)
             addPreferencesFromResourceIfEnabled(openAPSSMBPlugin, rootKey, config.APS)
+            addPreferencesFromResourceIfEnabled(TsunamiPlugin, rootKey, config.APS)
             addPreferencesFromResourceIfEnabled(sensitivityAAPSPlugin, rootKey)
             addPreferencesFromResourceIfEnabled(sensitivityWeightedAveragePlugin, rootKey)
             addPreferencesFromResourceIfEnabled(sensitivityOref1Plugin, rootKey)

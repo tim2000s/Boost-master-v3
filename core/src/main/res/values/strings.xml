@@ -310,6 +310,7 @@
     <string name="insulin_unit_shortname">U</string>
     <string name="waitingforpumpresult">Waiting for result</string>
     <string name="smb_shortname">SMB</string>
+    <string name="tsunami_shortname">TAE</string>
 
     <!--    CarbsReq-->
     <string name="carbsreq">%1$d g Additional Carbs Required Within %2$d Minutes</string>

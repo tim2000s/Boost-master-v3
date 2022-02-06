@@ -80,6 +80,43 @@
     <string name="description_ns_client">Synchronizes your data with Nightscout</string>
     <string name="description_ama">State of the algorithm in 2017</string>
     <string name="description_smb">Most recent algorithm for advanced users</string>
+
+    <!-- MP: UAMboluscap Start -->
+    <string name="description_tsunami">Tsunami Activity Engine for automatic handling of meals</string>
+    <string name="tsunami_useautoisf">Use Autoisf feature</string>
+    <string name="key_tsunami_settings" translatable="false">tsunami_settings</string>
+    <!-- MP: Make data smoothing optional, turned off by default
+    <string name="key_enable_datasmoothing" translatable="false">enable_datasmoothing</string>
+    <string name="enable_datasmoothing">Enable data smoothing</string>
+    <string name="enable_datasmoothing_summary">Smooth incoming sensor data.</string>
+    -->
+    <string name="key_tae_useautoisf" translatable="false">openapsama_useautoisf</string>
+    <string name="key_tae_autoisf_max" translatable="false">autoisf_max</string>
+    <!--
+    <string name="openapsama_autoisf_max_summary">Default value: 1.2\nThis is a multiplier cap for autoISF to set a limit on how high the autoISF ratio can be, which in turn determines how low it can adjust ISF.</string>
+    -->
+    <string name="key_tae_autoisf_hourlychange" translatable="false">autoisf_hourlychange</string>
+    <!--
+    <string name="openapsama_autoisf_hourlychange_summary">Default value: 0.2\nThis is the rate at which autoISF grows per hour assuming bg is twice the target. With a value of 1.0 it will have reduced ISF to 50% after 1 hour of bg at twice the target.\nWith 0.0 the effect of autoISF is effectively disabled.</string>
+    -->
+    <string name="key_UAM_boluscap" translatable="false">UAM_boluscap</string>
+    <string name="UAM_UAM_boluscap_title">UAM bolus cap [U]</string>
+    <string name="UAM_boluscap_summary">max SMB size deliverable by TAE.</string>
+    <string name="key_insulinreqPCT" translatable="false">insulinreqPCT</string>
+    <string name="insulinreqPCT_title">Insulin delivery percentage [%]</string>
+    <string name="insulinreqPCT_summary">Reduces the calculated insulin required to the specified percentage for delivery. Example: If calculated insulin required is 1 U and fraction size is 50%, at most 0.5 U will be delivered if no other constraints (e.g. bolus caps) apply.</string>
+    <!-- MP: UAMboluscap Start
+    <string name="openapsama_autoisf_max">Max autoisf ratio</string>
+    <string name="openapsama_autoisf_hourlychange">autoisf hourly increment</string>
+     -->
+    <string name="key_tae_start" translatable="false">TAE start time</string>
+    <string name="tae_start_summary">Hour of the day from when on TAE will be enabled.</string>
+    <string name="tae_start_title">TAE start time (incl.) [h]</string>
+    <string name="key_tae_end" translatable="false">TAE end time</string>
+    <string name="tae_end_summary">Hour of the day until (and including) which TAE is enabled.</string>
+    <string name="tae_end_title">TAE end time (incl.) [h]</string>
+    <!-- MP: UAMboluscap end -->
+
     <string name="description_overview">Displays the current state of your loop and buttons for most common actions</string>
     <string name="description_persistent_notification">Shows an ongoing notification with a short overview of what your loop is doing</string>
     <string name="description_profile_local">Define a profile which is available offline.</string>
@@ -536,6 +573,7 @@
     <string name="ns_localbroadcasts">Enable broadcasts to other apps (like xDrip+). Do not enable if you have more than one instance of AAPS or NSClient installed!</string>
     <string name="ns_localbroadcasts_title">Enable local Broadcasts.</string>
     <string name="openapssmb">OpenAPS SMB</string>
+    <string name="tsunami">Tsunami</string>
     <string name="key_use_smb" translatable="false">use_smb</string>
     <string name="key_use_uam" translatable="false">use_uam</string>
     <string name="key_smb_enable_carbs_suggestions_threshold" translatable="false">smb_enable_carbs_suggestions_threshold</string>

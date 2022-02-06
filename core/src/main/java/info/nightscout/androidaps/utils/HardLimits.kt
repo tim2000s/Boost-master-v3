@@ -56,6 +56,7 @@ class HardLimits @Inject constructor(
         const val MAX_ISF = 720.0 // mgdl
         val MAX_IOB_AMA = doubleArrayOf(3.0, 5.0, 7.0, 12.0, 25.0)
         val MAX_IOB_SMB = doubleArrayOf(7.0, 13.0, 22.0, 30.0, 70.0)
+        val MAX_IOB_TAE = doubleArrayOf(7.0, 13.0, 22.0, 30.0, 70.0)
         val MAX_BASAL = doubleArrayOf(2.0, 5.0, 10.0, 12.0, 25.0)
 
         //LGS Hard limits
@@ -76,6 +77,7 @@ class HardLimits @Inject constructor(
     fun maxBolus(): Double = MAX_BOLUS[loadAge()]
     fun maxIobAMA(): Double = MAX_IOB_AMA[loadAge()]
     fun maxIobSMB(): Double = MAX_IOB_SMB[loadAge()]
+    fun maxIobTAE(): Double = MAX_IOB_TAE[loadAge()]
     fun maxBasal(): Double = MAX_BASAL[loadAge()]
     fun minDia(): Double = MIN_DIA[loadAge()]
     fun maxDia(): Double = MAX_DIA[loadAge()]

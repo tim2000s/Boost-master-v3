@@ -6,6 +6,7 @@ import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.Constants
 import info.nightscout.androidaps.R
 import info.nightscout.androidaps.annotations.OpenForTesting
+import info.nightscout.androidaps.data.Iob
 import info.nightscout.androidaps.data.IobTotal
 import info.nightscout.androidaps.data.MealData
 import info.nightscout.androidaps.database.AppRepository
@@ -313,7 +314,9 @@ class IobCobCalculatorPlugin @Inject constructor(
             .forEach {
                 if (it.amount > 0) {
                     result.carbs += it.amount
-                    if (it.timestamp > result.lastCarbTime) result.lastCarbTime = it.timestamp
+                    if (it.timestamp > result.lastCarbTime) {
+                        result.lastCarbTime = it.timestamp
+                    }
                 }
             }
         val autosensData = getLastAutosensDataWithWaitForCalculationFinish("getMealData()")
@@ -325,6 +328,7 @@ class IobCobCalculatorPlugin @Inject constructor(
         }
         val lastBolus = repository.getLastBolusRecordWrapped().blockingGet()
         result.lastBolusTime = if (lastBolus is ValueWrapper.Existing) lastBolus.value.timestamp else 0L
+        result.lastBolus = if (lastBolus is ValueWrapper.Existing) lastBolus.value.amount else 0.0 //MP save last bolus size into MealData for use by Tsunami plugin
         return result
     }
 
