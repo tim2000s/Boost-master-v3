@@ -129,6 +129,7 @@ class GlucoseStatusProvider @Inject constructor(
         // autoISF === END
 
         // MP Tsunami meal detection system (requires data smoothing code for variable definitions)
+        //TODO: Check if code includes data smoothing or if running Tsunami standalone version
         //Uncomment below if using WITHOUT data smoothing code
 
         deltascore = 0.5
