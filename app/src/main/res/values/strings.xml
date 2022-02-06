@@ -74,7 +74,12 @@
     <string name="description_food">Displays the food presets defined in Nightscout</string>
     <string name="description_insulin_rapid">Insulin preset for Humalog and NovoRapid / NovoLog</string>
     <string name="description_insulin_ultra_rapid">Insulin preset for Fiasp</string>
-    <string name="description_insulin_lyumjev">Insulin preset for Lyumjev</string>
+    <string name="description_insulin_lyumjev">Insulin preset for Lyumjev. (classic
+        pharmacokinetic model)</string>
+    <string name="description_insulin_lyumjev_U100_PD">Glucodynamic model for Lyumjev U100 (standard concentration); This model automatically adjusts the duration of insulin action (DIA).</string>
+    <string name="description_insulin_lyumjev_U200_PD">Glucodynamic model for Lyumjev U200 (2 x
+        concentrated); This model automatically adjusts the duration of insulin action (DIA).
+        YOU MUST HALVE YOUR BASALS AND DOUBLE YOUR ISFS BEFORE USE!</string>
     <string name="description_insulin_free_peak">Allows you to define the peak of the insulin activity and should only be used by advanced users</string>
     <string name="description_loop">Activate or deactivate the implementation triggering the loop.</string>
     <string name="description_ns_client">Synchronizes your data with Nightscout</string>
@@ -549,7 +554,9 @@
     <string name="free_peak_oref">Free-Peak Oref</string>
     <string name="rapid_acting_oref">Rapid-Acting Oref</string>
     <string name="ultrarapid_oref">Ultra-Rapid Oref</string>
-    <string name="lyumjev">Lyumjev</string>
+    <string name="lyumjev">Lyumjev (classic)</string>
+    <string name="lyumjev_U100_PD">Lyumjev U100 (Tsunami)</string>
+    <string name="lyumjev_U200_PD">Lyumjev U200 (Tsunami)</string>
     <string name="dia_too_short">DIA of %1$f too short - using %2$f instead!</string>
     <string name="activate_profile">Activate profile</string>
     <string name="invalid">INVALID</string>
