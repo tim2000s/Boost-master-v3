@@ -133,7 +133,7 @@ class GlucoseStatusProvider @Inject constructor(
         // - Values that are not 38 mg/dl; 38 mg/dl reflects an xDrip error state (according to a comment in determine-basal.js)
 
         //MP: Adjust smoothing window if database size is smaller than the default value + 1 (+1 because the reading before the oldest reading to be smoothed will be used in the calculations
-        if (sizeRecords < windowsize) { //MP standard smoothing window
+/*        if (sizeRecords < windowsize) { //MP standard smoothing window
             windowsize = sizeRecords //MP Adjust smoothing window to the size of database if it is smaller than the original window size
         }
 
@@ -148,7 +148,8 @@ class GlucoseStatusProvider @Inject constructor(
                 break
             }
         }
-
+*/
+        windowsize = 1
 // CALCULATE SMOOTHING WINDOW - 1st order exponential smoothing
         o1_smoothbg.clear() // MP reset smoothed bg array
 
