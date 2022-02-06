@@ -18,7 +18,11 @@ data class GlucoseStatus(
     var bg_5minago: Double = 0.0,
     var deltascore: Double = 0.0,
     var deltathreshold: Double = 7.0, //MP average delta above which deltascore will be 1.
-    var weight: Double = 0.15 //MP Weighting used for weighted averages
+    var weight: Double = 0.15, //MP Weighting used for weighted averages
+    //*** Tsunami data smoothing ******************************************************************************************************************
+    var insufficientsmoothingdata: Boolean = false,
+    var bg_supersmooth_now: Double = 0.0,
+    var delta_supersmooth_now: Double = 0.0,
     //**********************************************************************************************************************************************
 ) {
 
@@ -33,7 +37,12 @@ data class GlucoseStatus(
         //*** Tsunami specific values ******************************************************************************************************************
         "activity_pred_time: " + activity_pred_time + " min" +
         "bg_5minago: " + DecimalFormatter.to0Decimal(bg_5minago) + " mg/dl " +
-        "deltascore: " + DecimalFormatter.to2Decimal(deltascore) + " a.u."
+        "deltascore: " + DecimalFormatter.to2Decimal(deltascore) + " a.u." +
+        //*** Tsunami data smoothing ******************************************************************************************************************
+        "insufficientsmoothingdata: " + insufficientsmoothingdata +
+        "bg_supersmooth_now: " + DecimalFormatter.to0Decimal(bg_supersmooth_now) + " mg/dl " +
+        "delta_supersmooth_now: " + DecimalFormatter.to0Decimal(delta_supersmooth_now) + " mg/dl "
+        //**********************************************************************************************************************************************
 }
 
 fun GlucoseStatus.asRounded() = copy(
@@ -47,5 +56,8 @@ fun GlucoseStatus.asRounded() = copy(
     autoISF_average = Round.roundTo(this.autoISF_average, 0.1),
     //*** Tsunami specific values ******************************************************************************************************************
     bg_5minago = Round.roundTo(this.bg_5minago, 0.1),
-    deltascore = Round.roundTo(deltascore, 0.01)
+    deltascore = Round.roundTo(deltascore, 0.01),
+    //*** Tsunami data smoothing specific values ******************************************************************************************************************
+    bg_supersmooth_now = Round.roundTo(bg_supersmooth_now, 0.1),
+    delta_supersmooth_now =Round.roundTo(delta_supersmooth_now, 0.1)
 )
