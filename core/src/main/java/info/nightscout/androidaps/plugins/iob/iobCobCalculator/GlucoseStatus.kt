@@ -10,11 +10,10 @@ data class GlucoseStatus(
     val shortAvgDelta: Double = 0.0,
     val longAvgDelta: Double = 0.0,
     val date: Long = 0L,
-    //*** Tsunami data smoothing ******************************************************************************************************************
+    //*** Tsunami data smoothing specific values ******************************************************************************************************************
     var insufficientsmoothingdata: Boolean = false,
     var bg_supersmooth_now: Double = 0.0,
     var delta_supersmooth_now: Double = 0.0,
-    //**********************************************************************************************************************************************
 ) {
 
     fun log(): String = "Glucose: " + DecimalFormatter.to0Decimal(glucose) + " mg/dl " +
@@ -26,7 +25,6 @@ data class GlucoseStatus(
         "insufficientsmoothingdata: " + insufficientsmoothingdata +
         "bg_supersmooth_now: " + DecimalFormatter.to0Decimal(bg_supersmooth_now) + " mg/dl " +
         "delta_supersmooth_now: " + DecimalFormatter.to0Decimal(delta_supersmooth_now) + " mg/dl "
-        //**********************************************************************************************************************************************
 }
 
 fun GlucoseStatus.asRounded() = copy(
@@ -35,6 +33,7 @@ fun GlucoseStatus.asRounded() = copy(
     delta = Round.roundTo(delta, 0.01),
     shortAvgDelta = Round.roundTo(shortAvgDelta, 0.01),
     longAvgDelta = Round.roundTo(longAvgDelta, 0.01),
+    //*** Tsunami data smoothing specific values ******************************************************************************************************************
     bg_supersmooth_now = Round.roundTo(bg_supersmooth_now, 0.1),
     delta_supersmooth_now =Round.roundTo(delta_supersmooth_now, 0.1)
 )

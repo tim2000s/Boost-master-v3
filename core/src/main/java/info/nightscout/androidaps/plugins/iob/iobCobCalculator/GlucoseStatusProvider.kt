@@ -42,11 +42,10 @@ class GlucoseStatusProvider @Inject constructor(
                 shortAvgDelta = 0.0,
                 longAvgDelta = 0.0,
                 date = nowDate,
-            //MP Tsunami data smoothing start
+                //*** Tsunami data smoothing specific values ******************************************************************************************************************
                 insufficientsmoothingdata = true,
                 bg_supersmooth_now = now.value,
                 delta_supersmooth_now = 0.0
-            //MP Tsunami data smoothing end
             ).asRounded()
         }
         val nowValueList = ArrayList<Double>()
@@ -120,8 +119,8 @@ class GlucoseStatusProvider @Inject constructor(
         // - Values that are not 38 mg/dl; 38 mg/dl reflects an xDrip error state (according to a comment in determine-basal.js)
 
         //MP: Adjust smoothing window if database size is smaller than the default value + 1 (+1 because the reading before the oldest reading to be smoothed will be used in the calculations
-        if (sizeRecords < windowsize) { //MP standard smoothing window
-            windowsize = sizeRecords //MP Adjust smoothing window to the size of database if it is smaller than the original window size
+        if (sizeRecords <= windowsize) { //MP standard smoothing window
+            windowsize = (sizeRecords - 1).coerceAtLeast(0) //MP Adjust smoothing window to the size of database if it is smaller than the original window size; -1 to always have at least one older value to compare against as a buffer to prevent app crashes
         }
 
         //MP: Adjust smoothing window further if a gap in the BG database is detected, e.g. due to sensor errors of sensor swaps, or if 38 mg/dl are reported (xDrip error state)
@@ -206,11 +205,10 @@ class GlucoseStatusProvider @Inject constructor(
             shortAvgDelta = shortAverageDelta,
             delta = delta,
             longAvgDelta = average(longDeltas),
-            //MP Tsunami data smoothing start
+            //*** Tsunami data smoothing specific values ******************************************************************************************************************
             insufficientsmoothingdata = insufficientsmoothingdata,
             bg_supersmooth_now = bg_supersmooth_now,
             delta_supersmooth_now = delta_supersmooth_now,
-            //MP Tsunami data smoothing end
             ).also { aapsLogger.debug(LTag.GLUCOSE, it.log()) }.asRounded()
     }
 
