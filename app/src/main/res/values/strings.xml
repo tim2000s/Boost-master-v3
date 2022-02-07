@@ -1233,9 +1233,14 @@
     <string name="key_eatingnow_uamboost_maxbolus">key_eatingnow_uamboost_maxbolus</string>
     <string name="key_eatingnow_itimeminutes">key_eatingnow_itimeminutes</string>
     <string name="key_eatingnow_isfboost_maxbolus">key_eatingnow_isfboost_maxbolus</string>
-    <string name="key_eatingnow_isf_max_scale">key_eatingnow_isf_max_scale</string>
+    <string name="key_eatingnow_isfbgscaler">key_eatingnow_isfbgscaler</string>
+    <string name="key_eatingnow_isfbgmax">key_eatingnow_isfbgmax</string>
+<!--    <string name="key_eatingnow_isf_max_scale">key_eatingnow_isf_max_scale</string>-->
     <string name="key_eatingnow_iobmax">key_eatingnow_iobmax</string>
     <string name="key_eatingnow_timestart">key_eatingnow_timestart</string>
     <string name="key_eatingnow_timeend">key_eatingnow_timeend</string>
     <string name="key_openapsama_TDD" translatable="false">7 day average Total Daily Dose</string>
+    <string name="key_eatingnow_COBeBGweight" translatable="false">key_eatingnow_COBeBGweight</string>
+    <string name="key_eatingnow_UAMeBGweight" translatable="false">key_eatingnow_UAMeBGweight</string>
+
 </resources>

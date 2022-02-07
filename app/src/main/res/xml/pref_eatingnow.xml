@@ -220,11 +220,42 @@
                     android:defaultValue="0"
                     android:inputType="numberDecimal"
                     android:key="@string/key_eatingnow_bgthreshold"
-                    android:title="BG Threshold"
-                    android:dialogMessage="No SMB below this threshold at night with no COB."
+                    android:title="SMB BG Threshold"
+                    android:dialogMessage="There will be no SMB when below this threshold at night without COB or detected resistance."
                     validate:floatmaxNumber="270.0"
                     validate:floatminNumber="6.0"
                     validate:testType="floatNumericRange" />
+
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="0"
+                    android:inputType="numberDecimal"
+                    android:key="@string/key_eatingnow_isfbgscaler"
+                    android:title="ISF BG Scaler"
+                    android:dialogMessage="As BG increases ISF will become stronger.\nThe level of scaling can be adjusted.\n0 = normal scaling, 5 is 5% stronger, -5 is 5% weaker ISF scaling."
+                    validate:floatmaxNumber="15"
+                    validate:floatminNumber="-15"
+                    validate:testType="floatNumericRange" />
+
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="0"
+                    android:inputType="numberDecimal"
+                    android:key="@string/key_eatingnow_isfbgmax"
+                    android:title="ISF BG Threshold"
+                    android:dialogMessage="As BG increases ISF will become stronger.\nISF will no longer increase after this BG."
+                    validate:floatmaxNumber="270.0"
+                    validate:floatminNumber="6.0"
+                    validate:testType="floatNumericRange" />
+
+<!--                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference-->
+<!--                    android:defaultValue="1"-->
+<!--                    android:inputType="numberDecimal"-->
+<!--                    android:key="@string/key_eatingnow_isf_max_scale"-->
+<!--                    android:title="Max ISF Limit"-->
+<!--                    android:dialogMessage="As BG increases ISF will become stronger.\nThis will Limit the ISF.\n1 is profile ISF, 1.5 would be a 150% smaller ISF, similar to a profile switch."-->
+<!--                    validate:floatmaxNumber="2"-->
+<!--                    validate:floatminNumber="1"-->
+<!--                    validate:testType="floatNumericRange"/>-->
+
             </PreferenceCategory>
 
         <PreferenceCategory
@@ -249,6 +280,16 @@
                     android:title="UAMBoost maxBolus"
                     android:dialogMessage="UAMBoost maxBolus for all BGL rises without COB.\n0 will use existing maxBolus limit"
                     validate:floatmaxNumber="5"
+                    validate:floatminNumber="0"
+                    validate:testType="floatNumericRange"/>
+
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:defaultValue="0"
+                    android:inputType="numberDecimal"
+                    android:key="@string/key_eatingnow_UAMeBGweight"
+                    android:dialogMessage="This will be the initial weighting for eventualBG predictions without COB.\nAs ISF grows stronger the weighting will reduce favouring current BG ISF.\nSetting to 50 will make this 50%\n0 will always use currentBG ISF."
+                    android:title="UAM eventualBG Weighting"
+                    validate:floatmaxNumber="75"
                     validate:floatminNumber="0"
                     validate:testType="floatNumericRange"/>
 
@@ -310,14 +351,15 @@
                 validate:testType="floatNumericRange"/>
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="1"
+                android:defaultValue="0"
                 android:inputType="numberDecimal"
-                android:key="@string/key_eatingnow_isf_max_scale"
-                android:title="COB ISF Limit"
-                android:dialogMessage="Limit the ISF for predictions with COB outside of the COBBoost Window\n1 is profile ISF, 1.5 would be like a profile switch of 150%"
-                validate:floatmaxNumber="2"
-                validate:floatminNumber="1"
+                android:key="@string/key_eatingnow_COBeBGweight"
+                android:dialogMessage="This will be the initial weighting for eventualBG predictions with COB.\nAs ISF grows stronger the weighting will reduce favouring current BG ISF.\nSetting to 50 will make this 50%\n0 will always use currentBG ISF."
+                android:title="COB eventualBG Weighting"
+                validate:floatmaxNumber="75"
+                validate:floatminNumber="0"
                 validate:testType="floatNumericRange"/>
+
 
         </PreferenceCategory>
 
