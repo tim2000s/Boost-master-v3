@@ -1219,6 +1219,7 @@
     <string name="key_use_AimiUAM_ISF" translatable="false">key_use_AimiUAM_ISF</string>
     <string name="key_use_LuymjevU200" translatable="false">key_use_LuymjevU200</string>
     <string name="key_use_AIMI_COB" translatable="false">key_use_AIMI_COB</string>
+    <string name="key_use_AIMI_CAP" translatable="false">key_use_AIMI_CAP</string>
     <string name="key_use_AIMI_PBolus" translatable="false">key_use_AIMI_PBolus</string>
     <string name="key_use_AIMI_BreakFastLight" translatable="false">key_use_AIMI_BreakfastLight</string>
     <string name="key_AIMI_BreakFastLight_timestart">key_AIMI_BreakFastLight_timestart</string>
