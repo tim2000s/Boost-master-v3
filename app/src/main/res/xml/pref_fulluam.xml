@@ -150,6 +150,17 @@
             validate:minNumber="0"
             validate:testType="numericRange" />
 
+        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+            android:defaultValue="3"
+            android:dependency="@string/key_use_AimiUAM"
+            android:dialogMessage="Value of MaxSmb size AIMI_UAM"
+            android:inputType="number"
+            android:key="@string/key_use_AIMI_CAP"
+            android:title="MaxSmb size AIMI_UAM"
+            validate:maxNumber="10"
+            validate:minNumber="0"
+            validate:testType="numericRange" />
+
         <SwitchPreference
             android:defaultValue="false"
             android:dependency="@string/key_use_smb"
