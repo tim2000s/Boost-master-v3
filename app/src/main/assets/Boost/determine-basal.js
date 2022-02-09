@@ -1396,7 +1396,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason += "Boost extra bolusing triggered; SMB equals" + microBolus + "; ";
             }*/
 
-            else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && COB < 1){
+            else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl > 0 ){
 
             var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,boost_max)*roundSMBTo)/roundSMBTo;
             rT.reason += "Enhanced oref1 triggered; SMB equals" + microBolus + "; ";
