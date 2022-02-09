@@ -1385,7 +1385,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      rT.reason += "UAM Boost enacted; SMB equals" + boostInsulinReq + "; ";
                  }
 
-            else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl > 0 && COB < 1 && iob_data.iob < boostMaxIOB && eventualBG > target_bg && bg > 120){
+            /*else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl > 0 && COB < 1 && iob_data.iob < boostMaxIOB && eventualBG > target_bg && bg > 120){
                 if (insulinReq > boostMaxIOB-iob_data.iob) {
                        insulinReq = boostMaxIOB-iob_data.iob;
                        }
@@ -1394,7 +1394,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                        }
                 var microBolus = Math.floor(Math.min(insulinReq,boost_max)*roundSMBTo)/roundSMBTo;
                 rT.reason += "Boost extra bolusing triggered; SMB equals" + microBolus + "; ";
-            }
+            }*/
 
             else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && COB < 1){
 
