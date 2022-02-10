@@ -307,15 +307,15 @@ class DetermineBasalAdapterUAMJS internal constructor(private val scriptReader: 
         this.mealData.put("lastCarbTime", mealData.lastCarbTime)
 
         bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime ) lastBolusNormalTime = bolus.timestamp }
-        bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid && bolus.timestamp > lastBolusNormalTime) lastBolusNormalTimeValue = bolus.amount.toLong() }
+        //bolusMealLinks(now)?.forEach { bolus -> if (bolus.type == Bolus.Type.NORMAL && bolus.isValid ) lastBolusNormalTimeValue = bolus.amount.toLong() }
 
         this.mealData.put("lastBolusNormalTime", lastBolusNormalTime)
-        this.mealData.put("lastBolusNormalTimeValue",lastBolusNormalTimeValue)
+        //this.mealData.put("lastBolusNormalTimeValue",lastBolusNormalTimeValue)
 
         // get the last bolus time of a manual bolus for EN activation
-        /*val getlastBolusNormal = repository.getLastBolusRecordOfTypeWrapped(Bolus.Type.NORMAL).blockingGet()
+        val getlastBolusNormal = repository.getLastBolusRecordOfTypeWrapped(Bolus.Type.NORMAL).blockingGet()
         val lastBolusNormalUnits = if (getlastBolusNormal is ValueWrapper.Existing) getlastBolusNormal.value.amount else 0L
-        this.mealData.put("lastBolusNormalUnits", lastBolusNormalUnits)*/
+        this.mealData.put("lastBolusNormalUnits", lastBolusNormalUnits)
         CarbsMealLinks(now)?.forEach { Carbs -> if (Carbs.isValid && Carbs.timestamp > AIMI_lastCarbTime ) AIMI_lastCarbTime = Carbs.timestamp }
         CarbsMealLinks(now)?.forEach { Carbs -> if (Carbs.isValid && Carbs.amount > 30 ) AIMI_lastCarbUnit = Carbs.amount.toLong() }
         this.mealData.put("AIMI_lastCarbTime", AIMI_lastCarbTime)

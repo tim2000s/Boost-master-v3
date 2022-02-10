@@ -336,7 +336,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
          var iTime_Start_Bolus = profile.iTime_Start_Bolus;
         var iTimeProfile = profile.iTime;
-        var LastManualBolus = meal_data.lastBolusNormalTimeValue;
+        var LastManualBolus = meal_data.lastBolusNormalUnits
+        ;
         //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var lastbolusAge = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var C1 = bg + glucose_status.delta;
@@ -1034,7 +1035,7 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
 
 }
         console.log("------------------------------");
-                console.log(" AAPS-MASTER-3.0.1-AIMI V15 09/02/2022 ");
+                console.log(" AAPS-MASTER-3.0.1-AIMI V15 10/02/2022 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log(enlog);
