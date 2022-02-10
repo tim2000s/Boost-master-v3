@@ -399,8 +399,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // set sens_currentBG using profile sens for the current target_bg allowing a low TT to scale more and apply limit
     var sens_currentBG = sens_normalTarget/(Math.min(bg,ISFbgMax)/target_bg);
     enlog += "sens_currentBG:" + sens_currentBG +"\n";
-    // EXPERIMENTAL: allow user preferences to scale the strength of the ISF as BG increases
-    var sens_BGscaler = profile.ISFbgscaler; // 0 is normal scaling, 5 is 5% stronger and -5 is 5% weaker
+    // Allow user preferences to scale the strength of the ISF as BG increases
+    // Scaling is converted to a percentage, 0 is normal scaling (1), 5 is 5% stronger (0.95) and -5 is 5% weaker (1.05)
+    var sens_BGscaler = (eatingnow ? profile.ISFbgscaler : 0); // When eating now is not active do not apply additional scaling
     sens_BGscaler = (100-sens_BGscaler)/100;
     enlog += "sens_BGscaler:" + sens_BGscaler +"\n";
     // if above target use the scaling with profile ISF as the weakest
