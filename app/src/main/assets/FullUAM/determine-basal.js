@@ -1452,7 +1452,7 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
                             maxBolus = round(smb_max_range * profile.current_basal * profile.maxSMBBasalMinutes / 60 ,1);
                         }
             var AIMI_R = 161.8;
-                        if (profile.out_units === "mmol/L"){
+                        /*if (profile.out_units === "mmol/L"){
                         bg /= 18;
                         target_bg /= 18;
                         sens /= 18;
@@ -1460,7 +1460,7 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
                         future_sens /= 18;
                         glucose_status.delta /= 18;
                         console.log("data in mmol");
-                        }
+                        }*/
             var insulinQ = insulinReq;
             var insulinReqPCT = profile.UAM_InsulinReq/100;
             var InsulinTDD = (TDD * 0.6) / 24;
