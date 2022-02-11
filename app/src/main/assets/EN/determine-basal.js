@@ -239,8 +239,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // eating now time can be delayed if there is no first bolus or carbs
     if (now >= profile.EatingNowTimeStart && now < profile.EatingNowTimeEnd && (meal_data.lastNormalCarbTime >= ENStartTime || meal_data.lastBolusNormalTime >= ENStartTime)) eatingnowtimeOK = true;
     enlog += "Now: " + now + ", ENStartTime: " + ENStartTime + ", lastNormalCarbTime: " + meal_data.lastNormalCarbTime + ", lastBolusNormalTime: " + meal_data.lastBolusNormalTime +"\n";
-    // set SR to a minimum of 1 if eatingnowtimeOK
-    sensitivityRatio = (eatingnowtimeOK && !profile.temptargetSet ? Math.max(sensitivityRatio,1) : sensitivityRatio);
+    // set sensitivityRatio to a maximum of 1 as dynamic ISF is being used however allow sensitivity
+    sensitivityRatio = (!profile.temptargetSet ? Math.max(sensitivityRatio,1) : sensitivityRatio);
 
     if (sensitivityRatio) {
         basal = profile.current_basal * sensitivityRatio;
@@ -1024,6 +1024,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     rT.reason += (!eatingnowMaxIOBOK ? " IOB" : "");
     rT.reason += (meal_data.mealCOB > 0  ? " COB" : "");
     rT.reason += (profile.temptargetSet ? " TT="+convert_bg(target_bg, profile) : "");
+    rT.reason += (!eatingnow && !eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0 ? " No SMB < " + convert_bg(EatingNowBGThreshold,profile) : "");
+
     rT.reason += "; ";
     // use naive_eventualBG if above 40, but switch to minGuardBG if both eventualBGs hit floor of 39
     var carbsReqBG = naive_eventualBG;
@@ -1443,8 +1445,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
             durationReq = round(60*worstCaseInsulinReq / profile.current_basal);
 
-            // Nightmode TBR when below EatingNowBGThreshold with no resistance and no COB
-            if (!eatingnow && !eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0 && sensitivityRatio < 1.05)  {
+            // Nightmode TBR when below EatingNowBGThreshold with no low TT / no COB
+            if (!eatingnow && !eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0)  {
             //if (!eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0)  {
                 //var maxBolus = round( profile.current_basal * 30 / 60 ,1);
                 microBolus = 0;
