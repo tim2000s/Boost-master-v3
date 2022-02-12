@@ -42,8 +42,8 @@ class UserEntryPresentationHelper @Inject constructor(
 
     fun iconId(source: Sources): Int = when (source) {
         Sources.TreatmentDialog     -> R.drawable.icon_insulin_carbs
-        Sources.InsulinDialog       -> R.drawable.ic_bolus //MP Button test
-        Sources.UAMDialog           -> R.drawable.icon_insulin_carbs
+        Sources.InsulinDialog       -> R.drawable.ic_bolus
+        Sources.UAMDialog           -> R.drawable.icon_insulin_carbs //MP Button test
         Sources.CarbDialog          -> R.drawable.ic_cp_bolus_carbs
         Sources.WizardDialog        -> R.drawable.ic_calculator
         Sources.QuickWizard         -> R.drawable.ic_quick_wizard
