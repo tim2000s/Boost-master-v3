@@ -1035,7 +1035,7 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
 
 }
         console.log("------------------------------");
-                console.log(" AAPS-MASTER-3.0.1-AIMI V15 10/02/2022 ");
+                console.log(" AAPS-MASTER-3.0.1-AIMI V15.1 12/02/2022 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log(enlog);
