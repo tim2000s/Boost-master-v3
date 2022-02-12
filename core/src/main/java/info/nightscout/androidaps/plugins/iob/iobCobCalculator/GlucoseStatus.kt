@@ -20,7 +20,6 @@ data class GlucoseStatus(
     var deltathreshold: Double = 7.0, //MP average delta above which deltascore will be 1.
     var weight: Double = 0.15, //MP Weighting used for weighted averages
     //**********************************************************************************************************************************************
-    val date: Long = 0L,
     //*** Tsunami data smoothing specific values ******************************************************************************************************************
     var insufficientsmoothingdata: Boolean = false,
     var bg_supersmooth_now: Double = 0.0,
