@@ -57,7 +57,6 @@ fun GlucoseStatus.asRounded() = copy(
     //*** Tsunami specific values ******************************************************************************************************************
     bg_5minago = Round.roundTo(this.bg_5minago, 0.1),
     deltascore = Round.roundTo(deltascore, 0.01),
-    longAvgDelta = Round.roundTo(longAvgDelta, 0.01),
     //*** Tsunami data smoothing specific values ******************************************************************************************************************
     bg_supersmooth_now = Round.roundTo(bg_supersmooth_now, 0.1),
     delta_supersmooth_now =Round.roundTo(delta_supersmooth_now, 0.1)
