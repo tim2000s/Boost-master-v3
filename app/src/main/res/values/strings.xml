@@ -679,11 +679,17 @@
     <string name="enablesmbwithhightemptarget">Enable SMB with high temp targets</string>
     <string name="enablesmbwithhightemptarget_summary">Enable SMB when there is high temp target active (exercise, above 100 mg/dl or 5.5 mmol/l)</string>
     <string name="overview_insulin_label">Insulin</string>
+    <!-- MP UAM button test below-->
+    <string name="overview_UAM_label">UAM</string>
+    <!-- MP UAM button test above-->
     <string name="overview_buttons_selection">Buttons</string>
     <string name="key_show_calibration_button" translatable="false">show_calibration_button</string>
     <string name="key_show_cgm_button" translatable="false">show_cgm_button</string>
     <string name="key_show_carbs_button" translatable="false">show_carbs_button</string>
     <string name="key_show_wizard_button" translatable="false">show_wizard_button</string>
+    <!-- MP UAM button test below-->
+    <string name="key_show_UAM_button" translatable="false">show_UAM_button</string>
+    <!-- MP UAM button test above-->
     <string name="key_show_insulin_button" translatable="false">show_insulin_button</string>
     <string name="key_show_treatment_button" translatable="false">show_treatment_button</string>
     <string name="show_calibration_button_summary">Sends a calibration to xDrip+ or open BYODA calibration dialog</string>
@@ -696,6 +702,18 @@
     <string name="key_carbs_button_increment_3" translatable="false">carbs_button_increment_3</string>
     <string name="carb_increment_button_message">Number of carbs to add when button is pressed</string>
     <string name="insulin_increment_button_message">Amount of insulin to add when button is pressed</string>
+    <!-- MP button test below -->
+    <string name="UAM_increment_button_message">Amount of insulin to add when button is pressed</string>
+    <string name="key_UAM_button_increment_1" translatable="false">UAM_button_increment_1</string>
+    <string name="key_UAM_button_increment_2" translatable="false">UAM_button_increment_2</string>
+    <string name="key_UAM_button_increment_3" translatable="false">UAM_button_increment_3</string>
+    <string name="firstUAMincrement">First insulin increment</string>
+    <string name="secondUAMincrement">Second insulin increment</string>
+    <string name="thirdUAMincrement">Third insulin increment</string>
+    <string name="prebolus">Prebolus</string>
+    <string name="uam_mode">UAM mode</string>
+    <string name="start_uam">Start UAM assistant?</string>
+    <!-- MP button test above -->
     <string name="error_starting_cgm">Could not launch CGM application.  Make sure it is installed.</string>
     <string name="overview_cgm">CGM</string>
     <string name="ignore5m">Ignore 5m</string>

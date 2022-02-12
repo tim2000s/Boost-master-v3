@@ -148,9 +148,13 @@ private val allowedKeys = """
     show_treatment_button
     show_wizard_button
     show_insulin_button
+    show_UAM_button
     insulin_button_increment_1
     insulin_button_increment_2
     insulin_button_increment_3
+    UAM_button_increment_1
+    UAM_button_increment_2
+    UAM_button_increment_3
     show_carbs_button
     carbs_button_increment_1
     carbs_button_increment_2

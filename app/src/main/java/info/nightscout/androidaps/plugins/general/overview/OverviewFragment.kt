@@ -205,6 +205,9 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         binding.buttonsLayout.calibrationButton.setOnClickListener(this)
         binding.buttonsLayout.cgmButton.setOnClickListener(this)
         binding.buttonsLayout.insulinButton.setOnClickListener(this)
+        //MP button test below
+        binding.buttonsLayout.UAMbutton.setOnClickListener(this)
+        //MP button test above
         binding.buttonsLayout.carbsButton.setOnClickListener(this)
         binding.buttonsLayout.quickWizardButton.setOnClickListener(this)
         binding.buttonsLayout.quickWizardButton.setOnLongClickListener(this)
@@ -356,6 +359,9 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                     activity,
                     ProtectionCheck.Protection.BOLUS,
                     UIRunnable { if (isAdded) InsulinDialog().show(childFragmentManager, "Overview") })
+                //MP button test below - causes crash
+                R.id.UAMbutton -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if(isAdded) UAMDialog().show(childFragmentManager, "Overview") })
+                //MP button test above
                 R.id.quick_wizard_button -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if (isAdded) onClickQuickWizard() })
                 R.id.carbs_button        -> protectionCheck.queryProtection(
                     activity,
@@ -549,7 +555,10 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             && sp.getBoolean(R.string.key_show_wizard_button, true)).toVisibility()
         binding.buttonsLayout.insulinButton.visibility = (!loop.isDisconnected && pump.isInitialized() && !pump.isSuspended() && profile != null
             && sp.getBoolean(R.string.key_show_insulin_button, true)).toVisibility()
-
+        //MP button test below
+        binding.buttonsLayout.UAMbutton.visibility = (!loop.isDisconnected && pump.isInitialized() && !pump.isSuspended() && profile != null
+            && sp.getBoolean(R.string.key_show_UAM_button, true)).toVisibility()
+        //MP button test above
         // **** Calibration & CGM buttons ****
         val xDripIsBgSource = xdripPlugin.isEnabled()
         val dexcomIsSource = dexcomPlugin.isEnabled()
