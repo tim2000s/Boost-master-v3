@@ -336,7 +336,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
          var iTime_Start_Bolus = profile.iTime_Start_Bolus;
         var iTimeProfile = profile.iTime;
-        var LastManualBolus = meal_data.lastBolusNormalUnits;
+        var LastManualBolus = meal_data.lastBolusNormalUnits
+        ;
         //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var lastbolusAge = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var C1 = bg + glucose_status.delta;
@@ -348,6 +349,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var AIMI_BreakFastLight = profile.key_use_AIMI_BreakFastLight;
         var AIMI_BL_StartTime = profile.key_AIMI_BreakFastLight_timestart;
         var AIMI_BL_EndTime = profile.key_AIMI_BreakFastLight_timeend;
+        var AIMI_lastBolusSMBUnits = meal_data.lastBolusSMBUnits;
         if (now >= AIMI_BL_EndTime){
             AIMI_BreakFastLight = false;
         }
@@ -366,23 +368,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
        }
 
 
-        /*if (meal_data.lastBolusNormalUnits <= iTime_Start_Bolus && iTime < iTimeProfile && C1 <= C2){
-        iTime = iTimeProfile + 1 ;
-        enlog += "A manual bolus was done, but iTime is disable, iob < iTime_start_bolus : "+iob_data.iob+"<"+iTime_Start_Bolus+"\n";
-        }*/
-        if (AIMI_COB && !AIMI_PBolus && meal_data.lastCarbUnits > 30) {
+        if (AIMI_COB && !AIMI_PBolus && !AIMI_UAM && meal_data.AIMI_lastCarbUnit > 30) {
 
-                         var lastCarbAgebis = round(( new Date(systemTime).getTime() - meal_data.lastCarbTime ) / 60000);
+                         var lastCarbAgebis = round(( new Date(systemTime).getTime() - meal_data.AIMI_lastCarbTime ) / 60000);
                          //console.error(meal_data.lastCarbTime, lastCarbAge);
                          var iTime = lastCarbAgebis;
                          enlog +="lastCarbAgebis =  iTime : "+iTime+"\n";
 
-        }else if (AIMI_PBolus && !AIMI_COB && LastManualBolus >= iTime_Start_Bolus && lastbolusAge < iTimeProfile){
+        }else if (AIMI_PBolus && !AIMI_COB && !AIMI_UAM && LastManualBolus >= iTime_Start_Bolus && lastbolusAge < iTimeProfile){
 
                 var iTime = lastbolusAge;
                 enlog += "iTime is running : "+iTime+" because manual bolus ("+LastManualBolus+") >= iTime_Starting_Bolus ("+iTime_Start_Bolus+")\n";
 
-        }else if (AIMI_PBolus && !AIMI_COB && LastManualBolus <= iTime_Start_Bolus && lastbolusAge < iTimeProfile){
+        }else if (AIMI_PBolus && !AIMI_UAM && !AIMI_COB && LastManualBolus <= iTime_Start_Bolus && lastbolusAge < iTimeProfile){
 
                          iTime = iTimeProfile + 1 ;
                          enlog += "A manual bolus was done, but iTime is disable, LastManualBolus < iTime_start_bolus : "+LastManualBolus+"<"+iTime_Start_Bolus+"\n";
@@ -846,6 +844,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var remainingCItotal = 0;
     var remainingCIs = [];
     var predCIs = [];
+
+
+
     try {
         iobArray.forEach(function(iobTick) {
             //console.error(iobTick);
@@ -1034,7 +1035,7 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
 
 }
         console.log("------------------------------");
-                console.log(" AAPS-MASTER-3.0.1-AIMI V15 07/02/2022 ");
+                console.log(" AAPS-MASTER-3.0.1-AIMI V15 10/02/2022 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log(enlog);
@@ -1467,10 +1468,10 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
             var maxBolusTT = maxBolus;
             var roundSMBTo = 1 / profile.bolus_increment;
             var smb_ratio = determine_varSMBratio(profile, bg, target_bg);
-            var mealM = meal_data.lastCarbUnits / 3;
+            var mealM = meal_data.AIMI_lastCarbUnit / 3;
             //var mealIns = mealM / profile.carb_ratio;
             var mealIns = mealM / eRatio ;
-            var carbslimitsmb = meal_data.lastCarbUnits / profile.carb_ratio;
+            var carbslimitsmb = meal_data.AIMI_lastCarbUnit / profile.carb_ratio;
             var limitIOB = Math.min((0.90*max_iob),((bg * 1.618) / sens));
             console.log("####limitIOB : "+limitIOB+"\n")
             var bgDegree = round((bg + glucose_status.delta) / AIMI_R,2);
@@ -1481,28 +1482,28 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
 
             //var TrigPredAIMI =  (TriggerPredSMB_future_sens_60 + TriggerPredSMB_future_sens_35) / 1.618;
 
-            if (AIMI_COB && meal_data.lastCarbUnits < 30 && meal_data.lastCarbUnits > 0 && iob_data.iob < carbslimitsmb){
+            if (AIMI_COB && meal_data.AIMI_lastCarbUnit < 30 && meal_data.AIMI_lastCarbUnit > 0 && iob_data.iob < carbslimitsmb){
                 maxBolusTT = round(smb_max_range * profile.current_basal * (profile.maxSMBBasalMinutes + glucose_status.delta + glucose_status.short_avgdelta) / 60 ,1);
                 var microBolus = Math.min(insulinReq*smb_ratio, maxBolusTT);
                 console.log("carbs entry < 30 maxSMBBasalMinutes is up by the delta : "+(profile.maxSMBBasalMinutes + glucose_status.delta + glucose_status.short_avgdelta)+"minutes");
 
 
-            }else if (AIMI_COB && meal_data.lastCarbUnits > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime < 6 && iob_data.iob <= mealIns && iob_data.iob < carbslimitsmb){
+            }else if (AIMI_COB && meal_data.AIMI_lastCarbUnit > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime < 6 && iob_data.iob <= mealIns && iob_data.iob < carbslimitsmb){
 
                 var microBolus = mealIns+basal;
                 console.log("first mealIns shot : "+mealIns);
 
-            }else if (AIMI_COB && meal_data.lastCarbUnits > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime > 10 && iTime < 20 && iob_data.iob <= (2*mealIns) && iob_data.iob < max_iob && iob_data.iob < carbslimitsmb){
+            }else if (AIMI_COB && meal_data.AIMI_lastCarbUnit > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime > 10 && iTime < 20 && iob_data.iob <= (2*mealIns) && iob_data.iob < max_iob && iob_data.iob < carbslimitsmb){
 
                 var microBolus = mealIns;
                 console.log("second mealIns shot : "+mealIns);
 
-            }else if (AIMI_COB && meal_data.lastCarbUnits > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime >= 40 && iTime <= 60 && iob_data.iob <= (3*mealM / profile.carb_ratio) && glucose_status.delta >= 5 && C1 > C2 && HypoPredBG > 120 && iob_data.iob < max_iob && iob_data.iob < carbslimitsmb*0.9){
+            }else if (AIMI_COB && meal_data.AIMI_lastCarbUnit > 30 && meal_data.carbs && iTime <= iTimeProfile && iTime >= 40 && iTime <= 60 && iob_data.iob <= (3*mealM / profile.carb_ratio) && glucose_status.delta >= 5 && C1 > C2 && HypoPredBG > 120 && iob_data.iob < max_iob && iob_data.iob < carbslimitsmb*0.9){
 
                 var microBolus = mealIns;
                 console.log("third mealIns shot : "+mealIns);
 
-            }else if (AIMI_COB && meal_data.lastCarbUnits > 30 && meal_data.carbs && profile.iTime_Bolus > 0 && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < iTime_Start_Bolus && ! profile.temptargetSet && HypoPredBG > 120 && iob_data.iob < max_iob && iob_data.iob < carbslimitsmb){
+            }else if (AIMI_COB && meal_data.AIMI_lastCarbUnit > 30 && meal_data.carbs && profile.iTime_Bolus > 0 && iTime <= iTimeProfile && C1 > C2 && glucose_status.delta >= 5 && glucose_status.long_avgdelta > 0 && iob_data.iob < iTime_Start_Bolus && ! profile.temptargetSet && HypoPredBG > 120 && iob_data.iob < max_iob && iob_data.iob < carbslimitsmb){
 
                 var microBolus =  profile.iTime_Bolus;
 
@@ -1642,7 +1643,11 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
                 // allow SMBIntervals between 1 and 10 minutes
                 SMBInterval = Math.min(10,Math.max(1,profile.SMBInterval));
             }
-            if (AIMI_UAM && ! profile.temptargetSet && ! meal_data.carbs && iTime > iTimeProfile && iob_data > 0.5 * max_iob){SMBInterval = 10;}
+            if (AIMI_UAM && ! profile.temptargetSet && ! meal_data.carbs && !AIMI_COB && !iTime && iob_data > 0.8 * max_iob && meal_data.lastBolusSMBUnits >= 0.8 * AIMI_UAM_CAP){
+            SMBInterval = 20;
+            }else if (AIMI_UAM && ! profile.temptargetSet && ! meal_data.carbs && !AIMI_COB && !iTime && iob_data > 0.5 * max_iob){
+            SMBInterval = 10;
+            }
             var nextBolusMins = round(SMBInterval-lastBolusAge,0);
             var nextBolusSeconds = round((SMBInterval - lastBolusAge) * 60, 0) % 60;
             //console.error(naive_eventualBG, insulinReq, worstCaseInsulinReq, durationReq);
