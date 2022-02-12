@@ -48,7 +48,6 @@ class GlucoseStatusProvider @Inject constructor(
                 //*** Tsunami specific values ******************************************************************************************************************
                 bg_5minago = 0.0,
                 deltascore = 0.0,
-                date = nowDate,
                 //*** Tsunami data smoothing specific values ******************************************************************************************************************
                 insufficientsmoothingdata = true,
                 bg_supersmooth_now = now.value,
