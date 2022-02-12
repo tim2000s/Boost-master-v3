@@ -119,6 +119,7 @@ data class UserEntry(
     enum class Sources {
         TreatmentDialog,
         InsulinDialog,
+        UAMDialog, //MP Button for tsunami
         CarbDialog,
         WizardDialog,
         QuickWizard,
