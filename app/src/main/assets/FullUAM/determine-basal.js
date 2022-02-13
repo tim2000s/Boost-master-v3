@@ -904,6 +904,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // set minPredBGs starting when currently-dosed insulin activity will peak
             // look ahead 60m (regardless of insulin type) so as to be less aggressive on slower insulins
             var insulinPeakTime = 35;
+            if (AIMI_UAM_U200 && C1 > C2){
+            insulinPeakTime = 15 * 1.618;
+            enlog += "AIMI_UAM_U200 && C1>C2 insulinPeakTime : "+insulinPeakTime+"\n";
+            }else if (AIMI_UAM_U200){
+            insulinPeakTime = 20 * 1.618;
+            enlog += "AIMI_UAM_U200 insulinPeakTime : "+insulinPeakTime+"\n";
+            }
 
             // add 30m to allow for insulin delivery (SMBs or temps)
             //insulinPeakTime = 90;
