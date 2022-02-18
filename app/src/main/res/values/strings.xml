@@ -1218,6 +1218,9 @@
     <string name="key_use_AimiUAM" translatable="false">key_use_AimiUAM</string>
     <string name="key_use_AimiUAM_ISF" translatable="false">key_use_AimiUAM_ISF</string>
     <string name="key_use_LuymjevU200" translatable="false">key_use_LuymjevU200</string>
+    <string name="key_use_LuymjevU100" translatable="false">key_use_LuymjevU100</string>
+    <string name="key_use_Fiasp" translatable="false">key_use_Fiasp</string>
+    <string name="key_use_Novorapid" translatable="false">key_use_Novorapid</string>
     <string name="key_use_AIMI_COB" translatable="false">key_use_AIMI_COB</string>
     <string name="key_use_AIMI_CAP" translatable="false">key_use_AIMI_CAP</string>
     <string name="key_use_AIMI_PBolus" translatable="false">key_use_AIMI_PBolus</string>

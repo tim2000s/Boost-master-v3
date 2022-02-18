@@ -117,6 +117,27 @@
         <SwitchPreference
             android:defaultValue="false"
             android:dependency="@string/key_use_AimiUAM"
+            android:key="@string/key_use_LuymjevU100"
+            android:summary="Dependency AIMI_UAM Mode, specify Luymjev U100"
+            android:title="AIMI UAM with Luymjev U100" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/key_use_AimiUAM"
+            android:key="@string/key_use_Fiasp"
+            android:summary="Dependency AIMI_UAM Mode, specify Fiasp, you need to make a pre-bolus at 60% minimum"
+            android:title="AIMI UAM with Fiasp" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/key_use_AimiUAM"
+            android:key="@string/key_use_Novorapid"
+            android:summary="Dependency AIMI_UAM Mode, specify Novorapid, you need to make a pre-bolus at 80%"
+            android:title="AIMI UAM with Novorapid" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/key_use_AimiUAM"
             android:key="@string/key_use_AimiUAM_ISF"
             android:summary="Dependency with AIMI_UAM mode, active a super ISF"
             android:title="AIMI UAM Super ISF" />

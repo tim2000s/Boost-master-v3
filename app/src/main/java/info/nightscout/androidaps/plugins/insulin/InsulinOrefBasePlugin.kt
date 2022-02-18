@@ -14,6 +14,8 @@ import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import kotlin.math.exp
 import kotlin.math.pow
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 
 /**
  * Created by adrian on 13.08.2017.
@@ -89,6 +91,7 @@ abstract class InsulinOrefBasePlugin(
     }
 
     override val insulinConfiguration: InsulinConfiguration
+
         get() = InsulinConfiguration(friendlyName, (dia * 1000.0 * 3600.0).toLong(), T.mins(peak.toLong()).msecs())
 
     override val comment
