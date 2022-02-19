@@ -264,8 +264,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.error("7-day average TDD is: " +tdd7+ "; ");
 
 
-    if (meal_data.TDDPUMP){
-        var tdd_24 = meal_data.TDDPUMP;
+    if (meal_data.TDDLast24){
+        var tdd_24 = meal_data.TDDLast24;
         }
         else {
         var tdd_24 = (( basal * 24 ) * 2.8);
