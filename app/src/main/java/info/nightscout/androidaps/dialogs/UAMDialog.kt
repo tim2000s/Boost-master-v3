@@ -38,6 +38,10 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
+//test
+//import info.nightscout.androidaps.plugins.iob.iobCobCalculator.GlucoseStatus
+import info.nightscout.androidaps.interfaces.IobCobCalculator
+import info.nightscout.androidaps.plugins.iob.iobCobCalculator.GlucoseStatus
 
 class UAMDialog : DialogFragmentWithDate() {
 
@@ -52,6 +56,8 @@ class UAMDialog : DialogFragmentWithDate() {
     @Inject lateinit var config: Config
     @Inject lateinit var bolusTimer: BolusTimer
     @Inject lateinit var uel: UserEntryLogger
+    //test
+    @Inject lateinit var GlucoseStatusCopy: GlucoseStatus
 
     companion object {
 
@@ -157,7 +163,10 @@ class UAMDialog : DialogFragmentWithDate() {
         val unitLabel = if (units == GlucoseUnit.MMOL) rh.gs(R.string.mmol) else rh.gs(R.string.mgdl)
         val recordOnlyChecked = binding.recordOnly.isChecked
         val eatingSoonChecked = binding.startEatingSoonTt.isChecked
+        //test
+        GlucoseStatusCopy.active = true
 
+        //test end
         if (insulinAfterConstraints > 0) {
             actions.add(rh.gs(R.string.bolus) + ": " + DecimalFormatter.toPumpSupportedBolus(insulinAfterConstraints, activePlugin.activePump, rh).formatColor(rh, R.color.bolus))
             if (recordOnlyChecked)
