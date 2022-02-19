@@ -918,11 +918,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }else if (AIMI_UAM_Novorapid){
             insulinPeakTime = 40 * 1.618 * circadian_sensitivity;
             }
-            enlog += "insulinPeakTime : "+insulinPeakTime+"\n";
+            //enlog += "insulinPeakTime : "+insulinPeakTime+"\n";
             // add 30m to allow for insulin delivery (SMBs or temps)
             //insulinPeakTime = 90;
             var insulinPeak5m = (insulinPeakTime/60)*12;
-            enlog += "insulinPeak5m : "+insulinPeak5m+"\n";
+            //enlog += "insulinPeak5m : "+insulinPeak5m+"\n";
             //console.error(insulinPeakTime, insulinPeak5m);//, profile.insulinPeakTime, profile.curve
             //console.log("insulinPeakTime : "+insulinPeakTime+" and insulinPeak5m : "+insulinPeak5m);
             // wait 90m before setting minIOBPredBG
