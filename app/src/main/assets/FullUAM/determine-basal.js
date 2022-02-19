@@ -1691,7 +1691,9 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
                 // allow SMBIntervals between 1 and 10 minutes
                 SMBInterval = Math.min(10,Math.max(1,profile.SMBInterval));
             }
-            if (AIMI_UAM && ! profile.temptargetSet && ! meal_data.carbs && !AIMI_COB && !iTime && iob_data > 0.8 * max_iob && meal_data.lastBolusSMBUnits >= 0.8 * AIMI_UAM_CAP){
+            if (AIMI_UAM && AIMI_BreakFastLight){
+            SMBInterval = 15;
+            }else if (AIMI_UAM && ! profile.temptargetSet && ! meal_data.carbs && !AIMI_COB && !iTime && iob_data > 0.8 * max_iob && meal_data.lastBolusSMBUnits >= 0.8 * AIMI_UAM_CAP){
             SMBInterval = 20;
             }else if (AIMI_UAM && ! profile.temptargetSet && ! meal_data.carbs && !AIMI_COB && !iTime && iob_data > 0.5 * max_iob){
             SMBInterval = 10;
