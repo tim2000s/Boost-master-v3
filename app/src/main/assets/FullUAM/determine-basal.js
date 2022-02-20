@@ -311,27 +311,27 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
         //var tdd7 = meal_data.TDDAIMI7;
         //var tdd7 = ((basal * 12)*100)/21;
-        var tdd7 = meal_data.TDDLast24;
+        var tdd24 = meal_data.TDDLast24;
         // Experimental base on 50% basal use during a normal day,
          //which is 21% of the current TDD base on an average data
         var tdd_pump_now = meal_data.TDDPUMP;
         var tdd_pump = (tdd_pump_now / (now / 24));
-        var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
-        enlog +="tdd7 : "+tdd7+"\n";
+        var TDD = (tdd24 * 0.4) + (tdd_pump * 0.6);
+        enlog +="tdd24 : "+tdd24+"\n";
         enlog +="TDD  : "+TDD+"\n";
         enlog +="Pump extrapolated TDD = "+tdd_pump+";\n";
         var smbTDD = 0;
-        if (tdd_pump < (0.3 * tdd7)) {
-            TDD = (tdd7 * 0.8) + (tdd_pump * 0.2);
+        if (tdd_pump < (0.3 * tdd24)) {
+            TDD = (tdd24 * 0.8) + (tdd_pump * 0.2);
             smbTDD = 1;
-            enlog +="tdd_pump is lesser than 30% tdd7\n";
-            } else if (tdd_pump < (0.5 * tdd7)){
-                TDD = (tdd7 * 0.5) + (tdd_pump * 0.5);
+            enlog +="tdd_pump is lesser than 30% tdd24\n";
+            } else if (tdd_pump < (0.5 * tdd24)){
+                TDD = (tdd24 * 0.5) + (tdd_pump * 0.5);
                 smbTDD = 1;
                 enlog +="TDD weighted to pump due to low insulin usage. TDD = "+TDD+";\n";
             }else{
 
-                enlog +="TDD 7 ="+tdd7+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";\n";
+                enlog +="TDD roling 24h ="+tdd24+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";\n";
             }
 
 
@@ -344,9 +344,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     }else if (now >= 2 && now < 3){
                          circadian_sensitivity = 0.8;
                     }else if (now >= 3 && now < 8){
-                         circadian_sensitivity = 0.6;
+                         circadian_sensitivity = 0.8;
                     }else if (now >= 8 && now < 11){
-                         circadian_sensitivity = 0.4;
+                         circadian_sensitivity = 0.6;
                     }else if (now >= 11 && now < 15){
                          circadian_sensitivity = 0.8;
                     }else if (now >= 15 && now <= 22){
@@ -416,7 +416,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
 
-        if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0 || smbTDD === 0 && iTime < iTimeProfile && tdd_pump >= tdd7*0.3 && CurrentTIR_70_140_Above > 20 ){
+        if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0 || smbTDD === 0 && iTime < iTimeProfile && tdd_pump >= tdd24*0.3 && CurrentTIR_70_140_Above > 20 ){
             TDD*=1.2;
             //console.log("TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% or TDD_pump > 0.3*TTD7 && iTime < iTimeProfile  <  :"+TDD);
             enlog +="TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% or TDD_pump > 0.3*TTD7 && iTime < iTimeProfile  <  :"+TDD+"\n";
@@ -488,9 +488,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
      halfBasalTarget = 160;
      var c = halfBasalTarget - normalTarget;
      sensitivityRatio = c/(c+target_bg-normalTarget);
+     sensitivityTDD = (TDD / tdd24);
+     enlog += "sensitivityTDD : "+sensitivityTDD+"\n";
      //sensitivityRatio = REBX;
      // limit sensitivityRatio to profile.autosens_max (1.2x by default)
-     sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+     sensitivityRatio = Math.min(sensitivityTDD, profile.autosens_max);
      sensitivityRatio = round(sensitivityRatio,2);
      enlog +="Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
      basal = profile.current_basal * sensitivityRatio;
@@ -519,9 +521,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         halfBasalTarget = 160;
         var c = halfBasalTarget - normalTarget;
         sensitivityRatio = c/(c+target_bg-normalTarget);
+        sensitivityTDD = (TDD / tdd24);
+        enlog += "sensitivityTDD : "+sensitivityTDD+"\n";
         //sensitivityRatio = REBX;
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
-        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+        sensitivityRatio = Math.min(sensitivityTDD, profile.autosens_max);
         sensitivityRatio = round(sensitivityRatio,2);
         enlog +="Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
         basal = profile.current_basal * sensitivityRatio;
@@ -545,9 +549,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         halfBasalTarget = 160;
         var c = halfBasalTarget - normalTarget;
         sensitivityRatio = c/(c+target_bg-normalTarget);
+        sensitivityTDD = (TDD / tdd24);
+        enlog += "sensitivityTDD : "+sensitivityTDD+"\n";
         //sensitivityRatio = REBX;
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
-        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+        sensitivityRatio = Math.min(sensitivityTDD, profile.autosens_max);
         sensitivityRatio = round(sensitivityRatio,2);
         enlog +="Sensitivity ratio set to "+sensitivityRatio+" based on temp target of "+target_bg+";\n";
         if (iTime < iTimeProfile || C1 > C2 ){
@@ -1050,7 +1056,7 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
 
 }
         console.log("------------------------------");
-                console.log(" AAPS-MASTER-3.0.1-AIMI V16 18/02/2022 ");
+                console.log(" AAPS-MASTER-3.0.1-AIMI V16 20/02/2022 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log(enlog);
