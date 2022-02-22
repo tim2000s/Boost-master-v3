@@ -1286,7 +1286,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var bga = Math.abs(bg-180);
                 var bg_adjust = bga / 40;
                 //console.error("bg_adjust value is "+bg_adjust+"; ");
-                var insulinDivisor = insulinReqPCT - Math.min((insulinPCTsubtract * bg_adjust),0.66);
+                var insulinDivisor = insulinReqPCT - Math.min((insulinPCTsubtract * bg_adjust),0.76);
                 console.error("Insulin Divisor is:"+insulinDivisor+"; ");
                 console.error("            ");
                 console.error("Value is "+((1/insulinDivisor) * 100)+"% of insulin required; ");
