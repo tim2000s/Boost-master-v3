@@ -261,7 +261,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         else{
         var tdd7 = ((basal * 12)*100)/21;
         }
-        console.error("7-day average TDD is: " +tdd7+ "; ");
+
 
 
     if (meal_data.TDDLast24){
@@ -277,9 +277,39 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         else {
         var tdd_pump = (( basal * 24 ) * 2.8);
         }
+        var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
 
-        var TDD = (tdd7 * 0.4) + (tdd_24 * 0.6);
+       console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
+        //if (tdd7 > 0){
+        if ( tdd_pump > tdd7 && now < 5 || now < 7 && TDD < ( 0.8 * tdd7 ) ){
+          TDD = ( 0.8 * tdd7 );
+          console.log("Excess or too low insulin from pump so TDD set to "+TDD+" based on 75% of TDD7; ");
+          rT.reason += "TDD: " +TDD+ " due to low or high tdd from pump; ";
+          }
 
+       else if (tdd_pump > (1.75 * tdd7)){
+           TDD = tdd7;
+           console.error("TDD set to TDD7 due to high pump usage reported. TDD = "+TDD+"; ");
+           rT.reason += "TDD set to TDD7 due to high pump usage reported. TDD = "+TDD+"; ";
+           }
+
+
+        else if (tdd_pump < (0.33 * tdd7)){
+           TDD = (tdd7 * 0.25) + (tdd_pump * 0.75);
+           console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
+           rT.reason += "TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ";
+           }
+
+        else {
+             console.log("TDD = " +TDD+ " based on standard pump 60/tdd7 40 split; ");
+             rT.reason += "TDD: " +TDD+ " based on standard pump 60/tdd7 40 split; ";
+             }
+
+
+        //var TDD = (tdd7 * 0.4) + (tdd_24 * 0.6);
+
+       console.error("                                 ");
+       console.error("7-day average TDD is: " +tdd7+ "; ");
        console.error("Rolling 24 hour TDD = "+tdd_24+"; ");
        console.error("Extrapolated TDD = "+tdd_pump+"; ");
        console.error("Calculated TDD = "+TDD+"; ");
