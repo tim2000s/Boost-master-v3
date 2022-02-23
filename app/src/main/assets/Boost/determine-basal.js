@@ -271,11 +271,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var tdd_24 = (( basal * 24 ) * 2.8);
         }
 
-        var TDD = (tdd7 * 0.3) + (tdd_24 * 0.7);
+   if (meal_data.TDDPUMP{
+        var tdd_pump = ( (meal_data.TDDPUMP / now ) * 24);
+        }
+        else {
+        var tdd_pump = (( basal * 24 ) * 2.8);
+        }
+
+        var TDD = (tdd7 * 0.4) + (tdd_24 * 0.6);
 
        console.error("Rolling 24 hour TDD = "+tdd_24+"; ");
-
-        /*if ( tdd_pump > tdd7 && now < 5 || now < 7 && TDD < ( 0.8 * tdd7 ) ){
+       console.error("Extrapolated TDD = "+tdd_pump+"; ");
+       console.error("RTDD = "+TDD+"; ");
+       /*if ( tdd_pump > tdd7 && now < 5 || now < 7 && TDD < ( 0.8 * tdd7 ) ){
           TDD = ( 0.8 * tdd7 );
           console.log("Excess or too low insulin from pump so TDD set to "+TDD+" based on 75% of TDD7; ");
           rT.reason += "TDD: " +TDD+ " due to low or high tdd from pump; ";
