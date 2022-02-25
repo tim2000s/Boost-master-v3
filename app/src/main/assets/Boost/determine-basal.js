@@ -1293,7 +1293,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     var maxBolus = round( profile.current_basal * 30 / 60 ,1);
                     console.error("profile.maxSMBBasalMinutes undefined: defaulting to 30m");
                 // if IOB covers more than COB, limit maxBolus to 30m of basal
-                } else if ( /*iob_data.iob > mealInsulinReq && */ iob_data.iob > -0.2 ) {
+                } else if ( /*iob_data.iob > mealInsulinReq &&*/  iob_data.iob > -0.2 ) {
                     console.error("IOB",iob_data.iob,"> COB",meal_data.mealCOB+"; mealInsulinReq =",mealInsulinReq);
                     if (profile.maxUAMSMBBasalMinutes) {
                         console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"profile.current_basal:",profile.current_basal);
@@ -1387,12 +1387,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.reason += "boost_max due to COB = " + insulinReq + "; ";
                     rT.reason += "Last carb age is: " + lastCarbAge + "; ";
                     rT.reason += "Primary carb handling code operating; "
-                    if (insulinReq > boostMaxIOB-iob_data.iob) {
+                    /*if (insulinReq > boostMaxIOB-iob_data.iob) {
                         insulinReq = boostMaxIOB-iob_data.iob;
                           }
                     else {
                           insulinReq = insulinReq;
-                         }
+                         }*/
                     var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,insulinReq)*roundSMBTo)/roundSMBTo;
                     console.error("Insulin required % ("+((1/insulinReqPCT) * 100)+"%) applied.");
                     }
@@ -1402,12 +1402,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                        rT.reason += "boost_max due to COB = " + cob_boost_max + "; ";
                        rT.reason += "Last carb age is: " + lastCarbAge + "; ";
                        rT.reason += "Secondary carb handling code operating; "
-                       if (insulinReq > boostMaxIOB-iob_data.iob) {
+                      /* if (insulinReq > boostMaxIOB-iob_data.iob) {
                        insulinReq = boostMaxIOB-iob_data.iob;
                           }
                     else {
                           insulinReq = insulinReq;
-                         }
+                         }*/
                     var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,cob_boost_max)*roundSMBTo)/roundSMBTo;
                     console.error("Insulin required % ("+((1/insulinReqPCT) * 100)+"%) applied.");
                  }
