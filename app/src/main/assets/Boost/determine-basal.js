@@ -310,9 +310,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
        console.error("                                 ");
        console.error("7-day average TDD is: " +tdd7+ "; ");
-       console.error("Rolling 24 hour TDD = "+tdd_24+"; ");
-       console.error("Extrapolated TDD = "+tdd_pump+"; ");
-       console.error("Calculated TDD = "+TDD+"; ");
+       console.error("Rolling 24 hour TDD: "+tdd_24+"; ");
+       console.error("Extrapolated TDD: "+tdd_pump+"; ");
+       console.error("Calculated TDD: "+TDD+"; ");
        /*if ( tdd_pump > tdd7 && now < 5 || now < 7 && TDD < ( 0.8 * tdd7 ) ){
           TDD = ( 0.8 * tdd7 );
           console.log("Excess or too low insulin from pump so TDD set to "+TDD+" based on 75% of TDD7; ");
