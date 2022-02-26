@@ -1220,7 +1220,7 @@
     <string name="pref_en">EN</string>
     <string name="key_use_eatingnow">key_use_eatingnow</string>
     <string name="key_eatingnow_iob">key_eatingnow_iob</string>
-    <string name="key_eatingnow_bgthreshold">key_eatingnow_bgthreshold</string>
+    <string name="key_eatingnow_smbbgoffset">key_eatingnow_smbbgoffset</string>
     <string name="key_use_ghostcob" translatable="false">key_use_ghostcob</string>
     <string name="key_use_AimiUAM" translatable="false">key_use_AimiUAM</string>
     <string name="key_use_AimiUAM_ISF" translatable="false">key_use_AimiUAM_ISF</string>
@@ -1244,7 +1244,7 @@
     <string name="key_eatingnow_itimeminutes">key_eatingnow_itimeminutes</string>
     <string name="key_eatingnow_isfboost_maxbolus">key_eatingnow_isfboost_maxbolus</string>
     <string name="key_eatingnow_isfbgscaler">key_eatingnow_isfbgscaler</string>
-    <string name="key_eatingnow_isfbgmax">key_eatingnow_isfbgmax</string>
+    <string name="key_eatingnow_isfbgoffset">key_eatingnow_isfbgoffset</string>
 <!--    <string name="key_eatingnow_isf_max_scale">key_eatingnow_isf_max_scale</string>-->
     <string name="key_eatingnow_iobmax">key_eatingnow_iobmax</string>
     <string name="key_eatingnow_timestart">key_eatingnow_timestart</string>
@@ -1252,5 +1252,8 @@
     <string name="key_openapsama_TDD" translatable="false">7 day average Total Daily Dose</string>
     <string name="key_eatingnow_COBeBGweight" translatable="false">key_eatingnow_COBeBGweight</string>
     <string name="key_eatingnow_UAMeBGweight" translatable="false">key_eatingnow_UAMeBGweight</string>
+    <string name="key_use_3pm_basal" translatable="false">key_use_3pm_basal</string>
+    <string name="key_use_sens_tdd" translatable="false">key_use_sens_tdd</string>
+    <string name="key_sens_tdd_scale" translatable="false">key_sens_tdd_scale</string>
 
 </resources>

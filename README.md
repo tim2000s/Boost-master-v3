@@ -158,6 +158,8 @@ UAMSMBBasalMinutes - 60 mins. This is only used overnight when IOB is large enou
 Boost insulin required percent - recommended not to exceed 75%. Start at 50% and increase as necessary.
 
 ########################################
+Eating Now Plugin - 27/02/22
+########################################
 This version of AAPS has evolved over time using elements from AIMI and Boost.
 This AAPS variation is called "Eating Now" (EN) as it is a reactive operating mode without needing to inform the system.
 The intent of this plugin is the same, to deliver insulin earlier using mostly openAPS predictions.
@@ -201,18 +203,17 @@ General:
                         This will be 65% when EN is not active.
     Max IOB:            The percentage of current max-iob setting that will be used as the limit for EN.
                         EN will not add insulin when above this limit.
-    SMB BG Threshold:   No SMB will be given when EN is outside operating hours and BG below this threshold.
-                        If there is COB, detected resistance from autosens or BG exceeds this threshold SMB will be resumed using normal AAPS maxBolus.
+    SMB BG Offset:      There will be no SMB when below this BG offset at night without COB or detected resistance.
+                        e.g. if target bg is 99/5.5 and this setting is 27/1.5 there will be no SMB below 126/7.0
     ISF BG Scaler:      As BG increases ISF will become stronger. The level of scaling can be adjusted.
-                        0 = normal scaling, 5 is 5% stronger, -5 is 5% weaker ISF scaling.
-    ISF BG Threshold:   As BG increases ISF will become stronger. ISF will no longer scale when above this level.
+                        0 = normal scaling, 5 is 5% stronger, -5 is 5% weaker ISF scaling. Additional scaling does not happen when EN is not active.
+    ISF BG Offset:      As BG increases ISF will become stronger. ISF will no longer scale when above this level.
+                        e.g. if target bg is 99/5.5 and this setting is 27/1.5 there will be no scaling above 126/7.0
 
 UAM:
     UAMBoost Bolus Scale:       Multiply the initial UAMBoost bolus by this amount. 0 will disable UAMBoost.
-    UAMBoost maxBolus:          maxBolus to use for all BG rises without COB.  0 will use maxSMBBasalMinutes or maxUAMSMBBasalMinutes.
-    UAM eventualBG Weighting:   This will be the initial weighting for eventualBG predictions without COB.
-                                As ISF grows stronger the weighting will reduce favouring current BG ISF.
-                                Setting to 50 will make this 50%. 0 will always use currentBG ISF without max ISF Limit applied.
+    UAM maxBolus:               maxBolus to use for all BG rises without COB.  0 will use maxSMBBasalMinutes or maxUAMSMBBasalMinutes.
+
 COB:
     Use GhostCOB:               Ignore COB predictions after the COBBoost Window and rely purely on UAM. This setting can be handy when COB lingers for too long.
     COBBoost InsulinReqPct:     Percentage that will be used for EN insulinReq within the COBBoost Window.
@@ -221,6 +222,10 @@ COB:
                                 0 minutes will disable this functionality.
     COBBoost maxBolus:          maxBolus to use within the COBBoost Window. 0 will use AAPS maxBolus.
     COB maxBolus:               maxBolus to use with COB outside of the initial COBBoost Window. 0 will use AAPS maxBolus.
-    COB eventualBG Weighting:   This will be the initial weighting for eventualBG predictions with COB.
-                                As ISF grows stronger the weighting will reduce favouring current BG ISF.
-                                Setting to 50 will make this 50%. 0 will always use currentBG ISF without max ISF Limit applied.
+
+EXPERIMENTAL:
+•	Use 3PM Basal ISF Variance:     Use 3PM Basal as the basis for ISF changes. The basal at 3PM is taken as the basis for baseline ISF.
+                                    Basal variation from this point is used to scale the ISF, stronger basal will make ISF weaker.
+                                    Only use when the profile uses a single ISF for 24 hours and the basal profile is fully populated.
+•	Use TDD for ISF:                Use the last 24H TDD for ISF. This will override the profile ISF and can be used with 3PM basal ISF variance.
+•	TDD ISF Scaling:                This will use a percentage of the calculated TDD ISF. If TDD ISF is too strong it can be reduced e.g. 50 will make TDD ISF 50% weaker.
