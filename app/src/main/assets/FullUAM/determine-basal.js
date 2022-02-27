@@ -472,7 +472,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
     var TriggerPredSMB = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
 
-
+    basal *= circadian_sensitivity;
+    enlog += "Basal circadian_sensitivity factor : "+basal+"\n";
 
 
     var csf = profile.sens / profile.carb_ratio ;
