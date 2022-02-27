@@ -159,8 +159,8 @@
             android:defaultValue="false"
             android:dependency="@string/key_use_smb"
             android:key="@string/key_enableBoostPercentScale"
-            android:summary="@string/enablesmbalways_summary"
-            android:title="@string/enablesmbalways" />
+            android:summary="@string/enableBoostPercentScale_summary"
+            android:title="@string/enableBoostPercentScale" />
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="3"
