@@ -359,10 +359,18 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
         else {
         sensitivityRatio = ( tdd_24 / tdd7 );
-        sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
-        sensitivityRatio = round(sensitivityRatio,2);
-        console.log("Sensitivity ratio: "+sensitivityRatio+"; ");
+            if (sensitivityRatio > 1) {
+            sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
+            sensitivityRatio = round(sensitivityRatio,2);
+            console.log("Sensitivity ratio: "+sensitivityRatio+"; ");
         }
+            else if( sensitivityRatio < 1) {
+            sensitivityRatio = Math.max(sensitivityRatio, profile.autosens_min);
+            sensitivityRatio = round(sensitivityRatio,2);
+            console.log("Sensitivity ratio: "+sensitivityRatio+"; ");
+                }
+        }
+
 
     if (sensitivityRatio) {
         basal = profile.current_basal * sensitivityRatio;
