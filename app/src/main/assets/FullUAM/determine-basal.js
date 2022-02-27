@@ -338,22 +338,29 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
          var iTime_Start_Bolus = profile.iTime_Start_Bolus;
         var iTimeProfile = profile.iTime;
         var LastManualBolus = meal_data.lastBolusNormalUnits;
-
+        var circadian_sensitivity = 1;
         if (now >= 0 && now < 2){
-                        circadian_sensitivity = 1.4;
-                    }else if (now >= 2 && now < 3){
-                         circadian_sensitivity = 0.8;
-                    }else if (now >= 3 && now < 8){
-                         circadian_sensitivity = 0.8;
-                    }else if (now >= 8 && now < 11){
-                         circadian_sensitivity = 0.6;
-                    }else if (now >= 11 && now < 15){
-                         circadian_sensitivity = 0.8;
-                    }else if (now >= 15 && now <= 22){
-                         circadian_sensitivity = 1.0;
-                    }else if (now >= 22 && now <= 24){
-                        circadian_sensitivity = 1.2;
-                    }
+            //circadian_sensitivity = 1.4;
+            now = Math.max(now,0.5);
+            circadian_sensitivity = (0.09130*Math.pow(now,3))-(0.33261*Math.pow(now,2))+1.4;
+        }else if (now >= 2 && now < 3){
+             //circadian_sensitivity = 0.8;
+             circadian_sensitivity = (0.0869*Math.pow(now,3))-(0.05217*Math.pow(now,2))-(0.23478*now)+0.8;
+        }else if (now >= 3 && now < 8){
+             //circadian_sensitivity = 0.8;
+             circadian_sensitivity = (0.0007*Math.pow(now,3))-(0.000730*Math.pow(now,2))-(0.0007826*now)+0.6;
+        }else if (now >= 8 && now < 11){
+             //circadian_sensitivity = 0.6;
+             circadian_sensitivity = (0.001244*Math.pow(now,3))-(0.007619*Math.pow(now,2))-(0.007826*now)+0.4;
+        }else if (now >= 11 && now < 15){
+             //circadian_sensitivity = 0.8;
+             circadian_sensitivity = (0.00078*Math.pow(now,3))-(0.00272*Math.pow(now,2))-(0.07619*now)+0.8;
+        }else if (now >= 15 && now <= 22){
+             circadian_sensitivity = 1.0;
+        }else if (now >= 22 && now <= 24){
+            //circadian_sensitivity = 1.2;
+            circadian_sensitivity = (0.000125*Math.pow(now,3))-(0.0015*Math.pow(now,2))-(0.0045*now)+1.2;
+        }
         enlog += "circadian_sensitivity : "+circadian_sensitivity+"\n";
         //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var lastbolusAge = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
@@ -438,8 +445,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //"+variable_sens+" ; ");
     //console.log("TDDnow : "+TDDnow+";");
     //sens = variable_sens;
+    var TDDaverage3 = meal_data.TDDAIMI3;
+    var MagicNumber = profile.sens*TDDaverage3*profile.min_bg;
+    enlog += "TDDaverage3("+TDDaverage3+") and MagicNumber("+MagicNumber+")\n";
     var sens_normalTarget = sens; // use profile for now * EXPERIMENT *
-    var sens_TDD = round((277700 / (TDD * normalTarget)),1);
+    //var sens_TDD = round((277700 / (TDD * normalTarget)),1);
+    var sens_TDD = round((MagicNumber / (TDD * normalTarget)),1);
     var sens_avg = (sens_normalTarget+sens_TDD)/2;
     var sens_normalTarget = sens_avg;
     var sens_currentBG = sens_normalTarget/(bg/normalTarget); // * EXPERIMENT *
@@ -1016,22 +1027,17 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.error("UAM Impact:",uci,"mg/dL per 5m; UAM Duration:",UAMduration,"hours");
     console.log("EventualBG is" +eventualBG+" ;");
     var TrigPredAIMI =  (TriggerPredSMB_future_sens_60 + TriggerPredSMB_future_sens_35) / 1.618;
-    //var AIMI_ISF = profile.key_use_AimiUAM_ISF;
+    var AIMI_ISF = profile.key_use_AimiUAM_ISF;
     if ( meal_data.TDDPUMP ){
         //var future_sens = ( 277700 / (TDD * eventualBG));
         //var future_sens = round(future_sens,1);
         if( glucose_status.delta >= 0 && iTime < iTimeProfile ) {
-        var future_sens = ( 277700 / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
+        var future_sens = ( MagicNumber / (TDD * ( (eventualBG * 0.6) + (bg * 0.4) )));
         console.log("Future state sensitivity is " +future_sens+" based on a weighted average of bg & eventual bg");
         }else if (iTime < iTimeProfile){
-        var future_sens = ( 277700 / (TDD * eventualBG));
+        var future_sens = ( MagicNumber / (TDD * eventualBG));
         console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
-        }/*else if(AIMI_ISF && C1 > C2 && iTime > iTimeProfile){
-
-            var future_sens = ( 277700 / (TDD * TrigPredAIMI));
-            console.log("*****Future state sensitivity is " +future_sens+" based on TrigPredAIMI("+TrigPredAIMI+")\n");
-
-        }*/else{
+        }else{
         var future_sens = sens;
         }
     }else{
@@ -1043,7 +1049,7 @@ var TriggerPredSMB_future_sens_60 = round( bg - (iob_data.iob * future_sens) ) +
 var TriggerPredSMB_future_sens_45 = round( bg - (iob_data.iob * future_sens) ) + round( 45 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 var TriggerPredSMB_future_sens_35 = round( bg - (iob_data.iob * future_sens) ) + round( 35 / 5 * ( minDelta - round(( -iob_data.activity * future_sens * 5 ), 2)));
 var TrigPredAIMI =  (TriggerPredSMB_future_sens_60 + TriggerPredSMB_future_sens_35) / 1.618;
-var AIMI_ISF = profile.key_use_AimiUAM_ISF;
+//var AIMI_ISF = profile.key_use_AimiUAM_ISF;
 if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_BL_EndTime){
 
     var future_sens = sens;
@@ -1051,12 +1057,13 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
 
 }else if(AIMI_ISF && AIMI_UAM && !AIMI_PBolus && !AIMI_COB && C1 > C2){
 
-    var future_sens = ( 277700 / (TDD * TrigPredAIMI));
-    console.log("*****Future state sensitivity is " +future_sens+" based on TrigPredAIMI("+TrigPredAIMI+")\n");
+    //var future_sens = ( 277700 / (TDD * TrigPredAIMI));
+    var future_sens = ( (MagicNumber/1.618) / (TDD * bg));
+    console.log("*****Future state sensitivity is " +future_sens+" based on bg("+bg+")\n");
 
 }
         console.log("------------------------------");
-                console.log(" AAPS-MASTER-3.0.1-AIMI V16 20/02/2022 ");
+                console.log(" AAPS-MASTER-3.0.1-AIMI V17 27/02/2022 ");
                 console.log("------------------------------");
                 if ( meal_data.TDDPUMP ){
                 console.log(enlog);
@@ -1561,25 +1568,25 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
                 insulinReqPCT = 0.8;
                 var microBolus = Math.min(insulinReq*insulinReqPCT, maxBolusTT);
 
-            }else if (AIMI_UAM_U200 && !AIMI_UAM_Novorapid && !AIMI_UAM_Fiasp && !AIMI_UAM_U100 && AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_BL_EndTime && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 2 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (smb_ratio*limitIOB/2)){
+            }else if (AIMI_UAM_U200 && !AIMI_UAM_Novorapid && !AIMI_UAM_Fiasp && !AIMI_UAM_U100 && AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_BL_EndTime && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 0 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (smb_ratio*limitIOB/2)){
 
                        insulinReq = round((((glucose_status.delta * 3.1416) + (bg*0.52) ) / future_sens) * smb_ratio,2);
                        //maxBolusTT = round(((smb_max_range * profile.current_basal * profile.maxUAMSMBBasalMinutes * 1.618)+(glucose_status.delta * 1.618) / 60) *(insulinReq/1.618) ,1);
 
-                       var microBolus = Math.min(AIMI_UAM_CAP,(insulinReq/2)*Hypo_ratio);
+                       var microBolus = Math.min(AIMI_UAM_CAP/2,(insulinReq/2)*Hypo_ratio);
                        console.log("***FullUAM*** U200 - Breakfast Light - InsulinReq("+insulinReq/2+"), limitIOB("+limitIOB+"), smb_ratio("+smb_ratio+"), TriggerPredSMB_future_sens_45("+TriggerPredSMB_future_sens_45+")\n");
 
 
 
-            }else if (!AIMI_UAM_U200 && !AIMI_UAM_Fiasp && !AIMI_UAM_Novorapid && AIMI_UAM_U100 && AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_BL_EndTime && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 2 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (smb_ratio*limitIOB/2)){
+            }else if (!AIMI_UAM_U200 && !AIMI_UAM_Fiasp && !AIMI_UAM_Novorapid && AIMI_UAM_U100 && AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_BL_EndTime && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 0 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (smb_ratio*limitIOB/2)){
 
                         insulinReq = round((((glucose_status.delta * 3.1416) + (bg*0.52) ) / future_sens) * smb_ratio,2);
                         //maxBolusTT = round(((smb_max_range * profile.current_basal * profile.maxUAMSMBBasalMinutes * 1.618)+(glucose_status.delta * 1.618) / 60) *(insulinReq/1.618) ,1);
 
-                        var microBolus = Math.min(AIMI_UAM_CAP,(insulinReq*Hypo_ratio));
+                        var microBolus = Math.min(AIMI_UAM_CAP/2,(insulinReq*Hypo_ratio));
                         console.log("***FullUAM*** U100 - Breakfast Light - InsulinReq("+insulinReq+"), limitIOB("+limitIOB+"), smb_ratio("+smb_ratio+"), TriggerPredSMB_future_sens_45("+TriggerPredSMB_future_sens_45+")\n");
 
-            }else if (AIMI_UAM_U200 && !AIMI_UAM_Novorapid && !AIMI_UAM_Fiasp && !AIMI_UAM_U100 && AIMI_UAM && !AIMI_BreakFastLight && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 2 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (bgDegree*limitIOB)){
+            }else if (AIMI_UAM_U200 && !AIMI_UAM_Novorapid && !AIMI_UAM_Fiasp && !AIMI_UAM_U100 && AIMI_UAM && !AIMI_BreakFastLight && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 0 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (bgDegree*limitIOB)){
 
                       insulinReq = round((((glucose_status.delta * 3.1416) + (bg*0.52) ) / future_sens) * bgDegree,2);
                       //maxBolusTT = round(((smb_max_range * profile.current_basal * profile.maxUAMSMBBasalMinutes * 1.618)+(glucose_status.delta * 1.618) / 60) *(insulinReq/1.618) ,1);
@@ -1587,13 +1594,13 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
                       var microBolus = Math.min(AIMI_UAM_CAP,(insulinReq*Hypo_ratio));
                       console.log("***FullUAM*** U200 - InsulinReq("+insulinReq+"), limitIOB("+limitIOB+"), TriggerPredSMB_future_sens_45("+TriggerPredSMB_future_sens_45+"), bgDegree("+bgDegree+") \n");
 
-            }else if(!AIMI_UAM_U200 && !AIMI_UAM_Fiasp && !AIMI_UAM_Novorapid && AIMI_UAM_U100 && AIMI_UAM && !AIMI_BreakFastLight && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 2 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (bgDegree*2*limitIOB)){
+            }else if(!AIMI_UAM_U200 && !AIMI_UAM_Fiasp && !AIMI_UAM_Novorapid && AIMI_UAM_U100 && AIMI_UAM && !AIMI_BreakFastLight && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 0 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (bgDegree*2*limitIOB)){
 
                     insulinReq = round((((glucose_status.delta * 3.1416) + (bg*0.52) ) / future_sens) * bgDegree,2);
                     var microBolus = Math.min(AIMI_UAM_CAP,(insulinReq * 2 * Hypo_ratio));
                     console.log("***FullUAM*** U200 - InsulinReq("+insulinReq+"), limitIOB("+limitIOB+"), TriggerPredSMB_future_sens_45("+TriggerPredSMB_future_sens_45+"), bgDegree("+bgDegree+") \n");
 
-            }else if (!AIMI_UAM_U200 && AIMI_UAM_Fiasp && !AIMI_UAM_Novorapid && !AIMI_UAM_U100 && AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_BL_EndTime && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 2 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (smb_ratio*limitIOB/2)){
+            }else if (!AIMI_UAM_U200 && AIMI_UAM_Fiasp && !AIMI_UAM_Novorapid && !AIMI_UAM_U100 && AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_BL_EndTime && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 0 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (smb_ratio*limitIOB/2)){
 
                       insulinReq = round((((glucose_status.delta * 3.1416) + (bg*0.52) ) / future_sens) * smb_ratio,2);
                                      //maxBolusTT = round(((smb_max_range * profile.current_basal * profile.maxUAMSMBBasalMinutes * 1.618)+(glucose_status.delta * 1.618) / 60) *(insulinReq/1.618) ,1);
@@ -1601,7 +1608,7 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
                       var microBolus = Math.min(AIMI_UAM_CAP,(insulinReq/2)*Hypo_ratio);
                       console.log("***UAM*** Fiasp - Breakfast Light - InsulinReq("+insulinReq+"), limitIOB("+limitIOB+"), smb_ratio("+smb_ratio+"), TriggerPredSMB_future_sens_45("+TriggerPredSMB_future_sens_45+")\n");
 
-            }else if (!AIMI_UAM_U200 && !AIMI_UAM_Novorapid && AIMI_UAM_Fiasp && !AIMI_UAM_U100 && AIMI_UAM && !AIMI_BreakFastLight && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 2 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (bgDegree*limitIOB)){
+            }else if (!AIMI_UAM_U200 && !AIMI_UAM_Novorapid && AIMI_UAM_Fiasp && !AIMI_UAM_U100 && AIMI_UAM && !AIMI_BreakFastLight && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 0 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (bgDegree*limitIOB)){
 
                        insulinReq = round((((glucose_status.delta * 3.1416) + (bg*0.52) ) / future_sens) * bgDegree,2);
                                    //maxBolusTT = round(((smb_max_range * profile.current_basal * profile.maxUAMSMBBasalMinutes * 1.618)+(glucose_status.delta * 1.618) / 60) *(insulinReq/1.618) ,1);
@@ -1609,15 +1616,15 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
                        var microBolus = Math.min(AIMI_UAM_CAP,(insulinReq*Hypo_ratio));
                        console.log("***UAM*** Fiasp - InsulinReq("+insulinReq+"), limitIOB("+limitIOB+"), TriggerPredSMB_future_sens_45("+TriggerPredSMB_future_sens_45+"), bgDegree("+bgDegree+") \n");
 
-            }else if (!AIMI_UAM_U200 && !AIMI_UAM_Fiasp && AIMI_UAM_Novorapid && !AIMI_UAM_U100 && AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_BL_EndTime && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 2 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (smb_ratio*limitIOB/2)){
+            }else if (!AIMI_UAM_U200 && !AIMI_UAM_Fiasp && AIMI_UAM_Novorapid && !AIMI_UAM_U100 && AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_BL_EndTime && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 0 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (smb_ratio*limitIOB/2)){
 
                        insulinReq = round((((glucose_status.delta * 3.1416) + (bg*0.52) ) / future_sens) * smb_ratio,2);
                                       //maxBolusTT = round(((smb_max_range * profile.current_basal * profile.maxUAMSMBBasalMinutes * 1.618)+(glucose_status.delta * 1.618) / 60) *(insulinReq/1.618) ,1);
 
-                       var microBolus = Math.min(AIMI_UAM_CAP,(insulinReq/2)*Hypo_ratio);
+                       var microBolus = Math.min(AIMI_UAM_CAP/2,(insulinReq/2)*Hypo_ratio);
                        console.log("***UAM*** Novorapid - Breakfast Light - InsulinReq("+insulinReq+"), limitIOB("+limitIOB+"), smb_ratio("+smb_ratio+"), TriggerPredSMB_future_sens_45("+TriggerPredSMB_future_sens_45+")\n");
 
-             }else if (!AIMI_UAM_U200 && AIMI_UAM_Novorapid && !AIMI_UAM_Fiasp && !AIMI_UAM_U100 && AIMI_UAM && !AIMI_BreakFastLight && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 2 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (bgDegree*limitIOB)){
+             }else if (!AIMI_UAM_U200 && AIMI_UAM_Novorapid && !AIMI_UAM_Fiasp && !AIMI_UAM_U100 && AIMI_UAM && !AIMI_BreakFastLight && !AIMI_COB && !AIMI_PBolus && ! profile.temptargetSet && ! meal_data.carbs && TriggerPredSMB_future_sens_45 > C2 && glucose_status.delta > 0 && glucose_status.long_avgdelta > 0  && iob_data.iob <= (bgDegree*limitIOB)){
 
                         insulinReq = round((((glucose_status.delta * 3.1416) + (bg*0.52) ) / future_sens) * bgDegree,2);
                                     //maxBolusTT = round(((smb_max_range * profile.current_basal * profile.maxUAMSMBBasalMinutes * 1.618)+(glucose_status.delta * 1.618) / 60) *(insulinReq/1.618) ,1);
@@ -1657,7 +1664,7 @@ if (AIMI_UAM && AIMI_BreakFastLight && now >= AIMI_BL_StartTime && now <= AIMI_B
             worstCaseInsulinReq = (smbTarget - (naive_eventualBG + minIOBPredBG)/2 ) / sens;
             durationReq = round(30*worstCaseInsulinReq / basal);
 
-            if (meal_data.mealCOB==0 && TriggerPredSMB_future_sens_45 < 120)  {
+            if (meal_data.mealCOB==0 && TriggerPredSMB_future_sens_45 < 100)  {
             //if (!eatingnowtimeOK && bg < EatingNowBGThreshold && meal_data.mealCOB==0)  {
                 //var maxBolus = round( profile.current_basal * 30 / 60 ,1);
                 microBolus = 0;

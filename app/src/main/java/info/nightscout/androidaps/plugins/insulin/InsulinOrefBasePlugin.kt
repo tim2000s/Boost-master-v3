@@ -18,6 +18,7 @@ import kotlin.math.exp
 import kotlin.math.pow
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.hours
 
 /**
  * Created by adrian on 13.08.2017.
@@ -80,9 +81,10 @@ abstract class InsulinOrefBasePlugin(
         if (bolus.amount != 0.0) {
             val bolusTime = bolus.timestamp
             val t = (time - bolusTime) / 1000.0 / 60.0
-            val now = System.currentTimeMillis()
+            val now = System.currentTimeMillis() / (1000*60*60)
+
             var circadian_sensitivity = 1.0
-            if (now >= 0 && now < 2){
+            /*if (now >= 0 && now < 2){
                 circadian_sensitivity = 1.4
             }else if (now >= 2 && now < 3){
                  circadian_sensitivity = 0.8
@@ -96,6 +98,27 @@ abstract class InsulinOrefBasePlugin(
                  circadian_sensitivity = 1.0
             }else if (now >= 22 && now <= 24){
                 circadian_sensitivity = 1.2
+            }*/
+            if (now >= 0 && now < 2){
+                //circadian_sensitivity = 1.4;
+                circadian_sensitivity = (0.09130*Math.pow(now.toDouble(),3.0))-(0.33261*Math.pow(now.toDouble(),2.0))+1.4
+            }else if (now >= 2 && now < 3){
+                //circadian_sensitivity = 0.8;
+                circadian_sensitivity = (0.0869*Math.pow(now.toDouble(),3.0))-(0.05217*Math.pow(now.toDouble(),2.0))-(0.23478*now)+0.8
+            }else if (now >= 3 && now < 8){
+                //circadian_sensitivity = 0.8;
+                circadian_sensitivity = (0.0007*Math.pow(now.toDouble(),3.0))-(0.000730*Math.pow(now.toDouble(),2.0))-(0.0007826*now)+0.6
+            }else if (now >= 8 && now < 11){
+                //circadian_sensitivity = 0.6;
+                circadian_sensitivity = (0.001244*Math.pow(now.toDouble(),3.0))-(0.007619*Math.pow(now.toDouble(),2.0))-(0.007826*now)+0.4
+            }else if (now >= 11 && now < 15){
+                //circadian_sensitivity = 0.8;
+                circadian_sensitivity = (0.00078*Math.pow(now.toDouble(),3.0))-(0.00272*Math.pow(now.toDouble(),2.0))-(0.07619*now)+0.8
+            }else if (now >= 15 && now <= 22){
+                circadian_sensitivity = 1.0
+            }else if (now >= 22 && now <= 24){
+                //circadian_sensitivity = 1.2;
+                circadian_sensitivity = (0.000125*Math.pow(now.toDouble(),3.0))-(0.0015*Math.pow(now.toDouble(),2.0))-(0.0045*now)+1
             }
             // force the IOB to 0 if over DIA hours have passed
             if (t < 3.8 * circadian_sensitivity * 60 && (insulinID == 6 || insulinID == 7)) { //MP: Fixed DIA cut-off of 8 h - the model automatically changes its DIA based on the bolus size, thus no user-set DIA is required.
