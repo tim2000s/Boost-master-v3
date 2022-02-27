@@ -155,6 +155,13 @@
             android:summary="@string/enablesmbaftercarbs_summary"
             android:title="@string/enablesmbaftercarbs" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/key_use_smb"
+            android:key="@string/key_enableBoostPercentScale"
+            android:summary="@string/enableBoostPercentScale_summary"
+            android:title="@string/enableBoostPercentScale" />
+
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="3"
             android:digits="0123456789"
