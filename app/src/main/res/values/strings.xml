@@ -74,7 +74,12 @@
     <string name="description_food">Displays the food presets defined in Nightscout</string>
     <string name="description_insulin_rapid">Insulin preset for Humalog and NovoRapid / NovoLog</string>
     <string name="description_insulin_ultra_rapid">Insulin preset for Fiasp</string>
-    <string name="description_insulin_lyumjev">Insulin preset for Lyumjev</string>
+    <string name="description_insulin_lyumjev">Insulin preset for Lyumjev. (classic
+        pharmacokinetic model)</string>
+    <string name="description_insulin_lyumjev_U100_PD">Glucodynamic model for Lyumjev U100 (standard concentration); This model automatically adjusts the duration of insulin action (DIA).</string>
+    <string name="description_insulin_lyumjev_U200_PD">Glucodynamic model for Lyumjev U200 (2 x
+        concentrated); This model automatically adjusts the duration of insulin action (DIA).
+        YOU MUST HALVE YOUR BASALS AND DOUBLE YOUR ISFS BEFORE USE!</string>
     <string name="description_insulin_free_peak">Allows you to define the peak of the insulin activity and should only be used by advanced users</string>
     <string name="description_loop">Activate or deactivate the implementation triggering the loop.</string>
     <string name="description_ns_client">Synchronizes your data with Nightscout</string>
@@ -574,7 +579,9 @@
     <string name="free_peak_oref">Free-Peak Oref</string>
     <string name="rapid_acting_oref">Rapid-Acting Oref</string>
     <string name="ultrarapid_oref">Ultra-Rapid Oref</string>
-    <string name="lyumjev">Lyumjev</string>
+    <string name="lyumjev">Lyumjev (classic)</string>
+    <string name="lyumjev_U100_PD">Lyumjev U100</string>
+    <string name="lyumjev_U200_PD">Lyumjev U200</string>
     <string name="dia_too_short">DIA of %1$f too short - using %2$f instead!</string>
     <string name="activate_profile">Activate profile</string>
     <string name="invalid">INVALID</string>
@@ -1216,7 +1223,7 @@
     <string name="pref_en">EN</string>
     <string name="key_use_eatingnow">key_use_eatingnow</string>
     <string name="key_eatingnow_iob">key_eatingnow_iob</string>
-    <string name="key_eatingnow_bgthreshold">key_eatingnow_bgthreshold</string>
+    <string name="key_eatingnow_smbbgoffset">key_eatingnow_smbbgoffset</string>
     <string name="key_use_ghostcob" translatable="false">key_use_ghostcob</string>
     <string name="key_use_AimiUAM" translatable="false">key_use_AimiUAM</string>
     <string name="key_use_AimiUAM_ISF" translatable="false">key_use_AimiUAM_ISF</string>
@@ -1240,7 +1247,7 @@
     <string name="key_eatingnow_itimeminutes">key_eatingnow_itimeminutes</string>
     <string name="key_eatingnow_isfboost_maxbolus">key_eatingnow_isfboost_maxbolus</string>
     <string name="key_eatingnow_isfbgscaler">key_eatingnow_isfbgscaler</string>
-    <string name="key_eatingnow_isfbgmax">key_eatingnow_isfbgmax</string>
+    <string name="key_eatingnow_isfbgoffset">key_eatingnow_isfbgoffset</string>
 <!--    <string name="key_eatingnow_isf_max_scale">key_eatingnow_isf_max_scale</string>-->
     <string name="key_eatingnow_iobmax">key_eatingnow_iobmax</string>
     <string name="key_eatingnow_timestart">key_eatingnow_timestart</string>
@@ -1248,5 +1255,8 @@
     <string name="key_openapsama_TDD" translatable="false">7 day average Total Daily Dose</string>
     <string name="key_eatingnow_COBeBGweight" translatable="false">key_eatingnow_COBeBGweight</string>
     <string name="key_eatingnow_UAMeBGweight" translatable="false">key_eatingnow_UAMeBGweight</string>
+    <string name="key_use_3pm_basal" translatable="false">key_use_3pm_basal</string>
+    <string name="key_use_sens_tdd" translatable="false">key_use_sens_tdd</string>
+    <string name="key_sens_tdd_scale" translatable="false">key_sens_tdd_scale</string>
 
 </resources>

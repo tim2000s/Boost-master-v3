@@ -146,8 +146,8 @@
             android:defaultValue="false"
             android:dependency="@string/key_use_AimiUAM"
             android:key="@string/key_use_AIMI_BreakFastLight"
-            android:summary="Active with AIMI FULL UAM mode a smaller answer during the morning"
-            android:title="AIMI UAM BreakFast Light" />
+            android:summary="Active with AIMI FULL UAM mode a smaller answer during the night and the morning"
+            android:title="AIMI UAM BreakFast Light/Night " />
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="6"
