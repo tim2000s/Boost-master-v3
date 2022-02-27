@@ -212,6 +212,7 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
         //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, BoostDefaults.low_temptarget_lowers_sensitivity));
         this.profile.put("high_temptarget_raises_sensitivity",sp.getBoolean(rh.gs(R.string.key_high_temptarget_raises_sensitivity),BoostDefaults.high_temptarget_raises_sensitivity))
         this.profile.put("low_temptarget_lowers_sensitivity",sp.getBoolean(rh.gs(R.string.key_low_temptarget_lowers_sensitivity),BoostDefaults.low_temptarget_lowers_sensitivity))
+        this.profile.put("enableBoostPercentScale", sp.getBoolean(R.string.key_enableBoostPercentScale, false))
         //this.profile.put("low_temptarget_lowers_sensitivity", false)
 //**********************************************************************************************************************************************
         this.profile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, BoostDefaults.sensitivity_raises_target))
