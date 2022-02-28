@@ -303,7 +303,6 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
         val lastBolusNormalUnits = if (getlastBolusNormal is ValueWrapper.Existing) getlastBolusNormal.value.amount else 0L
         this.mealData.put("lastBolusNormalUnits", lastBolusNormalUnits)
 
-        val getlastBG =
         // get the last carb time for EN activation
         val getlastCarbs = repository.getLastCarbsRecordWrapped().blockingGet()
         val lastCarbTime = if (getlastCarbs is ValueWrapper.Existing) getlastCarbs.value.timestamp else 0L
