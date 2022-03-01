@@ -395,8 +395,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     sens_TDD = sens_TDD / (profile.sens_TDD_scale/100);
     sens_TDD = (sens_TDD > sens*3 ? sens : sens_TDD); // fresh install of v3
     enlog += "sens_TDD scaled by "+profile.sens_TDD_scale+"%:" + convert_bg(sens_TDD, profile) +"\n";
-    // If Use TDD ISF is enabled in profile
-    sens_normalTarget = (profile.use_sens_TDD ? sens_TDD : sens_normalTarget);
+    // If Use TDD ISF is enabled in profile also adjust for when a high TT using SR if applicable
+    sens_normalTarget = (profile.use_sens_TDD ? sens_TDD / sensitivityRatio : sens_normalTarget);
 
     //circadian sensitivity curve
     // https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3879757/
@@ -440,7 +440,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     enlog += "SMBbgOffset:"+SMBbgOffset+"\n";
 
     // use normal sens when EN not active at night or TT not normalTarget
-    sens = (eatingnow ? sens_currentBG : sens_profile);
+    sens = (eatingnow ? sens_currentBG : sens_normalTarget);
     // at night with SR use the sens_currentBG
     sens = (!eatingnow && !eatingnowtimeOK ? sens_currentBG : sens); // at night use sens_currentBG without SR
     enlog += "sens final result:"+sens+"="+convert_bg(sens, profile)+"\n";
