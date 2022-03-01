@@ -387,7 +387,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     enlog += "* advanced ISF:\n";
     // ISF at normal target
-    var sens_normalTarget = sens; // use profile sens
+    var sens_normalTarget = sens, sens_profile = sens; // use profile sens and keep profile sens with any SR
     enlog += "sens_normalTarget:" + convert_bg(sens_normalTarget, profile)+"\n";
 
     // ISF based on TDD
@@ -441,7 +441,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     enlog += "SMBbgOffset:"+SMBbgOffset+"\n";
 
     // use normal sens when EN not active at night or TT not normalTarget
-    sens = (eatingnow ? sens_currentBG : sens_normalTarget);
+    sens = (eatingnow ? sens_currentBG : sens_profile);
     // at night with SR use the sens_currentBG
     sens = (!eatingnow && !eatingnowtimeOK ? sens_currentBG : sens); // at night use sens_currentBG without SR
     enlog += "sens final result:"+sens+"="+convert_bg(sens, profile)+"\n";
@@ -878,18 +878,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //sens_eBGweight = (sens_predType=="UAM" ? profile.UAMeBGweight/100 : sens_eBGweight); // eBGw start at 60% and decreases with ISF scaling
         //sens_eBGweight = (sens_predType=="COB" ? profile.COBeBGweight/100 : sens_eBGweight); // eBGw start at 75% and decreases with ISF scaling
         //sens_eBGweight = (sens_predType=="UAM" ? 0.60 : sens_eBGweight); // eBGw start at 60% and decreases with ISF scaling
-        sens_eBGweight = (sens_predType=="UAM" && UAMBoost >= 1.2 ? 0.60 : sens_eBGweight); // eBGw start at 60% and decreases with ISF scaling
+        sens_eBGweight = (sens_predType=="UAM" && UAMBoost > 1.0 ? 0.60 : sens_eBGweight); // eBGw start at 60% and decreases with ISF scaling
         sens_eBGweight = (sens_predType=="COB" ? 0.75 : sens_eBGweight); // eBGw start at 75% and decreases with ISF scaling
-        sens_eBGweight = (sens_eBGweight > 0 ? Math.min(Math.max((sens_currentBG/sens_normalTarget)-(1-sens_eBGweight),0),sens_eBGweight) : sens_eBGweight); // start at eBGw, max eBGw, min 0
+        sens_eBGweight = (sens_eBGweight > 0 ? Math.min(Math.max((sens_currentBG/sens_profile)-(1-sens_eBGweight),0),sens_eBGweight) : sens_eBGweight); // start at eBGw, max eBGw, min 0
+        //sens_eBGweight = (sens_eBGweight > 0 ? Math.min(Math.max((sens_currentBG/sens_normalTarget)-(1-sens_eBGweight),0),sens_eBGweight) : sens_eBGweight); // start at eBGw, max eBGw, min 0
         sens_eBGweight = (sens_predType=="BGL" ? 0 : sens_eBGweight); // small delta uses current bg
-        sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /target_bg) * sens_BGscaler;
+        sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /target_bg);
         // EXPERIMENTAL RESTRICTION OF SENS_FUTURE
-        sens_future = (bg >= ISFbgMax ? sens_currentBG : sens_future);
-        sens_future_max = (bg >= ISFbgMax);
+        //sens_future = (bg >= ISFbgMax ? sens_currentBG : sens_future);
+        //sens_future_max = (bg >= ISFbgMax);
     } else if (glucose_status.delta < 0 && eatingnow){
         sens_eBGweight = 1; // usually -ve delta is lower eventualBG so trust it unless COB
         sens_eBGweight = (sens_predType=="BGL" ? 0 : sens_eBGweight); // small delta uses current bg
-        sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /target_bg) * sens_BGscaler;
+        sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /target_bg);
         sens_future = Math.max(sens,sens_future); // use maximum ISF as we are dropping
     }
 
@@ -897,8 +898,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (COBBoostOK && sens_predType == "COB") {
         //sens_eBGweight = profile.COBeBGweight/100; // eBGw start at x% and decreases with ISF scaling
         sens_eBGweight = 0.75; // eBGw start at 75% and decreases with ISF scaling
-        sens_eBGweight = (sens_eBGweight > 0 ? Math.min(Math.max((sens_currentBG/sens_normalTarget)-(1-sens_eBGweight),0),sens_eBGweight) : 0); // start at eBGw, max eBGw, min 0
-        sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /target_bg) * sens_BGscaler;
+        sens_eBGweight = (sens_eBGweight > 0 ? Math.min(Math.max((sens_currentBG/sens_profile)-(1-sens_eBGweight),0),sens_eBGweight) : 0); // start at eBGw, max eBGw, min 0
+        //sens_eBGweight = (sens_eBGweight > 0 ? Math.min(Math.max((sens_currentBG/sens_normalTarget)-(1-sens_eBGweight),0),sens_eBGweight) : 0); // start at eBGw, max eBGw, min 0
+        sens_future = sens_normalTarget / (((Math.max(eventualBG,40) * sens_eBGweight) + (bg * (1-sens_eBGweight))) /target_bg);
     }
 
 //    // Outside of the COBBoost Window with COB limit the ISF
@@ -1034,7 +1036,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     rT.COB=meal_data.mealCOB;
     rT.IOB=iob_data.iob;
-    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + ", ISF: " + convert_bg(sens_normalTarget, profile) + "/" + convert_bg(sens, profile) + (bg >= ISFbgMax ? "*" : "") + "=" + convert_bg(sens_future, profile) + (sens_future_max ? "*" : "") + " ("+sens_predType+":"+round(sens_eBGweight*100)+"%)" + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
+    rT.reason="COB: " + round(meal_data.mealCOB, 1) + ", Dev: " + convert_bg(deviation, profile) + ", BGI: " + convert_bg(bgi, profile) + ", Delta: " + glucose_status.delta + "/" + glucose_status.short_avgdelta + ", ISF: " + convert_bg(sens_normalTarget, profile) + "/" + convert_bg(sens, profile) + (bg >= ISFbgMax ? "*" : "") + "=" + convert_bg(sens_future, profile) + (sens_future_max ? "*" : "") + ", eBGweight: "+round(sens_eBGweight*100)+"%" + ", CR: " + round(profile.carb_ratio, 2) + ", Target: " + convert_bg(target_bg, profile) + (target_bg !=normalTarget ? "(" +convert_bg(normalTarget, profile)+")" : "") + ", minPredBG " + convert_bg(minPredBG, profile) + ", minGuardBG " + convert_bg(minGuardBG, profile) + ", IOBpredBG " + convert_bg(lastIOBpredBG, profile);
 
     if (lastCOBpredBG > 0) {
         rT.reason += ", " + (ignoreCOB && !COBBoostOK ? "!" : "") + "COBpredBG " + convert_bg(lastCOBpredBG, profile);
@@ -1427,7 +1429,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 // ============== INSULIN BOOST  ==============
-                UAMBoostReason =  "UAM" + (UAMBoosted ? ">" + round(UAMBoost_threshold,1) : "") + "=" + UAMBoost + (UAMBoosted ? "*" + round(UAMBoost_bolus,2)+ "*" + UAMBoost_bolus_scale :"") + UAMBoostReason;
+                //UAMBoostReason =  "UAM" + (UAMBoosted ? ">" + round(UAMBoost_threshold,1) : "") + "=" + UAMBoost + (UAMBoosted ? "*" + round(UAMBoost_bolus,2)+ "*" + UAMBoost_bolus_scale :"") + UAMBoostReason;
+                UAMBoostReason =  (UAMBoosted ? "UAM > " + round(UAMBoost_threshold,1) + ": " + UAMBoost + "x" + round(UAMBoost_bolus,2)+ "x" + UAMBoost_bolus_scale : "" ) + UAMBoostReason;
 
                 // use insulinReqBoost if it is more than insulinReq
                 insulinReq = round(Math.max(insulinReq,insulinReqBoost),2);
