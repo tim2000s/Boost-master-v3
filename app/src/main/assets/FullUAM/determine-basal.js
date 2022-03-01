@@ -310,28 +310,31 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var CurrentTIRAbove = meal_data.currentTIRAbove;
         var CurrentTIR_70_140_Above = meal_data.currentTIR_70_140_Above;
         //var tdd7 = meal_data.TDDAIMI7;
-        //var tdd7 = ((basal * 12)*100)/21;
+        var tdd7 = ((basal * 12)*100)/21;
         var tdd24 = meal_data.TDDLast24;
+        var tdd724 = (tdd7 + tdd24)/2;
         // Experimental base on 50% basal use during a normal day,
          //which is 21% of the current TDD base on an average data
         var tdd_pump_now = meal_data.TDDPUMP;
         var tdd_pump = (tdd_pump_now / (now / 24));
-        var TDD = (tdd24 * 0.4) + (tdd_pump * 0.6);
+        var TDD = (tdd724 * 0.4) + (tdd_pump * 0.6);
         enlog +="tdd24 : "+tdd24+"\n";
+        enlog +="tdd7 : "+tdd7+"\n";
+        enlog +="tdd724 : "+tdd724+"\n";
         enlog +="TDD  : "+TDD+"\n";
         enlog +="Pump extrapolated TDD = "+tdd_pump+";\n";
         var smbTDD = 0;
-        if (tdd_pump < (0.3 * tdd24)) {
-            TDD = (tdd24 * 0.8) + (tdd_pump * 0.2);
+        if (tdd_pump < (0.3 * tdd724)) {
+            TDD = (tdd724 * 0.8) + (tdd_pump * 0.2);
             smbTDD = 1;
-            enlog +="tdd_pump is lesser than 30% tdd24\n";
-            } else if (tdd_pump < (0.5 * tdd24)){
-                TDD = (tdd24 * 0.5) + (tdd_pump * 0.5);
+            enlog +="tdd_pump is lesser than 30% tdd724\n";
+            } else if (tdd_pump < (0.5 * tdd724)){
+                TDD = (tdd724 * 0.5) + (tdd_pump * 0.5);
                 smbTDD = 1;
                 enlog +="TDD weighted to pump due to low insulin usage. TDD = "+TDD+";\n";
             }else{
 
-                enlog +="TDD roling 24h ="+tdd24+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";\n";
+                enlog +="TDD roling 24h and TDD average 7 (projection) ="+tdd724+", TDD Pump ="+tdd_pump+" and TDD = "+TDD+";\n";
             }
 
 
@@ -433,7 +436,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
 
-        if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0 || smbTDD === 0 && iTime < iTimeProfile && tdd_pump >= tdd24*0.3 && CurrentTIR_70_140_Above > 20 ){
+        if (CurrentTIR_70_140_Above > 20 && currentTIRLow < 5 && CurrentTIRinRange < 95 && smbTDD === 0 || smbTDD === 0 && iTime < iTimeProfile && tdd_pump >= tdd724*0.3 && CurrentTIR_70_140_Above > 20 ){
             TDD*=1.2;
             //console.log("TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% or TDD_pump > 0.3*TTD7 && iTime < iTimeProfile  <  :"+TDD);
             enlog +="TDD new value because TIR during the current Day show an average BG greater than 140 with a proportion greater than 20% or TDD_pump > 0.3*TTD7 && iTime < iTimeProfile  <  :"+TDD+"\n";
@@ -510,7 +513,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
      halfBasalTarget = 160;
      var c = halfBasalTarget - normalTarget;
      sensitivityRatio = c/(c+target_bg-normalTarget);
-     sensitivityTDD = (TDD / tdd24);
+     sensitivityTDD = (TDD / tdd724);
      enlog += "sensitivityTDD : "+sensitivityTDD+"\n";
      //sensitivityRatio = REBX;
      // limit sensitivityRatio to profile.autosens_max (1.2x by default)
@@ -543,7 +546,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         halfBasalTarget = 160;
         var c = halfBasalTarget - normalTarget;
         sensitivityRatio = c/(c+target_bg-normalTarget);
-        sensitivityTDD = (TDD / tdd24);
+        sensitivityTDD = (TDD / tdd724);
         enlog += "sensitivityTDD : "+sensitivityTDD+"\n";
         //sensitivityRatio = REBX;
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
@@ -571,7 +574,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         halfBasalTarget = 160;
         var c = halfBasalTarget - normalTarget;
         sensitivityRatio = c/(c+target_bg-normalTarget);
-        sensitivityTDD = (TDD / tdd24);
+        sensitivityTDD = (TDD / tdd724);
         enlog += "sensitivityTDD : "+sensitivityTDD+"\n";
         //sensitivityRatio = REBX;
         // limit sensitivityRatio to profile.autosens_max (1.2x by default)
