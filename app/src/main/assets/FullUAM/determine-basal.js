@@ -302,6 +302,31 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         else {
             console.error("Time now is "+now+"; ");
         }
+    var circadian_sensitivity = 1;
+    if (now >= 0 && now < 2){
+        //circadian_sensitivity = 1.4;
+        now = Math.max(now,0.5);
+        circadian_sensitivity = (0.09130*Math.pow(now,3))-(0.33261*Math.pow(now,2))+1.4;
+    }else if (now >= 2 && now < 3){
+         //circadian_sensitivity = 0.8;
+         circadian_sensitivity = (0.0869*Math.pow(now,3))-(0.05217*Math.pow(now,2))-(0.23478*now)+0.8;
+    }else if (now >= 3 && now < 8){
+         //circadian_sensitivity = 0.8;
+         circadian_sensitivity = (0.0007*Math.pow(now,3))-(0.000730*Math.pow(now,2))-(0.0007826*now)+0.6;
+    }else if (now >= 8 && now < 11){
+         //circadian_sensitivity = 0.6;
+         circadian_sensitivity = (0.001244*Math.pow(now,3))-(0.007619*Math.pow(now,2))-(0.007826*now)+0.4;
+    }else if (now >= 11 && now < 15){
+         //circadian_sensitivity = 0.8;
+         circadian_sensitivity = (0.00078*Math.pow(now,3))-(0.00272*Math.pow(now,2))-(0.07619*now)+0.8;
+    }else if (now >= 15 && now <= 22){
+         circadian_sensitivity = 1.0;
+    }else if (now >= 22 && now <= 24){
+        //circadian_sensitivity = 1.2;
+        circadian_sensitivity = (0.000125*Math.pow(now,3))-(0.0015*Math.pow(now,2))-(0.0045*now)+1.2;
+    }
+basal *= circadian_sensitivity;
+enlog += "Basal circadian_sensitivity factor : "+basal+"\n";
     if ( meal_data.TDDPUMP ){
         var statTirBelow = meal_data.StatLow7;
         var statinrange = meal_data.StatInRange7;
@@ -341,29 +366,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
          var iTime_Start_Bolus = profile.iTime_Start_Bolus;
         var iTimeProfile = profile.iTime;
         var LastManualBolus = meal_data.lastBolusNormalUnits;
-        var circadian_sensitivity = 1;
-        if (now >= 0 && now < 2){
-            //circadian_sensitivity = 1.4;
-            now = Math.max(now,0.5);
-            circadian_sensitivity = (0.09130*Math.pow(now,3))-(0.33261*Math.pow(now,2))+1.4;
-        }else if (now >= 2 && now < 3){
-             //circadian_sensitivity = 0.8;
-             circadian_sensitivity = (0.0869*Math.pow(now,3))-(0.05217*Math.pow(now,2))-(0.23478*now)+0.8;
-        }else if (now >= 3 && now < 8){
-             //circadian_sensitivity = 0.8;
-             circadian_sensitivity = (0.0007*Math.pow(now,3))-(0.000730*Math.pow(now,2))-(0.0007826*now)+0.6;
-        }else if (now >= 8 && now < 11){
-             //circadian_sensitivity = 0.6;
-             circadian_sensitivity = (0.001244*Math.pow(now,3))-(0.007619*Math.pow(now,2))-(0.007826*now)+0.4;
-        }else if (now >= 11 && now < 15){
-             //circadian_sensitivity = 0.8;
-             circadian_sensitivity = (0.00078*Math.pow(now,3))-(0.00272*Math.pow(now,2))-(0.07619*now)+0.8;
-        }else if (now >= 15 && now <= 22){
-             circadian_sensitivity = 1.0;
-        }else if (now >= 22 && now <= 24){
-            //circadian_sensitivity = 1.2;
-            circadian_sensitivity = (0.000125*Math.pow(now,3))-(0.0015*Math.pow(now,2))-(0.0045*now)+1.2;
-        }
+
         enlog += "circadian_sensitivity : "+circadian_sensitivity+"\n";
         //var iTime = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
         var lastbolusAge = round(( new Date(systemTime).getTime() - meal_data.lastBolusNormalTime ) / 60000,1);
@@ -485,8 +488,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var HyperPredBG = round( bg - (iob_data.iob * sens) ) + round( 60 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
     var TriggerPredSMB = round( bg - (iob_data.iob * sens) ) + round( 240 / 5 * ( minDelta - round(( -iob_data.activity * sens * 5 ), 2)));
 
-    basal *= circadian_sensitivity;
-    enlog += "Basal circadian_sensitivity factor : "+basal+"\n";
+
 
 
     var csf = profile.sens / profile.carb_ratio ;
