@@ -335,7 +335,34 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     variable_sens = round(variable_sens,1);
     console.log("Current sensitivity for predictions is " +variable_sens+" based on current bg");
 
-    sens = variable_sens;
+//Circadian ISF Adjustment
+
+    var circadian_sensitivity = 1;
+    if (now >= 0 && now < 2){
+        //circadian_sensitivity = 1.4;
+        now = Math.max(now,0.5);
+        circadian_sensitivity = (0.09130*Math.pow(now,3))-(0.33261*Math.pow(now,2))+1.4;
+    }else if (now >= 2 && now < 3){
+         //circadian_sensitivity = 0.8;
+         circadian_sensitivity = (0.0869*Math.pow(now,3))-(0.05217*Math.pow(now,2))-(0.23478*now)+0.8;
+    }else if (now >= 3 && now < 8){
+         //circadian_sensitivity = 0.8;
+         circadian_sensitivity = (0.0007*Math.pow(now,3))-(0.000730*Math.pow(now,2))-(0.0007826*now)+0.6;
+    }else if (now >= 8 && now < 11){
+         //circadian_sensitivity = 0.6;
+         circadian_sensitivity = (0.001244*Math.pow(now,3))-(0.007619*Math.pow(now,2))-(0.007826*now)+0.4;
+    }else if (now >= 11 && now < 15){
+         //circadian_sensitivity = 0.8;
+         circadian_sensitivity = (0.00078*Math.pow(now,3))-(0.00272*Math.pow(now,2))-(0.07619*now)+0.8;
+    }else if (now >= 15 && now <= 22){
+         circadian_sensitivity = 1.0;
+    }else if (now >= 22 && now <= 24){
+        //circadian_sensitivity = 1.2;
+        circadian_sensitivity = (0.000125*Math.pow(now,3))-(0.0015*Math.pow(now,2))-(0.0045*now)+1.2;
+    }
+enlog += "Circadian_sensitivity factor : "+circadian_sensitivity+"; ";
+
+    sens = variable_sens * circadian_sensitivity;
     sens = round(sens, 1);
 
     //*********************************************************************************
@@ -938,7 +965,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
         rT.reason += "Dosing sensitivity: " +future_sens+" using eventual BG;";
         }
+        future_sens = future_sens * circadian_sensitivity;
+
         var future_sens = round(future_sens,1);
+
+        enlog += "Future sens adjusted to : "+future_sens+"; ";
 
 
     minIOBPredBG = Math.max(39,minIOBPredBG);
