@@ -325,7 +325,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //circadian_sensitivity = 1.2;
         circadian_sensitivity = (0.000125*Math.pow(now,3))-(0.0015*Math.pow(now,2))-(0.0045*now)+1.2;
     }
-basal *= circadian_sensitivity;
+basal /= circadian_sensitivity;
 enlog += "Basal circadian_sensitivity factor : "+basal+"\n";
     if ( meal_data.TDDPUMP ){
         var statTirBelow = meal_data.StatLow7;
@@ -471,7 +471,7 @@ enlog += "Basal circadian_sensitivity factor : "+basal+"\n";
     var sens_normalTarget = sens_avg;
     var sens_currentBG = sens_normalTarget/(bg/normalTarget); // * EXPERIMENT *
     sens_currentBG = round(sens_currentBG,1);
-    sens = sens_currentBG * circadian_sensitivity;
+    sens = sens_currentBG / circadian_sensitivity;
     enlog +="Current sensitivity is " +sens_currentBG+" based on current bg\n";
     }else{
     sens = profile.sens * circadian_sensitivity;
