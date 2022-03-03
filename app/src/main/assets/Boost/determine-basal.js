@@ -360,7 +360,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //circadian_sensitivity = 1.2;
         circadian_sensitivity = (0.000125*Math.pow(now,3))-(0.0015*Math.pow(now,2))-(0.0045*now)+1.2;
     }
-enlog += "Circadian_sensitivity factor : "+circadian_sensitivity+"; ";
+    console.log("Circadian_sensitivity factor : "+circadian_sensitivity+"; ");
 
     sens = variable_sens * circadian_sensitivity;
     sens = round(sens, 1);
@@ -969,7 +969,7 @@ enlog += "Circadian_sensitivity factor : "+circadian_sensitivity+"; ";
 
         var future_sens = round(future_sens,1);
 
-        enlog += "Future sens adjusted to : "+future_sens+"; ";
+        console.log("Future sens adjusted to : "+future_sens+"; ");
 
 
     minIOBPredBG = Math.max(39,minIOBPredBG);
