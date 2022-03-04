@@ -27,21 +27,21 @@ import kotlin.time.hours
  *
  */
 abstract class InsulinOrefBasePlugin(
-    injector: HasAndroidInjector,
-    rh: ResourceHelper,
-    val profileFunction: ProfileFunction,
-    val rxBus: RxBus,
-    aapsLogger: AAPSLogger,
-    config: Config
+        injector: HasAndroidInjector,
+        rh: ResourceHelper,
+        val profileFunction: ProfileFunction,
+        val rxBus: RxBus,
+        aapsLogger: AAPSLogger,
+        config: Config
 ) : PluginBase(
-    PluginDescription()
-        .mainType(PluginType.INSULIN)
-        .fragmentClass(InsulinFragment::class.java.name)
-        .pluginIcon(R.drawable.ic_insulin)
-        .shortName(R.string.insulin_shortname)
-        .visibleByDefault(false)
-        .neverVisible(config.NSCLIENT),
-    aapsLogger, rh, injector
+        PluginDescription()
+                .mainType(PluginType.INSULIN)
+                .fragmentClass(InsulinFragment::class.java.name)
+                .pluginIcon(R.drawable.ic_insulin)
+                .shortName(R.string.insulin_shortname)
+                .visibleByDefault(false)
+                .neverVisible(config.NSCLIENT),
+        aapsLogger, rh, injector
 ), Insulin {
 
     private var lastWarned: Long = 0
@@ -101,24 +101,24 @@ abstract class InsulinOrefBasePlugin(
             }*/
             if (now >= 0 && now < 2){
                 //circadian_sensitivity = 1.4;
-                circadian_sensitivity = (0.09130*Math.pow(now.toDouble(),3.0))-(0.33261*Math.pow(now.toDouble(),2.0))+1.4
+                circadian_sensitivity = 1.0
             }else if (now >= 2 && now < 3){
                 //circadian_sensitivity = 0.8;
-                circadian_sensitivity = (0.0869*Math.pow(now.toDouble(),3.0))-(0.05217*Math.pow(now.toDouble(),2.0))-(0.23478*now)+0.8
+                circadian_sensitivity = 1.0
             }else if (now >= 3 && now < 8){
                 //circadian_sensitivity = 0.8;
-                circadian_sensitivity = (0.0007*Math.pow(now.toDouble(),3.0))-(0.000730*Math.pow(now.toDouble(),2.0))-(0.0007826*now)+0.6
+                circadian_sensitivity = 1.0
             }else if (now >= 8 && now < 11){
                 //circadian_sensitivity = 0.6;
-                circadian_sensitivity = (0.001244*Math.pow(now.toDouble(),3.0))-(0.007619*Math.pow(now.toDouble(),2.0))-(0.007826*now)+0.4
+                circadian_sensitivity = 1.0
             }else if (now >= 11 && now < 15){
                 //circadian_sensitivity = 0.8;
-                circadian_sensitivity = (0.00078*Math.pow(now.toDouble(),3.0))-(0.00272*Math.pow(now.toDouble(),2.0))-(0.07619*now)+0.8
+                circadian_sensitivity = 1.0
             }else if (now >= 15 && now <= 22){
                 circadian_sensitivity = 1.0
             }else if (now >= 22 && now <= 24){
                 //circadian_sensitivity = 1.2;
-                circadian_sensitivity = (0.000125*Math.pow(now.toDouble(),3.0))-(0.0015*Math.pow(now.toDouble(),2.0))-(0.0045*now)+1
+                circadian_sensitivity = 1.0
             }
             // force the IOB to 0 if over DIA hours have passed
             if (t < 3.8 * circadian_sensitivity * 60 && (insulinID == 6 || insulinID == 7)) { //MP: Fixed DIA cut-off of 8 h - the model automatically changes its DIA based on the bolus size, thus no user-set DIA is required.
@@ -179,27 +179,27 @@ abstract class InsulinOrefBasePlugin(
         }
         return result
     }
-/* NON-TSUNAMI ACTIVITY CALCULATION CODE (original)
-    override fun iobCalcForTreatment(bolus: Bolus, time: Long, dia: Double): Iob {
-        val result = Iob()
-        val peak = peak
-        if (bolus.amount != 0.0) {
-            val bolusTime = bolus.timestamp
-            val t = (time - bolusTime) / 1000.0 / 60.0
-            val td = dia * 60 //getDIA() always >= MIN_DIA
-            val tp = peak.toDouble()
-            // force the IOB to 0 if over DIA hours have passed
-            if (t < td) {
-                val tau = tp * (1 - tp / td) / (1 - 2 * tp / td)
-                val a = 2 * tau / td
-                val S = 1 / (1 - a + (1 + a) * exp(-td / tau))
-                result.activityContrib = bolus.amount * (S / tau.pow(2.0)) * t * (1 - t / td) * exp(-t / tau)
-                result.iobContrib = bolus.amount * (1 - S * (1 - a) * ((t.pow(2.0) / (tau * td * (1 - a)) - t / tau - 1) * Math.exp(-t / tau) + 1))
+    /* NON-TSUNAMI ACTIVITY CALCULATION CODE (original)
+        override fun iobCalcForTreatment(bolus: Bolus, time: Long, dia: Double): Iob {
+            val result = Iob()
+            val peak = peak
+            if (bolus.amount != 0.0) {
+                val bolusTime = bolus.timestamp
+                val t = (time - bolusTime) / 1000.0 / 60.0
+                val td = dia * 60 //getDIA() always >= MIN_DIA
+                val tp = peak.toDouble()
+                // force the IOB to 0 if over DIA hours have passed
+                if (t < td) {
+                    val tau = tp * (1 - tp / td) / (1 - 2 * tp / td)
+                    val a = 2 * tau / td
+                    val S = 1 / (1 - a + (1 + a) * exp(-td / tau))
+                    result.activityContrib = bolus.amount * (S / tau.pow(2.0)) * t * (1 - t / td) * exp(-t / tau)
+                    result.iobContrib = bolus.amount * (1 - S * (1 - a) * ((t.pow(2.0) / (tau * td * (1 - a)) - t / tau - 1) * Math.exp(-t / tau) + 1))
+                }
             }
+            return result
         }
-        return result
-    }
-*/
+    */
     override val insulinConfiguration: InsulinConfiguration
 
         get() = InsulinConfiguration(friendlyName, (dia * 1000.0 * 3600.0).toLong(), T.mins(peak.toLong()).msecs())
