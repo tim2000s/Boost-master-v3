@@ -14,12 +14,12 @@ class InsertIfNewByTimestampCarbsTransaction(
         timestamp: Long,
         amount: Double,
         duration: Long,
-        interfaceIDs_backing: InterfaceIDs? = null
+        interfaceIDs_backing: InterfaceIDs? = null,
     ) : this(Carbs(
         timestamp = timestamp,
         amount = amount,
         duration = duration,
-        interfaceIDs_backing = interfaceIDs_backing
+        interfaceIDs_backing = interfaceIDs_backing,
     ))
 
     override fun run(): TransactionResult {

@@ -687,9 +687,6 @@
     <string name="key_show_cgm_button" translatable="false">show_cgm_button</string>
     <string name="key_show_carbs_button" translatable="false">show_carbs_button</string>
     <string name="key_show_wizard_button" translatable="false">show_wizard_button</string>
-    <!-- MP UAM button test below-->
-    <string name="key_show_UAM_button" translatable="false">show_UAM_button</string>
-    <!-- MP UAM button test above-->
     <string name="key_show_insulin_button" translatable="false">show_insulin_button</string>
     <string name="key_show_treatment_button" translatable="false">show_treatment_button</string>
     <string name="show_calibration_button_summary">Sends a calibration to xDrip+ or open BYODA calibration dialog</string>
@@ -703,6 +700,15 @@
     <string name="carb_increment_button_message">Number of carbs to add when button is pressed</string>
     <string name="insulin_increment_button_message">Amount of insulin to add when button is pressed</string>
     <!-- MP button test below -->
+    <string name="tsunami_button_settings_title" translatable="false">Tsunami button settings</string>
+    <string name="key_show_UAM_button" translatable="false">show_UAM_button</string>
+    <string name="show_UAM_button_summary" translatable="false">Required to initiate
+        stronger Tsunami meal response. Can be hidden if manually bolusing for the majority of
+        carbs.</string>
+    <string name="show_UAM_button_title" translatable="false">Show Tsunami button</string>
+    <string name="tsunami_button_no_insulin_message" translatable="false">Activate Tsunami
+        meal mode without prebolus?</string>
+    <string name="tsunami_button_duration_label">Tsu++ duration</string>
     <string name="UAM_increment_button_message">Amount of insulin to add when button is pressed</string>
     <string name="key_UAM_button_increment_1" translatable="false">UAM_button_increment_1</string>
     <string name="key_UAM_button_increment_2" translatable="false">UAM_button_increment_2</string>

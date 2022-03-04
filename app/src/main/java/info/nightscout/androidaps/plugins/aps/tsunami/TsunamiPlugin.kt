@@ -129,6 +129,18 @@ class TsunamiPlugin @Inject constructor(
             maxBg = hardLimits.verifyHardLimits(tempTarget.value.highTarget, R.string.temp_target_high_target, HardLimits.VERY_HARD_LIMIT_TEMP_MAX_BG[0].toDouble(), HardLimits.VERY_HARD_LIMIT_TEMP_MAX_BG[1].toDouble())
             targetBg = hardLimits.verifyHardLimits(tempTarget.value.target(), R.string.temp_target_value, HardLimits.VERY_HARD_LIMIT_TEMP_TARGET_BG[0].toDouble(), HardLimits.VERY_HARD_LIMIT_TEMP_TARGET_BG[1].toDouble())
         }
+        val tsunamiMode = repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet()
+        var tsunamiModeID: Int? = 1
+        /*
+        * ID codes
+        * 0 = inactive (openAPS SMB mode)
+        * 1 = weak Tsunami mode
+        * 2 = Tsu++ mode
+         */
+        if (tsunamiMode is ValueWrapper.Existing) {
+            tsunamiModeID = tsunamiMode.value.tsunamiMode
+        }
+
         if (!hardLimits.checkHardLimits(profile.dia, R.string.profile_dia, hardLimits.minDia(), hardLimits.maxDia())) return
         if (!hardLimits.checkHardLimits(profile.getIcTimeFromMidnight(Profile.secondsFromMidnight()), R.string.profile_carbs_ratio_value, hardLimits.minIC(), hardLimits.maxIC())) return
         if (!hardLimits.checkHardLimits(profile.getIsfMgdl(), R.string.profile_sensitivity_value, HardLimits.MIN_ISF, HardLimits.MAX_ISF)) return
@@ -175,7 +187,8 @@ class TsunamiPlugin @Inject constructor(
                 smbAllowed.value(),
                 uam.value(),
                 advancedFiltering.value(),
-                activePlugin.activeBgSource.javaClass.simpleName == "DexcomPlugin")
+                activePlugin.activeBgSource.javaClass.simpleName == "DexcomPlugin",
+                tsunamiModeID)
             val now = System.currentTimeMillis()
             val determineBasalResultTAE = determineBasalAdapterTAEJS.invoke()
             profiler.log(LTag.APS, "SMB calculation", start)

@@ -50,7 +50,7 @@ fun carbsFromJson(jsonObject: JSONObject): Carbs? {
         timestamp = timestamp,
         duration = duration,
         amount = amount,
-        isValid = isValid
+        isValid = isValid,
     ).also {
         it.interfaceIDs.nightscoutId = id
         it.interfaceIDs.pumpId = pumpId

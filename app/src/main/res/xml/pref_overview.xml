@@ -18,55 +18,6 @@
             android:key="@string/overview_buttons_selection"
             android:title="@string/overview_buttons_selection">
 
-            <!-- MP button test below -->
-            <SwitchPreference
-                android:defaultValue="true"
-                android:key="@string/key_show_UAM_button"
-                android:title="@string/overview_UAM_label" />
-
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="0.5"
-                android:dependency="@string/key_show_UAM_button"
-                android:dialogMessage="@string/UAM_increment_button_message"
-                android:inputType="numberDecimal|numberDecimal|numberSigned"
-                android:key="@string/key_UAM_button_increment_1"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:title="@string/firstUAMincrement"
-                validate:floatmaxNumber="5.0"
-                validate:floatminNumber="-5.0"
-                validate:testType="floatNumericRange" />
-
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="1.0"
-                android:dependency="@string/key_show_UAM_button"
-                android:dialogMessage="@string/UAM_increment_button_message"
-                android:inputType="numberDecimal|numberSigned"
-                android:key="@string/key_UAM_button_increment_2"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:title="@string/secondUAMincrement"
-                validate:floatmaxNumber="5.0"
-                validate:floatminNumber="-5.0"
-                validate:testType="floatNumericRange" />
-
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="2.0"
-                android:dependency="@string/key_show_UAM_button"
-                android:dialogMessage="@string/UAM_increment_button_message"
-                android:inputType="numberDecimal|numberSigned"
-                android:key="@string/key_UAM_button_increment_3"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:title="@string/thirdUAMincrement"
-                validate:floatmaxNumber="5.0"
-                validate:floatminNumber="-5.0"
-                validate:testType="floatNumericRange" />
-            <!-- MP button test above -->
-
             <SwitchPreference
                 android:defaultValue="false"
                 android:key="@string/key_show_treatment_button"

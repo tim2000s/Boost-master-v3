@@ -177,7 +177,8 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
                                                      microBolusAllowed: Boolean,
                                                      uamAllowed: Boolean,
                                                      advancedFiltering: Boolean,
-                                                     isSaveCgmSource: Boolean
+                                                     isSaveCgmSource: Boolean,
+                                                     tsunamiModeID: Int?,
     ) {
         val pump = activePlugin.activePump
         val pumpBolusStep = pump.pumpDescription.bolusStep
@@ -253,7 +254,7 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         val insulinInterface = activePlugin.activeInsulin
         val insulinID = insulinInterface.id.value
         this.profile.put("insulinID", insulinID)
-
+        this.profile.put("tsunamiModeID", tsunamiModeID)
         //MP UAM tsunami profile variables END
 //**********************************************************************************************************************************************
         val now = System.currentTimeMillis()

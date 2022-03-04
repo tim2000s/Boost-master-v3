@@ -49,28 +49,6 @@
             android:padding="5dp" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="5dp">
-
-            <CheckBox
-                android:id="@+id/start_eating_soon_tt"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:text="@string/start_eating_soon_tt" />
-
-            <CheckBox
-                android:id="@+id/record_only"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/do_not_bolus_record_only" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/time_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -81,12 +59,12 @@
                 android:layout_gravity="center_horizontal"
                 android:width="120dp"
                 android:padding="10dp"
-                android:text="@string/time"
+                android:text="@string/tsunami_button_duration_label"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textStyle="bold" />
 
-            <info.nightscout.androidaps.utils.ui.NumberPicker
-                android:id="@+id/time"
+            <info.nightscout.androidaps.utils.ui.MinutesNumberPicker
+                android:id="@+id/tsu_plus_duration"
                 android:layout_width="130dp"
                 android:layout_height="40dp" />
 

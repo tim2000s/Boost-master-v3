@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.common.base.Joiner
+import info.nightscout.androidaps.Constants
 import info.nightscout.androidaps.R
 import info.nightscout.androidaps.activities.ErrorHelperActivity
 import info.nightscout.androidaps.data.DetailedBolusInfo
@@ -17,6 +18,7 @@ import info.nightscout.androidaps.database.entities.UserEntry.Action
 import info.nightscout.androidaps.database.entities.UserEntry.Sources
 import info.nightscout.androidaps.database.entities.ValueWithUnit
 import info.nightscout.androidaps.database.transactions.InsertAndCancelCurrentTemporaryTargetTransaction
+import info.nightscout.androidaps.database.transactions.TsunamiModeSwitchTransaction
 import info.nightscout.androidaps.databinding.DialogUamBinding
 import info.nightscout.androidaps.extensions.formatColor
 import info.nightscout.androidaps.extensions.toVisibility
@@ -40,9 +42,10 @@ import kotlin.math.abs
 import kotlin.math.max
 //test
 //import info.nightscout.androidaps.plugins.iob.iobCobCalculator.GlucoseStatus
-import info.nightscout.androidaps.interfaces.IobCobCalculator
-import info.nightscout.androidaps.plugins.iob.iobCobCalculator.GlucoseStatus
-
+//import info.nightscout.androidaps.interfaces.IobCobCalculator
+//import info.nightscout.androidaps.plugins.iob.iobCobCalculator.GlucoseStatus
+//import info.nightscout.androidaps.data.MealData
+//testend
 class UAMDialog : DialogFragmentWithDate() {
 
     @Inject lateinit var constraintChecker: ConstraintChecker
@@ -57,8 +60,9 @@ class UAMDialog : DialogFragmentWithDate() {
     @Inject lateinit var bolusTimer: BolusTimer
     @Inject lateinit var uel: UserEntryLogger
     //test
-    @Inject lateinit var GlucoseStatusCopy: GlucoseStatus
-
+    //@Inject lateinit var GlucoseStatusCopy: GlucoseStatus
+    //var GlucoseStatusCopy: GlucoseStatus
+    //@Inject lateinit var mealData: MealData
     companion object {
 
         private const val PLUS1_DEFAULT = 0.5
@@ -85,10 +89,6 @@ class UAMDialog : DialogFragmentWithDate() {
 
     private fun validateInputs() {
         val maxInsulin = constraintChecker.getMaxBolusAllowed().value()
-        if (abs(binding.time.value.toInt()) > 12 * 60) {
-            binding.time.value = 0.0
-            ToastUtils.showToastInUiThread(context, rh.gs(R.string.constraintapllied))
-        }
         if (binding.amount.value > maxInsulin) {
             binding.amount.value = 0.0
             ToastUtils.showToastInUiThread(context, rh.gs(R.string.bolusconstraintapplied))
@@ -97,9 +97,10 @@ class UAMDialog : DialogFragmentWithDate() {
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         super.onSaveInstanceState(savedInstanceState)
-        savedInstanceState.putDouble("time", binding.time.value)
+        savedInstanceState.putDouble("tsuDuration", binding.tsuPlusDuration.value)
         savedInstanceState.putDouble("amount", binding.amount.value)
     }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -111,14 +112,11 @@ class UAMDialog : DialogFragmentWithDate() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (config.NSCLIENT) {
-            binding.recordOnly.isChecked = true
-            binding.recordOnly.isEnabled = false
-        }
+        binding.tsuPlusDuration.setParams(savedInstanceState?.getDouble("tsuDuration")
+                                       ?: 0.0, 0.0, Constants.MAX_PROFILE_SWITCH_DURATION, 30.0, DecimalFormat("0"), false, binding.okcancel.ok)
+
         val maxInsulin = constraintChecker.getMaxBolusAllowed().value()
 
-        binding.time.setParams(savedInstanceState?.getDouble("time")
-            ?: 0.0, -12 * 60.0, 12 * 60.0, 5.0, DecimalFormat("0"), false, binding.okcancel.ok, textWatcher)
         binding.amount.setParams(savedInstanceState?.getDouble("amount")
             ?: 0.0, 0.0, maxInsulin, activePlugin.activePump.pumpDescription.bolusStep, DecimalFormatter.pumpSupportedBolusFormat(activePlugin.activePump), false, binding.okcancel.ok, textWatcher)
 
@@ -140,11 +138,6 @@ class UAMDialog : DialogFragmentWithDate() {
                 + sp.getDouble(rh.gs(R.string.key_UAM_button_increment_3), PLUS3_DEFAULT))
             validateInputs()
         }
-
-        binding.timeLayout.visibility = View.GONE
-        binding.recordOnly.setOnCheckedChangeListener { _, isChecked: Boolean ->
-            binding.timeLayout.visibility = isChecked.toVisibility()
-        }
     }
 
     override fun onDestroyView() {
@@ -161,37 +154,26 @@ class UAMDialog : DialogFragmentWithDate() {
         val actions: LinkedList<String?> = LinkedList()
         val units = profileFunction.getUnits()
         val unitLabel = if (units == GlucoseUnit.MMOL) rh.gs(R.string.mmol) else rh.gs(R.string.mgdl)
-        val recordOnlyChecked = binding.recordOnly.isChecked
-        val eatingSoonChecked = binding.startEatingSoonTt.isChecked
-        //test
-        GlucoseStatusCopy.active = true
+        val duration = binding.tsuPlusDuration.value.toInt()
 
-        //test end
         if (insulinAfterConstraints > 0) {
             actions.add(rh.gs(R.string.bolus) + ": " + DecimalFormatter.toPumpSupportedBolus(insulinAfterConstraints, activePlugin.activePump, rh).formatColor(rh, R.color.bolus))
-            if (recordOnlyChecked)
-                actions.add(rh.gs(R.string.bolusrecordedonly).formatColor(rh, R.color.warning))
             if (abs(insulinAfterConstraints - insulin) > pumpDescription.pumpType.determineCorrectBolusStepSize(insulinAfterConstraints))
                 actions.add(rh.gs(R.string.bolusconstraintappliedwarn, insulin, insulinAfterConstraints).formatColor(rh, R.color.warning))
         }
-        val eatingSoonTTDuration = defaultValueHelper.determineEatingSoonTTDuration()
+        val eatingSoonTTDuration = defaultValueHelper.determineEatingSoonTTDuration() //TODO: REMOVE
         val eatingSoonTT = defaultValueHelper.determineEatingSoonTT()
-        if (eatingSoonChecked)
-            actions.add(rh.gs(R.string.temptargetshort) + ": " + (DecimalFormatter.to1Decimal(eatingSoonTT) + " " + unitLabel + " (" + rh.gs(R.string.format_mins, eatingSoonTTDuration) + ")").formatColor(rh, R.color.tempTargetConfirmation))
 
-        val timeOffset = binding.time.value.toInt()
-        val time = dateUtil.now() + T.mins(timeOffset.toLong()).msecs()
-        if (timeOffset != 0)
-            actions.add(rh.gs(R.string.time) + ": " + dateUtil.dateAndTimeString(time))
+        val time = dateUtil.now()
 
         val notes = binding.notesLayout.notes.text.toString()
         if (notes.isNotEmpty())
             actions.add(rh.gs(R.string.notes_label) + ": " + notes)
 
-        if (insulinAfterConstraints > 0 || eatingSoonChecked) {
+        if (insulinAfterConstraints > 0) {
             activity?.let { activity ->
                 OKDialog.showConfirmation(activity, rh.gs(R.string.uam_mode), HtmlHelper.fromHtml(Joiner.on("<br/>").join(actions)), {//MP: String is header string of confirmation window if there is a prebolus
-                    if (eatingSoonChecked) {
+                    /*if (eatingSoonChecked) {
                         uel.log(Action.TT, Sources.UAMDialog, //TODO: CHECK
                             notes,
                             ValueWithUnit.TherapyEventTTReason(TemporaryTarget.Reason.EATING_SOON),
@@ -209,7 +191,17 @@ class UAMDialog : DialogFragmentWithDate() {
                         }, {
                             aapsLogger.error(LTag.DATABASE, "Error while saving temporary target", it)
                         })
-                    }
+                    }*/
+                    disposable += repository.runTransactionForResult(TsunamiModeSwitchTransaction(
+                        timestamp = System.currentTimeMillis(),
+                        duration = TimeUnit.MINUTES.toMillis(duration.toLong()),
+                        tsunamiMode = 2
+                    )).subscribe({ result ->
+                                     result.inserted.forEach { aapsLogger.debug(LTag.DATABASE, "Inserted tsunami mode $it") }
+                                     result.updated.forEach { aapsLogger.debug(LTag.DATABASE, "Updated tsunami mode $it") }
+                                 }, {
+                                     aapsLogger.error(LTag.DATABASE, "Error while saving Tsunami mode.", it)
+                                 })
                     if (insulinAfterConstraints > 0) {
                         val detailedBolusInfo = DetailedBolusInfo()
                         detailedBolusInfo.eventType = DetailedBolusInfo.EventType.CORRECTION_BOLUS
@@ -217,20 +209,6 @@ class UAMDialog : DialogFragmentWithDate() {
                         detailedBolusInfo.context = context
                         detailedBolusInfo.notes = notes
                         detailedBolusInfo.timestamp = time
-                        if (recordOnlyChecked) {
-                            uel.log(Action.BOLUS, Sources.UAMDialog, //TODO: CHECK
-                                rh.gs(R.string.record) + if (notes.isNotEmpty()) ": " + notes else "",
-                                ValueWithUnit.SimpleString(rh.gsNotLocalised(R.string.record)),
-                                ValueWithUnit.Insulin(insulinAfterConstraints),
-                                ValueWithUnit.Minute(timeOffset).takeIf { timeOffset!= 0 })
-                            disposable += repository.runTransactionForResult(detailedBolusInfo.insertBolusTransaction())
-                                .subscribe(
-                                    { result -> result.inserted.forEach { aapsLogger.debug(LTag.DATABASE, "Inserted bolus $it") } },
-                                    { aapsLogger.error(LTag.DATABASE, "Error while saving bolus", it) }
-                                )
-                            if (timeOffset == 0)
-                                bolusTimer.removeBolusReminder()
-                        } else {
                             uel.log(Action.BOLUS, Sources.UAMDialog, //TODO: CHECK
                                 notes,
                                 ValueWithUnit.Insulin(insulinAfterConstraints))
@@ -243,14 +221,31 @@ class UAMDialog : DialogFragmentWithDate() {
                                     }
                                 }
                             })
-                        }
                     }
                 })
             }
-        } else
-            activity?.let { activity ->
-                OKDialog.show(activity, rh.gs(R.string.uam_mode), rh.gs(R.string.no_action_selected))
+        } else {
+            if (duration > 0) {
+                activity?.let { activity ->
+                    OKDialog.showConfirmation(activity, rh.gs(R.string.uam_mode), rh.gs(R.string.tsunami_button_no_insulin_message), Runnable {//MP: String is header string of confirmation window if there is a prebolus
+                        disposable += repository.runTransactionForResult(TsunamiModeSwitchTransaction(
+                            timestamp = System.currentTimeMillis(),
+                            duration = TimeUnit.MINUTES.toMillis(duration.toLong()),
+                            tsunamiMode = 0
+                        )).subscribe({ result ->
+                                         result.inserted.forEach { aapsLogger.debug(LTag.DATABASE, "Inserted tsunami mode $it") }
+                                         result.updated.forEach { aapsLogger.debug(LTag.DATABASE, "Updated tsunami mode $it") }
+                                     }, {
+                                         aapsLogger.error(LTag.DATABASE, "Error while saving Tsunami mode.", it)
+                                     })
+                    })
+                }
+            } else {
+                activity?.let { activity ->
+                    OKDialog.show(activity, rh.gs(R.string.uam_mode), rh.gs(R.string.no_action_selected))
+                }
             }
+        }
         return true
     }
 }

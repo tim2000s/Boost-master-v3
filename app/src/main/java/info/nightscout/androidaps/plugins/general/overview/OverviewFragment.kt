@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.AnimationDrawable
@@ -29,6 +30,7 @@ import info.nightscout.androidaps.Constants
 import info.nightscout.androidaps.R
 import info.nightscout.androidaps.data.ProfileSealed
 import info.nightscout.androidaps.database.AppRepository
+import info.nightscout.androidaps.database.ValueWrapper
 import info.nightscout.androidaps.database.entities.UserEntry.Action
 import info.nightscout.androidaps.database.entities.UserEntry.Sources
 import info.nightscout.androidaps.database.interfaces.end
@@ -47,6 +49,7 @@ import info.nightscout.androidaps.interfaces.*
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.androidaps.logging.UserEntryLogger
 import info.nightscout.androidaps.plugins.aps.loop.events.EventNewOpenLoopNotification
+import info.nightscout.androidaps.plugins.aps.tsunami.TsunamiPlugin
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker
 import info.nightscout.androidaps.plugins.constraints.bgQualityCheck.BgQualityCheckPlugin
@@ -122,6 +125,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     @Inject lateinit var overviewPlugin: OverviewPlugin
     @Inject lateinit var automationPlugin: AutomationPlugin
     @Inject lateinit var bgQualityCheckPlugin: BgQualityCheckPlugin
+    @Inject lateinit var tsunamiPlugin: TsunamiPlugin
 
     private val disposable = CompositeDisposable()
 
@@ -255,6 +259,11 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             .debounce(1L, TimeUnit.SECONDS)
             .observeOn(aapsSchedulers.main)
             .subscribe({ updateTemporaryTarget(it.from) }, fabricPrivacy::logException)
+/*        disposable += activePlugin.activeOverview.overviewBus
+            .toObservable(EventUpdateOverviewTsunamiButton::class.java)
+            .debounce(1L, TimeUnit.SECONDS)
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ updateTsunamiButton(it.from) }, fabricPrivacy::logException)*/
         disposable += activePlugin.activeOverview.overviewBus
             .toObservable(EventUpdateOverviewBg::class.java)
             .debounce(1L, TimeUnit.SECONDS)
@@ -327,6 +336,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         updateTemporaryBasal("onResume")
         updateExtendedBolus("onResume")
         updateTemporaryTarget("onResume")
+        updateTsunamiButton("onResume")
         updateBg("onResume")
         updateIobCob("onResume")
         updateSensitivity("onResume")
@@ -555,10 +565,9 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             && sp.getBoolean(R.string.key_show_wizard_button, true)).toVisibility()
         binding.buttonsLayout.insulinButton.visibility = (!loop.isDisconnected && pump.isInitialized() && !pump.isSuspended() && profile != null
             && sp.getBoolean(R.string.key_show_insulin_button, true)).toVisibility()
-        //MP button test below
-        binding.buttonsLayout.UAMbutton.visibility = (!loop.isDisconnected && pump.isInitialized() && !pump.isSuspended() && profile != null
-            && sp.getBoolean(R.string.key_show_UAM_button, true)).toVisibility()
-        //MP button test above
+        //MP Tsunami button
+        val tsunamiIsActiveAPS = tsunamiPlugin.isEnabled()
+        binding.buttonsLayout.UAMbutton.visibility = (tsunamiIsActiveAPS && !loop.isDisconnected && pump.isInitialized() && !pump.isSuspended() && profile != null && sp.getBoolean(R.string.key_show_UAM_button, true)).toVisibility()
         // **** Calibration & CGM buttons ****
         val xDripIsBgSource = xdripPlugin.isEnabled()
         val dexcomIsSource = dexcomPlugin.isEnabled()
@@ -901,6 +910,34 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             }
         }
     }
+
+
+    @SuppressLint("SetTextI18n")
+    @Suppress("UNUSED_PARAMETER")
+    fun updateTsunamiButton(from: String) {
+        val tsunamiMode = repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet()
+        var tsunamiModeID: Int? = 1
+        /*
+        * ID codes
+        * 0 = inactive (openAPS SMB mode)
+        * 1 = weak Tsunami mode
+        * 2 = Tsu++ mode
+         */
+        if (tsunamiMode is ValueWrapper.Existing) {
+            tsunamiModeID = tsunamiMode.value.tsunamiMode
+        }
+        //if (tsunamiModeID == 1) tsunamiModeID = null
+        if (tsunamiModeID != 1) {
+            binding.buttonsLayout.UAMbutton.setTextColor(rh.gc(R.color.ribbonTextWarning))
+            binding.buttonsLayout.UAMbutton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonWarning))
+            binding.buttonsLayout.UAMbutton.text = tsunamiModeID.toString()//"TSU++ ENABLED"
+        } else {
+            binding.buttonsLayout.UAMbutton.setTextColor(rh.gc(R.color.colorInsulinButton))
+            binding.buttonsLayout.UAMbutton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonDefault))
+            binding.buttonsLayout.UAMbutton.text = "TSUNAMI"
+        }
+    }
+
 
     @Suppress("UNUSED_PARAMETER")
     fun updateGraph(from: String) {

@@ -257,6 +257,7 @@ class OverviewPlugin @Inject constructor(
         overviewBus.send(EventUpdateOverviewTemporaryBasal(from))
         overviewBus.send(EventUpdateOverviewExtendedBolus(from))
         overviewBus.send(EventUpdateOverviewTemporaryTarget(from))
+        //overviewBus.send(EventUpdateOverviewTsunamiButton(from))
         loadAsData(from)
         overviewData.preparePredictions(from)
         overviewData.prepareBasalData(from)
@@ -274,6 +275,7 @@ class OverviewPlugin @Inject constructor(
         loadBg(from)
         loadProfile(from)
         loadTemporaryTarget(from)
+        //loadTsunamiButton(from)
         loadIobCobResults(from)
         loadAsData(from)
         overviewData.prepareBasalData(from)
@@ -296,6 +298,13 @@ class OverviewPlugin @Inject constructor(
         overviewBus.send(EventUpdateOverviewTemporaryTarget(from))
     }
 
+/*    private fun loadTsunamiButton(from: String) {
+        /*val tempTarget = repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet()
+        if (tempTarget is ValueWrapper.Existing) overviewData.temporaryTarget = tempTarget.value
+        else overviewData.temporaryTarget = null*/
+        overviewBus.send(EventUpdateOverviewTsunamiButton(from))
+    }
+*/
     private fun loadAsData(from: String) {
         overviewData.lastAutosensData = iobCobCalculator.ads.getLastAutosensData("Overview", aapsLogger, dateUtil)
         overviewBus.send(EventUpdateOverviewSensitivity(from))
