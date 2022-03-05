@@ -42,7 +42,7 @@ data class Tsunami(
     //var highTarget: Double, // in mgdl
     //var lowTarget: Double, // in mgdl
     override var duration: Long, // in millis
-    var tsunamiMode: Int?
+    var tsunamiMode: Int
 ) : TraceableDBEntry, DBEntryWithTimeAndDuration {
 
     fun contentEqualsTo(other: Tsunami): Boolean =

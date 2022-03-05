@@ -31,9 +31,12 @@ import info.nightscout.androidaps.R
 import info.nightscout.androidaps.data.ProfileSealed
 import info.nightscout.androidaps.database.AppRepository
 import info.nightscout.androidaps.database.ValueWrapper
+import info.nightscout.androidaps.database.entities.Tsunami
 import info.nightscout.androidaps.database.entities.UserEntry.Action
 import info.nightscout.androidaps.database.entities.UserEntry.Sources
+import info.nightscout.androidaps.database.interfaces.DBEntryWithTimeAndDuration
 import info.nightscout.androidaps.database.interfaces.end
+import info.nightscout.androidaps.database.interfaces.getRemainingDuration
 import info.nightscout.androidaps.databinding.OverviewFragmentBinding
 import info.nightscout.androidaps.dialogs.*
 import info.nightscout.androidaps.events.EventAcceptOpenLoopChange
@@ -259,11 +262,11 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             .debounce(1L, TimeUnit.SECONDS)
             .observeOn(aapsSchedulers.main)
             .subscribe({ updateTemporaryTarget(it.from) }, fabricPrivacy::logException)
-/*        disposable += activePlugin.activeOverview.overviewBus
+        disposable += activePlugin.activeOverview.overviewBus
             .toObservable(EventUpdateOverviewTsunamiButton::class.java)
             .debounce(1L, TimeUnit.SECONDS)
             .observeOn(aapsSchedulers.main)
-            .subscribe({ updateTsunamiButton(it.from) }, fabricPrivacy::logException)*/
+            .subscribe({ updateTsunamiButton(it.from) }, fabricPrivacy::logException)
         disposable += activePlugin.activeOverview.overviewBus
             .toObservable(EventUpdateOverviewBg::class.java)
             .debounce(1L, TimeUnit.SECONDS)
@@ -915,22 +918,53 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     @SuppressLint("SetTextI18n")
     @Suppress("UNUSED_PARAMETER")
     fun updateTsunamiButton(from: String) {
-        val tsunamiMode = repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet()
+        //if (overviewData.tsunami?.isInProgress(dateUtil) == false) overviewData.tsunami = null
+        val tsunamiMode = overviewData.tsunami
+        //val tsunamiMode = repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet()
+/*
+        val extendedBoluses = repository.getExtendedBolusDataFromTimeToTime(toTime - range(), toTime, true).blockingGet()
+        for (pos in extendedBoluses.indices) {
+            val e = extendedBoluses[pos]
+            if (e.timestamp > toTime) continue
+            if (e.end > now) {
+                val newDuration = now - e.timestamp
+*/
+        /*
+        val durationTotal: Long
+        val durationHours: Long
+        val durationMinutes: Long
         var tsunamiModeID: Int? = 1
+        var durationText: String = ""
+         */
         /*
         * ID codes
         * 0 = inactive (openAPS SMB mode)
         * 1 = weak Tsunami mode
         * 2 = Tsu++ mode
          */
-        if (tsunamiMode is ValueWrapper.Existing) {
+
+        /*if (tsunamiMode is ValueWrapper.Existing && tsunamiMode != null) {
             tsunamiModeID = tsunamiMode.value.tsunamiMode
-        }
-        //if (tsunamiModeID == 1) tsunamiModeID = null
-        if (tsunamiModeID != 1) {
-            binding.buttonsLayout.UAMbutton.setTextColor(rh.gc(R.color.ribbonTextWarning))
-            binding.buttonsLayout.UAMbutton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonWarning))
-            binding.buttonsLayout.UAMbutton.text = tsunamiModeID.toString()//"TSU++ ENABLED"
+            durationTotal = (tsunamiMode.value.duration + tsunamiMode.value.timestamp - dateUtil.now()).coerceAtLeast(0) / 1000 / 60 //MP remaining duration in min
+            durationHours = durationTotal / 60
+            durationMinutes = durationTotal % 60
+            if (durationHours > 0) {
+                durationText += "$durationHours h "
+            }
+            durationText += "$durationMinutes min"
+        }*/
+        //if (tsunamiModeID == 2) {
+        if (tsunamiMode != null) {
+            val remaining = tsunamiMode.duration + tsunamiMode.timestamp - dateUtil.now()
+            if (tsunamiMode.tsunamiMode == 2 && remaining > 0) {
+                binding.buttonsLayout.UAMbutton.setTextColor(rh.gc(R.color.ribbonTextWarning))
+                binding.buttonsLayout.UAMbutton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonWarning))
+                binding.buttonsLayout.UAMbutton.text = dateUtil.untilString(tsunamiMode.end, rh)
+            } else {
+                binding.buttonsLayout.UAMbutton.setTextColor(rh.gc(R.color.colorInsulinButton))
+                binding.buttonsLayout.UAMbutton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonDefault))
+                binding.buttonsLayout.UAMbutton.text = "TSUNAMI"
+            }
         } else {
             binding.buttonsLayout.UAMbutton.setTextColor(rh.gc(R.color.colorInsulinButton))
             binding.buttonsLayout.UAMbutton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonDefault))

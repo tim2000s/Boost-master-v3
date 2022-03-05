@@ -157,12 +157,14 @@ class UAMDialog : DialogFragmentWithDate() {
         val duration = binding.tsuPlusDuration.value.toInt()
 
         if (insulinAfterConstraints > 0) {
-            actions.add(rh.gs(R.string.bolus) + ": " + DecimalFormatter.toPumpSupportedBolus(insulinAfterConstraints, activePlugin.activePump, rh).formatColor(rh, R.color.bolus))
+            actions.add(rh.gs(R.string.prebolus) + ": " + DecimalFormatter.toPumpSupportedBolus
+                (insulinAfterConstraints, activePlugin.activePump, rh).formatColor(rh, R.color.bolus))
             if (abs(insulinAfterConstraints - insulin) > pumpDescription.pumpType.determineCorrectBolusStepSize(insulinAfterConstraints))
                 actions.add(rh.gs(R.string.bolusconstraintappliedwarn, insulin, insulinAfterConstraints).formatColor(rh, R.color.warning))
         }
-        val eatingSoonTTDuration = defaultValueHelper.determineEatingSoonTTDuration() //TODO: REMOVE
-        val eatingSoonTT = defaultValueHelper.determineEatingSoonTT()
+        if (duration > 0) {
+            actions.add(rh.gs(R.string.tsunami_button_duration_label) + ": " + rh.gs(R.string.format_mins, duration))
+        }
 
         val time = dateUtil.now()
 
@@ -170,38 +172,9 @@ class UAMDialog : DialogFragmentWithDate() {
         if (notes.isNotEmpty())
             actions.add(rh.gs(R.string.notes_label) + ": " + notes)
 
-        if (insulinAfterConstraints > 0) {
+        if (insulinAfterConstraints > 0 || duration > 0) {
             activity?.let { activity ->
                 OKDialog.showConfirmation(activity, rh.gs(R.string.uam_mode), HtmlHelper.fromHtml(Joiner.on("<br/>").join(actions)), {//MP: String is header string of confirmation window if there is a prebolus
-                    /*if (eatingSoonChecked) {
-                        uel.log(Action.TT, Sources.UAMDialog, //TODO: CHECK
-                            notes,
-                            ValueWithUnit.TherapyEventTTReason(TemporaryTarget.Reason.EATING_SOON),
-                            ValueWithUnit.fromGlucoseUnit(eatingSoonTT, units.asText),
-                            ValueWithUnit.Minute(eatingSoonTTDuration))
-                        disposable += repository.runTransactionForResult(InsertAndCancelCurrentTemporaryTargetTransaction(
-                            timestamp = System.currentTimeMillis(),
-                            duration = TimeUnit.MINUTES.toMillis(eatingSoonTTDuration.toLong()),
-                            reason = TemporaryTarget.Reason.EATING_SOON,
-                            lowTarget = Profile.toMgdl(eatingSoonTT, profileFunction.getUnits()),
-                            highTarget = Profile.toMgdl(eatingSoonTT, profileFunction.getUnits())
-                        )).subscribe({ result ->
-                            result.inserted.forEach { aapsLogger.debug(LTag.DATABASE, "Inserted temp target $it") }
-                            result.updated.forEach { aapsLogger.debug(LTag.DATABASE, "Updated temp target $it") }
-                        }, {
-                            aapsLogger.error(LTag.DATABASE, "Error while saving temporary target", it)
-                        })
-                    }*/
-                    disposable += repository.runTransactionForResult(TsunamiModeSwitchTransaction(
-                        timestamp = System.currentTimeMillis(),
-                        duration = TimeUnit.MINUTES.toMillis(duration.toLong()),
-                        tsunamiMode = 2
-                    )).subscribe({ result ->
-                                     result.inserted.forEach { aapsLogger.debug(LTag.DATABASE, "Inserted tsunami mode $it") }
-                                     result.updated.forEach { aapsLogger.debug(LTag.DATABASE, "Updated tsunami mode $it") }
-                                 }, {
-                                     aapsLogger.error(LTag.DATABASE, "Error while saving Tsunami mode.", it)
-                                 })
                     if (insulinAfterConstraints > 0) {
                         val detailedBolusInfo = DetailedBolusInfo()
                         detailedBolusInfo.eventType = DetailedBolusInfo.EventType.CORRECTION_BOLUS
@@ -222,28 +195,23 @@ class UAMDialog : DialogFragmentWithDate() {
                                 }
                             })
                     }
-                })
-            }
-        } else {
-            if (duration > 0) {
-                activity?.let { activity ->
-                    OKDialog.showConfirmation(activity, rh.gs(R.string.uam_mode), rh.gs(R.string.tsunami_button_no_insulin_message), Runnable {//MP: String is header string of confirmation window if there is a prebolus
+                    if (duration > 0) {
                         disposable += repository.runTransactionForResult(TsunamiModeSwitchTransaction(
                             timestamp = System.currentTimeMillis(),
                             duration = TimeUnit.MINUTES.toMillis(duration.toLong()),
-                            tsunamiMode = 0
+                            tsunamiMode = 2
                         )).subscribe({ result ->
-                                         result.inserted.forEach { aapsLogger.debug(LTag.DATABASE, "Inserted tsunami mode $it") }
-                                         result.updated.forEach { aapsLogger.debug(LTag.DATABASE, "Updated tsunami mode $it") }
-                                     }, {
-                                         aapsLogger.error(LTag.DATABASE, "Error while saving Tsunami mode.", it)
-                                     })
-                    })
-                }
-            } else {
-                activity?.let { activity ->
-                    OKDialog.show(activity, rh.gs(R.string.uam_mode), rh.gs(R.string.no_action_selected))
-                }
+                            result.inserted.forEach { aapsLogger.debug(LTag.DATABASE, "Inserted tsunami mode $it") }
+                            result.updated.forEach { aapsLogger.debug(LTag.DATABASE, "Updated tsunami mode $it") }
+                        }, {
+                            aapsLogger.error(LTag.DATABASE, "Error while saving Tsunami mode.", it)
+                        })
+                    }
+                })
+            }
+        } else {
+            activity?.let { activity ->
+                OKDialog.show(activity, rh.gs(R.string.uam_mode), rh.gs(R.string.no_action_selected))
             }
         }
         return true

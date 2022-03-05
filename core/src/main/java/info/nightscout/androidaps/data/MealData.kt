@@ -10,6 +10,4 @@ class MealData {
     var lastBolus = 0.0
     var lastCarbTime = 0L
     var usedMinCarbsImpact = 0.0
-    //test
-    var active: Boolean = false
 }

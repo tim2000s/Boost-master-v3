@@ -872,6 +872,7 @@ import kotlin.math.roundToInt
         database.tsunamiDao.getTsunamiModeActiveAt(timestamp)
             .subscribeOn(Schedulers.io())
             .toWrappedSingle()
+
 }
 
 @Suppress("USELESS_CAST")

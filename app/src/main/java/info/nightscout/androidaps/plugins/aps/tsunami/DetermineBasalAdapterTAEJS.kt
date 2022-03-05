@@ -178,7 +178,7 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
                                                      uamAllowed: Boolean,
                                                      advancedFiltering: Boolean,
                                                      isSaveCgmSource: Boolean,
-                                                     tsunamiModeID: Int?,
+                                                     tsunamiModeID: Int,
     ) {
         val pump = activePlugin.activePump
         val pumpBolusStep = pump.pumpDescription.bolusStep
@@ -348,8 +348,6 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         mGlucoseStatus.put("bg_supersmooth_now", glucoseStatus.bg_supersmooth_now)
         mGlucoseStatus.put("delta_supersmooth_now", glucoseStatus.delta_supersmooth_now)
         // MP data smoothing END
-        //test
-        mGlucoseStatus.put("active_test", glucoseStatus.active)
 //**********************************************************************************************************************************************
         this.mealData.put("carbs", mealData.carbs)
         this.mealData.put("mealCOB", mealData.mealCOB)

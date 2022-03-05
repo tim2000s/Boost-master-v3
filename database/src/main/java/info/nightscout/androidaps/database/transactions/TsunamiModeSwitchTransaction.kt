@@ -7,7 +7,7 @@ class TsunamiModeSwitchTransaction(
     val tsunami: Tsunami
 ) : Transaction<TsunamiModeSwitchTransaction.TransactionResult>() {
 
-    constructor(timestamp: Long, duration: Long, tsunamiMode: Int?) :
+    constructor(timestamp: Long, duration: Long, tsunamiMode: Int) :
         this(Tsunami(timestamp = timestamp, duration = duration, tsunamiMode = tsunamiMode))
 
     override fun run(): TransactionResult {

@@ -6,6 +6,7 @@ import info.nightscout.androidaps.events.*
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.plugins.bus.RxBus
+import info.nightscout.androidaps.plugins.general.overview.events.EventUpdateOverviewTsunamiButton
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventNewHistoryData
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
@@ -63,6 +64,10 @@ class CompatDBHelper @Inject constructor(
             it.filterIsInstance<TemporaryTarget>().firstOrNull()?.let { tt ->
                 aapsLogger.debug(LTag.DATABASE, "Firing EventTempTargetChange $tt")
                 rxBus.send(EventTempTargetChange())
+            }
+            it.filterIsInstance<Tsunami>().firstOrNull()?.let { ts ->
+                aapsLogger.debug(LTag.DATABASE, "Firing EventUpdateOverviewTsunamiButton $ts")
+                rxBus.send(EventTsunamiModeChange())
             }
             it.filterIsInstance<TherapyEvent>().firstOrNull()?.let { te ->
                 aapsLogger.debug(LTag.DATABASE, "Firing EventTherapyEventChange $te")

@@ -73,5 +73,4 @@ internal interface CarbsDao : TraceableDao<Carbs> {
 
     @Query("SELECT * FROM $TABLE_CARBS WHERE dateCreated > :since AND dateCreated <= :until LIMIT :limit OFFSET :offset")
     suspend fun getNewEntriesSince(since: Long, until: Long, limit: Int, offset: Int): List<Carbs>
-
 }

@@ -129,8 +129,9 @@ class TsunamiPlugin @Inject constructor(
             maxBg = hardLimits.verifyHardLimits(tempTarget.value.highTarget, R.string.temp_target_high_target, HardLimits.VERY_HARD_LIMIT_TEMP_MAX_BG[0].toDouble(), HardLimits.VERY_HARD_LIMIT_TEMP_MAX_BG[1].toDouble())
             targetBg = hardLimits.verifyHardLimits(tempTarget.value.target(), R.string.temp_target_value, HardLimits.VERY_HARD_LIMIT_TEMP_TARGET_BG[0].toDouble(), HardLimits.VERY_HARD_LIMIT_TEMP_TARGET_BG[1].toDouble())
         }
+
         val tsunamiMode = repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet()
-        var tsunamiModeID: Int? = 1
+        var tsunamiModeID = 1
         /*
         * ID codes
         * 0 = inactive (openAPS SMB mode)
@@ -188,7 +189,8 @@ class TsunamiPlugin @Inject constructor(
                 uam.value(),
                 advancedFiltering.value(),
                 activePlugin.activeBgSource.javaClass.simpleName == "DexcomPlugin",
-                tsunamiModeID)
+                tsunamiModeID
+            )
             val now = System.currentTimeMillis()
             val determineBasalResultTAE = determineBasalAdapterTAEJS.invoke()
             profiler.log(LTag.APS, "SMB calculation", start)

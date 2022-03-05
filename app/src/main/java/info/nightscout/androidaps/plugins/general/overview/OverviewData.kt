@@ -14,6 +14,7 @@ import info.nightscout.androidaps.database.entities.Bolus
 import info.nightscout.androidaps.database.entities.GlucoseValue
 import info.nightscout.androidaps.database.entities.TemporaryTarget
 import info.nightscout.androidaps.database.entities.TherapyEvent
+import info.nightscout.androidaps.database.entities.Tsunami
 import info.nightscout.androidaps.extensions.*
 import info.nightscout.androidaps.interfaces.*
 import info.nightscout.shared.logging.AAPSLogger
@@ -69,6 +70,7 @@ class OverviewData @Inject constructor(
         cobInfo = null
         lastCarbsTime = 0L
         temporaryTarget = null
+        tsunami = null
         lastAutosensData = null
         bgReadingsArray = ArrayList()
         bucketedGraphSeries = PointsWithLabelGraphSeries()
@@ -229,6 +231,12 @@ class OverviewData @Inject constructor(
      */
 
     var temporaryTarget: TemporaryTarget? = null
+
+    /*
+    * TSUNAMI
+    */
+
+    var tsunami: Tsunami? = null
 
     /*
      * SENSITIVITY

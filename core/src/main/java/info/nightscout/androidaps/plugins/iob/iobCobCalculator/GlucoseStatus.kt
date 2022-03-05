@@ -24,8 +24,6 @@ data class GlucoseStatus(
     var insufficientsmoothingdata: Boolean = false,
     var bg_supersmooth_now: Double = 0.0,
     var delta_supersmooth_now: Double = 0.0,
-    //test
-    var active: Boolean = false,
 ) {
 
     fun log(): String = "Glucose: " + DecimalFormatter.to0Decimal(glucose) + " mg/dl " +

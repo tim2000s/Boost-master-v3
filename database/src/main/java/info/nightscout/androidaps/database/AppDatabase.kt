@@ -8,7 +8,7 @@ import info.nightscout.androidaps.database.entities.*
 
 //const val DATABASE_VERSION = 21
 //MP Test
-const val DATABASE_VERSION = 27
+const val DATABASE_VERSION = 28
 
 @Database(version = DATABASE_VERSION,
     entities = [APSResult::class, Bolus::class, BolusCalculatorResult::class, Carbs::class,

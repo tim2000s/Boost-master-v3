@@ -103,6 +103,10 @@ class OverviewPlugin @Inject constructor(
             .observeOn(aapsSchedulers.io)
             .subscribe({ loadBg("EventNewBG") }, fabricPrivacy::logException)
         disposable += rxBus
+            .toObservable(EventTsunamiModeChange::class.java)
+            .observeOn(aapsSchedulers.io)
+            .subscribe({ loadTsunamiData("EventTsunamiModeChange") }, fabricPrivacy::logException)
+        disposable += rxBus
             .toObservable(EventTempTargetChange::class.java)
             .observeOn(aapsSchedulers.io)
             .subscribe({ loadTemporaryTarget("EventTempTargetChange") }, fabricPrivacy::logException)
@@ -257,7 +261,7 @@ class OverviewPlugin @Inject constructor(
         overviewBus.send(EventUpdateOverviewTemporaryBasal(from))
         overviewBus.send(EventUpdateOverviewExtendedBolus(from))
         overviewBus.send(EventUpdateOverviewTemporaryTarget(from))
-        //overviewBus.send(EventUpdateOverviewTsunamiButton(from))
+        overviewBus.send(EventUpdateOverviewTsunamiButton(from))
         loadAsData(from)
         overviewData.preparePredictions(from)
         overviewData.prepareBasalData(from)
@@ -275,7 +279,7 @@ class OverviewPlugin @Inject constructor(
         loadBg(from)
         loadProfile(from)
         loadTemporaryTarget(from)
-        //loadTsunamiButton(from)
+        loadTsunamiData(from)
         loadIobCobResults(from)
         loadAsData(from)
         overviewData.prepareBasalData(from)
@@ -298,13 +302,13 @@ class OverviewPlugin @Inject constructor(
         overviewBus.send(EventUpdateOverviewTemporaryTarget(from))
     }
 
-/*    private fun loadTsunamiButton(from: String) {
-        /*val tempTarget = repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet()
-        if (tempTarget is ValueWrapper.Existing) overviewData.temporaryTarget = tempTarget.value
-        else overviewData.temporaryTarget = null*/
+    private fun loadTsunamiData(from: String) {
+        val tsunamiData = repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet()
+        if (tsunamiData is ValueWrapper.Existing) overviewData.tsunami = tsunamiData.value
+        else overviewData.tsunami = null
         overviewBus.send(EventUpdateOverviewTsunamiButton(from))
     }
-*/
+
     private fun loadAsData(from: String) {
         overviewData.lastAutosensData = iobCobCalculator.ads.getLastAutosensData("Overview", aapsLogger, dateUtil)
         overviewBus.send(EventUpdateOverviewSensitivity(from))
