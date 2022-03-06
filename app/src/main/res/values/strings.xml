@@ -709,6 +709,7 @@
     <string name="tsunami_button_no_insulin_message" translatable="false">Activate Tsunami
         meal mode without prebolus?</string>
     <string name="tsunami_button_duration_label">Tsu++ duration</string>
+    <string name="cancel_tsu">Cancel Tsu++ mode.</string>
     <string name="UAM_increment_button_message">Amount of insulin to add when button is pressed</string>
     <string name="key_UAM_button_increment_1" translatable="false">UAM_button_increment_1</string>
     <string name="key_UAM_button_increment_2" translatable="false">UAM_button_increment_2</string>

@@ -13,10 +13,13 @@ import info.nightscout.androidaps.R
 import info.nightscout.androidaps.activities.ErrorHelperActivity
 import info.nightscout.androidaps.data.DetailedBolusInfo
 import info.nightscout.androidaps.database.AppRepository
+import info.nightscout.androidaps.database.ValueWrapper
 import info.nightscout.androidaps.database.entities.TemporaryTarget
 import info.nightscout.androidaps.database.entities.UserEntry.Action
 import info.nightscout.androidaps.database.entities.UserEntry.Sources
 import info.nightscout.androidaps.database.entities.ValueWithUnit
+import info.nightscout.androidaps.database.transactions.CancelCurrentTemporaryTargetIfAnyTransaction
+import info.nightscout.androidaps.database.transactions.CancelCurrentTsunamiModeIfAnyTransaction
 import info.nightscout.androidaps.database.transactions.InsertAndCancelCurrentTemporaryTargetTransaction
 import info.nightscout.androidaps.database.transactions.TsunamiModeSwitchTransaction
 import info.nightscout.androidaps.databinding.DialogUamBinding
@@ -138,6 +141,15 @@ class UAMDialog : DialogFragmentWithDate() {
                 + sp.getDouble(rh.gs(R.string.key_UAM_button_increment_3), PLUS3_DEFAULT))
             validateInputs()
         }
+            if (repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet() is ValueWrapper.Existing)
+                binding.tsuCancel.visibility = View.VISIBLE
+            else
+                binding.tsuCancel.visibility = View.GONE
+        binding.tsuCancel.setOnClickListener {
+            binding.tsuPlusDuration.value = 0.0
+            binding.amount.value = 0.0
+            if (submit()) dismiss()
+        }
     }
 
     override fun onDestroyView() {
@@ -164,6 +176,8 @@ class UAMDialog : DialogFragmentWithDate() {
         }
         if (duration > 0) {
             actions.add(rh.gs(R.string.tsunami_button_duration_label) + ": " + rh.gs(R.string.format_mins, duration))
+        } else if (duration == 0 && repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet() is ValueWrapper.Existing) {
+            actions.add(rh.gs(R.string.cancel_tsu))
         }
 
         val time = dateUtil.now()
@@ -206,7 +220,25 @@ class UAMDialog : DialogFragmentWithDate() {
                         }, {
                             aapsLogger.error(LTag.DATABASE, "Error while saving Tsunami mode.", it)
                         })
+                    } else { //MP Cancels current tsu++ mode if no duration is entered, but a prebolus is issued
+                        disposable += repository.runTransactionForResult(CancelCurrentTsunamiModeIfAnyTransaction(eventTime))
+                            .subscribe({ result ->
+                                result.updated.forEach { aapsLogger.debug(LTag.DATABASE, "Updated tsunami mode $it") }
+                            }, {
+                                aapsLogger.error(LTag.DATABASE, "Error while saving tsunami mode", it)
+                            })
                     }
+                })
+            }
+        } else if (repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet() is ValueWrapper.Existing) {
+            activity?.let { activity ->
+                OKDialog.showConfirmation(activity, rh.gs(R.string.uam_mode), HtmlHelper.fromHtml(Joiner.on("<br/>").join(actions)), {//MP: String is header string of confirmation window if there is a prebolus
+                disposable += repository.runTransactionForResult(CancelCurrentTsunamiModeIfAnyTransaction(eventTime))
+                    .subscribe({ result ->
+                        result.updated.forEach { aapsLogger.debug(LTag.DATABASE, "Updated tsunami mode $it") }
+                    }, {
+                        aapsLogger.error(LTag.DATABASE, "Error while saving tsunami mode", it)
+                    })
                 })
             }
         } else {
