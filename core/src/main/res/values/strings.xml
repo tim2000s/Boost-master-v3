@@ -310,7 +310,6 @@
     <string name="insulin_unit_shortname">U</string>
     <string name="waitingforpumpresult">Waiting for result</string>
     <string name="smb_shortname">SMB</string>
-    <string name="tsunami_shortname">TAE</string>
 
     <!--    CarbsReq-->
     <string name="carbsreq">%1$d g Additional Carbs Required Within %2$d Minutes</string>
@@ -536,6 +535,9 @@
     <string name="bolus_ok" comment="26 characters max for translation">Bolus OK</string>
     <string name="pump_paired" comment="26 characters max for translation">Pump paired</string>
     <string name="insight_refresh_button" comment="26 characters max for translation">Insight Refresh Button</string>
+
+    <!-- Tsunami -->
+    <string name="tsunami_shortname">TSU</string>
 
     <plurals name="days">
         <item quantity="one">%1$d day</item>

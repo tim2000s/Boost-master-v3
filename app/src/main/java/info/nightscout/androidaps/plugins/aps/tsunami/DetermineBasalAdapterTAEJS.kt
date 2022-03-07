@@ -241,10 +241,10 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         this.profile.put("use_autoisf", sp.getBoolean(R.string.key_tae_useautoisf, false))
         this.profile.put("autoisf_max", SafeParse.stringToDouble(sp.getString(R.string.key_tae_autoisf_max,"1.2")))
         this.profile.put("autoisf_hourlychange", SafeParse.stringToDouble(sp.getString(R.string.key_tae_autoisf_hourlychange,"0.2")))
-        this.profile.put("UAM_boluscap", SafeParse.stringToDouble(sp.getString(R.string.key_UAM_boluscap, "1")))
+        this.profile.put("tsu_smbcap", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_smbcap, "1")))
         this.profile.put("insulinreqPCT", SafeParse.stringToDouble(sp.getString(R.string.key_insulinreqPCT, "65")))
-        this.profile.put("tae_start", SafeParse.stringToDouble(sp.getString(R.string.key_tae_start, "11.0")))
-        this.profile.put("tae_end", SafeParse.stringToDouble(sp.getString(R.string.key_tae_end, "23.0")))
+        this.profile.put("tae_start", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_start, "11.0")))
+        this.profile.put("tae_end", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_end, "23.0")))
         this.profile.put("percentage", profile.percentage)
         this.profile.put("dia", profile.dia)
 

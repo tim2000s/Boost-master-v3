@@ -63,20 +63,18 @@
             android:textSize="10sp"
             tools:ignore="SmallSp" />
 
-        <!--MP button test below-->
         <info.nightscout.androidaps.utils.ui.SingleClickButton
-            android:id="@+id/UAMbutton"
+            android:id="@+id/tsunami_button"
             style="?android:attr/buttonStyle"
             android:layout_width="0px"
             android:layout_height="fill_parent"
             android:layout_marginEnd="-4dp"
             android:layout_weight="0.5"
-            android:drawableTop="@drawable/icon_insulin_carbs"
-            android:text="@string/overview_UAM_label"
+            android:drawableTop="@drawable/ic_tsunami"
+            android:text="@string/tsunami_label"
             android:textColor="@color/colorInsulinButton"
             android:textSize="10sp"
             tools:ignore="SmallSp" />
-        <!--MP button test above-->
 
         <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/carbs_button"

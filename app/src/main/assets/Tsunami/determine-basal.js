@@ -370,7 +370,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var tae_delta = Math.min(glucose_status.delta_supersmooth_now, glucose_status.delta); //MP Delta used by TAE will switch between sensor data and smoothed data, depending on which is lower - for added safety
     var insulinReqPCT = profile.insulinreqPCT / 100; // Uset-set percentage to modify insulin required by
     var deltascore = Math.min(1, Math.max(glucose_status.deltascore, 0)); //MP Modifies insulinReqPCT; deltascore grows larger the largest the previous deltas were, until it reaches 1
-    var boluscap = profile.UAM_boluscap * Math.min(profile.percentage / 100, 1.3); //MP: User-set may SMB size for TAE. Boluscap is grows and shrinks with profile percentage;
+    var boluscap = profile.tsu_smbcap * Math.min(profile.percentage / 100, 1.3); //MP: User-set may SMB size for TAE. Boluscap is grows and shrinks with profile percentage;
 
     //MP Give SMBs that are 70% of boluscap or more extra time to be absorbed before delivering another large SMB.
     if (round((new Date(systemTime).getTime() - iob_data.lastBolusTime) / 60000, 1) <= 9 && meal_data.lastBolus >= 0.70 * boluscap) {
@@ -1453,7 +1453,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 //     if (profile.maxUAMSMBBasalMinutes) {
                 //         console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"profile.current_basal:",profile.current_basal);
                 //         maxBolus = round( profile.current_basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
-                //MP: UAM_boluscap limiter: Use UAM minutes outside TT (default lines: above)
+                //MP: tsu_smbcap limiter: Use UAM minutes outside TT (default lines: above)
                 if (activity_controller) {
                     maxBolus = boluscap;
                 } else if (profile.maxUAMSMBBasalMinutes) {

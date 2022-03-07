@@ -30,13 +30,9 @@ import info.nightscout.androidaps.Constants
 import info.nightscout.androidaps.R
 import info.nightscout.androidaps.data.ProfileSealed
 import info.nightscout.androidaps.database.AppRepository
-import info.nightscout.androidaps.database.ValueWrapper
-import info.nightscout.androidaps.database.entities.Tsunami
 import info.nightscout.androidaps.database.entities.UserEntry.Action
 import info.nightscout.androidaps.database.entities.UserEntry.Sources
-import info.nightscout.androidaps.database.interfaces.DBEntryWithTimeAndDuration
 import info.nightscout.androidaps.database.interfaces.end
-import info.nightscout.androidaps.database.interfaces.getRemainingDuration
 import info.nightscout.androidaps.databinding.OverviewFragmentBinding
 import info.nightscout.androidaps.dialogs.*
 import info.nightscout.androidaps.events.EventAcceptOpenLoopChange
@@ -212,9 +208,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         binding.buttonsLayout.calibrationButton.setOnClickListener(this)
         binding.buttonsLayout.cgmButton.setOnClickListener(this)
         binding.buttonsLayout.insulinButton.setOnClickListener(this)
-        //MP button test below
-        binding.buttonsLayout.UAMbutton.setOnClickListener(this)
-        //MP button test above
+        binding.buttonsLayout.tsunamiButton.setOnClickListener(this)
         binding.buttonsLayout.carbsButton.setOnClickListener(this)
         binding.buttonsLayout.quickWizardButton.setOnClickListener(this)
         binding.buttonsLayout.quickWizardButton.setOnLongClickListener(this)
@@ -372,9 +366,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                     activity,
                     ProtectionCheck.Protection.BOLUS,
                     UIRunnable { if (isAdded) InsulinDialog().show(childFragmentManager, "Overview") })
-                //MP button test below - causes crash
-                R.id.UAMbutton -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if(isAdded) UAMDialog().show(childFragmentManager, "Overview") })
-                //MP button test above
+                R.id.tsunami_button -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if(isAdded) TsunamiDialog().show(childFragmentManager, "Overview") })
                 R.id.quick_wizard_button -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if (isAdded) onClickQuickWizard() })
                 R.id.carbs_button        -> protectionCheck.queryProtection(
                     activity,
@@ -570,7 +562,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             && sp.getBoolean(R.string.key_show_insulin_button, true)).toVisibility()
         //MP Tsunami button
         val tsunamiIsActiveAPS = tsunamiPlugin.isEnabled()
-        binding.buttonsLayout.UAMbutton.visibility = (tsunamiIsActiveAPS && !loop.isDisconnected && pump.isInitialized() && !pump.isSuspended() && profile != null && sp.getBoolean(R.string.key_show_UAM_button, true)).toVisibility()
+        binding.buttonsLayout.tsunamiButton.visibility = (tsunamiIsActiveAPS && !loop.isDisconnected && pump.isInitialized() && !pump.isSuspended() && profile != null && sp.getBoolean(R.string.key_show_tsunami_button, true)).toVisibility()
         // **** Calibration & CGM buttons ****
         val xDripIsBgSource = xdripPlugin.isEnabled()
         val dexcomIsSource = dexcomPlugin.isEnabled()
@@ -957,18 +949,18 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         if (tsunamiMode != null) {
             val remaining = tsunamiMode.duration + tsunamiMode.timestamp - dateUtil.now()
             if (tsunamiMode.tsunamiMode == 2 && remaining > 0) {
-                binding.buttonsLayout.UAMbutton.setTextColor(rh.gc(R.color.ribbonTextWarning))
-                binding.buttonsLayout.UAMbutton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonWarning))
-                binding.buttonsLayout.UAMbutton.text = dateUtil.untilString(tsunamiMode.end, rh)
+                binding.buttonsLayout.tsunamiButton.setTextColor(rh.gc(R.color.ribbonTextWarning))
+                binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonWarning))
+                binding.buttonsLayout.tsunamiButton.text = dateUtil.untilString(tsunamiMode.end, rh)
             } else {
-                binding.buttonsLayout.UAMbutton.setTextColor(rh.gc(R.color.colorInsulinButton))
-                binding.buttonsLayout.UAMbutton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonDefault))
-                binding.buttonsLayout.UAMbutton.text = "TSUNAMI"
+                binding.buttonsLayout.tsunamiButton.setTextColor(rh.gc(R.color.colorInsulinButton))
+                binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonDefault))
+                binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
             }
         } else {
-            binding.buttonsLayout.UAMbutton.setTextColor(rh.gc(R.color.colorInsulinButton))
-            binding.buttonsLayout.UAMbutton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonDefault))
-            binding.buttonsLayout.UAMbutton.text = "TSUNAMI"
+            binding.buttonsLayout.tsunamiButton.setTextColor(rh.gc(R.color.colorInsulinButton))
+            binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonDefault))
+            binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
         }
     }
 
