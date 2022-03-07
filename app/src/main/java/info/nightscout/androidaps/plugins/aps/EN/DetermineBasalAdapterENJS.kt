@@ -319,6 +319,7 @@ class DetermineBasalAdapterENJS internal constructor(private val scriptReader: S
         this.mealData.put("TDDAIMI3", tddAIMI!!.averageTDD(tddAIMI!!.calculate(3)).totalAmount)
         this.mealData.put("TDDAIMI7", tddAIMI!!.averageTDD(tddAIMI!!.calculate(7)).totalAmount)
         this.mealData.put("TDDPUMP", tddAIMI!!.calculateDaily().totalAmount)
+        this.mealData.put("TDDPUMPNOWMS", tddAIMI!!.calculateDaily().totalAmount/(now-MidnightTime.calc(now))*86400000)
         // Override profile ISF with TDD ISF if selected in prefs
         this.profile.put("use_sens_TDD", sp.getBoolean(R.string.key_use_sens_tdd, false))
         this.profile.put("sens_TDD_scale",SafeParse.stringToDouble(sp.getString(R.string.key_sens_tdd_scale,"100")))

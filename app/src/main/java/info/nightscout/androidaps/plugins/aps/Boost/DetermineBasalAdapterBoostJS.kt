@@ -26,6 +26,7 @@ import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import info.nightscout.shared.sharedPreferences.SP
 import info.nightscout.androidaps.utils.stats.TddCalculator
+import info.nightscout.androidaps.utils.MidnightTime
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -302,7 +303,7 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
         this.mealData.put("TDDAIMI1", tddAIMI!!.averageTDD(tddAIMI!!.calculate(1)).totalAmount)
         this.mealData.put("TDDAIMI3", tddAIMI!!.averageTDD(tddAIMI!!.calculate(3)).totalAmount)
         this.mealData.put("TDDAIMI5", tddAIMI!!.averageTDD(tddAIMI!!.calculate(5)).totalAmount)
-        //this.mealData.put("TDDPUMPmsec",tddAIMI!!.calculateDaily().totalAmount/(now-MidnightTime.calc(now))*86400000)
+        this.mealData.put("TDDPUMPmsec",tddAIMI!!.calculateDaily().totalAmount/(now-MidnightTime.calc(now))*86400000)
         //this.mealData.put("TDDPUMP", danaPump.dailyTotalUnits)
         StatTIR = TirCalculator(rh,profileFunction,dateUtil,repository)
         this.mealData.put("StatLow7", StatTIR!!.averageTIR(StatTIR!!.calculate(7, 70.0, 180.0)).belowPct())

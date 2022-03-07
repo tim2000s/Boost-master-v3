@@ -304,18 +304,21 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
              console.log("TDD = " +TDD+ " based on standard pump 60/tdd7 40 split; ");
              rT.reason += "TDD: " +TDD+ " based on standard pump 60/tdd7 40 split; ";
              }
-
-
+        var tdd_pump_msec = ( (meal_data.TDDPUMPmsec / now ) * 24);
+        var tdd1 = meal_data.TDDAIMI1;
+        var tdd3 = meal_data.TDDAIMI3;
+        var tdd5 = meal_data.TDDAIMI5;
         //var TDD = (tdd7 * 0.4) + (tdd_24 * 0.6);
 
        console.error("                                 ");
        //console.error("7-day average TDD is: " +tdd7+ "; ");
        console.error("Rolling 24 hour TDD: "+tdd_24+"; ");
        console.error("Extrapolated TDD: "+tdd_pump+"; ");
+       console.error("Extrapolated TDD (msec): "+tdd_pump_msec+"; ");
        console.error("Calculated TDD: "+TDD+"; ");
-       console.error("1-day average TDD is: "+meal_data.TDDAIMI1+"; ");
-       console.error("3-day average TDD is: "+meal_data.TDDAIMI3+"; ");
-       console.error("5-day average TDD is: "+meal_data.TDDAIMI5+"; ");
+       console.error("1-day average TDD is: "+tdd1+"; ");
+       console.error("3-day average TDD is: "+tdd3+"; ");
+       console.error("5-day average TDD is: "+tdd5+"; ");
        console.error("7-day average TDD is: " +tdd7+ "; ");
        /*if ( tdd_pump > tdd7 && now < 5 || now < 7 && TDD < ( 0.8 * tdd7 ) ){
           TDD = ( 0.8 * tdd7 );
