@@ -309,10 +309,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //var TDD = (tdd7 * 0.4) + (tdd_24 * 0.6);
 
        console.error("                                 ");
-       console.error("7-day average TDD is: " +tdd7+ "; ");
+       //console.error("7-day average TDD is: " +tdd7+ "; ");
        console.error("Rolling 24 hour TDD: "+tdd_24+"; ");
        console.error("Extrapolated TDD: "+tdd_pump+"; ");
        console.error("Calculated TDD: "+TDD+"; ");
+       console.error("1-day average TDD is: "+meal_data.TDDAIMI1+"; ");
+       console.error("3-day average TDD is: "+meal_data.TDDAIMI3+"; ");
+       console.error("5-day average TDD is: "+meal_data.TDDAIMI5+"; ");
+       console.error("7-day average TDD is: " +tdd7+ "; ");
        /*if ( tdd_pump > tdd7 && now < 5 || now < 7 && TDD < ( 0.8 * tdd7 ) ){
           TDD = ( 0.8 * tdd7 );
           console.log("Excess or too low insulin from pump so TDD set to "+TDD+" based on 75% of TDD7; ");
@@ -945,7 +949,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.log("Future state sensitivity is " +future_sens+" weighted on eventual BG due to COB");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on predicted BG due to COB;";
             }
-        else if( glucose_status.delta > 5 && delta_accl > 0 ) {
+        else if( glucose_status.delta > 4 && delta_accl > 0 ) {
             var future_sens = ( 277700 / (TDD * ( (eventualBG * 0.75) + (bg * 0.25) )));
             console.log("Future state sensitivity is " +future_sens+" weighted on predicted bg due to increasing deltas");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on predicted BG due to delta;";
@@ -956,7 +960,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on current BG;";
             }
         else if( glucose_status.delta > 0 || bg > 60 && glucose_status.delta < 2 && glucose_status.delta > -2 && glucose_status.short_avgdelta > -2 && glucose_status.short_avgdelta < 2 ) {
-            var future_sens = ( 277700 / (TDD * bg) );
+            var future_sens = ( 277700 / (TDD * (( 0.5 * bg) + ( 0.5 * eventualBG )) );
             console.log("Future state sensitivity is " +future_sens+" using current bg due to no COB & small delta or variation");
             rT.reason += "Dosing sensitivity: " +future_sens+" using current BG;";
             }
