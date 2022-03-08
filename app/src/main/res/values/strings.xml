@@ -667,6 +667,9 @@
     <string name="enablesmbalways_summary">Enable SMB always, independently to boluses. Possible only with BG source with proper filtering, such as Dexcom G5.</string>
     <string name="enableBoostPercentScale">Enable Boost perfentage scaling</string>
     <string name="enableBoostPercentScale_summary">Enable boost scaling when glucose is between 108 mg/dl and 180 mg/dl. Starts at 150% of insulinRequired and stops at user entered Boost Percentage Required. Only activates when the difference between delta and short average delta is increasing.</string>
+    <string name="enableCircadianISF">Enable Circadian ISF</string>
+    <string name="enableCircadianISF_summary">Enables the circadian ISF model</string>
+    <string name="key_enableCircadianISF" translatable="false">enableCircadianISF</string>
     <string name="enablesmbaftercarbs">Enable SMB after carbs</string>
     <string name="enablesmbaftercarbs_summary">Enable SMB for 6h after carbs, even with 0 COB. Possible only with BG source with nice filtering of data like G5</string>
     <string name="enablesmbwithcob">Enable SMB with COB</string>

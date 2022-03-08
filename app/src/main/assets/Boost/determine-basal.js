@@ -369,8 +369,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
     console.log("Circadian_sensitivity factor : "+circadian_sensitivity+"; ");
 
-    sens = variable_sens * circadian_sensitivity;
-    sens = round(sens, 1);
+    if( profile.enableCircadianISF === true){
+        sens = variable_sens * circadian_sensitivity;
+        console.log("Circadian ISF enabled");
+        sens = round(sens, 1);
+    } else {
+        sens = variable_sens;
+        sens = round(sens, 1);
+    }
 
     //*********************************************************************************
     //**                   End of Dynamic ISF code for predictions                   **
