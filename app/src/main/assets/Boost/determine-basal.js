@@ -375,6 +375,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         sens = round(sens, 1);
     } else {
         sens = variable_sens;
+        console.log("Circadian ISF disabled");
         sens = round(sens, 1);
     }
 
@@ -398,7 +399,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("ISF from "+variable_sens+" to "+sens+ "due to temp target; ");
         }
         else {
-        sensitivityRatio = ( TDD / tdd_24 );
+        sensitivityRatio = ( TDD / tdd1 );
             if (sensitivityRatio > 1) {
             sensitivityRatio = Math.min(sensitivityRatio, profile.autosens_max);
             sensitivityRatio = round(sensitivityRatio,2);
