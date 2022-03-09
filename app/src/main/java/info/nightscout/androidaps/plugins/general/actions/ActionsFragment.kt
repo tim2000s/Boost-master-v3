@@ -49,8 +49,8 @@ import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.shared.sharedPreferences.SP
 import info.nightscout.androidaps.utils.ui.SingleClickButton
 import info.nightscout.androidaps.utils.ui.UIRunnable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.plusAssign
 import java.util.*
 import javax.inject.Inject
 
@@ -107,6 +107,7 @@ class ActionsFragment : DaggerFragment() {
     private var sensorLevelLabel: TextView? = null
     private var insulinLevelLabel: TextView? = null
     private var pbLevelLabel: TextView? = null
+    private var cannulaOrPatch: TextView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -153,12 +154,23 @@ class ActionsFragment : DaggerFragment() {
         sensorLevelLabel = view.findViewById(R.id.sensor_level_label)
         insulinLevelLabel = view.findViewById(R.id.insulin_level_label)
         pbLevelLabel = view.findViewById(R.id.pb_level_label)
+        cannulaOrPatch = view.findViewById(R.id.cannula_or_patch)
 
         profileSwitch?.setOnClickListener {
-            ProfileSwitchDialog().show(childFragmentManager, "ProfileSwitchDialog")
+            activity?.let { activity ->
+                protectionCheck.queryProtection(
+                    activity,
+                    ProtectionCheck.Protection.BOLUS,
+                    UIRunnable { ProfileSwitchDialog().show(childFragmentManager, "ProfileSwitchDialog")})
+            }
         }
         tempTarget?.setOnClickListener {
-            TempTargetDialog().show(childFragmentManager, "Actions")
+            activity?.let { activity ->
+                protectionCheck.queryProtection(
+                    activity,
+                    ProtectionCheck.Protection.BOLUS,
+                    UIRunnable { TempTargetDialog().show(childFragmentManager, "Actions") })
+            }
         }
         extendedBolus?.setOnClickListener {
             activity?.let { activity ->
@@ -185,7 +197,12 @@ class ActionsFragment : DaggerFragment() {
             }
         }
         setTempBasal?.setOnClickListener {
-            TempBasalDialog().show(childFragmentManager, "Actions")
+            activity?.let { activity ->
+                protectionCheck.queryProtection(
+                    activity,
+                    ProtectionCheck.Protection.BOLUS,
+                    UIRunnable { TempBasalDialog().show(childFragmentManager, "Actions") })
+            }
         }
         cancelTempBasal?.setOnClickListener {
             if (iobCobCalculator.getTempBasalIncludingConvertedExtended(dateUtil.now()) != null) {
@@ -318,6 +335,10 @@ class ActionsFragment : DaggerFragment() {
         }
         tempTarget?.visibility = (profile != null && !loop.isDisconnected).toVisibility()
         tddStats?.visibility = pump.pumpDescription.supportsTDDs.toVisibility()
+
+        cannulaOrPatch?.text = if (pump.pumpDescription.isPatchPump) rh.gs(R.string.patch_pump) else rh.gs(R.string.cannula)
+        val imageResource = if (pump.pumpDescription.isPatchPump) R.drawable.ic_patch_pump_outline else R.drawable.ic_cp_age_cannula
+        cannulaOrPatch?.setCompoundDrawablesWithIntrinsicBounds(imageResource, 0, 0, 0)
 
         if (!config.NSCLIENT) {
             statusLightHandler.updateStatusLights(cannulaAge, insulinAge, reservoirLevel, sensorAge, sensorLevel, pbAge, batteryLevel)

@@ -40,7 +40,7 @@ import info.nightscout.androidaps.utils.Round;
 import info.nightscout.androidaps.utils.resources.ResourceHelper;
 import info.nightscout.androidaps.utils.rx.AapsSchedulers;
 import info.nightscout.shared.sharedPreferences.SP;
-import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 /**
  * Created by mike on 28.01.2018.
@@ -456,21 +456,21 @@ public abstract class AbstractDanaRPlugin extends PumpPluginBase implements Pump
 
     @NonNull @Override
     public Constraint<Double> applyBasalConstraints(Constraint<Double> absoluteRate, @NonNull Profile profile) {
-        absoluteRate.setIfSmaller(getAapsLogger(), danaPump.getMaxBasal(), String.format(getRh().gs(R.string.limitingbasalratio), danaPump.getMaxBasal(), getRh().gs(R.string.pumplimit)), this);
+        absoluteRate.setIfSmaller(getAapsLogger(), danaPump.getMaxBasal(), getRh().gs(R.string.limitingbasalratio, danaPump.getMaxBasal(), getRh().gs(R.string.pumplimit)), this);
         return absoluteRate;
     }
 
     @NonNull @Override
     public Constraint<Integer> applyBasalPercentConstraints(Constraint<Integer> percentRate, @NonNull Profile profile) {
-        percentRate.setIfGreater(getAapsLogger(), 0, String.format(getRh().gs(R.string.limitingpercentrate), 0, getRh().gs(R.string.itmustbepositivevalue)), this);
-        percentRate.setIfSmaller(getAapsLogger(), getPumpDescription().getMaxTempPercent(), String.format(getRh().gs(R.string.limitingpercentrate), getPumpDescription().getMaxTempPercent(), getRh().gs(R.string.pumplimit)), this);
+        percentRate.setIfGreater(getAapsLogger(), 0, getRh().gs(R.string.limitingpercentrate, 0, getRh().gs(R.string.itmustbepositivevalue)), this);
+        percentRate.setIfSmaller(getAapsLogger(), getPumpDescription().getMaxTempPercent(), getRh().gs(R.string.limitingpercentrate, getPumpDescription().getMaxTempPercent(), getRh().gs(R.string.pumplimit)), this);
 
         return percentRate;
     }
 
     @NonNull @Override
     public Constraint<Double> applyBolusConstraints(Constraint<Double> insulin) {
-        insulin.setIfSmaller(getAapsLogger(), danaPump.getMaxBolus(), String.format(getRh().gs(R.string.limitingbolus), danaPump.getMaxBolus(), getRh().gs(R.string.pumplimit)), this);
+        insulin.setIfSmaller(getAapsLogger(), danaPump.getMaxBolus(), getRh().gs(R.string.limitingbolus, danaPump.getMaxBolus(), getRh().gs(R.string.pumplimit)), this);
         return insulin;
     }
 

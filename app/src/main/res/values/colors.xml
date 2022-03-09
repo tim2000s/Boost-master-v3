@@ -18,7 +18,7 @@
     <color name="warning">#ff1a1a</color>
     <color name="info">#77dd77</color>
     <color name="error_background">#66FC0000</color>
-    <color name="ok_background">#323232</color>
+    <color name="ok_background">@color/colorPrimaryDark</color>
 
     <color name="tempTargetBackground">#77dd77</color>
     <color name="exercise">#67DFE8</color>
@@ -40,16 +40,11 @@
     <color name="colorScheduled">#de7550</color>
     <color name="colorActive">#25912e</color>
 
-    <color name="notificationUrgent">#ff0400</color>
-    <color name="notificationNormal">#ff5e55</color>
-    <color name="notificationLow">#ff827c</color>
-    <color name="notificationInfo">#009705</color>
-
     <color name="deviationgrey">#c8666666</color>
     <color name="deviationgreen">#7200FF00</color>
     <color name="deviationred">#72FF0000</color>
     <color name="deviationblack">#72000000</color>
 
-    <color name="splashBackground">#2E2E2E</color>
+    <color name="splashBackground">#000000</color>
 
 </resources>
