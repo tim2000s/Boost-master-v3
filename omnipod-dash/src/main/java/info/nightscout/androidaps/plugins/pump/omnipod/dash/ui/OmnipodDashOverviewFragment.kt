@@ -40,12 +40,13 @@ import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.FabricPrivacy
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.buildHelper.BuildHelper
+import info.nightscout.androidaps.utils.protection.ProtectionCheck
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.shared.sharedPreferences.SP
 import info.nightscout.androidaps.utils.ui.UIRunnable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.plusAssign
 import org.apache.commons.lang3.StringUtils
 import java.time.Duration
 import java.time.ZonedDateTime
@@ -64,6 +65,7 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
     @Inject lateinit var omnipodDashPumpPlugin: OmnipodDashPumpPlugin
     @Inject lateinit var podStateManager: OmnipodDashPodStateManager
     @Inject lateinit var sp: SP
+    @Inject lateinit var protectionCheck: ProtectionCheck
     @Inject lateinit var dateUtil: DateUtil
     @Inject lateinit var aapsSchedulers: AapsSchedulers
     @Inject lateinit var pumpSync: PumpSync
@@ -93,8 +95,7 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
     private var _podInfoBinding: OmnipodCommonOverviewPodInfoBinding? = null
     private var _buttonBinding: OmnipodCommonOverviewButtonsBinding? = null
 
-    // These properties are only valid between onCreateView and
-    // onDestroyView.
+    // These properties are only valid between onCreateView and onDestroyView.
     val binding get() = _binding!!
     private val bluetoothStatusBinding get() = _bluetoothStatusBinding!!
     private val podInfoBinding get() = _podInfoBinding!!
@@ -112,8 +113,12 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         buttonBinding.buttonPodManagement.setOnClickListener {
-            // TODO add protection
-            startActivity(Intent(context, DashPodManagementActivity::class.java))
+            activity?.let { activity ->
+                protectionCheck.queryProtection(
+                    activity,
+                    ProtectionCheck.Protection.PREFERENCES,
+                    UIRunnable { startActivity(Intent(context, DashPodManagementActivity::class.java)) })
+            }
         }
 
         buttonBinding.buttonResumeDelivery.setOnClickListener {
