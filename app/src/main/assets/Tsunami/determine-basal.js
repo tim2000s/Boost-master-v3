@@ -371,6 +371,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var insulinReqPCT = profile.insulinreqPCT / 100; // Uset-set percentage to modify insulin required by
     var deltascore = Math.min(1, Math.max(glucose_status.deltascore, 0)); //MP Modifies insulinReqPCT; deltascore grows larger the largest the previous deltas were, until it reaches 1
     var boluscap = profile.tsu_smbcap * Math.min(profile.percentage / 100, 1.3); //MP: User-set may SMB size for TAE. Boluscap is grows and shrinks with profile percentage;
+    var tsunamiActive = profile.tsunamiActive
 
     //MP Give SMBs that are 70% of boluscap or more extra time to be absorbed before delivering another large SMB.
     if (round((new Date(systemTime).getTime() - iob_data.lastBolusTime) / 60000, 1) <= 9 && meal_data.lastBolus >= 0.70 * boluscap) {
@@ -500,7 +501,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         iob_data.iob > 0.1 &&
         meal_data.mealCOB == 0 &&
         act_curr > 0 &&
-        tsunami_insreq + iob_data.iob >= (tae_bg - target_bg) / profile_sens) {
+        tsunami_insreq + iob_data.iob >= (tae_bg - target_bg) / profile_sens &&
+        tsunamiActive == true) {
         activity_controller = true; //MP Enable TAE
         //MP Reporting messages
         console.log("------------------------------");

@@ -61,7 +61,7 @@ class GlucoseStatusProvider @Inject constructor(
 
         //*** Tsunami specific values ******************************************************************************************************************
         var deltascore: Double
-        val deltathreshold = 7.0 //MP average delta above which deltascore will be 1.
+        val deltathreshold = 4.0 //MP average delta above which deltascore will be 1.
         val weight = 0.15 //MP Weighting used for weighted averages
         var scoredivisor: Double
         val before = data[1]

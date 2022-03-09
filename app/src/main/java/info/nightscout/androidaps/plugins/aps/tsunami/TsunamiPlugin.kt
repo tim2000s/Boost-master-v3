@@ -132,6 +132,7 @@ class TsunamiPlugin @Inject constructor(
 
         val tsunamiMode = repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet()
         var tsunamiModeID = 1
+        val tsunamiActive:Boolean = tsunamiMode is ValueWrapper.Existing
         /*
         * ID codes
         * 0 = inactive (openAPS SMB mode)
@@ -189,7 +190,8 @@ class TsunamiPlugin @Inject constructor(
                 uam.value(),
                 advancedFiltering.value(),
                 activePlugin.activeBgSource.javaClass.simpleName == "DexcomPlugin",
-                tsunamiModeID
+                tsunamiModeID,
+                tsunamiActive
             )
             val now = System.currentTimeMillis()
             val determineBasalResultTAE = determineBasalAdapterTAEJS.invoke()
