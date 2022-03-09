@@ -963,7 +963,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on predicted BG due to COB;";
             }
         else if( glucose_status.delta > 4 && delta_accl > 0 ) {
-           /var future_sens_old = ( 277700 / (TDD * ( (eventualBG * 0.75) + (bg * 0.25) )));
+           var future_sens_old = ( 277700 / (TDD * ( (eventualBG * 0.75) + (bg * 0.25) )));
             var future_sens = ( 1900 / (Math.log(((eventualBG * 0.75) + (bg * 0.25))/50)*TDD));
             console.log("Future state sensitivity is " +future_sens+" weighted on predicted bg due to increasing deltas");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on predicted BG due to delta;";
