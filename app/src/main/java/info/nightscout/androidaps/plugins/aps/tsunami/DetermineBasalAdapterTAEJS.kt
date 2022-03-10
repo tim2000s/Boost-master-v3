@@ -5,17 +5,15 @@ import info.nightscout.androidaps.R
 import info.nightscout.androidaps.data.IobTotal
 import info.nightscout.androidaps.data.MealData
 import info.nightscout.androidaps.database.AppRepository
+import info.nightscout.androidaps.database.ValueWrapper
 import info.nightscout.androidaps.extensions.convertedToAbsolute
 import info.nightscout.androidaps.extensions.getPassedDurationToTimeInMinutes
 import info.nightscout.androidaps.extensions.plannedRemainingMinutes
-import info.nightscout.androidaps.interfaces.ActivePlugin
-import info.nightscout.androidaps.interfaces.GlucoseUnit
-import info.nightscout.androidaps.interfaces.IobCobCalculator
-import info.nightscout.androidaps.interfaces.Profile
-import info.nightscout.androidaps.interfaces.ProfileFunction
+import info.nightscout.androidaps.interfaces.*
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.plugins.aps.logger.LoggerCallback
+import info.nightscout.androidaps.plugins.aps.loop.APSResult
 import info.nightscout.androidaps.plugins.aps.loop.ScriptReader
 import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.GlucoseStatus
@@ -36,7 +34,7 @@ import javax.inject.Inject
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.IobCobCalculatorPlugin
 
 
-class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: ScriptReader, private val injector: HasAndroidInjector) {
+class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: ScriptReader, private val injector: HasAndroidInjector) : DetermineBasalAdapterInterface {
 
     @Inject lateinit var aapsLogger: AAPSLogger
     @Inject lateinit var constraintChecker: ConstraintChecker
@@ -58,21 +56,16 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
     private var smbAlwaysAllowed = false
     private var currentTime: Long = 0
     private var saveCgmSource = false
-    var currentTempParam: String? = null
-        private set
-    var iobDataParam: String? = null
-        private set
-    var glucoseStatusParam: String? = null
-        private set
-    var profileParam: String? = null
-        private set
-    var mealDataParam: String? = null
-        private set
-    var scriptDebug = ""
-        private set
+
+    override var currentTempParam: String? = null
+    override var iobDataParam: String? = null
+    override var glucoseStatusParam: String? = null
+    override var profileParam: String? = null
+    override var mealDataParam: String? = null
+    override var scriptDebug = ""
 
     @Suppress("SpellCheckingInspection")
-    operator fun invoke(): DetermineBasalResultTAE? {
+    override operator fun invoke(): APSResult? {
         aapsLogger.debug(LTag.APS, ">>> Invoking determine_basal <<<")
         aapsLogger.debug(LTag.APS, "Glucose status: " + mGlucoseStatus.toString().also { glucoseStatusParam = it })
         aapsLogger.debug(LTag.APS, "IOB data:       " + iobData.toString().also { iobDataParam = it })
@@ -162,24 +155,26 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         return determineBasalResultTAE
     }
 
-    @Suppress("SpellCheckingInspection") fun setData(profile: Profile,
-                                                     maxIob: Double,
-                                                     maxBasal: Double,
-                                                     minBg: Double,
-                                                     maxBg: Double,
-                                                     targetBg: Double,
-                                                     basalRate: Double,
-                                                     iobArray: Array<IobTotal>,
-                                                     glucoseStatus: GlucoseStatus,
-                                                     mealData: MealData,
-                                                     autosensDataRatio: Double,
-                                                     tempTargetSet: Boolean,
-                                                     microBolusAllowed: Boolean,
-                                                     uamAllowed: Boolean,
-                                                     advancedFiltering: Boolean,
-                                                     isSaveCgmSource: Boolean,
-                                                     tsunamiModeID: Int,
-                                                     tsunamiActive: Boolean,
+    @Suppress("SpellCheckingInspection")
+    override fun setData(
+        profile: Profile,
+        maxIob: Double,
+        maxBasal: Double,
+        minBg: Double,
+        maxBg: Double,
+        targetBg: Double,
+        basalRate: Double,
+        iobArray: Array<IobTotal>,
+        glucoseStatus: GlucoseStatus,
+        mealData: MealData,
+        autosensDataRatio: Double,
+        tempTargetSet: Boolean,
+        microBolusAllowed: Boolean,
+        uamAllowed: Boolean,
+        advancedFiltering: Boolean,
+        isSaveCgmSource: Boolean,
+        //tsunamiModeID: Int,
+        //tsunamiActive: Boolean,
     ) {
         val pump = activePlugin.activePump
         val pumpBolusStep = pump.pumpDescription.bolusStep
@@ -196,14 +191,10 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         this.profile.put("max_daily_safety_multiplier", sp.getInt(R.string.key_openapsama_max_daily_safety_multiplier, 3))
         this.profile.put("current_basal_safety_multiplier", sp.getDouble(R.string.key_openapsama_current_basal_safety_multiplier, 4.0))
 
-        //mProfile.put("high_temptarget_raises_sensitivity", SP.getBoolean(R.string.key_high_temptarget_raises_sensitivity, UAMDefaults.high_temptarget_raises_sensitivity));
-//**********************************************************************************************************************************************
+        //mProfile.put("high_temptarget_raises_sensitivity", SP.getBoolean(R.string.key_high_temptarget_raises_sensitivity, SMBDefaults.high_temptarget_raises_sensitivity));
         this.profile.put("high_temptarget_raises_sensitivity", false)
-        //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, UAMDefaults.low_temptarget_lowers_sensitivity));
-        //this.profile.put("high_temptarget_raises_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_high_temptarget_raises_sensitivity),TAEDefaults.high_temptarget_raises_sensitivity))
-        //this.profile.put("low_temptarget_lowers_sensitivity",sp.getBoolean(resourceHelper.gs(R.string.key_low_temptarget_lowers_sensitivity),TAEDefaults.low_temptarget_lowers_sensitivity))
+        //mProfile.put("low_temptarget_lowers_sensitivity", SP.getBoolean(R.string.key_low_temptarget_lowers_sensitivity, SMBDefaults.low_temptarget_lowers_sensitivity));
         this.profile.put("low_temptarget_lowers_sensitivity", false)
-//**********************************************************************************************************************************************
         this.profile.put("sensitivity_raises_target", sp.getBoolean(R.string.key_sensitivity_raises_target, TAEDefaults.sensitivity_raises_target))
         this.profile.put("resistance_lowers_target", sp.getBoolean(R.string.key_resistance_lowers_target, TAEDefaults.resistance_lowers_target))
         this.profile.put("adv_target_adjustments", TAEDefaults.adv_target_adjustments)
@@ -238,6 +229,13 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         if (profileFunction.getUnits() == GlucoseUnit.MMOL) {
             this.profile.put("out_units", "mmol/L")
         }
+        val now = System.currentTimeMillis()
+        val tb = iobCobCalculator.getTempBasalIncludingConvertedExtended(now)
+        currentTemp.put("temp", "absolute")
+        currentTemp.put("duration", tb?.plannedRemainingMinutes ?: 0)
+        currentTemp.put("rate", tb?.convertedToAbsolute(now, profile) ?: 0.0)
+        // as we have non default temps longer than 30 mintues
+        if (tb != null) currentTemp.put("minutesrunning", tb.getPassedDurationToTimeInMinutes(now))
 //**********************************************************************************************************************************************
         this.profile.put("use_autoisf", sp.getBoolean(R.string.key_tae_useautoisf, false))
         this.profile.put("autoisf_max", SafeParse.stringToDouble(sp.getString(R.string.key_tae_autoisf_max,"1.2")))
@@ -255,17 +253,15 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         val insulinInterface = activePlugin.activeInsulin
         val insulinID = insulinInterface.id.value
         this.profile.put("insulinID", insulinID)
+        val tsunamiMode = repository.getTsunamiModeActiveAt(now).blockingGet()
+        val tsunamiActive:Boolean = tsunamiMode is ValueWrapper.Existing
+        var tsunamiModeID: Int = 1
+        if (tsunamiMode is ValueWrapper.Existing) {
+            tsunamiModeID = tsunamiMode.value.tsunamiMode
+        }
         this.profile.put("tsunamiModeID", tsunamiModeID)
         this.profile.put("tsunamiActive", tsunamiActive)
         //MP UAM tsunami profile variables END
-//**********************************************************************************************************************************************
-        val now = System.currentTimeMillis()
-        val tb = iobCobCalculator.getTempBasalIncludingConvertedExtended(now)
-        currentTemp.put("temp", "absolute")
-        currentTemp.put("duration", tb?.plannedRemainingMinutes ?: 0)
-        currentTemp.put("rate", tb?.convertedToAbsolute(now, profile) ?: 0.0)
-        // as we have non default temps longer than 30 mintues
-        if (tb != null) currentTemp.put("minutesrunning", tb.getPassedDurationToTimeInMinutes(now))
 //**********************************************************************************************************************************************
         //MD: TempTarget Info ==== START
         //MD: TempTarget Info ==== START

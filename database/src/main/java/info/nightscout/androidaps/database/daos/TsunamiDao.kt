@@ -6,7 +6,7 @@ import info.nightscout.androidaps.database.TABLE_TEMPORARY_TARGETS
 import info.nightscout.androidaps.database.TABLE_TSUNAMI
 import info.nightscout.androidaps.database.entities.TemporaryTarget
 import info.nightscout.androidaps.database.entities.Tsunami
-import io.reactivex.Maybe
+import io.reactivex.rxjava3.core.Maybe
 
 @Suppress("FunctionName")
 @Dao
@@ -23,6 +23,7 @@ internal interface TsunamiDao : TraceableDao<Tsunami> {
 
     @Query("SELECT * FROM $TABLE_TSUNAMI WHERE timestamp <= :timestamp AND (timestamp + duration) > :timestamp AND referenceId IS NULL AND isValid = 1 ORDER BY timestamp DESC LIMIT 1")
     fun getTsunamiModeActiveAt(timestamp: Long): Maybe<Tsunami>
+
     /*
     @Query("SELECT id FROM $TABLE_TSUNAMI ORDER BY id DESC limit 1")
     fun getLastId(): Maybe<Long>
