@@ -28,8 +28,8 @@ import info.nightscout.androidaps.utils.DefaultValueHelper
 import info.nightscout.androidaps.utils.HtmlHelper
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.resources.ResourceHelper
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.plusAssign
 import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -103,7 +103,7 @@ class TempTargetDialog : DialogFragmentWithDate() {
             val adapterReason = ArrayAdapter(context, R.layout.spinner_centered, reasonList)
             binding.reason.adapter = adapterReason
 
-            binding.targetCancel.setOnClickListener { shortClick(it) }
+            binding.targetCancel.setOnClickListener { binding.duration.value = 0.0; shortClick(it) }
             binding.eatingSoon.setOnClickListener { shortClick(it) }
             binding.activity.setOnClickListener { shortClick(it) }
             binding.hypo.setOnClickListener { shortClick(it) }
@@ -120,6 +120,8 @@ class TempTargetDialog : DialogFragmentWithDate() {
                 longClick(it)
                 return@setOnLongClickListener true
             }
+            binding.duration.editText?.id?.let { binding.durationLabel.labelFor = it }
+            binding.temptarget.editText?.id?.let { binding.temptargetLabel.labelFor = it }
         }
     }
 
@@ -146,10 +148,6 @@ class TempTargetDialog : DialogFragmentWithDate() {
                 binding.temptarget.value = defaultValueHelper.determineHypoTT()
                 binding.duration.value = defaultValueHelper.determineHypoTTDuration().toDouble()
                 binding.reason.setSelection(reasonList.indexOf(rh.gs(R.string.hypo)))
-            }
-
-            R.id.cancel      -> {
-                binding.duration.value = 0.0
             }
         }
     }

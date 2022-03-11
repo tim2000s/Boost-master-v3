@@ -37,8 +37,8 @@ import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.shared.sharedPreferences.SP
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.plusAssign
 import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
@@ -302,7 +302,7 @@ class DanaRSPlugin @Inject constructor(
                     0x40 -> error = rh.gs(R.string.speederror)
                     0x80 -> error = rh.gs(R.string.insulinlimitviolation)
                 }
-                result.comment = String.format(rh.gs(R.string.boluserrorcode), detailedBolusInfo.insulin, t.insulin, error)
+                result.comment = rh.gs(R.string.boluserrorcode, detailedBolusInfo.insulin, t.insulin, error)
             } else result.comment = rh.gs(R.string.ok)
             aapsLogger.debug(LTag.PUMP, "deliverTreatment: OK. Asked: " + detailedBolusInfo.insulin + " Delivered: " + result.bolusDelivered)
             result
