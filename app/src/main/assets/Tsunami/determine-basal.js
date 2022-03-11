@@ -397,14 +397,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (tae_delta <= 4.1) {
         var activity_base_target = 0.75; //MP Base percentage of current activity to aim for
         var activity_target = activity_base_target; //MP adjustable version of activity_base_target;
-        /*
-        if (tae_bg >= 160) { //MP Plateau breaker
-            var activity_step = 0.05; //MP Step size by which to increase activity_target after every plateaustep minutes
-            var plateaustep = 20; //MP Time in min after which activity_target is increased by activity_step
-            var dura05 = glucose_status.autoISF_duration; //MP Plateau duration (how long has glucose been between +/- 5% of the plateau average BG?)
-            activity_target = activity_target + activity_step * Math.min(Math.trunc(dura05 / plateaustep), (1.0 - activity_base_target) / activity_step); //MP apply changes but cap activity_target at 100%
-        }
-        */
         //MP Adjust activity target to activity_target % of current activity if glucose is near constant / delta is low (near-constant activity)
         act_missing = round((act_curr * activity_target - Math.max(act_future, 0)) / 5, 4); //MP Use activity_target% of current activity as target activity in the future; Divide by 5 to get per-minute activity
         deltascore = Math.min(1, Math.max((tae_bg - target_bg) / 100, 0)); //MP redefines deltascore as it otherwise would be near-zero (low deltas). The higher the bg, the larger deltascore
@@ -564,6 +556,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
         if (tsunami_insreq + iob_data.iob < (tae_bg - target_bg) / profile_sens) {
             console.log("Incompatible insulin & glucose status. Let oref1 take over for now.");
+        }
+        if (!tsunamiActive) {
+            console.log("Tsunami mode is disabled.");
         }
         console.log("------------------------------");
     }
