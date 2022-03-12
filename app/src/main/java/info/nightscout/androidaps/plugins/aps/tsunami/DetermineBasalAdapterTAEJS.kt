@@ -237,9 +237,6 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         // as we have non default temps longer than 30 mintues
         if (tb != null) currentTemp.put("minutesrunning", tb.getPassedDurationToTimeInMinutes(now))
 //**********************************************************************************************************************************************
-        this.profile.put("use_autoisf", sp.getBoolean(R.string.key_tae_useautoisf, false))
-        this.profile.put("autoisf_max", SafeParse.stringToDouble(sp.getString(R.string.key_tae_autoisf_max,"1.2")))
-        this.profile.put("autoisf_hourlychange", SafeParse.stringToDouble(sp.getString(R.string.key_tae_autoisf_hourlychange,"0.2")))
         this.profile.put("tsu_smbcap", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_smbcap, "1")))
         this.profile.put("insulinreqPCT", SafeParse.stringToDouble(sp.getString(R.string.key_insulinreqPCT, "65")))
         this.profile.put("tae_start", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_start, "11.0")))
@@ -318,7 +315,7 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         mGlucoseStatus.put("sensorlagactivity", sensorlagactivity)
         mGlucoseStatus.put("historicactivity", historicactivity)
         mGlucoseStatus.put("currentactivity", currentactivity)
-        mGlucoseStatus.put("deltascore", glucoseStatus.deltascore);
+        mGlucoseStatus.put("deltaScore", glucoseStatus.deltaScore);
 //**********************************************************************************************************************************************
         mGlucoseStatus.put("glucose", glucoseStatus.glucose)
 //**********************************************************************************************************************************************
@@ -336,15 +333,10 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         mGlucoseStatus.put("long_avgdelta", glucoseStatus.longAvgDelta)
         mGlucoseStatus.put("date", glucoseStatus.date)
 //**********************************************************************************************************************************************
-        // autoISF === START
-        // mod 7: append 2 variables for 5% range
-        mGlucoseStatus.put("autoISF_duration", glucoseStatus.autoISF_duration)
-        mGlucoseStatus.put("autoISF_average", glucoseStatus.autoISF_average)
-        // autoISF === END
         // MP data smoothing START
-        mGlucoseStatus.put("insufficientsmoothingdata", glucoseStatus.insufficientsmoothingdata)
-        mGlucoseStatus.put("bg_supersmooth_now", glucoseStatus.bg_supersmooth_now)
-        mGlucoseStatus.put("delta_supersmooth_now", glucoseStatus.delta_supersmooth_now)
+        mGlucoseStatus.put("insufficientSmoothingData", glucoseStatus.insufficientSmoothingData)
+        mGlucoseStatus.put("ssBGnow", glucoseStatus.ssBGnow)
+        mGlucoseStatus.put("ssDnow", glucoseStatus.ssDnow)
         // MP data smoothing END
 //**********************************************************************************************************************************************
         this.mealData.put("carbs", mealData.carbs)

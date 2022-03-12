@@ -110,46 +110,6 @@ function enable_smb(
     return false;
 }
 
-// auto ISF === START
-function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio) { // #### mod 7e: added switch fr autoISF ON/OFF
-    if (!profile.use_autoisf) {
-        console.error("autoISF disabled in Preferences");
-        return sens;
-    }
-    // #### mod 7:  dynamic ISF strengthening based on duration and width of 5% BG band
-    // #### mod 7b: misuse autosens_min to get the scale factor
-    // #### mod 7d: use standalone variables for autopISF
-    var dura05 = glucose_status.autoISF_duration; // mod 7d
-    var avg05 = glucose_status.autoISF_average; // mod 7d
-    //r weightISF = (1 - profile.autosens_min)*2;           // mod 7b: use 0.6 to get factor 0.8; use 1 to get factor 0, i.e. OFF
-    var weightISF = profile.autoisf_hourlychange; // mod 7d: specify factor directly; use factor 0 to shut autoISF OFF
-    if (meal_data.mealCOB == 0 && dura05 >= 0) {
-        if (avg05 > target_bg) {
-            // # fight the resistance at high levels
-            var maxISFReduction = profile.autoisf_max; // mod 7d
-            var dura05_weight = dura05 / 10;
-            var avg05_weight = weightISF / target_bg; // mod gz7b: provide access from AAPS
-            var levelISF = 1 + dura05_weight * avg05_weight * (avg05 - target_bg);
-            var liftISF = Math.max(Math.min(maxISFReduction, levelISF), sensitivityRatio); // corrected logic on 30.Jan.2021
-            /*console.error("autoISF reports", sens, "did not do it for", dura05,"m; go more aggressive by", round(levelISF,2));
-            if (maxISFReduction < levelISF) {
-                console.error("autoISF reduction", round(levelISF,2), "limited by autoisf_max", maxISFReduction);
-            }*/
-            sens = round(sens / liftISF, 1);
-        } else {
-            console.error("autoISF by-passed; avg. glucose", avg05, "below target", target_bg);
-        }
-    }
-    /*else if (meal_data.mealCOB>0) {
-           console.error("autoISF by-passed; mealCOB of "+round(meal_data.mealCOB,1));
-       } */
-    else {
-        console.error("autoISF by-passed; BG is only " + dura05 + "m at level " + avg05);
-    }
-    return sens;
-}
-// auto ISF === END
-
 var determine_basal = function determine_basal(glucose_status, currenttemp, iob_data, profile, autosens_data, meal_data, tempBasalFunctions, microBolusAllowed, reservoir_data, currentTime, isSaveCgmSource) {
     var rT = {}; //short for requestedTemp
 
@@ -366,8 +326,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     //MP variable definitions
     var activity_controller = false; //MP TAE main switch; controls whether TAE (true) or oref1 (false) is used
-    var tae_bg = glucose_status.bg_supersmooth_now; //MP BG used by TAE
-    var tae_delta = Math.min(glucose_status.delta_supersmooth_now, glucose_status.delta); //MP Delta used by TAE will switch between sensor data and smoothed data, depending on which is lower - for added safety
+    var tae_bg = glucose_status.ssBGnow; //MP BG used by TAE
+    var tae_delta = Math.min(glucose_status.ssDnow, glucose_status.delta); //MP Delta used by TAE will switch between sensor data and smoothed data, depending on which is lower - for added safety
     var insulinReqPCT = profile.insulinreqPCT / 100; // Uset-set percentage to modify insulin required by
     var deltascore = Math.min(1, Math.max(glucose_status.deltascore, 0)); //MP Modifies insulinReqPCT; deltascore grows larger the largest the previous deltas were, until it reaches 1
     var boluscap = profile.tsu_smbcap * Math.min(profile.percentage / 100, 1.3); //MP: User-set may SMB size for TAE. Boluscap is grows and shrinks with profile percentage;
@@ -506,7 +466,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("miss./act. future: " + act_missing);
         console.log("-------------");
         console.log("delta: " + glucose_status.delta);
-        console.log("smoothed delta: " + glucose_status.delta_supersmooth_now);
+        console.log("smoothed delta: " + glucose_status.ssDnow);
         console.log("used delta: " + tae_delta);
         console.log("pure delta: " + pure_delta);
         console.log("used bg: " + tae_bg);
@@ -565,10 +525,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //----------------------------- MP
     // TSUNAMI ACTIVITY ENGINE END  MP
     //----------------------------- MP
-
-    if (profile.use_autoisf && (tae_timer < tae_start || tae_timer > tae_end)) { //MP Enables autoISF outside of TAE hours
-        sens = autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data, sensitivityRatio); //autoISF
-    }
 
     //////////////////////////////////////
 
@@ -1499,7 +1455,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason += "; miss./act. future: " + act_missing;
                 rT.reason += "; ###";
                 rT.reason += " delta: " + glucose_status.delta;
-                rT.reason += "; smoothed delta: " + glucose_status.delta_supersmooth_now;
+                rT.reason += "; smoothed delta: " + glucose_status.ssDnow;
                 rT.reason += "; used delta: " + tae_delta;
                 rT.reason += "; pure delta: " + pure_delta;
                 rT.reason += "; used bg: " + tae_bg;

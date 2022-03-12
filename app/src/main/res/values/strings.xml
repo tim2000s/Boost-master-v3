@@ -662,7 +662,6 @@
 
     <!-- Tsunami strings start -->
     <string name="description_tsunami">Tsunami Activity Engine for automatic handling of meals</string>
-    <string name="tsunami_useautoisf">Use Autoisf feature</string>
     <string name="key_tsunami_settings" translatable="false">tsunami_settings</string>
     <string name="key_tsunami_smbcap" translatable="false">tsu_smbcap</string>
     <string name="tsunami_smbcap_title">Tsunami SMB cap [U]</string>
@@ -702,17 +701,6 @@
     <string name="enable_datasmoothing">Enable data smoothing</string>
     <string name="enable_datasmoothing_summary">Smooth incoming sensor data.</string>
     -->
-
-    <!-- autoISF -->
-    <string name="key_tae_useautoisf" translatable="false">openapsama_useautoisf</string>
-    <string name="key_tae_autoisf_max" translatable="false">autoisf_max</string>
-    <string name="key_tae_autoisf_hourlychange" translatable="false">autoisf_hourlychange</string>
-    <!-- autoISF related
-    <string name="openapsama_autoisf_max">Max autoisf ratio</string>
-    <string name="openapsama_autoisf_hourlychange">autoisf hourly increment</string>
-    <string name="openapsama_autoisf_hourlychange_summary">Default value: 0.2\nThis is the rate at which autoISF grows per hour assuming bg is twice the target. With a value of 1.0 it will have reduced ISF to 50% after 1 hour of bg at twice the target.\nWith 0.0 the effect of autoISF is effectively disabled.</string>
-    <string name="openapsama_autoisf_max_summary">Default value: 1.2\nThis is a multiplier cap for autoISF to set a limit on how high the autoISF ratio can be, which in turn determines how low it can adjust ISF.</string>
-     -->
 
     <string name="error_starting_cgm">Could not launch CGM application.  Make sure it is installed.</string>
     <string name="overview_cgm">CGM</string>

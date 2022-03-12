@@ -148,10 +148,6 @@
             android:defaultValue="false"
             android:key="openapsama_useautosens"
             android:title="@string/openapsama_useautosens" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="openapsama_useautoisf"
-            android:title="@string/tsunami_useautoisf" />
 
         <SwitchPreference
             android:defaultValue="false"

@@ -42,29 +42,19 @@ class GlucoseStatusProvider @Inject constructor(
                 shortAvgDelta = 0.0,
                 longAvgDelta = 0.0,
                 date = nowDate,
-                //*** autoISF specific values ******************************************************************************************************************
-                autoISF_duration = 0.0,
-                autoISF_average = now.value,
-                //*** Tsunami specific values ******************************************************************************************************************
+                //*** Tsunami ***
                 bg_5minago = 0.0,
-                deltascore = 0.0,
-                //*** Tsunami data smoothing specific values ******************************************************************************************************************
-                insufficientsmoothingdata = true,
-                bg_supersmooth_now = now.value,
-                delta_supersmooth_now = 0.0
+                deltaScore = 0.0,
+                //*** Tsunami data smoothing ***
+                insufficientSmoothingData = true,
+                ssBGnow = now.value,
+                ssDnow = 0.0,
             ).asRounded()
         }
         val nowValueList = ArrayList<Double>()
         val lastDeltas = ArrayList<Double>()
         val shortDeltas = ArrayList<Double>()
         val longDeltas = ArrayList<Double>()
-
-        //*** Tsunami specific values ******************************************************************************************************************
-        var deltascore: Double
-        val deltathreshold = 4.0 //MP average delta above which deltascore will be 1.
-        val weight = 0.15 //MP Weighting used for weighted averages
-        var scoredivisor: Double
-        val before = data[1]
 
         // Use the latest sgv value in the now calculations
         nowValueList.add(now.value)
@@ -107,154 +97,140 @@ class GlucoseStatusProvider @Inject constructor(
         } else {
             average(lastDeltas)
         }
-
-        //*** autoISF core ******************************************************************************************************************
-        val bw = 0.05 // used for Eversense; may be lower for Dexcom
-
-        var sumBG = now.value
-        var oldavg = now.value
-        var minutesdur = Math.round(0L / (1000.0 * 60))
-        for (i in 1 until sizeRecords) {
-            val then = data[i]
-            val thenDate: Long = then.timestamp
-            //  GZ mod 7c: stop the series if there was a CGM gap greater than 13 minutes, i.e. 2 regular readings
-            if (Math.round((nowDate - thenDate) / (1000.0 * 60)) - minutesdur > 13) {
-                break
-            }
-            if (then.value > oldavg * (1 - bw) && then.value < oldavg * (1 + bw)) {
-                sumBG += then.value
-                oldavg = sumBG / (i + 1)
-                minutesdur = Math.round((nowDate - thenDate) / (1000.0 * 60))
-            } else {
-                break
-            }
-        }
-        // autoISF === END
-
-        // MP Tsunami meal detection system (requires data smoothing code for variable definitions)
-        //TODO: Check if code includes data smoothing or if running Tsunami standalone version
-        //Uncomment below if using WITHOUT data smoothing code
-
-        deltascore = 0.5
-
-        //Uncomment below if using WITH data smoothing code
-        /*
-        if (!insufficientsmoothingdata) {
-            deltascore = 0.0
-            scoredivisor = 0.0
-            for (i in 0 until Math.min(windowsize - 1, 6)) { //MP Dynamically adjust deltas to include
-                deltascore += ssmooth_delta[i] * (1 - weight * i)
-                scoredivisor += 1 - weight * i //MP weighted score
-            }
-            deltascore = deltascore / scoredivisor / deltathreshold //MP: Check how deltascore compares to the threshold
-        } else {
-            deltascore = 0.5 //MP If there's not enough data, set deltascore to 50%
-        }
-        */
-
-//######################################### MP
-//### TSUNAMI DATA SMOOTHING CORE START ### MP
-//######################################### MP
-        val o1_smoothbg: ArrayList<Double> = ArrayList() //MP array for 1st order Smoothed Blood Glucose
-        val o2_smoothbg: ArrayList<Double> = ArrayList() //MP array for 2nd order Smoothed Blood Glucose
-        val o2_smoothdelta: ArrayList<Double> = ArrayList() //MP array for 2nd order Smoothed delta
-        val ssmooth_bg: ArrayList<Double> = ArrayList() //MP array for weighted averaged, super smoothed Blood Glucose
-        val ssmooth_delta: ArrayList<Double> = ArrayList() //MP array for deltas of supersmoothed Blood Glucose
-        var windowsize = 25 //MP number of bg readings to include in smoothing window
+        
+        /**
+         *  TSUNAMI DATA SMOOTHING CORE
+         *
+         *  Calculated a weighted average of 1st and 2nd order exponential smoothing functions
+         *  to reduce the effect of sensor noise on APS performance. The weighted average
+         *  is a compromise between the fast response to changing BGs at the cost of smoothness
+         *  as offered by 1st order exponential smoothing, and the predictive, trend-sensitive but
+         *  slower-to-respond smoothing as offered by 2nd order functions.
+         *
+         */
+        val o1_sBG: ArrayList<Double> = ArrayList() //MP array for 1st order Smoothed Blood Glucose
+        val o2_sBG: ArrayList<Double> = ArrayList() //MP array for 2nd order Smoothed Blood Glucose
+        val o2_sD: ArrayList<Double> = ArrayList() //MP array for 2nd order Smoothed delta
+        val ssBG: ArrayList<Double> = ArrayList() //MP array for weighted averaged, doubly smoothed Blood Glucose
+        val ssD: ArrayList<Double> = ArrayList() //MP array for deltas of doubly smoothed Blood Glucose
+        var windowSize = 25 //MP number of bg readings to include in smoothing window
         val o1_weight = 0.4
         val o1_a = 0.5
         val o2_a = 0.4
         val o2_b = 1.0
-        var insufficientsmoothingdata = false
+        var insufficientSmoothingData = false
 
-//TODO: Decide what happens if there's insufficient data
-
-// ADJUST SMOOTHING WINDOW TO ONLY INCLUDE VALID READINGS
+        // ADJUST SMOOTHING WINDOW TO ONLY INCLUDE VALID READINGS
         // Valid readings include:
-        // - Values that actually exist (windowsize may not be larger than sizeRecords)
+        // - Values that actually exist (windowSize may not be larger than sizeRecords)
         // - Values that come in approx. every 5 min. If the time gap between two readings is larger, this is likely due to a sensor error or warmup of a new sensor.d
         // - Values that are not 38 mg/dl; 38 mg/dl reflects an xDrip error state (according to a comment in determine-basal.js)
 
         //MP: Adjust smoothing window if database size is smaller than the default value + 1 (+1 because the reading before the oldest reading to be smoothed will be used in the calculations
-        if (sizeRecords <= windowsize) { //MP standard smoothing window
-            windowsize = (sizeRecords - 1).coerceAtLeast(0) //MP Adjust smoothing window to the size of database if it is smaller than the original window size; -1 to always have at least one older value to compare against as a buffer to prevent app crashes
+        if (sizeRecords <= windowSize) { //MP standard smoothing window
+            windowSize = (sizeRecords - 1).coerceAtLeast(0) //MP Adjust smoothing window to the size of database if it is smaller than the original window size; -1 to always have at least one older value to compare against as a buffer to prevent app crashes
         }
 
         //MP: Adjust smoothing window further if a gap in the BG database is detected, e.g. due to sensor errors of sensor swaps, or if 38 mg/dl are reported (xDrip error state)
-        for (i in 0 until windowsize) {
+        for (i in 0 until windowSize) {
             if (Math.round((data[i].timestamp - data[i + 1].timestamp) / (1000.0 * 60)) >= 12) { //MP: 12 min because a missed reading (i.e. readings coming in after 10 min) can occur for various reasons, like walking away from the phone or reinstalling AAPS
                 //if (Math.round((data.get(i).date - data.get(i + 1).date) / 60000L) <= 7) { //MP crashes the app, useful for testing
-                windowsize = i + 1 //MP: If time difference between two readings exceeds 7 min, adjust windowsize to *include* the more recent reading (i = reading; +1 because windowsize reflects number of valid readings);
+                windowSize = i + 1 //MP: If time difference between two readings exceeds 7 min, adjust windowSize to *include* the more recent reading (i = reading; +1 because windowSize reflects number of valid readings);
                 break
             } else if (data[i].value == 38.0) {
-                windowsize = i //MP: 38 mg/dl reflects an xDrip error state; Chain of valid readings ends here, *exclude* this value (windowsize = i; i + 1 would include the current value)
+                windowSize = i //MP: 38 mg/dl reflects an xDrip error state; Chain of valid readings ends here, *exclude* this value (windowSize = i; i + 1 would include the current value)
                 break
             }
         }
 
-// CALCULATE SMOOTHING WINDOW - 1st order exponential smoothing
-        o1_smoothbg.clear() // MP reset smoothed bg array
+        // CALCULATE SMOOTHING WINDOW - 1st order exponential smoothing
+        o1_sBG.clear() // MP reset smoothed bg array
 
-        if (windowsize >= 4) { //MP: Require a valid windowsize of at least 4 readings
-            o1_smoothbg.add(data[windowsize - 1].value) //MP: Initialise smoothing with the oldest valid data point
-            for (i in 0 until windowsize) { //MP calculate smoothed bg window of valid readings
-                o1_smoothbg.add(
+        if (windowSize >= 4) { //MP: Require a valid windowSize of at least 4 readings
+            o1_sBG.add(data[windowSize - 1].value) //MP: Initialise smoothing with the oldest valid data point
+            for (i in 0 until windowSize) { //MP calculate smoothed bg window of valid readings
+                o1_sBG.add(
                     0,
-                    o1_smoothbg[0] + o1_a * (data[windowsize - 1 - i].value - o1_smoothbg[0])
+                    o1_sBG[0] + o1_a * (data[windowSize - 1 - i].value - o1_sBG[0])
                 ) //MP build array of 1st order smoothed bgs
             }
         } else {
-            insufficientsmoothingdata = true
+            insufficientSmoothingData = true
         }
 
-// CALCULATE SMOOTHING WINDOW - 2nd order exponential smoothing
-        o2_smoothbg.clear() // MP reset smoothed bg array
-        o2_smoothdelta.clear() // MP reset smoothed delta array
+        // CALCULATE SMOOTHING WINDOW - 2nd order exponential smoothing
+        o2_sBG.clear() // MP reset smoothed bg array
+        o2_sD.clear() // MP reset smoothed delta array
 
-        if (windowsize >= 4) { //MP: Require a valid windowsize of at least 4 readings
-            o2_smoothbg.add(data[windowsize - 1].value) //MP Start 2nd order exponential data smoothing with the oldest valid bg
-            o2_smoothdelta.add(data[windowsize - 2].value - data[windowsize - 1].value) //MP Start 2nd order exponential data smoothing with the oldest valid delta
-            for (i in 0 until windowsize - 1) { //MP calculated smoothed bg window of last 1 h
-                o2_smoothbg.add(
+        if (windowSize >= 4) { //MP: Require a valid windowSize of at least 4 readings
+            o2_sBG.add(data[windowSize - 1].value) //MP Start 2nd order exponential data smoothing with the oldest valid bg
+            o2_sD.add(data[windowSize - 2].value - data[windowSize - 1].value) //MP Start 2nd order exponential data smoothing with the oldest valid delta
+            for (i in 0 until windowSize - 1) { //MP calculated smoothed bg window of last 1 h
+                o2_sBG.add(
                     0,
-                    o2_a * data[windowsize - 2 - i].value + (1 - o2_a) * (o2_smoothbg[0] + o2_smoothdelta[0])
-                ) //MP build array of 2nd order smoothed bgs; windowsize-1 is the oldest valid bg value, so windowsize-2 is from when on the smoothing begins;
-                o2_smoothdelta.add(
+                    o2_a * data[windowSize - 2 - i].value + (1 - o2_a) * (o2_sBG[0] + o2_sD[0])
+                ) //MP build array of 2nd order smoothed bgs; windowSize-1 is the oldest valid bg value, so windowSize-2 is from when on the smoothing begins;
+                o2_sD.add(
                     0,
-                    o2_b * (o2_smoothbg[0] - o2_smoothbg[1]) + (1 - o2_b) * o2_smoothdelta[0]
+                    o2_b * (o2_sBG[0] - o2_sBG[1]) + (1 - o2_b) * o2_sD[0]
                 ) //MP build array of 1st order smoothed bgs
             }
         } else {
-            insufficientsmoothingdata = true
+            insufficientSmoothingData = true
         }
 
-// CALCULATE SUPERSMOOTHED GLUCOSE & DELTAS
-        ssmooth_bg.clear() // MP reset supersmoothed bg array
-        ssmooth_delta.clear() // MP reset supersmoothed delta array
+        // CALCULATE WEIGHTED AVERAGES OF GLUCOSE & DELTAS
+        ssBG.clear() // MP reset doubly smoothed bg array
+        ssD.clear() // MP reset doubly smoothed delta array
 
-        if (!insufficientsmoothingdata) { //MP Build supersmoothed array only if there is enough valid readings
-            for (i in o2_smoothbg.indices) { //MP calculated supersmoothed bg of all o1/o2 smoothed data available; o2 & o1 smoothbg array sizes are equal in size, so only one is used as a condition here
-                ssmooth_bg.add(o1_weight * o1_smoothbg[i] + (1 - o1_weight) * o2_smoothbg[i]) //MP build array of supersmoothed bgs
+        if (!insufficientSmoothingData) { //MP Build doubly smoothed array only if there is enough valid readings
+            for (i in o2_sBG.indices) { //MP calculated doubly smoothed bg of all o1/o2 smoothed data available; o2 & o1 smoothbg array sizes are equal in size, so only one is used as a condition here
+                ssBG.add(o1_weight * o1_sBG[i] + (1 - o1_weight) * o2_sBG[i]) //MP build array of doubly smoothed bgs
             }
-            for (i in 0 until ssmooth_bg.size - 1) {
-                ssmooth_delta.add(ssmooth_bg[i] - ssmooth_bg[i + 1]) //MP build array of supersmoothed bg deltas
+            for (i in 0 until ssBG.size - 1) {
+                ssD.add(ssBG[i] - ssBG[i + 1]) //MP build array of doubly smoothed bg deltas
             }
         }
 
-//MP report smoothing variables in glucose status
-        var bg_supersmooth_now : Double
-        var delta_supersmooth_now : Double
-        if (!insufficientsmoothingdata) {
-            bg_supersmooth_now = ssmooth_bg[0]
-            delta_supersmooth_now = ssmooth_delta[0]
-        } else { //todo: below is a quick solution, should probably be improved
-            bg_supersmooth_now = data[0].value
-            delta_supersmooth_now = data[0].value - data[1].value
+        // REPORT SMOOTHING RESULT IN GLUCOSE STATUS
+        var ssBGnow : Double
+        var ssDnow : Double
+        if (!insufficientSmoothingData) {
+            ssBGnow = ssBG[0]
+            ssDnow = ssD[0]
+        } else { //todo: below is a quick solution, should probably be improved, e.g. by preventing SMBs
+            ssBGnow = data[0].value
+            ssDnow = data[0].value - data[1].value
         }
-        // TODO: communicate to other code snippets / files that use smoothed data if no smoothing occurred due to insufficient dat
-//############################### MP
-//### DATA SMOOTHING CORE END ### MP
-//############################### MP
+        //####################################### MP
+        //### TSUNAMI DATA SMOOTHING CORE END ### MP
+        //####################################### MP
+
+        //*** Tsunami ***
+        // MP Tsunami meal detection system (requires data smoothing code for variable definitions)
+        //TODO: Check if code includes data smoothing or if running Tsunami standalone version
+        //Uncomment below if using WITHOUT data smoothing code
+        //var deltaScore = 0.5
+
+        //Uncomment below if using WITH data smoothing code
+        var deltaScore: Double
+        val deltaThreshold = 4.0 //MP average delta above which deltaScore will be 1.
+        val weight = 0.15 //MP Weighting used for weighted averages
+        var scoreDivisor: Double
+        val before = data[1]
+
+        if (!insufficientSmoothingData) {
+            deltaScore = 0.0
+            scoreDivisor = 0.0
+            for (i in 0 until Math.min(windowSize - 1, 6)) { //MP Dynamically adjust deltas to include
+                deltaScore += ssD[i] * (1 - weight * i)
+                scoreDivisor += 1 - weight * i //MP weighted score
+            }
+            deltaScore = deltaScore / scoreDivisor / deltaThreshold //MP: Check how deltaScore compares to the threshold
+        } else {
+            deltaScore = 0.5 //MP If there's not enough data, set deltaScore to 50%
+        }
+
         return GlucoseStatus(
             glucose = now.value,
             date = nowDate,
@@ -262,16 +238,13 @@ class GlucoseStatusProvider @Inject constructor(
             shortAvgDelta = shortAverageDelta,
             delta = delta,
             longAvgDelta = average(longDeltas),
-            //*** autoISF core ******************************************************************************************************************
-            autoISF_average = oldavg,
-            autoISF_duration = minutesdur.toDouble(),
-            //*** Tsunami specific values ******************************************************************************************************************
+            //*** Tsunami ***
             bg_5minago = before.value,
-            deltascore = deltascore,
-            //*** Tsunami data smoothing specific values ******************************************************************************************************************
-            insufficientsmoothingdata = insufficientsmoothingdata,
-            bg_supersmooth_now = bg_supersmooth_now,
-            delta_supersmooth_now = delta_supersmooth_now,
+            deltaScore = deltaScore,
+            //*** Tsunami data smoothing ***
+            insufficientSmoothingData = insufficientSmoothingData,
+            ssBGnow = ssBGnow,
+            ssDnow = ssDnow,
             ).also { aapsLogger.debug(LTag.GLUCOSE, it.log()) }.asRounded()
     }
 
