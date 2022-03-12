@@ -670,12 +670,12 @@
     <!-- Tsunami strings start -->
     <string name="description_tsunami">Tsunami Activity Engine for automatic handling of meals</string>
     <string name="key_tsunami_settings" translatable="false">tsunami_settings</string>
-    <string name="key_tsunami_smbcap" translatable="false">tsu_smbcap</string>
+    <string name="key_tsunami_smbcap" translatable="false">tsuSMBCap</string>
     <string name="tsunami_smbcap_title">Tsunami SMB cap [U]</string>
     <string name="tsunami_smbcap_summary">max SMB size deliverable by Tsunami.</string>
-    <string name="key_insulinreqPCT" translatable="false">insulinreqPCT</string>
-    <string name="insulinreqPCT_title">Insulin delivery percentage [%]</string>
-    <string name="insulinreqPCT_summary">Reduces the calculated insulin required to the specified percentage for delivery. Example: If calculated insulin required is 1 U and fraction size is 50%, at most 0.5 U will be delivered if no other constraints (e.g. bolus caps) apply.</string>
+    <string name="key_insulinReqPCT" translatable="false">insulinReqPCT</string>
+    <string name="insulinReqPCT_title">Insulin delivery percentage [%]</string>
+    <string name="insulinReqPCT_summary">Reduces the calculated insulin required to the specified percentage for delivery. Example: If calculated insulin required is 1 U and fraction size is 50%, at most 0.5 U will be delivered if no other constraints (e.g. bolus caps) apply.</string>
     <string name="key_tsunami_start" translatable="false">tsunami_start</string>
     <string name="tsunami_start_summary">Hour of the day from when on Tsunami will be enabled.</string>
     <string name="tsunami_start_title">Tsunami start time (incl.) [h]</string>

@@ -172,7 +172,7 @@ class TsunamiDialog : DialogFragmentWithDate() {
                 actions.add(rh.gs(R.string.bolusconstraintappliedwarn, insulin, insulinAfterConstraints).formatColor(rh, R.color.warning))
         }
         if (duration > 0) {
-            actions.add(rh.gs(R.string.tsunami_duration) + ": " + rh.gs(R.string.format_mins, duration))
+            actions.add(rh.gs(R.string.tsunami_duration) + ": " + rh.gs(R.string.format_mins, duration).formatColor(rh, R.color.colorTsunamiButton))
         } else if (duration == 0 && repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet() is ValueWrapper.Existing) {
             actions.add(rh.gs(R.string.cancel_tsunami))
         }
@@ -193,9 +193,15 @@ class TsunamiDialog : DialogFragmentWithDate() {
                         detailedBolusInfo.context = context
                         detailedBolusInfo.notes = notes
                         detailedBolusInfo.timestamp = time
+                        if (duration == 0) {
                             uel.log(Action.BOLUS, Sources.TsunamiDialog, //TODO: CHECK
                                 notes,
                                 ValueWithUnit.Insulin(insulinAfterConstraints))
+                        } else {
+                            uel.log(Action.TSUNAMI_BOLUS, Sources.TsunamiDialog, //TODO: CHECK
+                                notes,
+                                ValueWithUnit.Insulin(insulinAfterConstraints), ValueWithUnit.Minute(duration))
+                        }
                             commandQueue.bolus(detailedBolusInfo, object : Callback() {
                                 override fun run() {
                                     if (!result.success) {
@@ -205,6 +211,10 @@ class TsunamiDialog : DialogFragmentWithDate() {
                                     }
                                 }
                             })
+                    } else {
+                        uel.log(Action.TSUNAMI, Sources.TsunamiDialog, //TODO: CHECK
+                            notes,
+                            ValueWithUnit.Minute(duration))
                     }
                     if (duration > 0) {
                         disposable += repository.runTransactionForResult(TsunamiModeSwitchTransaction(
@@ -217,7 +227,7 @@ class TsunamiDialog : DialogFragmentWithDate() {
                         }, {
                             aapsLogger.error(LTag.DATABASE, "Error while saving Tsunami mode.", it)
                         })
-                    } else { //MP Cancels current tsu++ mode if no duration is entered, but a prebolus is issued
+                    } else { //MP Cancels current tsunami mode if no duration is entered, but a prebolus is issued
                         disposable += repository.runTransactionForResult(CancelCurrentTsunamiModeIfAnyTransaction(eventTime))
                             .subscribe({ result ->
                                 result.updated.forEach { aapsLogger.debug(LTag.DATABASE, "Updated tsunami mode $it") }
@@ -235,7 +245,9 @@ class TsunamiDialog : DialogFragmentWithDate() {
                         result.updated.forEach { aapsLogger.debug(LTag.DATABASE, "Updated tsunami mode $it") }
                     }, {
                         aapsLogger.error(LTag.DATABASE, "Error while saving tsunami mode", it)
-                    })
+                    }
+                    )
+                    uel.log(Action.CANCEL_TSUNAMI, Sources.TsunamiDialog, ValueWithUnit.Timestamp(eventTime).takeIf { eventTimeChanged })
                 })
             }
         } else {

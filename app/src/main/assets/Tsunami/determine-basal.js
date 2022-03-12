@@ -298,7 +298,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var act_future = 0;
         var act_zerodelta = 0;
         var act_missing = 0;
-        var deltascore = 0;
+        var deltaScore = 0;
         var bgscore = 0;
         var pure_delta = 0;
         var tsunami_insreq = 0;
@@ -308,19 +308,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     //TAE active hours definition
     var tae_timer;
-    var tae_start;
-    var tae_end;
-    if (profile.tae_end < profile.tae_start) {
-        tae_start = 0; //MP set starting hour to 0 and transform the rest;
-        tae_end = 24 - (profile.tae_start - profile.tae_end); //MP transformed end hour, represents total duration of TAE in h
-        if (new Date().getHours() < profile.tae_start) {
-            tae_timer = new Date().getHours() - profile.tae_start + 24; //MP Transformed timer, counting from (24 - tae_start) until 23;
+    var tsuStart;
+    var tsuEnd;
+    if (profile.tsuEnd < profile.tsuStart) {
+        tsuStart = 0; //MP set starting hour to 0 and transform the rest;
+        tsuEnd = 24 - (profile.tsuStart - profile.tsuEnd); //MP transformed end hour, represents total duration of TAE in h
+        if (new Date().getHours() < profile.tsuStart) {
+            tae_timer = new Date().getHours() - profile.tsuStart + 24; //MP Transformed timer, counting from (24 - tsuStart) until 23;
         } else {
-            tae_timer = new Date().getHours() - profile.tae_start; //MP Transformed timer, counting from 0 until (23 - tae_start);
+            tae_timer = new Date().getHours() - profile.tsuStart; //MP Transformed timer, counting from 0 until (23 - tsuStart);
         }
     } else {
-        tae_start = profile.tae_start;
-        tae_end = profile.tae_end;
+        tsuStart = profile.tsuStart;
+        tsuEnd = profile.tsuEnd;
         tae_timer = new Date().getHours();
     }
 
@@ -328,9 +328,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var activity_controller = false; //MP TAE main switch; controls whether TAE (true) or oref1 (false) is used
     var tae_bg = glucose_status.ssBGnow; //MP BG used by TAE
     var tae_delta = Math.min(glucose_status.ssDnow, glucose_status.delta); //MP Delta used by TAE will switch between sensor data and smoothed data, depending on which is lower - for added safety
-    var insulinReqPCT = profile.insulinreqPCT / 100; // Uset-set percentage to modify insulin required by
-    var deltascore = Math.min(1, Math.max(glucose_status.deltascore, 0)); //MP Modifies insulinReqPCT; deltascore grows larger the largest the previous deltas were, until it reaches 1
-    var boluscap = profile.tsu_smbcap * Math.min(profile.percentage / 100, 1.3); //MP: User-set may SMB size for TAE. Boluscap is grows and shrinks with profile percentage;
+    var insulinReqPCT = profile.insulinReqPCT / 100; // Uset-set percentage to modify insulin required by
+    var deltaScore = Math.min(1, Math.max(glucose_status.deltaScore, 0)); //MP Modifies insulinReqPCT; deltaScore grows larger the largest the previous deltas were, until it reaches 1
+    var boluscap = profile.tsuSMBCap * Math.min(profile.percentage / 100, 1.3); //MP: User-set may SMB size for TAE. Boluscap is grows and shrinks with profile percentage;
     var tsunamiActive = profile.tsunamiActive
 
     //MP Give SMBs that are 70% of boluscap or more extra time to be absorbed before delivering another large SMB.
@@ -347,8 +347,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //}
 
     //MP Calculate absolute activity to neutralise delta
-    var act_curr = glucose_status.sensorlagactivity; //MP Current delta value, due to sensor lag, is more likely to represent situation from about 10 minutes ago - therefore activity from 10 minutes ago is used for activity calculations.
-    var act_future = glucose_status.futureactivity; //MP prognosed activity in "peak-time" minutes (peak-time must be set by the user using free-peak oref)
+    var act_curr = glucose_status.sensorLagActivity; //MP Current delta value, due to sensor lag, is more likely to represent situation from about 10 minutes ago - therefore activity from 10 minutes ago is used for activity calculations.
+    var act_future = glucose_status.futureActivity; //MP prognosed activity in "peak-time" minutes (peak-time must be set by the user using free-peak oref)
     var pure_delta = round(tae_delta + Math.max(act_curr * profile_sens, 0), 1); //MP 5-minute-delta value if insulin activity was zero;
     var act_zerodelta = pure_delta / profile_sens; //MP 5-min-insulin activity at which delta should be zero (if delta remains unchanged)
     var act_missing;
@@ -359,7 +359,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var activity_target = activity_base_target; //MP adjustable version of activity_base_target;
         //MP Adjust activity target to activity_target % of current activity if glucose is near constant / delta is low (near-constant activity)
         act_missing = round((act_curr * activity_target - Math.max(act_future, 0)) / 5, 4); //MP Use activity_target% of current activity as target activity in the future; Divide by 5 to get per-minute activity
-        deltascore = Math.min(1, Math.max((tae_bg - target_bg) / 100, 0)); //MP redefines deltascore as it otherwise would be near-zero (low deltas). The higher the bg, the larger deltascore
+        deltaScore = Math.min(1, Math.max((tae_bg - target_bg) / 100, 0)); //MP redefines deltaScore as it otherwise would be near-zero (low deltas). The higher the bg, the larger deltaScore
     } else {
         //MP Escalate activity at medium to high delta (activity build-up)
         act_missing = round((act_zerodelta - Math.max(act_future, 0)) / 5, 4); //MP Calculate required activity to end a rise in t minutes; Divide by 5 to get per-minute activity
@@ -437,8 +437,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
     tsunami_insreq = round(tsunami_insreq, 2);
 
-    //MP deltascore and BG score
-    insulinReqPCT = round(insulinReqPCT * deltascore, 3); //MP Modify insulinReqPCT in dependence of previous delta values
+    //MP deltaScore and BG score
+    insulinReqPCT = round(insulinReqPCT * deltaScore, 3); //MP Modify insulinReqPCT in dependence of previous delta values
     var bgscore_upper_threshold = 140; //MP BG above which no penalty will be given
     var bgscore_lower_threshold = 80; //MP BG below which tae will not deliver SMBs
     var bgscore = round(Math.min((tae_bg - bgscore_lower_threshold) / (bgscore_upper_threshold - bgscore_lower_threshold), 1), 3); //MP Penalty at low or near-target bg values. Modifies boluscap.
@@ -446,8 +446,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     //MP Enable TAE SMB sizing if the safety conditions are all met
     if (hypodetect == false &&
-        tae_timer >= tae_start &&
-        tae_timer <= tae_end &&
+        tae_timer >= tsuStart &&
+        tae_timer <= tsuEnd &&
         tae_delta >= 0 &&
         tae_bg >= target_bg &&
         iob_data.iob > 0.1 &&
@@ -460,9 +460,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("------------------------------");
         console.log("TSUNAMI STATUS");
         console.log("------------------------------");
-        console.log("act. lag: " + glucose_status.sensorlagactivity);
-        console.log("act. now: " + act_curr + " (" + glucose_status.currentactivity + ")");
-        console.log("act. future: " + glucose_status.futureactivity);
+        console.log("act. lag: " + glucose_status.sensorLagActivity);
+        console.log("act. now: " + act_curr + " (" + glucose_status.currentActivity + ")");
+        console.log("act. future: " + glucose_status.futureActivity);
         console.log("miss./act. future: " + act_missing);
         console.log("-------------");
         console.log("delta: " + glucose_status.delta);
@@ -471,9 +471,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("pure delta: " + pure_delta);
         console.log("used bg: " + tae_bg);
         console.log("-------------");
-        console.log("deltascore_live: " + round(deltascore, 3));
+        console.log("deltaScore_live: " + round(deltaScore, 3));
         console.log("bgscore_live: " + bgscore);
-        console.log("insulinreqPCT_live: " + insulinReqPCT);
+        console.log("insulinReqPCT_live: " + insulinReqPCT);
         console.log("boluscap_live: " + boluscap);
         console.log("tsunami_insreq: " + tsunami_insreq);
         console.log("iterations: " + iterations);
@@ -496,7 +496,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (hypodetect == true) {
             console.log("Recent low glucose event.");
         }
-        if (tae_timer < tae_start || tae_timer > tae_end) {
+        if (tae_timer < tsuStart || tae_timer > tsuEnd) {
             console.log("Outside active hours.");
         }
         if (tae_delta < 0) {
@@ -1406,7 +1406,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 //     if (profile.maxUAMSMBBasalMinutes) {
                 //         console.error("profile.maxUAMSMBBasalMinutes:",profile.maxUAMSMBBasalMinutes,"profile.current_basal:",profile.current_basal);
                 //         maxBolus = round( profile.current_basal * profile.maxUAMSMBBasalMinutes / 60 ,1);
-                //MP: tsu_smbcap limiter: Use UAM minutes outside TT (default lines: above)
+                //MP: tsuSMBCap limiter: Use UAM minutes outside TT (default lines: above)
                 if (activity_controller) {
                     maxBolus = boluscap;
                 } else if (profile.maxUAMSMBBasalMinutes) {
@@ -1449,9 +1449,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             if (activity_controller) {
                 rT.reason += " ##TSUNAMI STATUS##";
-                rT.reason += " act. lag: " + glucose_status.sensorlagactivity;
-                rT.reason += "; act. now: " + act_curr + " (" + glucose_status.currentactivity + ")";
-                rT.reason += "; act. future: " + glucose_status.futureactivity;
+                rT.reason += " act. lag: " + glucose_status.sensorLagActivity;
+                rT.reason += "; act. now: " + act_curr + " (" + glucose_status.currentActivity + ")";
+                rT.reason += "; act. future: " + glucose_status.futureActivity;
                 rT.reason += "; miss./act. future: " + act_missing;
                 rT.reason += "; ###";
                 rT.reason += " delta: " + glucose_status.delta;
@@ -1460,9 +1460,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason += "; pure delta: " + pure_delta;
                 rT.reason += "; used bg: " + tae_bg;
                 rT.reason += "; ###";
-                rT.reason += " deltascore_live: " + round(deltascore, 3);
+                rT.reason += " deltaScore_live: " + round(deltaScore, 3);
                 rT.reason += "; bgscore_live: " + bgscore;
-                rT.reason += "; insulinreqPCT_live: " + insulinReqPCT;
+                rT.reason += "; insulinReqPCT_live: " + insulinReqPCT;
                 rT.reason += "; boluscap_live: " + boluscap;
                 rT.reason += "; tsunami_insreq: " + tsunami_insreq;
                 rT.reason += "; iterations: " + iterations;
@@ -1478,9 +1478,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
                 rT.reason += " ##TSUNAMI STATUS END##";
                 /* Shorter Tsunami rT
-                rT.reason += " deltascore: " + round(deltascore, 3);
+                rT.reason += " deltaScore: " + round(deltaScore, 3);
                 rT.reason += "; bgscore: " + bgscore;
-                rT.reason += "; insulinreqPCT_live: " + round(profile.insulinreqPCT * deltascore, 3);
+                rT.reason += "; insulinReqPCT_live: " + round(profile.insulinReqPCT * deltaScore, 3);
                 rT.reason += "; boluscap_live: " + boluscap;
                 rT.reason += "; tsunami_insreq: " + tsunami_insreq;
                 rT.reason += "; tae_delta: " + tae_delta;

@@ -1004,12 +1004,12 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                 binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonWarning))
                 binding.buttonsLayout.tsunamiButton.text = dateUtil.untilString(tsunamiMode.end, rh)
             } else {
-                binding.buttonsLayout.tsunamiButton.setTextColor(rh.gc(R.color.colorInsulinButton))
+                binding.buttonsLayout.tsunamiButton.setTextColor(rh.gc(R.color.colorTsunamiButton))
                 binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonDefault))
                 binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
             }
         } else {
-            binding.buttonsLayout.tsunamiButton.setTextColor(rh.gc(R.color.colorInsulinButton))
+            binding.buttonsLayout.tsunamiButton.setTextColor(rh.gc(R.color.colorTsunamiButton))
             binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gc(R.color.ribbonDefault))
             binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
         }
