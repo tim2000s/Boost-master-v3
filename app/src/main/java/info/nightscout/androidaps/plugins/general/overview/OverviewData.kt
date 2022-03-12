@@ -638,7 +638,7 @@ class OverviewData @Inject constructor(
 
         val adsData = iobCobCalculator.ads.clone()
 
-        while (time <= toTime) {
+        while (time <= endTime) {
             val profile = profileFunction.getProfile(time)
             if (profile == null) {
                 time += 5 * 60 * 1000L
