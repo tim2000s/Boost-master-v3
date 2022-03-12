@@ -43,7 +43,6 @@ class GlucoseStatusProvider @Inject constructor(
                 longAvgDelta = 0.0,
                 date = nowDate,
                 //*** Tsunami ***
-                bg_5minago = 0.0,
                 deltaScore = 0.0,
                 //*** Tsunami data smoothing ***
                 insufficientSmoothingData = true,
@@ -239,7 +238,6 @@ class GlucoseStatusProvider @Inject constructor(
             delta = delta,
             longAvgDelta = average(longDeltas),
             //*** Tsunami ***
-            bg_5minago = before.value,
             deltaScore = deltaScore,
             //*** Tsunami data smoothing ***
             insufficientSmoothingData = insufficientSmoothingData,

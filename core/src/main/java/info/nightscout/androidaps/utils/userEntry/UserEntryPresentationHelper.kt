@@ -37,13 +37,14 @@ class UserEntryPresentationHelper @Inject constructor(
         ColorGroup.Careportal       -> R.color.high
         ColorGroup.Pump             -> R.color.loopDisconnected
         ColorGroup.Aaps             -> R.color.defaulttext
+        ColorGroup.Tsunami          -> R.color.tsunami
         else                        -> R.color.defaulttext
     }
 
     fun iconId(source: Sources): Int = when (source) {
         Sources.TreatmentDialog     -> R.drawable.icon_insulin_carbs
         Sources.InsulinDialog       -> R.drawable.ic_bolus
-        Sources.TsunamiDialog           -> R.drawable.ic_tsunami //MP Button test
+        Sources.TsunamiDialog       -> R.drawable.ic_tsunami
         Sources.CarbDialog          -> R.drawable.ic_cp_bolus_carbs
         Sources.WizardDialog        -> R.drawable.ic_calculator
         Sources.QuickWizard         -> R.drawable.ic_quick_wizard
@@ -108,6 +109,7 @@ class UserEntryPresentationHelper @Inject constructor(
 
     fun actionToColoredString(action: Action): Spanned = when (action) {
         Action.TREATMENT -> HtmlHelper.fromHtml(coloredAction(Action.BOLUS) + " + " + coloredAction(Action.CARBS))
+        Action.TSUNAMI_BOLUS -> HtmlHelper.fromHtml(coloredAction(Action.TSUNAMI) + " + " + coloredAction(Action.BOLUS))
         else             -> HtmlHelper.fromHtml(coloredAction(action))
     }
 

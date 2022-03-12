@@ -45,10 +45,10 @@
             validate:testType="floatNumericRange" />
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="65"
-            android:dialogMessage="@string/insulinreqPCT_summary"
+            android:dialogMessage="@string/insulinReqPCT_summary"
             android:inputType="numberDecimal"
-            android:key="@string/key_insulinreqPCT"
-            android:title="@string/insulinreqPCT_title"
+            android:key="@string/key_insulinReqPCT"
+            android:title="@string/insulinReqPCT_title"
             validate:floatmaxNumber="100"
             validate:floatminNumber="50"
             validate:testType="floatNumericRange" />

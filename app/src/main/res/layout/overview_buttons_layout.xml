@@ -72,7 +72,7 @@
             android:layout_weight="0.5"
             android:drawableTop="@drawable/ic_tsunami"
             android:text="@string/tsunami_label"
-            android:textColor="@color/colorInsulinButton"
+            android:textColor="@color/colorTsunamiButton"
             android:textSize="10sp"
             tools:ignore="SmallSp" />
 

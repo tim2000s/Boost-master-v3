@@ -66,6 +66,8 @@
     <color name="list_delimiter">#505050</color>
     <color name="basal">#00ffff</color>
 
+    <!--    Tsunami     -->
+    <color name="tsunami">#00D38D</color>
 
     <!--    Loop     -->
     <color name="loopDisconnected">#939393</color>

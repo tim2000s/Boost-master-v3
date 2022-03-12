@@ -36,6 +36,7 @@
     <color name="colorSetTempButton">#FF478EFF</color>
     <color name="colorSetExtendedButton">#FFDD7792</color>
     <color name="colorProfileSwitchButton">#ca77dd</color>
+    <color name="colorTsunamiButton">#00D38D</color>
 
     <color name="colorScheduled">#de7550</color>
     <color name="colorActive">#25912e</color>
