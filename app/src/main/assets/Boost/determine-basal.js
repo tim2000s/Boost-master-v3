@@ -346,11 +346,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var dynISFadjust = profile.DynISFAdjust;
     var dynISFadjust = ( dynISFadjust / 100 );
     var TDD = (dynISFadjust * TDD);
-    var variable_sens_old = (277700 / (TDD * bg));
-    var variable_sens = ( 1800 / ( TDD * (Math.log( bg / 55 )  ) ) );
+    var W = profile.Weight;
+    var V = profile.BloodVolume;
+    var variable_sens_original = (277700 / (TDD * bg));
+    var variable_sens_old = ( 1800 / ( TDD * (Math.log( bg / 55 )  ) ) );
+    var variable_sens = V / (Math.log( bg ) * Math.log(( TDD / V) + 1 ) * Math.log( W / V ));
     variable_sens = round(variable_sens,1);
     console.log("Current sensitivity for predictions is " +variable_sens+" based on current bg");
     console.log("Sensitivity for predictions using old model is " +variable_sens_old+" based on current bg");
+    console.log("Sensitivity for predictions using original model is " +variable_sens_original+" based on current bg");
 
 //Circadian ISF Adjustment
 
@@ -965,32 +969,37 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("EventualBG is" +eventualBG+" ;");
 
         if( glucose_status.delta >= 6 && meal_data.mealCOB > 0) {
-            var future_sens_old = ( 277700 / (TDD * ( (eventualBG * 0.75) + (bg * 0.25) )));
-            var future_sens = ( 1800 / (Math.log(((eventualBG * 0.75) + (bg * 0.25))/55)*TDD));
+            var future_sens_original = ( 277700 / (TDD * ( (eventualBG * 0.75) + (bg * 0.25) )));
+            var future_sens_old = ( 1800 / (Math.log(((eventualBG * 0.75) + (bg * 0.25))/55)*TDD));
+            var future_sens = V / (Math.log((eventualBG * 0.75) + (bg * 0.25)) * Math.log(( TDD / V) + 1 ) * Math.log( W / V ));
             console.log("Future state sensitivity is " +future_sens+" weighted on eventual BG due to COB");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on predicted BG due to COB;";
             }
         else if( glucose_status.delta > 4 && delta_accl > 0 ) {
-           var future_sens_old = ( 277700 / (TDD * ( (eventualBG * 0.75) + (bg * 0.25) )));
-            var future_sens = ( 1800 / (Math.log(((eventualBG * 0.75) + (bg * 0.25))/55)*TDD));
+           var future_sens_original = ( 277700 / (TDD * ( (eventualBG * 0.75) + (bg * 0.25) )));
+            var future_sens_old = ( 1800 / (Math.log(((eventualBG * 0.75) + (bg * 0.25))/55)*TDD));
+            var future_sens = V / (Math.log((eventualBG * 0.75) + (bg * 0.25)) * Math.log(( TDD / V) + 1 ) * Math.log( W / V ));
             console.log("Future state sensitivity is " +future_sens+" weighted on predicted bg due to increasing deltas");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on predicted BG due to delta;";
             }
         else if( glucose_status.delta > 6 ) {
-            var future_sens_old = ( 277700 / (TDD * ( (eventualBG * 0.25) + (bg * 0.75) )));
-            var future_sens = ( 1800 / (Math.log(((eventualBG * 0.25) + (bg * 0.75))/55)*TDD));
+            var future_sens_original = ( 277700 / (TDD * ( (eventualBG * 0.25) + (bg * 0.75) )));
+            var future_sens_old = ( 1800 / (Math.log(((eventualBG * 0.25) + (bg * 0.75))/55)*TDD));
+            var future_sens = V / (Math.log((eventualBG * 0.25) + (bg * 0.75)) * Math.log(( TDD / V) + 1 ) * Math.log( W / V ));
             console.log("Future state sensitivity is " +future_sens+" weighted on current bg due to no COB");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on current BG;";
             }
         else if( glucose_status.delta > 0 || bg > 60 && glucose_status.delta < 2 && glucose_status.delta > -2 && glucose_status.short_avgdelta > -2 && glucose_status.short_avgdelta < 2 ) {
-            var future_sens_old = ( 277700 / (TDD * (( 0.5 * bg) + ( 0.5 * eventualBG )) ));
-            var future_sens = ( 1800 / (Math.log(((eventualBG * 0.5) + (bg * 0.5))/55)*TDD));
+            var future_sens_original = ( 277700 / (TDD * (( 0.5 * bg) + ( 0.5 * eventualBG )) ));
+            var future_sens_old = ( 1800 / (Math.log(((eventualBG * 0.5) + (bg * 0.5))/55)*TDD));
+            var future_sens = V / (Math.log(((eventualBG * 0.5) + (bg * 0.5)) * Math.log(( TDD / V) + 1 ) * Math.log( W / V ));
             console.log("Future state sensitivity is " +future_sens+" using current bg due to no COB & small delta or variation");
             rT.reason += "Dosing sensitivity: " +future_sens+" using current BG;";
             }
         else {
-            var future_sens_old = ( 277700 / (TDD * eventualBG));
-            var future_sens = ( 1800 / (Math.log(eventualBG/55)*TDD));
+            var future_sens_original = ( 277700 / (TDD * eventualBG));
+            var future_sens_old = ( 1800 / (Math.log(eventualBG/55)*TDD));
+            var future_sens = V / (Math.log((eventualBG) * Math.log(( TDD / V) + 1 ) * Math.log( W / V ));
         console.log("Future state sensitivity is " +future_sens+" based on eventual bg due to -ve delta");
         rT.reason += "Dosing sensitivity: " +future_sens+" using eventual BG;";
         }
@@ -1000,6 +1009,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         console.log("Future sens adjusted to : "+future_sens+"; ");
         console.log("Future sens from old model is: "+future_sens_old+"; ");
+        console.log("Future sens from original model is: "+future_sens_original+"; ");
 
 
     minIOBPredBG = Math.max(39,minIOBPredBG);
