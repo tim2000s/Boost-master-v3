@@ -29,6 +29,17 @@
             validate:testType="floatNumericRange" />
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+            android:defaultValue="100"
+            android:enabled="true"
+            android:dialogMessage="@string/DynISFAdjust_summary"
+            android:inputType="numberDecimal"
+            android:key="@string/key_DynISFAdjust"
+            android:title="@string/DynISFAdjust_title"
+            validate:floatmaxNumber="300"
+            validate:floatminNumber="1"
+            validate:testType="floatNumericRange" />
+
+        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="50"
             android:enabled="true"
             android:dialogMessage="@string/Boost_InsulinReq_summary"
@@ -109,10 +120,10 @@
             validate:floatminNumber="0"
             validate:testType="floatNumericRange" />
 
-        <!--<SwitchPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_openapsama_useautosens"
-            android:title="@string/openapsama_useautosens" /> -->
+            android:title="@string/openapsama_useautosens" />
 
         <SwitchPreference
             android:defaultValue="false"

@@ -343,6 +343,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     else {
         bg = bg;
         }
+    var dynISFadjust = profile.DynISFAdjust;
+    var dynISFadjust = ( dynISFadjust / 100 );
+    var TDD = (dynISFadjust * TDD);
     var variable_sens_old = (277700 / (TDD * bg));
     var variable_sens = ( 1800 / ( Math.log( bg / 55 ) * TDD ) );
     variable_sens = round(variable_sens,1);
@@ -420,7 +423,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
 
 
-    if (sensitivityRatio) {
+    if (sensitivityRatio && profile.openapsama_useautosens === true) {
         basal = profile.current_basal * sensitivityRatio;
         basal = round_basal(basal, profile);
         if (basal !== profile_current_basal) {
@@ -434,7 +437,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (profile.temptargetSet) {
         //console.log("Temp Target set, not adjusting with autosens; ");
     } else {
-        if ( profile.sensitivity_raises_target && sensitivityRatio < 1 || profile.resistance_lowers_target && sensitivityRatio > 1 ) {
+        if ( profile.sensitivity_raises_target && sensitivityRatio < 1 && profile.openapsama_useautosens === true || profile.resistance_lowers_target && sensitivityRatio > 1 && profile.openapsama_useautosens === true) {
             // with a target of 100, default 0.7-1.2 autosens min/max range would allow a 93-117 target range
             min_bg = round((min_bg - 60) / sensitivityRatio) + 60;
             max_bg = round((max_bg - 60) / sensitivityRatio) + 60;
