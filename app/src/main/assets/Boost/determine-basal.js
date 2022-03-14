@@ -338,6 +338,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
              }*/
 
     //var TDD = tdd_24;
+    if(bg = 55){
+        bg = 54;}
+    else {
+        bg = bg;
+        }
     var variable_sens_old = (277700 / (TDD * bg));
     var variable_sens = ( 1800 / ( Math.log( bg / 55 ) * TDD ) );
     variable_sens = round(variable_sens,1);
