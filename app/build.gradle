@@ -157,7 +157,7 @@ android {
         full {
             applicationId "info.nightscout.androidaps"
             dimension "standard"
-            resValue "string", "app_name", "AndroidAPS-Boost-CISF"
+            resValue "string", "app_name", "AndroidAPS-oref2"
             versionName version
             manifestPlaceholders = [
                     appIcon     : "@mipmap/ic_launcher",
