@@ -569,6 +569,13 @@
     <string name="key_DynISFAdjust" translatable="false">DynISFAdjust</string>
     <string name="DynISFAdjust_title">DynamicISF Adjustment Factor %</string>
     <string name="DynISFAdjust_summary">Adjustment factor for DynamicISF. Set more than 100% for more aggressive correction doses, and less than 100% for less aggressive corrections.</string>
+    <string name="key_BloodVolume" translatable="false">BloodVolume</string>
+    <string name="BloodVolume_title">Blood Volume (dL)</string>
+    <string name="BloodVolume_summary">Blood volume as defined by Nadler calculation, in dL. Default value is 50dL (5L)</string>
+    <string name="key_Weight" translatable="false">Weight</string>
+    <string name="Weight_title">Body Weight (kg)</string>
+    <string name="Weight_summary">Body weight in kg. Default value is 75kg</string>
+
     <string name="key_use_smb" translatable="false">use_smb</string>
     <string name="key_use_uam" translatable="false">use_uam</string>
     <string name="key_smb_enable_carbs_suggestions_threshold" translatable="false">smb_enable_carbs_suggestions_threshold</string>

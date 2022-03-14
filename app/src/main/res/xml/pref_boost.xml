@@ -42,6 +42,28 @@
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="50"
             android:enabled="true"
+            android:dialogMessage="@string/BloodVolume_summary"
+            android:inputType="numberDecimal"
+            android:key="@string/key_BloodVolume"
+            android:title="@string/BloodVolume_title"
+            validate:floatmaxNumber="100"
+            validate:floatminNumber="1"
+            validate:testType="floatNumericRange" />
+
+        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+            android:defaultValue="75"
+            android:enabled="true"
+            android:dialogMessage="@string/Weight_summary"
+            android:inputType="numberDecimal"
+            android:key="@string/key_Weight"
+            android:title="@string/Weight_title"
+            validate:floatmaxNumber="150"
+            validate:floatminNumber="1"
+            validate:testType="floatNumericRange" />
+
+        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+            android:defaultValue="50"
+            android:enabled="true"
             android:dialogMessage="@string/Boost_InsulinReq_summary"
             android:inputType="numberDecimal"
             android:key="@string/key_Boost_InsulinReq"

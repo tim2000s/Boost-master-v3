@@ -243,6 +243,8 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
         this.profile.put("maxSMBBasalMinutes", sp.getInt(R.string.key_smbmaxminutes, BoostDefaults.maxSMBBasalMinutes))
         this.profile.put("maxUAMSMBBasalMinutes", sp.getInt(R.string.key_uamsmbmaxminutes, BoostDefaults.maxUAMSMBBasalMinutes))
         this.profile.put("DynISFAdjust",  SafeParse.stringToDouble(sp.getString(R.string.key_DynISFAdjust,"100")))
+        this.profile.put("BloodVolume",  SafeParse.stringToDouble(sp.getString(R.string.key_BloodVolume,"50")))
+        this.profile.put("Weight",  SafeParse.stringToDouble(sp.getString(R.string.key_Weight,"75")))
 
         //set the min SMB amount to be the amount set by the pump.
         this.profile.put("bolus_increment", pumpBolusStep)
