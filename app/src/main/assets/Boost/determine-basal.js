@@ -338,11 +338,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
              }*/
 
     //var TDD = tdd_24;
-    if(bg = 55){
+   /* if(bg = 55){
         bg = 54;}
     else {
         bg = bg;
-        }
+        }*/
     var dynISFadjust = profile.DynISFAdjust;
     var dynISFadjust = ( dynISFadjust / 100 );
     var TDD = (dynISFadjust * TDD);
