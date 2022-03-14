@@ -347,7 +347,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var dynISFadjust = ( dynISFadjust / 100 );
     var TDD = (dynISFadjust * TDD);
     var variable_sens_old = (277700 / (TDD * bg));
-    var variable_sens = ( 1800 / ( Math.log( bg / 55 ) * TDD ) );
+    var variable_sens = ( 1800 / ( TDD * (Math.log( bg / 55 )  ) ) );
     variable_sens = round(variable_sens,1);
     console.log("Current sensitivity for predictions is " +variable_sens+" based on current bg");
     console.log("Sensitivity for predictions using old model is " +variable_sens_old+" based on current bg");
