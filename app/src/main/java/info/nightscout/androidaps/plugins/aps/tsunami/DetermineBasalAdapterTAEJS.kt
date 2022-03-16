@@ -236,7 +236,7 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         if (tb != null) currentTemp.put("minutesrunning", tb.getPassedDurationToTimeInMinutes(now))
 //**********************************************************************************************************************************************
         this.profile.put("tsuSMBCap", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_smbcap, "1")))
-        this.profile.put("insulinReqPCT", SafeParse.stringToDouble(sp.getString(R.string.key_insulinReqPCT, "65")))
+        this.profile.put("tsuInsReqPCT", SafeParse.stringToDouble(sp.getString(R.string.key_insulinReqPCT, "65")))
         this.profile.put("tsuStart", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_start, "11.0")))
         this.profile.put("tsuEnd", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_end, "23.0")))
         this.profile.put("percentage", profile.percentage)
@@ -256,6 +256,13 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         }
         this.profile.put("tsunamiModeID", tsunamiModeID)
         this.profile.put("tsunamiActive", tsunamiActive)
+        this.profile.put("enableWaveMode", sp.getBoolean(R.string.key_enable_wave_mode, false))
+        this.profile.put("waveStart", SafeParse.stringToDouble(sp.getString(R.string.key_wave_start, "11")))
+        this.profile.put("waveEnd", SafeParse.stringToDouble(sp.getString(R.string.key_wave_end, "21")))
+        this.profile.put("waveUseSMBCap", sp.getBoolean(R.string.key_use_wave_smbcap, false))
+        this.profile.put("waveSMBCap", SafeParse.stringToDouble(sp.getString(R.string.key_wave_smbcap, "0.5")))
+        this.profile.put("waveInsReqPCT", SafeParse.stringToDouble(sp.getString(R.string.key_wave_insulinReqPCT, "65")))
+
         //MP UAM tsunami profile variables END
 //**********************************************************************************************************************************************
         //MD: TempTarget Info ==== START

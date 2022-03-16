@@ -8,23 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.common.base.Joiner
-import info.nightscout.androidaps.Constants
 import info.nightscout.androidaps.R
 import info.nightscout.androidaps.activities.ErrorHelperActivity
 import info.nightscout.androidaps.data.DetailedBolusInfo
 import info.nightscout.androidaps.database.AppRepository
 import info.nightscout.androidaps.database.ValueWrapper
-import info.nightscout.androidaps.database.entities.TemporaryTarget
 import info.nightscout.androidaps.database.entities.UserEntry.Action
 import info.nightscout.androidaps.database.entities.UserEntry.Sources
 import info.nightscout.androidaps.database.entities.ValueWithUnit
-import info.nightscout.androidaps.database.transactions.CancelCurrentTemporaryTargetIfAnyTransaction
 import info.nightscout.androidaps.database.transactions.CancelCurrentTsunamiModeIfAnyTransaction
-import info.nightscout.androidaps.database.transactions.InsertAndCancelCurrentTemporaryTargetTransaction
 import info.nightscout.androidaps.database.transactions.TsunamiModeSwitchTransaction
 import info.nightscout.androidaps.databinding.DialogTsunamiBinding
 import info.nightscout.androidaps.extensions.formatColor
-import info.nightscout.androidaps.extensions.toVisibility
 import info.nightscout.androidaps.interfaces.*
 import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.logging.UserEntryLogger
@@ -33,6 +28,7 @@ import info.nightscout.androidaps.queue.Callback
 import info.nightscout.androidaps.utils.*
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.extensions.toSignedString
+import info.nightscout.androidaps.utils.protection.ProtectionCheck
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import info.nightscout.shared.SafeParse
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -57,6 +53,7 @@ class TsunamiDialog : DialogFragmentWithDate() {
     @Inject lateinit var config: Config
     @Inject lateinit var bolusTimer: BolusTimer
     @Inject lateinit var uel: UserEntryLogger
+    @Inject lateinit var protectionCheck: ProtectionCheck
 
     companion object {
 
@@ -84,6 +81,10 @@ class TsunamiDialog : DialogFragmentWithDate() {
 
     private fun validateInputs() {
         val maxInsulin = constraintChecker.getMaxBolusAllowed().value()
+        if (abs(binding.tsuDuration.value.toInt()) > 5 * 60) {
+            binding.tsuDuration.value = 0.0
+            ToastUtils.showToastInUiThread(context, rh.gs(R.string.constraintapllied))
+        }
         if (binding.amount.value > maxInsulin) {
             binding.amount.value = 0.0
             ToastUtils.showToastInUiThread(context, rh.gs(R.string.bolusconstraintapplied))
@@ -92,7 +93,7 @@ class TsunamiDialog : DialogFragmentWithDate() {
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         super.onSaveInstanceState(savedInstanceState)
-        savedInstanceState.putDouble("tsuDuration", binding.tsuPlusDuration.value)
+        savedInstanceState.putDouble("tsuDuration", binding.tsuDuration.value)
         savedInstanceState.putDouble("amount", binding.amount.value)
     }
 
@@ -106,11 +107,10 @@ class TsunamiDialog : DialogFragmentWithDate() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tsuPlusDuration.setParams(savedInstanceState?.getDouble("tsuDuration")
-                                       ?: SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_default_duration, "0.0")), 0.0, 300.0, 30.0, DecimalFormat("0"), false, binding.okcancel.ok)
-
         val maxInsulin = constraintChecker.getMaxBolusAllowed().value()
 
+        binding.tsuDuration.setParams(savedInstanceState?.getDouble("tsuDuration")
+            ?: SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_default_duration, "0.0")), 0.0, 300.0, 30.0, DecimalFormat("0"), false, binding.okcancel.ok, textWatcher)
         binding.amount.setParams(savedInstanceState?.getDouble("amount")
             ?: 0.0, 0.0, maxInsulin, activePlugin.activePump.pumpDescription.bolusStep, DecimalFormatter.pumpSupportedBolusFormat(activePlugin.activePump), false, binding.okcancel.ok, textWatcher)
 
@@ -146,7 +146,7 @@ class TsunamiDialog : DialogFragmentWithDate() {
             else
                 binding.tsuCancel.visibility = View.GONE
         binding.tsuCancel.setOnClickListener {
-            binding.tsuPlusDuration.value = 0.0
+            binding.tsuDuration.value = 0.0
             binding.amount.value = 0.0
             if (submit()) dismiss()
         }
@@ -164,7 +164,7 @@ class TsunamiDialog : DialogFragmentWithDate() {
         val insulin = SafeParse.stringToDouble(binding.amount.text)
         val insulinAfterConstraints = constraintChecker.applyBolusConstraints(Constraint(insulin)).value()
         val actions: LinkedList<String?> = LinkedList()
-        val duration = binding.tsuPlusDuration.value.toInt()
+        val duration = binding.tsuDuration.value.toInt()
 
         if (insulinAfterConstraints > 0) {
             actions.add(rh.gs(R.string.prebolus) + ": " + DecimalFormatter.toPumpSupportedBolus(insulinAfterConstraints, activePlugin.activePump, rh).formatColor(rh, R.color.bolus))
@@ -256,5 +256,18 @@ class TsunamiDialog : DialogFragmentWithDate() {
             }
         }
         return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.let { activity ->
+            val cancelFail = {
+                aapsLogger.debug(LTag.APS, "Dialog canceled on resume protection: ${this.javaClass.name}")
+                ToastUtils.showToastInUiThread(ctx, R.string.dialog_cancled)
+                dismiss()
+            }
+
+            protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, {}, cancelFail, fail = cancelFail)
+        }
     }
 }

@@ -668,7 +668,7 @@
     <string name="tsunami_smbcap_summary">max SMB size deliverable by Tsunami.</string>
     <string name="key_insulinReqPCT" translatable="false">insulinReqPCT</string>
     <string name="insulinReqPCT_title">Insulin delivery percentage [%]</string>
-    <string name="insulinReqPCT_summary">Reduces the calculated insulin required to the specified percentage for delivery. Example: If calculated insulin required is 1 U and fraction size is 50%, at most 0.5 U will be delivered if no other constraints (e.g. bolus caps) apply.</string>
+    <string name="insulinReqPCT_summary">Reduces the calculated insulin required to the specified percentage for delivery. Example: If calculated insulin required is 1 U and fraction size is 50%, at most 0.5 U will be delivered if no other constraints (e.g. SMB caps) apply.</string>
     <string name="key_tsunami_start" translatable="false">tsunami_start</string>
     <string name="tsunami_start_summary">Hour of the day from when on Tsunami will be enabled.</string>
     <string name="tsunami_start_title">Tsunami start time (incl.) [h]</string>
@@ -677,7 +677,7 @@
     <string name="tsunami_end_title">Tsunami end time (incl.) [h]</string>
     <string name="tsunami">Tsunami</string>
     <string name="tsunami_label">Tsunami</string>
-    <string name="tsunami_button_settings_title" translatable="false">Tsunami button settings</string>
+    <string name="tsunami_mode_settings_title" translatable="false">Tsunami mode settings</string>
     <string name="key_show_tsunami_button" translatable="false">show_tsunami_button</string>
     <string name="show_tsunami_button_summary" translatable="false">Required to initiate Tsunami meal response. Can be hidden if manually bolusing for the majority of carbs.</string>
     <string name="show_tsunami_button_title" translatable="false">Show Tsunami button</string>
@@ -690,10 +690,30 @@
     <string name="key_prebolus_increment_1" translatable="false">prebolus_increment_1</string>
     <string name="key_prebolus_increment_2" translatable="false">prebolus_increment_2</string>
     <string name="key_prebolus_increment_3" translatable="false">prebolus_increment_3</string>
-    <string name="prebolus_increment_1">First insulin increment</string>
-    <string name="prebolus_increment_2">Second insulin increment</string>
-    <string name="prebolus_increment_3">Third insulin increment</string>
+    <string name="prebolus_increment_1">First insulin button increment</string>
+    <string name="prebolus_increment_2">Second insulin button increment</string>
+    <string name="prebolus_increment_3">Third insulin button increment</string>
     <string name="prebolus">Prebolus</string>
+    <string name="wave_mode_settings_title" translatable="false">Wave mode settings</string>
+    <string name="key_enable_wave_mode" translatable="false">enable_wave_mode</string>
+    <string name="enable_wave_mode_summary" translatable="false">Glucose watchdog to overrule the openAPSSMB algorithm within specified time slot if Tsunami mode is inactive.</string>
+    <string name="enable_wave_mode_title" translatable="false">Enable wave mode</string>
+    <string name="key_use_wave_smbcap" translatable="false">use_wave_smbcap</string>
+    <string name="use_wave_smbcap_summary" translatable="false">Use fixed SMB cap instead of basal minutes as SMB size limiter.</string>
+    <string name="use_wave_smbcap_title" translatable="false">Use SMB cap</string>
+    <string name="key_wave_smbcap" translatable="false">wave_smbcap</string>
+    <string name="wave_smbcap_message" translatable="false">max SMB size deliverable by wave mode.</string>
+    <string name="wave_smbcap_title" translatable="false">Wave SMB cap [U]</string>
+    <string name="key_wave_start" translatable="false">wave_start</string>
+    <string name="wave_start_summary">Hour of the day from when on wave mode will be enabled.</string>
+    <string name="wave_start_title">Wave start time (incl.) [h]</string>
+    <string name="key_wave_end" translatable="false">wave_end</string>
+    <string name="wave_end_summary">Hour of the day until (and including) which wave mode is enabled.</string>
+    <string name="wave_end_title">Wave end time (incl.) [h]</string>
+    <string name="key_wave_insulinReqPCT" translatable="false">waveinsulinReqPCT</string>
+    <string name="wave_insulinReqPCT_message">Reduces the calculated insulin required to the specified percentage for delivery. Example: If calculated insulin required is 1 U and fraction size is 50%, at most 0.5 U will be delivered if no other constraints (e.g. SMB caps) apply.</string>
+    <string name="wave_insulinReqPCT_title">Wave mode insulin delivery percentage [%]</string>
+
     <!-- Tsunami strings end -->
 
     <!-- MP: Make data smoothing optional, turned off by default
