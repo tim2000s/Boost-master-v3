@@ -41,6 +41,8 @@
     <attr name="calibrationButtonColor" format="reference|color" />
     <!-- QuickWizard Button -->
     <attr name="quickWizardButtonColor" format="reference|color" />
+    <!-- Tsunami Button -->
+    <attr name="tsunamiButtonColor" format="reference|color" />
     <!-- Pump -->
     <attr name="pumpStatusBackground" format="reference|color" />
     <!-- Objectives -->

@@ -75,6 +75,8 @@
         <item name="calibrationButtonColor">@color/colorCalibrationButton</item>
         <!-- QuickWizard Button -->
         <item name="quickWizardButtonColor">@color/colorQuickWizardButton</item>
+        <!-- Tsunami Button -->
+        <item name="tsunamiButtonColor">@color/colorTsunamiButton</item>
         <!-- Pump -->
         <item name="pumpStatusBackground">@color/pumpStatusBackground</item>
         <!-- Objectives -->
