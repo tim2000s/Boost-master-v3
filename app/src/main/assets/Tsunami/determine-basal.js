@@ -385,7 +385,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var tsunami_insreq;
     var iterations; //MP Not used in the PK model - will show up as 'undefined' - this can be used for debugging if people send screenshots of TSUNAMI STATUS
 
-    if (profile.insulinID != 6 && profile.insulinID != 7) {
+    if (profile.insulinID != 105 && profile.insulinID != 205) {
         // PK BASED MODEL CODE
         // MP Calculate the insulin required to neutralise the current delta in "peak-time" minutes
         tp = profile.peaktime; //MP Insulin peak time as stated in InsulinOrefFreePeakPlugin. Doesn't work with insulin presets. Should be same value as used for act_future calculation (see glucoseStatus.java)
@@ -414,9 +414,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (act_missing != 0) {
             while ((round(act_at_t / act_missing, 2) > 1.02 || round(act_at_t / act_missing, 2) < 0.98)) {
                 tsunami_insreq = tsunami_insreq / actratio;
-                if (profile.insulinID == 7) { //MP ID = 7 for Lyumjev U200
+                if (profile.insulinID == 205) { //MP ID = 205 for Lyumjev U200
                     tp = (A0 + A1 * 2 * tsunami_insreq) / (1 + B1 * 2 * tsunami_insreq);
-                } else { //MP Lyumjev U100 (ID = 6)
+                } else { //MP Lyumjev U100 (ID = 105)
                     tp = (A0 + A1 * tsunami_insreq) / (1 + B1 * tsunami_insreq);
                 }
                 t = tp;

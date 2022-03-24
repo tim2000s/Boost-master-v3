@@ -284,7 +284,7 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
 
         var futureActivity = 0.0
         var activityPredTime: Long
-        if (insulinID != 6 && insulinID != 7) { //MP if not using PD insulin models
+        if (insulinID != 105 && insulinID != 205) { //MP if not using PD insulin models
             activityPredTime = activityPredTime_PK
         } else { //MP if using PD insulin models
             activityPredTime = activityPredTime_PD
