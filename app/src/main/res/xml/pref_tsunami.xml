@@ -34,59 +34,196 @@
             android:summary="@string/enable_datasmoothing_summary"
             android:title="@string/enable_datasmoothing" />
         MP data smoothing end -->
-        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-            android:defaultValue="1"
-            android:dialogMessage="@string/UAM_boluscap_summary"
-            android:inputType="numberDecimal"
-            android:key="@string/key_UAM_boluscap"
-            android:title="@string/UAM_UAM_boluscap_title"
-            validate:floatmaxNumber="3"
-            validate:floatminNumber="0.1"
-            validate:testType="floatNumericRange" />
-        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-            android:defaultValue="65"
-            android:dialogMessage="@string/insulinreqPCT_summary"
-            android:inputType="numberDecimal"
-            android:key="@string/key_insulinreqPCT"
-            android:title="@string/insulinreqPCT_title"
-            validate:floatmaxNumber="100"
-            validate:floatminNumber="50"
-            validate:testType="floatNumericRange" />
-        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-            android:defaultValue="11"
-            android:dialogMessage="@string/tae_start_summary"
-            android:digits="0123456789.,"
-            android:inputType="number"
-            android:key="@string/key_tae_start"
-            android:maxLines="20"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/tae_start_title"
-            validate:floatmaxNumber="23"
-            validate:floatminNumber="0"
-            validate:testType="floatNumericRange" />
-        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-            android:defaultValue="23"
-            android:dialogMessage="@string/tae_end_summary"
-            android:digits="0123456789.,"
-            android:inputType="number"
-            android:key="@string/key_tae_end"
-            android:maxLines="20"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/tae_end_title"
-            validate:floatmaxNumber="23"
-            validate:floatminNumber="0"
-            validate:testType="floatNumericRange" />
+
+        <androidx.preference.PreferenceScreen
+            android:key="tsunami_mode_settings"
+            android:title="@string/tsunami_mode_settings_title">
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="1"
+                android:dialogMessage="@string/tsunami_smbcap_summary"
+                android:inputType="numberDecimal"
+                android:key="@string/key_tsunami_smbcap"
+                android:title="@string/tsunami_smbcap_title"
+                validate:floatmaxNumber="3"
+                validate:floatminNumber="0.1"
+                validate:testType="floatNumericRange" />
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="65"
+                android:dialogMessage="@string/insulinReqPCT_summary"
+                android:inputType="numberDecimal"
+                android:key="@string/key_insulinReqPCT"
+                android:title="@string/insulinReqPCT_title"
+                validate:floatmaxNumber="100"
+                validate:floatminNumber="50"
+                validate:testType="floatNumericRange" />
+<!--
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="11"
+                android:dialogMessage="@string/tsunami_start_summary"
+                android:digits="0123456789.,"
+                android:inputType="number"
+                android:key="@string/key_tsunami_start"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/tsunami_start_title"
+                validate:floatmaxNumber="23"
+                validate:floatminNumber="0"
+                validate:testType="floatNumericRange" />
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="21"
+                android:dialogMessage="@string/tsunami_end_summary"
+                android:digits="0123456789.,"
+                android:inputType="number"
+                android:key="@string/key_tsunami_end"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/tsunami_end_title"
+                validate:floatmaxNumber="23"
+                validate:floatminNumber="0"
+                validate:testType="floatNumericRange" />
+-->
+            <!--
+            <SwitchPreference
+                android:defaultValue="true"
+                android:key="@string/key_show_tsunami_button"
+                android:summary="@string/show_tsunami_button_summary"
+                android:title="@string/show_tsunami_button_title" />
+            -->
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="0.5"
+                android:dialogMessage="@string/prebolus_increment_button_message"
+                android:inputType="numberDecimal|numberDecimal|numberSigned"
+                android:key="@string/key_prebolus_increment_1"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/prebolus_increment_1"
+                validate:floatmaxNumber="5.0"
+                validate:floatminNumber="-5.0"
+                validate:testType="floatNumericRange" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="1.0"
+                android:dialogMessage="@string/prebolus_increment_button_message"
+                android:inputType="numberDecimal|numberSigned"
+                android:key="@string/key_prebolus_increment_2"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/prebolus_increment_2"
+                validate:floatmaxNumber="5.0"
+                validate:floatminNumber="-5.0"
+                validate:testType="floatNumericRange" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="2.0"
+                android:dialogMessage="@string/prebolus_increment_button_message"
+                android:inputType="numberDecimal|numberSigned"
+                android:key="@string/key_prebolus_increment_3"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/prebolus_increment_3"
+                validate:floatmaxNumber="5.0"
+                validate:floatminNumber="-5.0"
+                validate:testType="floatNumericRange" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="0"
+                android:dialogMessage="@string/tsunami_default_duration_message"
+                android:inputType="numberSigned"
+                android:key="@string/key_tsunami_default_duration"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/tsunami_default_duration_title"
+                validate:maxNumber="300"
+                validate:minNumber="0"
+                validate:testType="numericRange" />
+
+        </androidx.preference.PreferenceScreen>
+
+        <androidx.preference.PreferenceScreen
+            android:key="wave_mode_settings"
+            android:title="@string/wave_mode_settings_title">
+
+            <SwitchPreference
+                android:defaultValue="false"
+                android:key="@string/key_enable_wave_mode"
+                android:summary="@string/enable_wave_mode_summary"
+                android:title="@string/enable_wave_mode_title" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:dependency="@string/key_enable_wave_mode"
+                android:defaultValue="11"
+                android:dialogMessage="@string/wave_start_summary"
+                android:digits="0123456789.,"
+                android:inputType="number"
+                android:key="@string/key_wave_start"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/wave_start_title"
+                validate:floatmaxNumber="23"
+                validate:floatminNumber="0"
+                validate:testType="floatNumericRange" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:dependency="@string/key_enable_wave_mode"
+                android:defaultValue="21"
+                android:dialogMessage="@string/wave_end_summary"
+                android:digits="0123456789.,"
+                android:inputType="number"
+                android:key="@string/key_wave_end"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/wave_end_title"
+                validate:floatmaxNumber="23"
+                validate:floatminNumber="0"
+                validate:testType="floatNumericRange" />
+
+            <SwitchPreference
+                android:dependency="@string/key_enable_wave_mode"
+                android:defaultValue="false"
+                android:key="@string/key_use_wave_smbcap"
+                android:summary="@string/use_wave_smbcap_summary"
+                android:title="@string/use_wave_smbcap_title" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:dependency="@string/key_use_wave_smbcap"
+                android:defaultValue="0.5"
+                android:dialogMessage="@string/wave_smbcap_message"
+                android:digits="0123456789.,"
+                android:inputType="numberDecimal"
+                android:key="@string/key_wave_smbcap"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/wave_smbcap_title"
+                validate:floatmaxNumber="2"
+                validate:floatminNumber="0"
+                validate:testType="floatNumericRange" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:dependency="@string/key_enable_wave_mode"
+                android:defaultValue="65"
+                android:dialogMessage="@string/wave_insulinReqPCT_message"
+                android:inputType="numberDecimal"
+                android:key="@string/key_wave_insulinReqPCT"
+                android:title="@string/wave_insulinReqPCT_title"
+                validate:floatmaxNumber="100"
+                validate:floatminNumber="30"
+                validate:testType="floatNumericRange" />
+
+        </androidx.preference.PreferenceScreen>
 
         <SwitchPreference
             android:defaultValue="false"
             android:key="openapsama_useautosens"
             android:title="@string/openapsama_useautosens" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="openapsama_useautoisf"
-            android:title="@string/tsunami_useautoisf" />
 
         <SwitchPreference
             android:defaultValue="false"

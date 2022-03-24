@@ -56,11 +56,12 @@ import info.nightscout.androidaps.extensions.convertedToAbsolute
 import info.nightscout.androidaps.extensions.convertedToPercent
 import info.nightscout.androidaps.extensions.plannedRemainingMinutes
 import info.nightscout.androidaps.plugins.aps.events.EventLoopInvoked
+import info.nightscout.androidaps.plugins.general.overview.events.EventUpdateOverviewTsunamiButton
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.shared.sharedPreferences.SP
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.plusAssign
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.abs
@@ -113,6 +114,12 @@ class LoopPlugin @Inject constructor(
             .toObservable(EventTempTargetChange::class.java)
             .observeOn(aapsSchedulers.io)
             .subscribe({ invoke("EventTempTargetChange", true) }, fabricPrivacy::logException)
+        )
+        disposable.add(rxBus
+            .toObservable(EventUpdateOverviewTsunamiButton::class.java)
+            .observeOn(aapsSchedulers.io)
+            .subscribe({ invoke("EventUpdateOverviewTsunamiButton", true) },
+                fabricPrivacy::logException)
         )
         /*
           This method is triggered once autosens calculation has completed, so the LoopPlugin

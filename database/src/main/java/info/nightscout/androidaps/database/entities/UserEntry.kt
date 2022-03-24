@@ -108,6 +108,9 @@ data class UserEntry(
         EXIT_AAPS (ColorGroup.Aaps),
         PLUGIN_ENABLED (ColorGroup.Aaps),
         PLUGIN_DISABLED (ColorGroup.Aaps),
+        TSUNAMI (ColorGroup.Tsunami),
+        CANCEL_TSUNAMI (ColorGroup.Tsunami),
+        TSUNAMI_BOLUS (ColorGroup.Tsunami),
         UNKNOWN (ColorGroup.Aaps)
         ;
 
@@ -119,6 +122,7 @@ data class UserEntry(
     enum class Sources {
         TreatmentDialog,
         InsulinDialog,
+        TsunamiDialog,
         CarbDialog,
         WizardDialog,
         QuickWizard,
@@ -195,6 +199,7 @@ data class UserEntry(
         Loop,
         Careportal,
         Pump,
-        Aaps
+        Aaps,
+        Tsunami
     }
 }

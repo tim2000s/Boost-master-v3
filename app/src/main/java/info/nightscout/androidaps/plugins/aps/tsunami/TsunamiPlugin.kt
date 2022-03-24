@@ -10,8 +10,6 @@ import info.nightscout.androidaps.database.AppRepository
 import info.nightscout.androidaps.database.ValueWrapper
 import info.nightscout.androidaps.extensions.target
 import info.nightscout.androidaps.interfaces.*
-import info.nightscout.shared.logging.AAPSLogger
-import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.plugins.aps.events.EventOpenAPSUpdateGui
 import info.nightscout.androidaps.plugins.aps.events.EventOpenAPSUpdateResultGui
 import info.nightscout.androidaps.plugins.aps.loop.ScriptReader
@@ -24,6 +22,8 @@ import info.nightscout.androidaps.utils.HardLimits
 import info.nightscout.androidaps.utils.Profiler
 import info.nightscout.androidaps.utils.Round
 import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.shared.logging.AAPSLogger
+import info.nightscout.shared.logging.LTag
 import info.nightscout.shared.sharedPreferences.SP
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -37,7 +37,7 @@ class TsunamiPlugin @Inject constructor(
     private val constraintChecker: ConstraintChecker,
     rh: ResourceHelper,
     private val profileFunction: ProfileFunction,
-    private val context: Context,
+    val context: Context,
     private val activePlugin: ActivePlugin,
     private val iobCobCalculator: IobCobCalculator,
     private val hardLimits: HardLimits,
@@ -60,8 +60,8 @@ class TsunamiPlugin @Inject constructor(
     // last values
     override var lastAPSRun: Long = 0
     override var lastAPSResult: DetermineBasalResultTAE? = null
-    var lastDetermineBasalAdapterTAEJS: DetermineBasalAdapterTAEJS? = null
-    var lastAutosensResult = AutosensResult()
+    override var lastDetermineBasalAdapter: DetermineBasalAdapterInterface? = null
+    override var lastAutosensResult = AutosensResult()
 
     override fun specialEnableCondition(): Boolean {
         return try {
@@ -125,10 +125,42 @@ class TsunamiPlugin @Inject constructor(
         val tempTarget = repository.getTemporaryTargetActiveAt(dateUtil.now()).blockingGet()
         if (tempTarget is ValueWrapper.Existing) {
             isTempTarget = true
-            minBg = hardLimits.verifyHardLimits(tempTarget.value.lowTarget, R.string.temp_target_low_target, HardLimits.VERY_HARD_LIMIT_TEMP_MIN_BG[0].toDouble(), HardLimits.VERY_HARD_LIMIT_TEMP_MIN_BG[1].toDouble())
-            maxBg = hardLimits.verifyHardLimits(tempTarget.value.highTarget, R.string.temp_target_high_target, HardLimits.VERY_HARD_LIMIT_TEMP_MAX_BG[0].toDouble(), HardLimits.VERY_HARD_LIMIT_TEMP_MAX_BG[1].toDouble())
-            targetBg = hardLimits.verifyHardLimits(tempTarget.value.target(), R.string.temp_target_value, HardLimits.VERY_HARD_LIMIT_TEMP_TARGET_BG[0].toDouble(), HardLimits.VERY_HARD_LIMIT_TEMP_TARGET_BG[1].toDouble())
+            minBg =
+                hardLimits.verifyHardLimits(
+                    tempTarget.value.lowTarget,
+                    R.string.temp_target_low_target,
+                    HardLimits.VERY_HARD_LIMIT_TEMP_MIN_BG[0].toDouble(),
+                    HardLimits.VERY_HARD_LIMIT_TEMP_MIN_BG[1].toDouble()
+                )
+            maxBg =
+                hardLimits.verifyHardLimits(
+                    tempTarget.value.highTarget,
+                    R.string.temp_target_high_target,
+                    HardLimits.VERY_HARD_LIMIT_TEMP_MAX_BG[0].toDouble(),
+                    HardLimits.VERY_HARD_LIMIT_TEMP_MAX_BG[1].toDouble()
+                )
+            targetBg =
+                hardLimits.verifyHardLimits(
+                    tempTarget.value.target(),
+                    R.string.temp_target_value,
+                    HardLimits.VERY_HARD_LIMIT_TEMP_TARGET_BG[0].toDouble(),
+                    HardLimits.VERY_HARD_LIMIT_TEMP_TARGET_BG[1].toDouble()
+                )
         }
+
+        //val tsunamiMode = repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet()
+        //var tsunamiModeID = 1
+        //val tsunamiActive:Boolean = tsunamiMode is ValueWrapper.Existing
+        /*
+        * ID codes
+        * 0 = inactive (openAPS SMB mode)
+        * 1 = weak Tsunami mode
+        * 2 = Tsu++ mode
+         */
+        //if (tsunamiMode is ValueWrapper.Existing) {
+        //    tsunamiModeID = tsunamiMode.value.tsunamiMode
+        //}
+
         if (!hardLimits.checkHardLimits(profile.dia, R.string.profile_dia, hardLimits.minDia(), hardLimits.maxDia())) return
         if (!hardLimits.checkHardLimits(profile.getIcTimeFromMidnight(Profile.secondsFromMidnight()), R.string.profile_carbs_ratio_value, hardLimits.minIC(), hardLimits.maxIC())) return
         if (!hardLimits.checkHardLimits(profile.getIsfMgdl(), R.string.profile_sensitivity_value, HardLimits.MIN_ISF, HardLimits.MAX_ISF)) return
@@ -164,8 +196,9 @@ class TsunamiPlugin @Inject constructor(
         profiler.log(LTag.APS, "SMB data gathering", start)
         start = System.currentTimeMillis()
 
-        DetermineBasalAdapterTAEJS(ScriptReader(context), injector).also { determineBasalAdapterTAEJS ->
-            determineBasalAdapterTAEJS.setData(profile, maxIob, maxBasal, minBg, maxBg, targetBg,
+        provideDetermineBasalAdapter().also { determineBasalAdapterTAEJS ->
+            determineBasalAdapterTAEJS.setData(
+                profile, maxIob, maxBasal, minBg, maxBg, targetBg,
                 activePlugin.activePump.baseBasalRate,
                 iobArray,
                 glucoseStatus,
@@ -175,13 +208,14 @@ class TsunamiPlugin @Inject constructor(
                 smbAllowed.value(),
                 uam.value(),
                 advancedFiltering.value(),
-                activePlugin.activeBgSource.javaClass.simpleName == "DexcomPlugin")
+                activePlugin.activeBgSource.javaClass.simpleName == "DexcomPlugin",
+            )
             val now = System.currentTimeMillis()
             val determineBasalResultTAE = determineBasalAdapterTAEJS.invoke()
             profiler.log(LTag.APS, "SMB calculation", start)
             if (determineBasalResultTAE == null) {
                 aapsLogger.error(LTag.APS, "SMB calculation returned null")
-                lastDetermineBasalAdapterTAEJS = null
+                lastDetermineBasalAdapter = null
                 lastAPSResult = null
                 lastAPSRun = 0
             } else {
@@ -191,8 +225,8 @@ class TsunamiPlugin @Inject constructor(
                 determineBasalResultTAE.iob = iobArray[0]
                 determineBasalResultTAE.json?.put("timestamp", dateUtil.toISOString(now))
                 determineBasalResultTAE.inputConstraints = inputConstraints
-                lastDetermineBasalAdapterTAEJS = determineBasalAdapterTAEJS
-                lastAPSResult = determineBasalResultTAE
+                lastDetermineBasalAdapter = determineBasalAdapterTAEJS
+                lastAPSResult = determineBasalResultTAE as DetermineBasalResultTAE
                 lastAPSRun = now
             }
         }
@@ -203,4 +237,6 @@ class TsunamiPlugin @Inject constructor(
         value.set(aapsLogger, false)
         return value
     }
+
+    fun provideDetermineBasalAdapter(): DetermineBasalAdapterInterface = DetermineBasalAdapterTAEJS(ScriptReader(context), injector)
 }

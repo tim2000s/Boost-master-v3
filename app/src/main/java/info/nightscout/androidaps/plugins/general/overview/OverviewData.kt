@@ -14,6 +14,7 @@ import info.nightscout.androidaps.database.entities.Bolus
 import info.nightscout.androidaps.database.entities.GlucoseValue
 import info.nightscout.androidaps.database.entities.TemporaryTarget
 import info.nightscout.androidaps.database.entities.TherapyEvent
+import info.nightscout.androidaps.database.entities.Tsunami
 import info.nightscout.androidaps.extensions.*
 import info.nightscout.androidaps.interfaces.*
 import info.nightscout.shared.logging.AAPSLogger
@@ -69,6 +70,7 @@ class OverviewData @Inject constructor(
         cobInfo = null
         lastCarbsTime = 0L
         temporaryTarget = null
+        tsunami = null
         lastAutosensData = null
         bgReadingsArray = ArrayList()
         bucketedGraphSeries = PointsWithLabelGraphSeries()
@@ -128,14 +130,29 @@ class OverviewData @Inject constructor(
 
     var lastBg: GlucoseValue? = null
 
-    val lastBgColor: Int
+    private val isLow: Boolean
         get() = lastBg?.let { lastBg ->
-            when {
-                lastBg.valueToUnits(profileFunction.getUnits()) < defaultValueHelper.determineLowLine()  -> rh.gc(R.color.low)
-                lastBg.valueToUnits(profileFunction.getUnits()) > defaultValueHelper.determineHighLine() -> rh.gc(R.color.high)
-                else                                                                                     -> rh.gc(R.color.inrange)
-            }
-        } ?: rh.gc(R.color.inrange)
+            lastBg.valueToUnits(profileFunction.getUnits()) < defaultValueHelper.determineLowLine()
+        } ?: false
+
+    private val isHigh: Boolean
+        get() = lastBg?.let { lastBg ->
+            lastBg.valueToUnits(profileFunction.getUnits()) > defaultValueHelper.determineHighLine()
+        } ?: false
+
+    val lastBgColor: Int
+        get() = when {
+            isLow  -> rh.gc(R.color.low)
+            isHigh -> rh.gc(R.color.high)
+            else   -> rh.gc(R.color.inrange)
+        }
+
+    val lastBgDescription: String
+        get() = when {
+            isLow  -> rh.gs(R.string.a11y_low)
+            isHigh -> rh.gs(R.string.a11y_high)
+            else   -> rh.gs(R.string.a11y_inrange)
+        }
 
     val isActualBg: Boolean
         get() =
@@ -229,6 +246,12 @@ class OverviewData @Inject constructor(
      */
 
     var temporaryTarget: TemporaryTarget? = null
+
+    /*
+    * TSUNAMI
+    */
+
+    var tsunami: Tsunami? = null
 
     /*
      * SENSITIVITY
@@ -615,7 +638,7 @@ class OverviewData @Inject constructor(
 
         val adsData = iobCobCalculator.ads.clone()
 
-        while (time <= toTime) {
+        while (time <= endTime) {
             val profile = profileFunction.getProfile(time)
             if (profile == null) {
                 time += 5 * 60 * 1000L

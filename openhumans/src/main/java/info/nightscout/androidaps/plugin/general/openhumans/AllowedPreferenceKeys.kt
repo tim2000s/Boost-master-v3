@@ -151,6 +151,9 @@ private val allowedKeys = """
     insulin_button_increment_1
     insulin_button_increment_2
     insulin_button_increment_3
+    prebolus_increment_1
+    prebolus_increment_2
+    prebolus_increment_3
     show_carbs_button
     carbs_button_increment_1
     carbs_button_increment_2

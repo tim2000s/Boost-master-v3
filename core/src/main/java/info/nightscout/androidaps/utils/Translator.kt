@@ -101,6 +101,9 @@ class Translator @Inject internal constructor(
         Action.PLUGIN_DISABLED                 -> rh.gs(R.string.uel_plugin_disabled)
         Action.LOOP_CHANGE                     -> rh.gs(R.string.uel_loop_change)
         Action.LOOP_REMOVED                    -> rh.gs(R.string.uel_loop_removed)
+        Action.TSUNAMI                         -> rh.gs(R.string.uel_tsunami)
+        Action.TSUNAMI_BOLUS                   -> rh.gs(R.string.uel_tsunami)
+        Action.CANCEL_TSUNAMI                  -> rh.gs(R.string.uel_cancel_tsunami)
         Action.UNKNOWN                         -> rh.gs(R.string.unknown)
     }
 
@@ -287,7 +290,7 @@ class Translator @Inject internal constructor(
         Sources.Loop       -> rh.gs(R.string.loop)
         Sources.NSClient   -> rh.gs(R.string.ns)
         Sources.Pump       -> rh.gs(R.string.pump)
-        Sources.SMS        -> rh.gs(R.string.smb_shortname)
+        Sources.SMS        -> rh.gs(R.string.sms)
         Sources.Wear       -> rh.gs(R.string.wear)
         Sources.Unknown    -> rh.gs(R.string.unknown)
 

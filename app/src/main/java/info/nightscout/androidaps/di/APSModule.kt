@@ -9,6 +9,7 @@ import info.nightscout.androidaps.plugins.aps.openAPSSMB.DetermineBasalAdapterSM
 import info.nightscout.androidaps.plugins.aps.tsunami.DetermineBasalAdapterTAEJS
 import info.nightscout.androidaps.plugins.aps.tsunami.DetermineBasalResultTAE
 import info.nightscout.androidaps.plugins.aps.openAPSSMB.DetermineBasalResultSMB
+import info.nightscout.androidaps.plugins.aps.openAPSSMBDynamicISF.DetermineBasalAdapterSMBDynamicISFJS
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.IobCobOref1Thread
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.IobCobThread
 
@@ -23,6 +24,7 @@ abstract class APSModule {
     @ContributesAndroidInjector abstract fun determineBasalAdapterAMAJSInjector(): DetermineBasalAdapterAMAJS
     @ContributesAndroidInjector abstract fun determineBasalAdapterSMBJSInjector(): DetermineBasalAdapterSMBJS
     @ContributesAndroidInjector abstract fun determineBasalAdapterTAEJSInjector(): DetermineBasalAdapterTAEJS
+    @ContributesAndroidInjector abstract fun determineBasalAdapterSMBAutoISFJSInjector(): DetermineBasalAdapterSMBDynamicISFJS
     @ContributesAndroidInjector abstract fun iobCobThreadInjector(): IobCobThread
     @ContributesAndroidInjector abstract fun iobCobOref1ThreadInjector(): IobCobOref1Thread
 }

@@ -78,13 +78,14 @@ abstract class InsulinOrefBasePlugin(
             val bolusTime = bolus.timestamp
             val t = (time - bolusTime) / 1000.0 / 60.0
             // force the IOB to 0 if over DIA hours have passed
-            if (t < 8 * 60 && (insulinID == 6 || insulinID == 7)) { //MP: Fixed DIA cut-off of 8 h - the model automatically changes its DIA based on the bolus size, thus no user-set DIA is required.
+            if (t < 8 * 60 && (insulinID == 105 || insulinID == 205)) { //MP: Fixed DIA cut-off of 8 h - the model automatically changes its DIA based on the bolus size, thus no user-set DIA is
+                // required.
                 //MP Model for estimation of PD-based peak time: (a0 + a1*X)/(1+b1*X), where X = bolus size
                 val a0 = 61.33
                 val a1 = 12.27
                 val b1 = 0.05185
                 val tp: Double
-                if (insulinID == 6) { //MP ID = 6 for Lyumjev U200
+                if (insulinID == 205) { //MP ID = 205 for Lyumjev U200
                     tp = (a0 + a1 * 2 * bolus.amount)/(1 + b1 * 2 * bolus.amount)
                 } else {
                     tp = (a0 + a1 * bolus.amount) / (1 + b1 * bolus.amount)
