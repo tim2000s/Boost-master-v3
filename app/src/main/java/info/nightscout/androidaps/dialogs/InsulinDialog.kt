@@ -28,6 +28,8 @@ import info.nightscout.androidaps.queue.Callback
 import info.nightscout.androidaps.utils.*
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.extensions.toSignedString
+import info.nightscout.androidaps.utils.protection.ProtectionCheck
+import info.nightscout.androidaps.utils.protection.ProtectionCheck.Protection.BOLUS
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import info.nightscout.shared.SafeParse
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -52,6 +54,7 @@ class InsulinDialog : DialogFragmentWithDate() {
     @Inject lateinit var config: Config
     @Inject lateinit var bolusTimer: BolusTimer
     @Inject lateinit var uel: UserEntryLogger
+    @Inject lateinit var protectionCheck: ProtectionCheck
 
     companion object {
 
@@ -60,7 +63,12 @@ class InsulinDialog : DialogFragmentWithDate() {
         private const val PLUS3_DEFAULT = 2.0
     }
 
+    private var queryingProtection = false
     private val disposable = CompositeDisposable()
+    private var _binding: DialogInsulinBinding? = null
+
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
 
     private val textWatcher: TextWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {
@@ -70,12 +78,6 @@ class InsulinDialog : DialogFragmentWithDate() {
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
     }
-
-    private var _binding: DialogInsulinBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
 
     private fun validateInputs() {
         val maxInsulin = constraintChecker.getMaxBolusAllowed().value()
@@ -254,5 +256,21 @@ class InsulinDialog : DialogFragmentWithDate() {
                 OKDialog.show(activity, rh.gs(R.string.bolus), rh.gs(R.string.no_action_selected))
             }
         return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(!queryingProtection) {
+            queryingProtection = true
+            activity?.let { activity ->
+                val cancelFail = {
+                    queryingProtection = false
+                    aapsLogger.debug(LTag.APS, "Dialog canceled on resume protection: ${this.javaClass.name}")
+                    ToastUtils.showToastInUiThread(ctx, R.string.dialog_canceled)
+                    dismiss()
+                }
+                protectionCheck.queryProtection(activity, BOLUS, { queryingProtection = false }, cancelFail, cancelFail)
+            }
+        }
     }
 }
