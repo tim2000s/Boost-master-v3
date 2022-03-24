@@ -82,21 +82,33 @@
                 android:key="@string/key_bolus_pin"
                 android:title="@string/bolus_pin" />
 
-            <EditTextPreference
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="1"
+                android:digits="0123456789"
                 android:inputType="number"
                 android:key="@string/key_protection_timeout"
-                android:title="@string/protection_timeout_title"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:summary="@string/protection_timeout_summary"
-                app:defaultValue="0"
+                android:title="@string/protection_timeout_title"
                 validate:maxNumber="180"
-                validate:minNumber="0"
-                validate:testType="numeric" />
+                validate:minNumber="1"
+                validate:testType="numericRange" />
 
         </PreferenceCategory>
 
         <info.nightscout.androidaps.skins.SkinListPreference
             android:key="@string/key_skin"
             android:title="@string/skin" />
+
+        <!-- Temp hide options till light mode is completed
+        <ListPreference
+            android:defaultValue="dark"
+            android:entries="@array/darkMode"
+            android:entryValues="@array/darkModeValues"
+            android:key="@string/key_use_dark_mode"
+            android:summary="@string/theme_switcher_summary"
+            android:title="@string/app_color_scheme" /> -->
 
     </PreferenceCategory>
 

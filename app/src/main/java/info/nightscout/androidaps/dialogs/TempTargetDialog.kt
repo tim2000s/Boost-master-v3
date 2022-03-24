@@ -30,6 +30,7 @@ import info.nightscout.androidaps.utils.HtmlHelper
 import info.nightscout.androidaps.utils.ToastUtils
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.protection.ProtectionCheck
+import info.nightscout.androidaps.utils.protection.ProtectionCheck.Protection.BOLUS
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
@@ -51,12 +52,11 @@ class TempTargetDialog : DialogFragmentWithDate() {
 
     private lateinit var reasonList: List<String>
 
+    private var queryingProtection = false
     private val disposable = CompositeDisposable()
-
     private var _binding: DialogTemptargetBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
@@ -65,8 +65,7 @@ class TempTargetDialog : DialogFragmentWithDate() {
         savedInstanceState.putDouble("tempTarget", binding.temptarget.value)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         onCreateViewGeneral()
         _binding = DialogTemptargetBinding.inflate(inflater, container, false)
         return binding.root
@@ -105,8 +104,7 @@ class TempTargetDialog : DialogFragmentWithDate() {
                 rh.gs(R.string.activity),
                 rh.gs(R.string.hypo)
             )
-            val adapterReason = ArrayAdapter(context, R.layout.spinner_centered, reasonList)
-            binding.reason.adapter = adapterReason
+            binding.reasonList.setAdapter(ArrayAdapter(context, R.layout.spinner_centered, reasonList))
 
             binding.targetCancel.setOnClickListener { binding.duration.value = 0.0; shortClick(it) }
             binding.eatingSoon.setOnClickListener { shortClick(it) }
@@ -140,19 +138,19 @@ class TempTargetDialog : DialogFragmentWithDate() {
             R.id.eating_soon -> {
                 binding.temptarget.value = defaultValueHelper.determineEatingSoonTT()
                 binding.duration.value = defaultValueHelper.determineEatingSoonTTDuration().toDouble()
-                binding.reason.setSelection(reasonList.indexOf(rh.gs(R.string.eatingsoon)))
+                binding.reasonList.setText(rh.gs(R.string.eatingsoon), false)
             }
 
             R.id.activity    -> {
                 binding.temptarget.value = defaultValueHelper.determineActivityTT()
                 binding.duration.value = defaultValueHelper.determineActivityTTDuration().toDouble()
-                binding.reason.setSelection(reasonList.indexOf(rh.gs(R.string.activity)))
+                binding.reasonList.setText(rh.gs(R.string.activity), false)
             }
 
             R.id.hypo        -> {
                 binding.temptarget.value = defaultValueHelper.determineHypoTT()
                 binding.duration.value = defaultValueHelper.determineHypoTTDuration().toDouble()
-                binding.reason.setSelection(reasonList.indexOf(rh.gs(R.string.hypo)))
+                binding.reasonList.setText(rh.gs(R.string.hypo), false)
             }
         }
     }
@@ -166,7 +164,7 @@ class TempTargetDialog : DialogFragmentWithDate() {
     override fun submit(): Boolean {
         if (_binding == null) return false
         val actions: LinkedList<String> = LinkedList()
-        var reason = binding.reason.selectedItem?.toString() ?: return false
+        var reason = binding.reasonList.text.toString()
         val unitResId = if (profileFunction.getUnits() == GlucoseUnit.MGDL) R.string.mgdl else R.string.mmol
         val target = binding.temptarget.value
         val duration = binding.duration.value.toInt()
@@ -226,14 +224,17 @@ class TempTargetDialog : DialogFragmentWithDate() {
 
     override fun onResume() {
         super.onResume()
-        activity?.let { activity ->
-            val cancelFail = {
-                aapsLogger.debug(LTag.APS, "Dialog canceled on resume protection: ${this.javaClass.name}")
-                ToastUtils.showToastInUiThread(ctx, R.string.dialog_cancled)
-                dismiss()
+        if(!queryingProtection) {
+            queryingProtection = true
+            activity?.let { activity ->
+                val cancelFail = {
+                    queryingProtection = false
+                    aapsLogger.debug(LTag.APS, "Dialog canceled on resume protection: ${this.javaClass.name}")
+                    ToastUtils.showToastInUiThread(ctx, R.string.dialog_canceled)
+                    dismiss()
+                }
+                protectionCheck.queryProtection(activity, BOLUS, { queryingProtection = false }, cancelFail, cancelFail)
             }
-
-            protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, {}, cancelFail, fail = cancelFail)
         }
     }
 }
