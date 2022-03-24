@@ -237,8 +237,10 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
 //**********************************************************************************************************************************************
         this.profile.put("tsuSMBCap", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_smbcap, "1")))
         this.profile.put("tsuInsReqPCT", SafeParse.stringToDouble(sp.getString(R.string.key_insulinReqPCT, "65")))
-        this.profile.put("tsuStart", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_start, "11.0")))
-        this.profile.put("tsuEnd", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_end, "23.0")))
+        this.profile.put("tsuStart", 0)
+        this.profile.put("tsuEnd", 23)
+        //this.profile.put("tsuStart", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_start, "11.0")))
+        //this.profile.put("tsuEnd", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_end, "23.0")))
         this.profile.put("percentage", profile.percentage)
         this.profile.put("dia", profile.dia)
 

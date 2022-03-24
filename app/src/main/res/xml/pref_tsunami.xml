@@ -57,6 +57,7 @@
                 validate:floatmaxNumber="100"
                 validate:floatminNumber="50"
                 validate:testType="floatNumericRange" />
+<!--
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="11"
                 android:dialogMessage="@string/tsunami_start_summary"
@@ -83,6 +84,7 @@
                 validate:floatmaxNumber="23"
                 validate:floatminNumber="0"
                 validate:testType="floatNumericRange" />
+-->
             <!--
             <SwitchPreference
                 android:defaultValue="true"
