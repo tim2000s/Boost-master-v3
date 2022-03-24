@@ -300,7 +300,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var act_targetDelta = 0;
         var act_missing = 0;
         var deltaScore = 0;
-        var bgscore = 0;
+        var bgScore = 0;
         var pure_delta = 0;
         var tsunami_insreq = 0;
         var SMBcap = 0;
@@ -441,10 +441,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     //MP deltaScore and BG score
     insulinReqPCT = round(insulinReqPCT * deltaScore, 3); //MP Modify insulinReqPCT in dependence of previous delta values
-    var bgscore_upper_threshold = 140; //MP BG above which no penalty will be given
-    var bgscore_lower_threshold = 80; //MP BG below which tae will not deliver SMBs
-    var bgscore = round(Math.min((tae_bg - bgscore_lower_threshold) / (bgscore_upper_threshold - bgscore_lower_threshold), 1), 3); //MP Penalty at low or near-target bg values. Modifies SMBcap.
-    SMBcap = round(SMBcap * bgscore, 2);
+    var bgScore_upper_threshold = 140; //MP BG above which no penalty will be given
+    var bgScore_lower_threshold = 80; //MP BG below which tae will not deliver SMBs
+    var bgScore = round(Math.min((tae_bg - bgScore_lower_threshold) / (bgScore_upper_threshold - bgScore_lower_threshold), 1), 3); //MP Penalty at low or near-target bg values. Modifies SMBcap.
+    SMBcap = round(SMBcap * bgScore, 2);
 
     //MP Enable TAE SMB sizing if the safety conditions are all met
     if (referenceTimer >= startTime &&
@@ -479,7 +479,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("used bg: " + tae_bg);
         console.log("-------------");
         console.log("deltaScore_live: " + round(deltaScore, 3));
-        console.log("bgscore_live: " + bgscore);
+        console.log("bgScore_live: " + bgScore);
         console.log("insulinReqPCT_live: " + insulinReqPCT);
         console.log("SMBcap_live: " + SMBcap);
         console.log("tsunami_insreq: " + tsunami_insreq);
@@ -1482,7 +1482,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason += "; used bg: " + tae_bg;
                 rT.reason += "; ###";
                 rT.reason += " deltaScore_live: " + round(deltaScore, 3);
-                rT.reason += "; bgscore_live: " + bgscore;
+                rT.reason += "; bgScore_live: " + bgScore;
                 rT.reason += "; insulinReqPCT_live: " + insulinReqPCT;
                 rT.reason += "; SMBcap_live: " + SMBcap;
                 rT.reason += "; tsunami_insreq: " + tsunami_insreq;
@@ -1500,7 +1500,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason += " ##TSUNAMI STATUS END##";
                 /* Shorter Tsunami rT
                 rT.reason += " deltaScore: " + round(deltaScore, 3);
-                rT.reason += "; bgscore: " + bgscore;
+                rT.reason += "; bgScore: " + bgScore;
                 rT.reason += "; insulinReqPCT_live: " + round(profile.insulinReqPCT * deltaScore, 3);
                 rT.reason += "; SMBcap_live: " + SMBcap;
                 rT.reason += "; tsunami_insreq: " + tsunami_insreq;
