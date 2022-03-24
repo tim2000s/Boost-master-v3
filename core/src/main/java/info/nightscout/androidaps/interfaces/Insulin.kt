@@ -15,8 +15,8 @@ interface Insulin : ConfigExportImport {
         OREF_ULTRA_RAPID_ACTING(3),
         OREF_FREE_PEAK(4),
         OREF_LYUMJEV(5),
-        OREF_LYUMJEV_U100_PD(6),
-        OREF_LYUMJEV_U200_PD(7);
+        OREF_LYUMJEV_U100_PD(105),
+        OREF_LYUMJEV_U200_PD(205);
         companion object {
 
             private val map = values().associateBy(InsulinType::value)
