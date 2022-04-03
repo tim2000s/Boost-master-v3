@@ -1,6 +1,7 @@
 package info.nightscout.androidaps.plugins.general.overview
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.DashPathEffect
 import android.graphics.Paint
 import androidx.annotation.ColorInt
@@ -572,7 +573,6 @@ class OverviewData @Inject constructor(
         tsunamiSeries = LineGraphSeries(Array(tsunamiArray.size) { i -> tsunamiArray[i] }).also {
             it.isDrawBackground = true
             it.backgroundColor = Color.argb(65, 0, 211, 141)
-            //it.backgroundColor = rh.gc(R.color.ribbonWarning)
             it.thickness = 0
         }
     }

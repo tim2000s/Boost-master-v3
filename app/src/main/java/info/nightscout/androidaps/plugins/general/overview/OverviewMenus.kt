@@ -46,7 +46,7 @@ class OverviewMenus @Inject constructor(
         BGI(R.string.overview_show_bgi, R.attr.bgiColor, primary = false, secondary = true,shortnameId = R.string.bgi_shortname),
         SEN(R.string.overview_show_sensitivity, R.attr.ratioColor, primary = false, secondary = true,shortnameId = R.string.sensitivity_shortname),
         ACT(R.string.overview_show_activity, R.attr.activityColor, primary = true, secondary = false,shortnameId = R.string.activity_shortname),
-        TSU(R.string.overview_show_tsunami, R.attr.tsunami, primary = true, secondary = false, shortnameId = R.string.tsunami_shortname),
+        TSU(R.string.overview_show_tsunami, R.attr.tsunamiColor, primary = true, secondary = false, shortnameId = R.string.tsunami_shortname),
         DEVSLOPE(R.string.overview_show_deviationslope, R.attr.devslopeposColor, primary = false, secondary = true,shortnameId = R.string.devslope_shortname)
     }
 

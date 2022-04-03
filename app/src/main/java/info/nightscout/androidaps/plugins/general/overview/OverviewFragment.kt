@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -984,12 +985,12 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                 binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.ribbonWarningColor))
                 binding.buttonsLayout.tsunamiButton.text = dateUtil.untilString(tsunamiMode.end, rh)
             } else {
-                binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.colorTsunamiButton))
+                binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.tsunamiButtonColor))
                 binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.ribbonDefaultColor))
                 binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
             }
         } else {
-            binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.colorTsunamiButton))
+            binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.tsunamiButtonColor))
             binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.ribbonDefaultColor))
             binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
         }
