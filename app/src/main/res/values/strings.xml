@@ -474,6 +474,7 @@
     <string name="bgi_shortname">-BGI</string>
     <string name="abs_insulin_shortname">ABS</string>
     <string name="devslope_shortname">DEVSLOPE</string>
+    <string name="tsunami_shortname">TSU</string>
     <string name="nav_about">About</string>
     <string name="smscommunicator_missingsmspermission">Missing SMS permission</string>
     <string name="smscommunicator_missingphonestatepermission">Missing phone state permission</string>
@@ -754,6 +755,7 @@
     <string name="overview_show_cob">Carbs On Board</string>
     <string name="overview_show_iob">Insulin On Board</string>
     <string name="overview_show_basals">Basals</string>
+    <string name="overview_show_tsunami">Tsunami</string>
     <string name="no_action_selected">No action selected, nothing will happen</string>
     <string name="start_hypo_tt">Start Hypo TT</string>
     <string name="closed_loop_disabled_on_dev_branch">Running dev version. Closed loop is disabled.</string>
@@ -1259,6 +1261,8 @@
     <string name="wear_unknown_action_string">Unknown action command:</string>
     <string name="overview_editquickwizard_percentage">Percentage</string>
     <string name="app_default">Application default</string>
+    <string name="show_invalidated_records">Show invalidated / removed records</string>
+    <string name="hide_invalidated_records">Hide invalidated / removed records</string>
     <string name="select_profile">Select profile to edit</string>
     <string name="refresh_from_nightscout">Refresh from Nightscout</string>
     <string name="remove_selected_items">Remove selected items</string>
@@ -1275,4 +1279,7 @@
     <string name="below" comment="below &quot;in range&quot;">Below</string>
     <string name="in_range">In range</string>
     <string name="above" comment="above &quot;in range&quot;">Above</string>
+    <string name="show_loop_records">Show loop records</string>
+    <string name="show_hide_records">Hide loop records</string>
+    <string name="widget_description">AndroidAPS widget</string>
 </resources>
