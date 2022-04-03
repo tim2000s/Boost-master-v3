@@ -2,6 +2,7 @@ package info.nightscout.androidaps.activities
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -33,6 +34,7 @@ import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventIobCa
 import info.nightscout.androidaps.plugins.sensitivity.SensitivityAAPSPlugin
 import info.nightscout.androidaps.plugins.sensitivity.SensitivityOref1Plugin
 import info.nightscout.androidaps.plugins.sensitivity.SensitivityWeightedAveragePlugin
+import info.nightscout.androidaps.receivers.DataWorker
 import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.DefaultValueHelper
 import info.nightscout.androidaps.utils.FabricPrivacy
@@ -52,7 +54,6 @@ class HistoryBrowseActivity : NoSplashAppCompatActivity() {
 
     @Inject lateinit var injector: HasAndroidInjector
     @Inject lateinit var aapsSchedulers: AapsSchedulers
-    @Inject lateinit var rxBus: RxBus
     @Inject lateinit var sp: SP
     @Inject lateinit var profileFunction: ProfileFunction
     @Inject lateinit var defaultValueHelper: DefaultValueHelper
@@ -69,6 +70,8 @@ class HistoryBrowseActivity : NoSplashAppCompatActivity() {
     @Inject lateinit var loop: Loop
     @Inject lateinit var nsDeviceStatus: NSDeviceStatus
     @Inject lateinit var translator: Translator
+    @Inject lateinit var context: Context
+    @Inject lateinit var dataWorker: DataWorker
 
     private val disposable = CompositeDisposable()
 
@@ -106,7 +109,9 @@ class HistoryBrowseActivity : NoSplashAppCompatActivity() {
                 sensitivityWeightedAveragePlugin,
                 fabricPrivacy,
                 dateUtil,
-                repository
+                repository,
+                context,
+                dataWorker
             )
         overviewData =
             OverviewData(
@@ -196,11 +201,11 @@ class HistoryBrowseActivity : NoSplashAppCompatActivity() {
 
 
         axisWidth = if (dm.densityDpi <= 120) 3 else if (dm.densityDpi <= 160) 10 else if (dm.densityDpi <= 320) 35 else if (dm.densityDpi <= 420) 50 else if (dm.densityDpi <= 560) 70 else 80
-        binding.bgGraph.gridLabelRenderer?.gridColor = rh.gc(R.color.graphgrid)
+        binding.bgGraph.gridLabelRenderer?.gridColor = rh.gac(this,  R.attr.graphgrid)
         binding.bgGraph.gridLabelRenderer?.reloadStyles()
         binding.bgGraph.gridLabelRenderer?.labelVerticalWidth = axisWidth
 
-        overviewMenus.setupChartMenu(binding.chartMenuButton)
+        overviewMenus.setupChartMenu(context, binding.chartMenuButton)
         prepareGraphsIfNeeded(overviewMenus.setting.size)
         savedInstanceState?.let { bundle ->
             rangeToDisplay = bundle.getInt("rangeToDisplay", 0)
@@ -236,7 +241,7 @@ class HistoryBrowseActivity : NoSplashAppCompatActivity() {
             .observeOn(aapsSchedulers.main)
             .subscribe({
                            if (it.cause is EventCustomCalculationFinished)
-                               binding.overviewIobcalculationprogess.text = it.progress
+                               binding.overviewIobcalculationprogess.text = it.progressPct.toString() + "%"
                        }, fabricPrivacy::logException)
         disposable += rxBus
             .toObservable(EventRefreshOverview::class.java)
@@ -280,12 +285,12 @@ class HistoryBrowseActivity : NoSplashAppCompatActivity() {
 
                 val graph = GraphView(this)
                 graph.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, rh.dpToPx(100)).also { it.setMargins(0, rh.dpToPx(15), 0, rh.dpToPx(10)) }
-                graph.gridLabelRenderer?.gridColor = rh.gc(R.color.graphgrid)
+                graph.gridLabelRenderer?.gridColor = rh.gac( R.attr.graphgrid)
                 graph.gridLabelRenderer?.reloadStyles()
                 graph.gridLabelRenderer?.isHorizontalLabelsVisible = false
                 graph.gridLabelRenderer?.labelVerticalWidth = axisWidth
                 graph.gridLabelRenderer?.numVerticalLabels = 3
-                graph.viewport.backgroundColor = Color.argb(20, 255, 255, 255) // 8% of gray
+                graph.viewport.backgroundColor =rh.gac(this , R.attr.viewPortbackgroundColor)
                 relativeLayout.addView(graph)
 
                 val label = TextView(this)
@@ -336,11 +341,7 @@ class HistoryBrowseActivity : NoSplashAppCompatActivity() {
     }
 
     private fun runCalculation(from: String) {
-        Thread {
-            iobCobCalculator.stopCalculation(from)
-            iobCobCalculator.stopCalculationTrigger = false
-            iobCobCalculator.runCalculation(from, overviewData.toTime, bgDataReload = true, limitDataToOldestAvailable = false, cause = EventCustomCalculationFinished())
-        }.start()
+        iobCobCalculator.runCalculation(from, overviewData.toTime, bgDataReload = true, limitDataToOldestAvailable = false, cause = EventCustomCalculationFinished())
     }
 
     @Volatile
