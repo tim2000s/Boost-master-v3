@@ -233,6 +233,7 @@
         <item name="bgiColor">@color/bgi</item>
         <item name="ratioColor">@color/ratio</item>
         <item name="activityColor">@color/activity</item>
+        <item name="tsunamiColor">@color/tsunami</item>
     </style>
 
     <style name="Theme.MaterialComponents.DayNight.DarkActionBar" parent="Theme.MaterialComponents.DayNight.Bridge"/>
