@@ -6,7 +6,6 @@ import info.nightscout.androidaps.events.*
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.plugins.bus.RxBus
-import info.nightscout.androidaps.plugins.general.overview.events.EventUpdateOverviewTsunamiButton
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventNewHistoryData
 import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject

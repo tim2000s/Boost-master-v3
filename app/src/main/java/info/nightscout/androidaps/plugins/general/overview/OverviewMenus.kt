@@ -13,6 +13,7 @@ import info.nightscout.androidaps.R
 import info.nightscout.androidaps.events.EventRefreshOverview
 import info.nightscout.androidaps.interfaces.Config
 import info.nightscout.androidaps.interfaces.Loop
+import info.nightscout.androidaps.plugins.aps.tsunami.TsunamiPlugin
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.utils.buildHelper.BuildHelper
@@ -29,9 +30,9 @@ class OverviewMenus @Inject constructor(
     private val rxBus: RxBus,
     private val buildHelper: BuildHelper,
     private val loop: Loop,
-    private val config: Config
+    private val config: Config,
+    private val tsunamiPlugin: TsunamiPlugin
 ) {
-
     enum class CharType(@StringRes val nameId: Int, @ColorRes val colorId: Int, val primary: Boolean, val secondary: Boolean, @StringRes val shortnameId: Int) {
         PRE(R.string.overview_show_predictions, R.color.prediction, primary = true, secondary = false, shortnameId = R.string.prediction_shortname),
         BAS(R.string.overview_show_basals, R.color.basal, primary = true, secondary = false, shortnameId = R.string.basal_shortname),
@@ -42,6 +43,7 @@ class OverviewMenus @Inject constructor(
         BGI(R.string.overview_show_bgi, R.color.bgi, primary = false, secondary = true, shortnameId = R.string.bgi_shortname),
         SEN(R.string.overview_show_sensitivity, R.color.ratio, primary = false, secondary = true, shortnameId = R.string.sensitivity_shortname),
         ACT(R.string.overview_show_activity, R.color.activity, primary = true, secondary = false, shortnameId = R.string.activity_shortname),
+        TSU(R.string.overview_show_tsunami, R.color.tsunami, primary = true, secondary = false, shortnameId = R.string.tsunami_shortname),
         DEVSLOPE(R.string.overview_show_deviationslope, R.color.devslopepos, primary = false, secondary = true, shortnameId = R.string.devslope_shortname)
     }
 
@@ -89,6 +91,7 @@ class OverviewMenus @Inject constructor(
     fun setupChartMenu(chartButton: ImageButton) {
         val settingsCopy = setting
         val numOfGraphs = settingsCopy.size // 1 main + x secondary
+        val tsunamiIsActiveAPS = tsunamiPlugin.isEnabled()
 
         chartButton.setOnClickListener { v: View ->
             val predictionsAvailable: Boolean = when {
@@ -112,6 +115,7 @@ class OverviewMenus @Inject constructor(
                     var insert = true
                     if (m == CharType.PRE) insert = predictionsAvailable
                     if (m == CharType.DEVSLOPE) insert = buildHelper.isDev()
+                    if (m == CharType.TSU) insert = tsunamiIsActiveAPS
                     if (used.contains(m.ordinal)) insert = false
                     for (g2 in g + 1 until numOfGraphs) {
                         if (settingsCopy[g2][m.ordinal]) insert = false

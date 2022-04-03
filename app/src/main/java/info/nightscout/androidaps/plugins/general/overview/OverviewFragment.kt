@@ -369,7 +369,10 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                     activity,
                     ProtectionCheck.Protection.BOLUS,
                     UIRunnable { if (isAdded) InsulinDialog().show(childFragmentManager, "Overview") })
-                R.id.tsunami_button -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if(isAdded) TsunamiDialog().show(childFragmentManager, "Overview") })
+                R.id.tsunami_button      -> protectionCheck.queryProtection(
+                    activity,
+                    ProtectionCheck.Protection.BOLUS,
+                    UIRunnable { if(isAdded) TsunamiDialog().show(childFragmentManager, "Overview") })
                 R.id.quick_wizard_button -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if (isAdded) onClickQuickWizard() })
                 R.id.carbs_button        -> protectionCheck.queryProtection(
                     activity,
@@ -968,42 +971,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     @SuppressLint("SetTextI18n")
     @Suppress("UNUSED_PARAMETER")
     fun updateTsunamiButton(from: String) {
-        //if (overviewData.tsunami?.isInProgress(dateUtil) == false) overviewData.tsunami = null
         val tsunamiMode = overviewData.tsunami
-        //val tsunamiMode = repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet()
-/*
-        val extendedBoluses = repository.getExtendedBolusDataFromTimeToTime(toTime - range(), toTime, true).blockingGet()
-        for (pos in extendedBoluses.indices) {
-            val e = extendedBoluses[pos]
-            if (e.timestamp > toTime) continue
-            if (e.end > now) {
-                val newDuration = now - e.timestamp
-*/
-        /*
-        val durationTotal: Long
-        val durationHours: Long
-        val durationMinutes: Long
-        var tsunamiModeID: Int? = 1
-        var durationText: String = ""
-         */
-        /*
-        * ID codes
-        * 0 = inactive (openAPS SMB mode)
-        * 1 = weak Tsunami mode
-        * 2 = Tsu++ mode
-         */
-
-        /*if (tsunamiMode is ValueWrapper.Existing && tsunamiMode != null) {
-            tsunamiModeID = tsunamiMode.value.tsunamiMode
-            durationTotal = (tsunamiMode.value.duration + tsunamiMode.value.timestamp - dateUtil.now()).coerceAtLeast(0) / 1000 / 60 //MP remaining duration in min
-            durationHours = durationTotal / 60
-            durationMinutes = durationTotal % 60
-            if (durationHours > 0) {
-                durationText += "$durationHours h "
-            }
-            durationText += "$durationMinutes min"
-        }*/
-        //if (tsunamiModeID == 2) {
         if (tsunamiMode != null) {
             val remaining = tsunamiMode.duration + tsunamiMode.timestamp - dateUtil.now()
             if (tsunamiMode.tsunamiMode == 2 && remaining > 0) {
@@ -1028,6 +996,9 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         val pump = activePlugin.activePump
         val graphData = GraphData(injector, binding.graphsLayout.bgGraph, overviewData)
         val menuChartSettings = overviewMenus.setting
+        //MP graph test
+        if (menuChartSettings[0][OverviewMenus.CharType.TSU.ordinal])
+            graphData.addTsunamiArea()
         graphData.addInRangeArea(overviewData.fromTime, overviewData.endTime, defaultValueHelper.determineLowLine(), defaultValueHelper.determineHighLine())
         graphData.addBgReadings(menuChartSettings[0][OverviewMenus.CharType.PRE.ordinal])
         if (buildHelper.isDev()) graphData.addBucketedData()

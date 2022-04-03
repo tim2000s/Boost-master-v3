@@ -105,7 +105,11 @@ class OverviewPlugin @Inject constructor(
         disposable += rxBus
             .toObservable(EventTsunamiModeChange::class.java)
             .observeOn(aapsSchedulers.io)
-            .subscribe({ loadTsunamiData("EventTsunamiModeChange") }, fabricPrivacy::logException)
+            .subscribe({ loadTsunamiData("EventTsunamiModeChange")
+                //MP graph test
+                    overviewData.prepareTsunamiData("EventTsunamiModeChange")
+                    overviewBus.send(EventUpdateOverviewGraph("EventTreatmentChange"))
+                       }, fabricPrivacy::logException)
         disposable += rxBus
             .toObservable(EventTempTargetChange::class.java)
             .observeOn(aapsSchedulers.io)
@@ -261,13 +265,15 @@ class OverviewPlugin @Inject constructor(
         overviewBus.send(EventUpdateOverviewTemporaryBasal(from))
         overviewBus.send(EventUpdateOverviewExtendedBolus(from))
         overviewBus.send(EventUpdateOverviewTemporaryTarget(from))
-        overviewBus.send(EventUpdateOverviewTsunamiButton(from))
         loadAsData(from)
         overviewData.preparePredictions(from)
         overviewData.prepareBasalData(from)
         overviewData.prepareTemporaryTargetData(from)
+        //MP graph test
+        overviewData.prepareTsunamiData(from)
         overviewData.prepareTreatmentsData(from)
         overviewData.prepareIobAutosensData(from)
+        overviewBus.send(EventUpdateOverviewTsunamiButton(from))
         overviewBus.send(EventUpdateOverviewGraph(from))
         overviewBus.send(EventUpdateOverviewIobCob(from))
         aapsLogger.debug(LTag.UI, "refreshLoop finished")
@@ -284,6 +290,8 @@ class OverviewPlugin @Inject constructor(
         loadAsData(from)
         overviewData.prepareBasalData(from)
         overviewData.prepareTemporaryTargetData(from)
+        //MP graph test
+        overviewData.prepareTsunamiData(from)
         overviewData.prepareTreatmentsData(from)
 //        prepareIobAutosensData(from)
 //        preparePredictions(from)

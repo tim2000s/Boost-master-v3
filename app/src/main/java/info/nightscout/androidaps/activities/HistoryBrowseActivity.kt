@@ -124,7 +124,7 @@ class HistoryBrowseActivity : NoSplashAppCompatActivity() {
                 repository,
                 overviewMenus,
                 iobCobCalculator,
-                translator
+                translator,
             )
 
         binding.left.setOnClickListener {
@@ -311,6 +311,9 @@ class HistoryBrowseActivity : NoSplashAppCompatActivity() {
             rxBus.send(EventRefreshOverview("loadAll_$from"))
             overviewData.prepareTemporaryTargetData(from)
             rxBus.send(EventRefreshOverview("loadAll_$from"))
+            //MP graph test
+            overviewData.prepareTsunamiData(from)
+            rxBus.send(EventRefreshOverview("loadAll_$from"))
             overviewData.prepareBasalData(from)
             rxBus.send(EventRefreshOverview(from))
             aapsLogger.debug(LTag.UI, "loadAll $from finished")
@@ -371,6 +374,8 @@ class HistoryBrowseActivity : NoSplashAppCompatActivity() {
         val graphData = GraphData(injector, binding.bgGraph, overviewData)
         val menuChartSettings = overviewMenus.setting
         graphData.addInRangeArea(overviewData.fromTime, overviewData.endTime, defaultValueHelper.determineLowLine(), defaultValueHelper.determineHighLine())
+        if (menuChartSettings[0][OverviewMenus.CharType.TSU.ordinal])
+            graphData.addTsunamiArea()
         graphData.addBgReadings(menuChartSettings[0][OverviewMenus.CharType.PRE.ordinal])
         if (buildHelper.isDev()) graphData.addBucketedData()
         graphData.addTreatments()
