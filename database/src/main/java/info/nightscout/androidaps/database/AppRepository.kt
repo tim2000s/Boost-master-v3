@@ -872,6 +872,10 @@ import kotlin.math.roundToInt
         database.tsunamiDao.getTsunamiModeActiveAt(timestamp)
             .subscribeOn(Schedulers.io())
             .toWrappedSingle()
+//MP graph test
+    fun getTsunamiDataFromTime(timestamp: Long): Single<List<Tsunami>> =
+        database.tsunamiDao.getTsunamiDataFromTime(timestamp)
+            .subscribeOn(Schedulers.io())
 
 }
 

@@ -69,6 +69,19 @@ class GraphData(
             it.backgroundColor = rh.gac(graph.context,R.attr.inrangeBackground)
         })
     }
+    //MP graph test
+    fun addTsunamiArea(/* fromTime: Long, toTime: Long, startLine: Double, endLine: Double */) {
+        /*
+        val tsunamiAreaDataPoints = arrayOf(
+            DoubleDataPoint(fromTime.toDouble(), startLine, endLine),
+            DoubleDataPoint(toTime.toDouble(), startLine, endLine)
+        )
+         */
+        //overviewData.prepareTsunamiData(overviewData.fromTime.toString())
+        //val scale = defaultValueHelper.determineLowLine() / maxY / 1.2
+        addSeries(overviewData.tsunamiSeries)
+        //overviewData.basalScale.multiplier = maxY * scale / overviewData.maxBasalValueFound
+    }
 
     fun addBasals() {
         val scale = defaultValueHelper.determineLowLine() / maxY / 1.2

@@ -205,4 +205,5 @@
     <attr name="bgiColor" format="reference|color" />
     <attr name="ratioColor" format="reference|color" />
     <attr name="activityColor" format="reference|color" />
+    <attr name="tsunamiColor" format="reference|color" />
 </resources>

@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -48,6 +49,7 @@ import info.nightscout.androidaps.extensions.valueToUnitsString
 import info.nightscout.androidaps.interfaces.*
 import info.nightscout.androidaps.logging.UserEntryLogger
 import info.nightscout.androidaps.plugins.aps.loop.events.EventNewOpenLoopNotification
+import info.nightscout.androidaps.plugins.aps.tsunami.TsunamiPlugin
 import info.nightscout.androidaps.plugins.aps.openAPSSMB.DetermineBasalResultSMB
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker
@@ -125,6 +127,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     @Inject lateinit var overviewPlugin: OverviewPlugin
     @Inject lateinit var automationPlugin: AutomationPlugin
     @Inject lateinit var bgQualityCheckPlugin: BgQualityCheckPlugin
+    @Inject lateinit var tsunamiPlugin: TsunamiPlugin
 
     private val disposable = CompositeDisposable()
 
@@ -209,6 +212,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         binding.buttonsLayout.calibrationButton.setOnClickListener(this)
         binding.buttonsLayout.cgmButton.setOnClickListener(this)
         binding.buttonsLayout.insulinButton.setOnClickListener(this)
+        binding.buttonsLayout.tsunamiButton.setOnClickListener(this)
         binding.buttonsLayout.carbsButton.setOnClickListener(this)
         binding.buttonsLayout.quickWizardButton.setOnClickListener(this)
         binding.buttonsLayout.quickWizardButton.setOnLongClickListener(this)
@@ -256,6 +260,11 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             .debounce(1L, TimeUnit.SECONDS)
             .observeOn(aapsSchedulers.main)
             .subscribe({ updateTemporaryTarget(it.from) }, fabricPrivacy::logException)
+        disposable += activePlugin.activeOverview.overviewBus
+            .toObservable(EventUpdateOverviewTsunamiButton::class.java)
+            .debounce(1L, TimeUnit.SECONDS)
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ updateTsunamiButton(it.from) }, fabricPrivacy::logException)
         disposable += activePlugin.activeOverview.overviewBus
             .toObservable(EventUpdateOverviewBg::class.java)
             .debounce(1L, TimeUnit.SECONDS)
@@ -328,6 +337,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         updateTemporaryBasal("onResume")
         updateExtendedBolus("onResume")
         updateTemporaryTarget("onResume")
+        updateTsunamiButton("onResume")
         updateBg("onResume")
         updateIobCob("onResume")
         updateSensitivity("onResume")
@@ -360,6 +370,10 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                     activity,
                     ProtectionCheck.Protection.BOLUS,
                     UIRunnable { if (isAdded) InsulinDialog().show(childFragmentManager, "Overview") })
+                R.id.tsunami_button      -> protectionCheck.queryProtection(
+                    activity,
+                    ProtectionCheck.Protection.BOLUS,
+                    UIRunnable { if(isAdded) TsunamiDialog().show(childFragmentManager, "Overview") })
                 R.id.quick_wizard_button -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if (isAdded) onClickQuickWizard() })
                 R.id.carbs_button        -> protectionCheck.queryProtection(
                     activity,
@@ -554,7 +568,9 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             && sp.getBoolean(R.string.key_show_wizard_button, true)).toVisibility()
         binding.buttonsLayout.insulinButton.visibility = (!loop.isDisconnected && pump.isInitialized() && !pump.isSuspended() && profile != null
             && sp.getBoolean(R.string.key_show_insulin_button, true)).toVisibility()
-
+        //MP Tsunami button
+        val tsunamiIsActiveAPS = tsunamiPlugin.isEnabled()
+        binding.buttonsLayout.tsunamiButton.visibility = (tsunamiIsActiveAPS && !loop.isDisconnected && pump.isInitialized() && !pump.isSuspended() && profile != null && sp.getBoolean(R.string.key_show_tsunami_button, true)).toVisibility()
         // **** Calibration & CGM buttons ****
         val xDripIsBgSource = xdripPlugin.isEnabled()
         val dexcomIsSource = dexcomPlugin.isEnabled()
@@ -957,11 +973,38 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         }
     }
 
+
+    @SuppressLint("SetTextI18n")
+    @Suppress("UNUSED_PARAMETER")
+    fun updateTsunamiButton(from: String) {
+        val tsunamiMode = overviewData.tsunami
+        if (tsunamiMode != null) {
+            val remaining = tsunamiMode.duration + tsunamiMode.timestamp - dateUtil.now()
+            if (tsunamiMode.tsunamiMode == 2 && remaining > 0) {
+                binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.ribbonTextWarningColor))
+                binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.ribbonWarningColor))
+                binding.buttonsLayout.tsunamiButton.text = dateUtil.untilString(tsunamiMode.end, rh)
+            } else {
+                binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.tsunamiButtonColor))
+                binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.ribbonDefaultColor))
+                binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
+            }
+        } else {
+            binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.tsunamiButtonColor))
+            binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.ribbonDefaultColor))
+            binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
+        }
+    }
+
+
     @Suppress("UNUSED_PARAMETER")
     fun updateGraph(from: String) {
         val pump = activePlugin.activePump
         val graphData = GraphData(injector, binding.graphsLayout.bgGraph, overviewData)
         val menuChartSettings = overviewMenus.setting
+        //MP graph test
+        if (menuChartSettings[0][OverviewMenus.CharType.TSU.ordinal])
+            graphData.addTsunamiArea()
         graphData.addInRangeArea(overviewData.fromTime, overviewData.endTime, defaultValueHelper.determineLowLine(), defaultValueHelper.determineHighLine())
         graphData.addBgReadings(menuChartSettings[0][OverviewMenus.CharType.PRE.ordinal])
         if (buildHelper.isDev()) graphData.addBucketedData()

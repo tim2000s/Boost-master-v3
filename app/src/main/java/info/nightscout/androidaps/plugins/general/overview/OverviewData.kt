@@ -1,6 +1,7 @@
 package info.nightscout.androidaps.plugins.general.overview
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.DashPathEffect
 import android.graphics.Paint
 import androidx.annotation.ColorInt
@@ -279,6 +280,9 @@ class OverviewData @Inject constructor(
     var absoluteBasalGraphSeries: LineGraphSeries<ScaledDataPoint> = LineGraphSeries()
 
     var temporaryTargetSeries: LineGraphSeries<DataPoint> = LineGraphSeries()
+//MP graph test
+    var tsunamiSeries: LineGraphSeries<DataPoint> = LineGraphSeries()
+
 
     var maxIAValue = 0.0
     val actScale = Scale()
@@ -535,6 +539,43 @@ class OverviewData @Inject constructor(
 //        profiler.log(LTag.UI, "prepareTemporaryTargetData() $from", start)
     }
 
+    //MP graph test
+    @Suppress("UNUSED_PARAMETER")
+    @Synchronized
+    fun prepareTsunamiData(from: String) {
+        val tsunamiArray: MutableList<DataPoint> = java.util.ArrayList()
+        var lastTsunami = -1.0
+        var time = fromTime
+        maxBgValue = Double.MIN_VALUE
+        maxBgValue = Profile.fromMgdlToUnits(maxBgValue, profileFunction.getUnits())
+        if (defaultValueHelper.determineHighLine() > maxBgValue) maxBgValue = defaultValueHelper.determineHighLine()
+        maxBgValue = addUpperChartMargin(maxBgValue)
+        while (time < toTime) {
+            val tsuEnabled = repository.getTsunamiModeActiveAt(time).blockingGet()
+            val currentTsunami: Double = if (tsuEnabled is ValueWrapper.Existing) {
+            maxBgValue
+            } else {
+                0.0
+            }
+            if (currentTsunami != lastTsunami) {
+                if (lastTsunami != -1.0) tsunamiArray.add(DataPoint(time.toDouble()/*/(1000*60*60)*/, lastTsunami))
+                tsunamiArray.add(DataPoint(time.toDouble()/*/(1000*60*60)*/, currentTsunami))
+            }
+            lastTsunami = currentTsunami
+            time += 60 * 1000L
+        }
+        // final points
+        val tsuEnabled = repository.getTsunamiModeActiveAt(System.currentTimeMillis()).blockingGet()
+        if (tsuEnabled is ValueWrapper.Existing) {
+            tsunamiArray.add(DataPoint((tsuEnabled.value.timestamp + tsuEnabled.value.duration).toDouble(), maxBgValue))
+            tsunamiArray.add(DataPoint((tsuEnabled.value.timestamp + tsuEnabled.value.duration).toDouble(), 0.0))
+        }
+        tsunamiSeries = LineGraphSeries(Array(tsunamiArray.size) { i -> tsunamiArray[i] }).also {
+            it.isDrawBackground = true
+            it.backgroundColor = Color.argb(65, 0, 211, 141)
+            it.thickness = 0
+        }
+    }
     @Suppress("UNUSED_PARAMETER")
     @Synchronized
     fun prepareTreatmentsData(from: String) {
@@ -641,7 +682,7 @@ class OverviewData @Inject constructor(
 
         val adsData = iobCobCalculator.ads.clone()
 
-        while (time <= endTime) {
+        while (time <= toTime) {
             val profile = profileFunction.getProfile(time)
             if (profile == null) {
                 time += 5 * 60 * 1000L
