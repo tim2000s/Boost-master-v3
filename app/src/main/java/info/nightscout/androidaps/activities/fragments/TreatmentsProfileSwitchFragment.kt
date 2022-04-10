@@ -22,7 +22,6 @@ import info.nightscout.androidaps.databinding.TreatmentsProfileswitchItemBinding
 import info.nightscout.androidaps.dialogs.ProfileViewerDialog
 import info.nightscout.androidaps.events.EventEffectiveProfileSwitchChanged
 import info.nightscout.androidaps.events.EventProfileSwitchChanged
-import info.nightscout.androidaps.events.EventTreatmentUpdateGui
 import info.nightscout.androidaps.extensions.getCustomizedName
 import info.nightscout.androidaps.extensions.toVisibility
 import info.nightscout.androidaps.logging.UserEntryLogger
@@ -47,7 +46,6 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
 import io.reactivex.rxjava3.kotlin.subscribeBy
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class TreatmentsProfileSwitchFragment : DaggerFragment() {
@@ -86,6 +84,8 @@ class TreatmentsProfileSwitchFragment : DaggerFragment() {
         setHasOptionsMenu(true)
         binding.recyclerview.setHasFixedSize(true)
         binding.recyclerview.layoutManager = LinearLayoutManager(view.context)
+        binding.recyclerview.emptyView = binding.noRecordsText
+        binding.recyclerview.loadingView = binding.progressBar
     }
 
     private fun refreshFromNightscout() {
@@ -130,7 +130,7 @@ class TreatmentsProfileSwitchFragment : DaggerFragment() {
 
     fun swapAdapter() {
         val now = System.currentTimeMillis()
-
+        binding.recyclerview.isLoading = true
         disposable +=
             if (showInvalidated)
                 profileSwitchWithInvalid(now)
@@ -161,11 +161,6 @@ class TreatmentsProfileSwitchFragment : DaggerFragment() {
         disposable += rxBus
             .toObservable(EventEffectiveProfileSwitchChanged::class.java)
             .observeOn(aapsSchedulers.main)
-            .subscribe({ swapAdapter() }, fabricPrivacy::logException)
-        disposable += rxBus
-            .toObservable(EventTreatmentUpdateGui::class.java) // TODO join with above
-            .observeOn(aapsSchedulers.io)
-            .debounce(1L, TimeUnit.SECONDS)
             .subscribe({ swapAdapter() }, fabricPrivacy::logException)
     }
 
@@ -306,7 +301,7 @@ class TreatmentsProfileSwitchFragment : DaggerFragment() {
                 showInvalidated = true
                 updateMenuVisibility()
                 ToastUtils.showToastInUiThread(context, rh.gs(R.string.show_invalidated_records))
-                rxBus.send(EventTreatmentUpdateGui())
+                swapAdapter()
                 true
             }
 
@@ -314,7 +309,7 @@ class TreatmentsProfileSwitchFragment : DaggerFragment() {
                 showInvalidated = false
                 updateMenuVisibility()
                 ToastUtils.showToastInUiThread(context, rh.gs(R.string.hide_invalidated_records))
-                rxBus.send(EventTreatmentUpdateGui())
+                swapAdapter()
                 true
             }
 
