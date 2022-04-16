@@ -115,7 +115,7 @@
         <item name="android:dialogCornerRadius">12dp</item>
         <!---Overview and Historybrowser  -->
         <item name="graphgrid">@color/graphgrid</item>
-        <item name="viewPortbackgroundColor">@color/black_alpha_20</item>
+        <item name="viewPortbackgroundColor">@color/transparent</item>
         <item name="tempTargetBackgroundColor">@color/tempTargetBackground</item>
         <!---CGM source-->
         <item name="cgmdexColor">@color/byodagray</item>
@@ -235,6 +235,7 @@
         <item name="ratioColor">@color/ratio</item>
         <item name="activityColor">@color/activity</item>
         <item name="basebasalColor">@color/basebasal</item>
+        <item name="dotLineColor">@color/black</item>
         <item name="tsunamiColor">@color/tsunami</item>
         <!---Popupmenu TextColor -->
         <item name="menuTextColor">@color/black</item>
