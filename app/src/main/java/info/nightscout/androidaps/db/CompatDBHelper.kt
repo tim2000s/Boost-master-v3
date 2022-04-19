@@ -60,13 +60,19 @@ class CompatDBHelper @Inject constructor(
                 rxBus.send(EventExtendedBolusChange())
                 rxBus.send(EventNewHistoryData(timestamp, false))
             }
+            it.filterIsInstance<EffectiveProfileSwitch>().firstOrNull()?.let { eps ->
+                aapsLogger.debug(LTag.DATABASE, "Firing EventEffectiveProfileSwitchChanged $eps")
+                rxBus.send(EventEffectiveProfileSwitchChanged(eps))
+                rxBus.send(EventNewHistoryData(eps.timestamp, false))
+            }
             it.filterIsInstance<TemporaryTarget>().firstOrNull()?.let { tt ->
                 aapsLogger.debug(LTag.DATABASE, "Firing EventTempTargetChange $tt")
                 rxBus.send(EventTempTargetChange())
             }
             it.filterIsInstance<Tsunami>().firstOrNull()?.let { ts ->
-                aapsLogger.debug(LTag.DATABASE, "Firing EventUpdateOverviewTsunamiButton $ts")
+                aapsLogger.debug(LTag.DATABASE, "Firing EventTsunamiModeChange $ts")
                 rxBus.send(EventTsunamiModeChange())
+                rxBus.send(EventNewHistoryData(ts.timestamp, false)) //MP required to refresh graph to instantly plot tsunami duration
             }
             it.filterIsInstance<TherapyEvent>().firstOrNull()?.let { te ->
                 aapsLogger.debug(LTag.DATABASE, "Firing EventTherapyEventChange $te")
@@ -79,10 +85,6 @@ class CompatDBHelper @Inject constructor(
             it.filterIsInstance<ProfileSwitch>().firstOrNull()?.let { ps ->
                 aapsLogger.debug(LTag.DATABASE, "Firing EventProfileSwitchChanged $ps")
                 rxBus.send(EventProfileSwitchChanged())
-            }
-            it.filterIsInstance<EffectiveProfileSwitch>().firstOrNull()?.let { eps ->
-                aapsLogger.debug(LTag.DATABASE, "Firing EventEffectiveProfileSwitchChanged $eps")
-                rxBus.send(EventEffectiveProfileSwitchChanged(eps))
             }
             it.filterIsInstance<OfflineEvent>().firstOrNull()?.let { oe ->
                 aapsLogger.debug(LTag.DATABASE, "Firing EventOfflineChange $oe")
