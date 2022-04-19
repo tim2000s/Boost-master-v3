@@ -159,8 +159,8 @@ class RileyLinkBLE @Inject constructor(
             aapsLogger.error(LTag.PUMPBTCOMM, "RileyLink device is null, can't do connectGatt.")
             return
         }
-        if (config.PUMPDRIVERS && Build.VERSION.SDK_INT > Build.VERSION_CODES.S &&
-            ContextCompat.checkSelfPermission(context, "android.permission.BLUETOOTH_CONNECT") == PackageManager.PERMISSION_GRANTED
+        if (config.PUMPDRIVERS && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+            ContextCompat.checkSelfPermission(context, "android.permission.BLUETOOTH_CONNECT") != PackageManager.PERMISSION_GRANTED
         ) {
             aapsLogger.debug(LTag.PUMPBTCOMM, "no permission")
             return

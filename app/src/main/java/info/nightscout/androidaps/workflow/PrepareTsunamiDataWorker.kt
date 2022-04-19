@@ -83,7 +83,7 @@ class PrepareTsunamiDataWorker(
         // create series
         data.overviewData.tsunamiSeries = LineGraphSeries(Array(tsunamiArray.size) { i -> tsunamiArray[i] }).also {
             it.isDrawBackground = true
-            it.backgroundColor = Color.argb(65, 0, 211, 141)
+            it.backgroundColor = Color.argb(50, 0, 211, 141)
             it.thickness = 0
         }
         rxBus.send(EventIobCalculationProgress(CalculationWorkflow.ProgressData.PREPARE_TSUNAMI_DATA, 100, null))

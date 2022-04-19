@@ -30,8 +30,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:text="@string/tsunami_label"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -53,7 +53,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center_vertical"
                 android:width="120dp"
                 android:padding="10dp"
                 android:text="@string/tsunami_duration"
@@ -150,17 +150,17 @@
 
         <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/tsu_cancel"
-            style="?android:attr/buttonStyle"
+            style="@style/ButtonSmallFontStyle"
             android:layout_width="0px"
             android:layout_height="fill_parent"
             android:layout_marginEnd="-4dp"
             android:layout_weight="0.5"
             android:drawableTop="@drawable/ic_tsunami_cancel"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:text="@string/cancel"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/tempTargetConfirmation"
+            android:textColor="?attr/tsunamiButtonColor"
             android:textSize="11sp" />
 
     </LinearLayout>

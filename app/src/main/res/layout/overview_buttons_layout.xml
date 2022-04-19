@@ -65,7 +65,7 @@
 
         <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/tsunami_button"
-            style="?android:attr/buttonStyle"
+            style="@style/ButtonSmallFontStyle"
             android:layout_width="0px"
             android:layout_height="fill_parent"
             android:layout_marginEnd="-4dp"
