@@ -121,7 +121,7 @@ abstract class InsulinOrefBasePlugin(
                 //result.iobContrib = bolus.amount * (1 - (pct_ins_left/bolus.amount))
 
             } else {
-                // MP: If the Lyumjev pharmacodynamic models are not used (IDs 6 & 7), use the traditional PK-based insulin model instead;
+                // MP: If the Lyumjev pharmacodynamic models are not used (IDs 105 & 205), use the traditional PK-based insulin model instead;
                 val peak = peak
                 val td = dia * 60 //getDIA() always >= MIN_DIA
                 val tp = peak.toDouble()
