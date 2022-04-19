@@ -59,14 +59,6 @@ class OverviewData @Inject constructor(
     fun reset() {
         pumpStatus = ""
         calcProgressPct = 100
-        lastBg = null
-        bolusIob = null
-        basalIob = null
-        cobInfo = null
-        lastCarbsTime = 0L
-        temporaryTarget = null
-        tsunami = null
-        lastAutosensData = null
         bgReadingsArray = ArrayList()
         bucketedGraphSeries = PointsWithLabelGraphSeries()
         bgReadingGraphSeries = PointsWithLabelGraphSeries()
@@ -81,6 +73,7 @@ class OverviewData @Inject constructor(
         absIobSeries = FixedLineGraphSeries()
         iobPredictions1Series = PointsWithLabelGraphSeries()
         //iobPredictions2Series = PointsWithLabelGraphSeries()
+        tsunamiSeries = LineGraphSeries()
         minusBgiSeries = FixedLineGraphSeries()
         minusBgiHistSeries = FixedLineGraphSeries()
         cobSeries = FixedLineGraphSeries()
@@ -247,10 +240,10 @@ class OverviewData @Inject constructor(
     * TSUNAMI
     */
 
-    var tsunami: Tsunami? = null
+    val tsunami: Tsunami?
         get() =
-            repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet().let { tempTarget ->
-                if (tempTarget is ValueWrapper.Existing) tempTarget.value
+            repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet().let { tsunami ->
+                if (tsunami is ValueWrapper.Existing) tsunami.value
                 else null
             }
 

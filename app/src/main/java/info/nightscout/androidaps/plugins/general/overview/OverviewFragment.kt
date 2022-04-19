@@ -297,9 +297,9 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             .toObservable(EventTempBasalChange::class.java)
             .observeOn(aapsSchedulers.main)
             .subscribe({ updateTemporaryBasal() }, fabricPrivacy::logException)
-        disposable += activePlugin.activeOverview.overviewBus
-            .toObservable(EventUpdateOverviewTsunamiButton::class.java)
-            .debounce(1L, TimeUnit.SECONDS)
+        disposable += rxBus
+            .toObservable(EventTsunamiModeChange::class.java)
+            //.debounce(1L, TimeUnit.SECONDS)
             .observeOn(aapsSchedulers.main)
             .subscribe({ updateTsunamiButton() }, fabricPrivacy::logException)
 
@@ -325,9 +325,9 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             updateTemporaryTarget()
             updateIobCob()
             updateSensitivity()
+            updateTsunamiButton()
             updateGraph()
             updateNotification()
-            updateTsunamiButton()
         }
     }
 
@@ -957,7 +957,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         }
     }
     @SuppressLint("SetTextI18n")
-    fun updateTsunamiButton(from: String) {
+    fun updateTsunamiButton() {
         val tsunamiMode = overviewData.tsunami
         if (tsunamiMode != null) {
             val remaining = tsunamiMode.duration + tsunamiMode.timestamp - dateUtil.now()

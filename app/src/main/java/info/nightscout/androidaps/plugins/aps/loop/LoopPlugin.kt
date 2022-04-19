@@ -28,6 +28,7 @@ import info.nightscout.androidaps.database.transactions.InsertAndCancelCurrentOf
 import info.nightscout.androidaps.database.transactions.InsertTherapyEventAnnouncementTransaction
 import info.nightscout.androidaps.events.EventAcceptOpenLoopChange
 import info.nightscout.androidaps.events.EventTempTargetChange
+import info.nightscout.androidaps.events.EventTsunamiModeChange
 import info.nightscout.androidaps.extensions.buildDeviceStatus
 import info.nightscout.androidaps.extensions.convertedToAbsolute
 import info.nightscout.androidaps.extensions.convertedToPercent
@@ -53,7 +54,6 @@ import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.FabricPrivacy
 import info.nightscout.androidaps.utils.HardLimits
 import info.nightscout.androidaps.utils.T
-import info.nightscout.androidaps.plugins.aps.events.EventLoopInvoked
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.shared.logging.AAPSLogger
@@ -115,32 +115,9 @@ class LoopPlugin @Inject constructor(
             .observeOn(aapsSchedulers.io)
             .subscribe({ invoke("EventTempTargetChange", true) }, fabricPrivacy::logException)
         disposable += rxBus
-            .toObservable(EventUpdateOverviewTsunamiButton::class.java)
+            .toObservable(EventTsunamiModeChange::class.java)
             .observeOn(aapsSchedulers.io)
-            .subscribe({ invoke("EventUpdateOverviewTsunamiButton", true) },
-                fabricPrivacy::logException)
-        }
-        /*
-          This method is triggered once autosens calculation has completed, so the LoopPlugin
-          has current data to work with. However, autosens calculation can be triggered by multiple
-          sources and currently only a new BG should trigger a loop run. Hence we return early if
-          the event causing the calculation is not EventNewBg.
-          <p>
-         */
-        disposable.add(rxBus
-            .toObservable(EventAutosensCalculationFinished::class.java)
-            .observeOn(aapsSchedulers.io)
-            .subscribe({ event: EventAutosensCalculationFinished ->
-                // Autosens calculation not triggered by a new BG
-                if (event.cause !is EventNewBG) return@subscribe
-                val glucoseValue = iobCobCalculator.ads.actualBg() ?: return@subscribe
-                // BG outdated
-                // already looped with that value
-                if (glucoseValue.timestamp <= lastBgTriggeredRun) return@subscribe
-                lastBgTriggeredRun = glucoseValue.timestamp
-                invoke("AutosenseCalculation for $glucoseValue", true)
-            }, fabricPrivacy::logException)
-        )
+            .subscribe({ invoke("EventTsunamiModeChange", true) }, fabricPrivacy::logException)
     }
 
     private fun createNotificationChannel() {

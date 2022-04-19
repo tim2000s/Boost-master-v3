@@ -64,8 +64,9 @@ class CalculationWorkflow @Inject constructor(
         PREPARE_BASAL_DATA(0, 5),
         PREPARE_TEMPORARY_TARGET_DATA(1, 5),
         PREPARE_TREATMENTS_DATA(2, 5),
-        IOB_COB_OREF(3, 75),
-        PREPARE_IOB_AUTOSENS_DATA(4, 10);
+        IOB_COB_OREF(3, 70),
+        PREPARE_IOB_AUTOSENS_DATA(4, 10),
+        PREPARE_TSUNAMI_DATA(5, 5);
 
         fun finalPercent(progress: Int): Int {
             var total = 0
@@ -202,6 +203,11 @@ class CalculationWorkflow @Inject constructor(
             .then(
                 OneTimeWorkRequest.Builder(PrepareIobAutosensGraphDataWorker::class.java)
                     .setInputData(dataWorker.storeInputData(PrepareIobAutosensGraphDataWorker.PrepareIobAutosensData(iobCobCalculator, overviewData)))
+                    .build()
+            )
+            .then(
+                OneTimeWorkRequest.Builder(PrepareTsunamiDataWorker::class.java)
+                    .setInputData(dataWorker.storeInputData(PrepareTsunamiDataWorker.PrepareTsunamiData(overviewData)))
                     .build()
             )
             .then(

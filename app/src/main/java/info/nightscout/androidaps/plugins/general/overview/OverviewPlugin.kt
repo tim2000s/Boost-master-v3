@@ -5,6 +5,7 @@ import androidx.preference.SwitchPreference
 import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.R
 import info.nightscout.androidaps.events.EventPumpStatusChanged
+import info.nightscout.androidaps.events.EventRefreshOverview
 import info.nightscout.androidaps.events.EventTsunamiModeChange
 import info.nightscout.androidaps.extensions.*
 import info.nightscout.androidaps.interfaces.Config
@@ -95,14 +96,17 @@ class OverviewPlugin @Inject constructor(
             .subscribe({
                            overviewData.pumpStatus = it.getStatus(rh)
                        }, fabricPrivacy::logException)
+        /*
         disposable += rxBus
             .toObservable(EventTsunamiModeChange::class.java)
             .observeOn(aapsSchedulers.io)
-            .subscribe({ loadTsunamiData("EventTsunamiModeChange")
+            .subscribe({ //loadTsunamiData("EventTsunamiModeChange")
                 //MP graph test
-                overviewData.prepareTsunamiData("EventTsunamiModeChange")
-                overviewBus.send(EventUpdateOverviewGraph("EventTreatmentChange"))
+                //overviewData.prepareTsunamiData("EventTsunamiModeChange")
+                overviewBus.send(EventRefreshOverview("EventTsunamiModeChange"))
             }, fabricPrivacy::logException)
+
+         */
     }
 
     override fun onStop() {
@@ -202,7 +206,7 @@ class OverviewPlugin @Inject constructor(
         overviewData.prepareTsunamiData(from)
         overviewData.prepareTreatmentsData(from)
         overviewData.prepareIobAutosensData(from)
-        overviewBus.send(EventUpdateOverviewTsunamiButton(from))
+        overviewBus.send(EventTsunamiModeChange(from))
         overviewBus.send(EventUpdateOverviewGraph(from))
         overviewBus.send(EventUpdateOverviewIobCob(from))
         aapsLogger.debug(LTag.UI, "refreshLoop finished")

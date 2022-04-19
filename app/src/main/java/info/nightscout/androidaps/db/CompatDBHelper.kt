@@ -70,8 +70,9 @@ class CompatDBHelper @Inject constructor(
                 rxBus.send(EventTempTargetChange())
             }
             it.filterIsInstance<Tsunami>().firstOrNull()?.let { ts ->
-                aapsLogger.debug(LTag.DATABASE, "Firing EventUpdateOverviewTsunamiButton $ts")
+                aapsLogger.debug(LTag.DATABASE, "Firing EventTsunamiModeChange $ts")
                 rxBus.send(EventTsunamiModeChange())
+                rxBus.send(EventNewHistoryData(ts.timestamp, false)) //MP required to refresh graph to instantly plot tsunami duration
             }
             it.filterIsInstance<TherapyEvent>().firstOrNull()?.let { te ->
                 aapsLogger.debug(LTag.DATABASE, "Firing EventTherapyEventChange $te")
