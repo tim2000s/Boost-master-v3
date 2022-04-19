@@ -8,7 +8,6 @@ import android.view.Menu
 import android.view.View
 import android.widget.ImageButton
 import androidx.annotation.AttrRes
-import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.PopupMenu
 import com.google.gson.Gson
@@ -48,7 +47,7 @@ class OverviewMenus @Inject constructor(
         SEN(R.string.overview_show_sensitivity, R.attr.ratioColor,  R.attr.menuTextColorInverse, primary = false, secondary = true,shortnameId = R.string.sensitivity_shortname),
         ACT(R.string.overview_show_activity, R.attr.activityColor,  R.attr.menuTextColor, primary = true, secondary = false,shortnameId = R.string.activity_shortname),
         TSU(R.string.overview_show_tsunami, R.attr.tsunamiColor, R.attr.menuTextColor, primary = true, secondary = false, shortnameId = R.string.tsunami_shortname),
-        DEVSLOPE(R.string.overview_show_deviationslope,  R.attr.devslopeposColor, R.attr.menuTextColor, primary = false, secondary = true,shortnameId = R.string.devslope_shortname)
+        DEVSLOPE(R.string.overview_show_deviationslope, R.attr.devSlopePosColor, R.attr.menuTextColor, primary = false, secondary = true, shortnameId = R.string.devslope_shortname)
     }
 
     companion object {

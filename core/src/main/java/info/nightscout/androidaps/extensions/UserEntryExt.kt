@@ -12,9 +12,9 @@ fun ColorGroup.colorId(): Int {
         ColorGroup.Loop             -> R.color.loopClosed
         ColorGroup.Careportal       -> R.color.high
         ColorGroup.Pump             -> R.color.iob
-        ColorGroup.Aaps             -> R.color.defaulttext
+        ColorGroup.Aaps             -> R.color.defaultText
         ColorGroup.Tsunami          -> R.color.tsunami
-        else                        -> R.color.defaulttext
+        else                        -> R.color.defaultText
     }
 }
 
