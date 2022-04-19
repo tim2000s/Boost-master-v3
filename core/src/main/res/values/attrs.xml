@@ -38,6 +38,7 @@
     <attr name="quickWizardButtonColor" format="reference|color" />
     <!-- Tsunami Button -->
     <attr name="tsunamiButtonColor" format="reference|color" />
+    <attr name="defaultButtonColor" format="reference|color" />
     <!-- Stats  -->
     <attr name="statsColor" format="reference|color" />
     <!-- Pump -->

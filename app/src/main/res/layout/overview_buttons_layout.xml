@@ -73,7 +73,7 @@
             android:drawableTop="@drawable/ic_tsunami"
             android:text="@string/tsunami_label"
             android:textColor="?attr/tsunamiButtonColor"
-            android:textSize="9.7sp"
+            android:textSize="10sp"
             tools:ignore="SmallSp" />
 
         <info.nightscout.androidaps.utils.ui.SingleClickButton
