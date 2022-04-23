@@ -41,6 +41,7 @@ import info.nightscout.androidaps.utils.LocalAlertUtils
 import info.nightscout.androidaps.utils.ProcessLifecycleListener
 import info.nightscout.androidaps.utils.buildHelper.BuildHelper
 import info.nightscout.androidaps.utils.locale.LocaleHelper
+import info.nightscout.androidaps.widget.updateWidget
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.shared.sharedPreferences.SP
@@ -95,18 +96,6 @@ class MainApp : DaggerApplication() {
             gitRemote = null
             commitHash = null
         }
-        disposable += repository.runTransaction(VersionChangeTransaction(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, gitRemote, commitHash)).subscribe()
-        if (sp.getBoolean(R.string.key_ns_logappstartedevent, config.APS))
-            disposable += repository
-                .runTransaction(
-                    InsertIfNewByTimestampTherapyEventTransaction(
-                        timestamp = dateUtil.now(),
-                        type = TherapyEvent.Type.NOTE,
-                        note = getString(info.nightscout.androidaps.core.R.string.androidaps_start) + " - " + Build.MANUFACTURER + " " + Build.MODEL,
-                        glucoseUnit = TherapyEvent.GlucoseUnit.MGDL
-                    )
-                )
-                .subscribe()
         disposable += compatDBHelper.dbChangeDisposable()
         registerActivityLifecycleCallbacks(activityMonitor)
         JodaTimeAndroid.init(this)
@@ -126,6 +115,18 @@ class MainApp : DaggerApplication() {
         pluginStore.plugins = plugins
         configBuilder.initialize()
 
+        disposable += repository.runTransaction(VersionChangeTransaction(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, gitRemote, commitHash)).subscribe()
+        if (sp.getBoolean(R.string.key_ns_logappstartedevent, config.APS))
+            disposable += repository
+                .runTransaction(
+                    InsertIfNewByTimestampTherapyEventTransaction(
+                        timestamp = dateUtil.now(),
+                        type = TherapyEvent.Type.NOTE,
+                        note = getString(info.nightscout.androidaps.core.R.string.androidaps_start) + " - " + Build.MANUFACTURER + " " + Build.MODEL,
+                        glucoseUnit = TherapyEvent.GlucoseUnit.MGDL
+                    )
+                )
+                .subscribe()
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "KeepAlive",
             ExistingPeriodicWorkPolicy.REPLACE,
