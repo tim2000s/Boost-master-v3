@@ -275,7 +275,8 @@ class ActionStringHandler @Inject constructor(
 
             val bolusWizard = BolusWizard(injector).doCalc(
                 profile, profileName, tempTarget,
-                carbsAfterConstraints, cobInfo.displayCob!!, bgReading.valueToUnits(profileFunction.getUnits()),
+                carbsAfterConstraints, cobInfo.displayCob!!, bgReading.valueToUnits
+                    (profileFunction.getUnits(), sp),
                 0.0, percentage, useBG, useCOB, useBolusIOB, useBasalIOB, false, useTT, useTrend, false
             )
             val insulinAfterConstraints = bolusWizard.insulinAfterConstraints

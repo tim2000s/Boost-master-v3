@@ -18,6 +18,7 @@ import info.nightscout.androidaps.receivers.DataWorker
 import info.nightscout.androidaps.utils.DefaultValueHelper
 import info.nightscout.androidaps.utils.Round
 import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.shared.sharedPreferences.SP
 import java.util.ArrayList
 import javax.inject.Inject
 
@@ -31,6 +32,7 @@ class PrepareBgDataWorker(
     @Inject lateinit var rh: ResourceHelper
     @Inject lateinit var defaultValueHelper: DefaultValueHelper
     @Inject lateinit var repository: AppRepository
+    @Inject lateinit var sp: SP
 
     init {
         (context.applicationContext as HasAndroidInjector).androidInjector().inject(this)
@@ -52,7 +54,7 @@ class PrepareBgDataWorker(
         for (bg in data.overviewData.bgReadingsArray) {
             if (bg.timestamp < data.overviewData.fromTime || bg.timestamp > data.overviewData.toTime) continue
             if (bg.value > data.overviewData.maxBgValue) data.overviewData.maxBgValue = bg.value
-            bgListArray.add(GlucoseValueDataPoint(bg, defaultValueHelper, profileFunction, rh))
+            bgListArray.add(GlucoseValueDataPoint(bg, defaultValueHelper, profileFunction, rh, sp))
         }
         bgListArray.sortWith { o1: DataPointWithLabelInterface, o2: DataPointWithLabelInterface -> o1.x.compareTo(o2.x) }
         data.overviewData.bgReadingGraphSeries = PointsWithLabelGraphSeries(Array(bgListArray.size) { i -> bgListArray[i] })

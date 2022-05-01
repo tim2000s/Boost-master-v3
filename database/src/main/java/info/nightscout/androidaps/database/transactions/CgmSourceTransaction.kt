@@ -3,6 +3,7 @@ package info.nightscout.androidaps.database.transactions
 import info.nightscout.androidaps.database.entities.GlucoseValue
 import info.nightscout.androidaps.database.entities.TherapyEvent
 import java.util.ArrayList
+import kotlin.math.round
 
 /**
  * Inserts data from a CGM source into the database
@@ -12,7 +13,8 @@ class CgmSourceTransaction(
     private val calibrations: List<Calibration>,
     private val sensorInsertionTime: Long?,
     private val syncer: Boolean = false, // caller is not native source ie. NS
-    private var bgReadings: List<GlucoseValue> = listOf()
+    private var bgReadings: List<GlucoseValue> = listOf(),
+    private val updateWindow: Int = 10 // max number of smoothed glucose values to be updated per cycle to avoid updating the database with all entries stored in bgReadings
     // syncer is allowed create records
     // update synchronization ID
 ) : Transaction<CgmSourceTransaction.TransactionResult>() {
@@ -41,7 +43,7 @@ class CgmSourceTransaction(
             bgReadings += database.glucoseValueDao.compatGetBgReadingsDataFromTime(glucoseValue.timestamp - 125 * 60 * 1000, glucoseValue.timestamp) //MP Get all readings from up to 125 mins ago
                 .blockingGet()
             bgReadings += glucoseValue
-            bgReadings = smooth(bgReadings.reversed()) //reverse the list as the smoothing function expects the 0th entry to be the most recent one
+            bgReadings = smooth(bgReadings.reversed(), updateWindow) //reverse the list as the smoothing function expects the 0th entry to be the most recent one
             //bgReadings += database.glucoseValueDao.findByTimestampAndSensor(it.timestamp, it.sourceSensor)
             glucoseValue.smoothed = bgReadings[0].smoothed
             when {
@@ -73,7 +75,7 @@ class CgmSourceTransaction(
         bgReadings = smooth(bgReadings).reversed() // reverse again so that in the DB, the newest val
         */
         // Update the smoothed glucose values of the entries included in bgReadings
-        bgReadings = bgReadings.reversed() // reverse again so that in the DB, the newest values have the largest ID
+        bgReadings = bgReadings.reversed().takeLast(updateWindow) // reverse again so that in the DB, the newest values have the largest ID (for cosmetic and logical reasons :P). Also, keep only the last 10 entries to avoid unnecessarily updating older values that
         for (i in bgReadings) {
             database.glucoseValueDao.updateExistingEntry(i)
             result.updated.add(i)
@@ -104,7 +106,7 @@ class CgmSourceTransaction(
         return result
     }
 
-    private fun smooth(Data: List<GlucoseValue>): List<GlucoseValue> {
+    private fun smooth(Data: List<GlucoseValue>, updateWindow: Int): List<GlucoseValue> {
         /**
          *  TSUNAMI DATA SMOOTHING CORE
          *
@@ -202,11 +204,11 @@ class CgmSourceTransaction(
                 ssD.add(ssBG[i] - ssBG[i + 1]) //MP build array of doubly smoothed bg deltas
             }
              */
-            for (i in 0 until minOf(ssBG.size, 10)) { // noise at the beginning of the smoothing window is the greatest, so only include the 10 most recent values in the output
-                Data[i].smoothed = ssBG[i]
+            for (i in 0 until minOf(ssBG.size, updateWindow)) { // noise at the beginning of the smoothing window is the greatest, so only include the 10 most recent values in the output
+                Data[i].smoothed = round(ssBG[i])
             }
         } else {
-            for (i in 0 until minOf(Data.size, 10)) { // noise at the beginning of the smoothing window is the greatest, so only include the 10 most recent values in the output
+            for (i in 0 until minOf(Data.size, updateWindow)) { // noise at the beginning of the smoothing window is the greatest, so only include the 10 most recent values in the output
                 Data[i].smoothed = Data[i].value // if insufficient smoothing data, copy 'value' into 'smoothed' data column so that it isn't empty
             }
         }
@@ -218,7 +220,7 @@ class CgmSourceTransaction(
         val timestamp: Long,
         val value: Double,
         val raw: Double?,
-        val smoothed: Double?,
+        val smoothed: Double,
         val noise: Double?,
         val trendArrow: GlucoseValue.TrendArrow,
         val nightscoutId: String? = null,

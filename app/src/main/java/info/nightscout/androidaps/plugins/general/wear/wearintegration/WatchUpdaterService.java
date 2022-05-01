@@ -307,7 +307,7 @@ public class WatchUpdaterService extends WearableListenerService implements Goog
         }
 
         DataMap dataMap = new DataMap();
-        dataMap.putString("sgvString", GlucoseValueExtensionKt.valueToUnitsString(lastBG, units));
+        dataMap.putString("sgvString", GlucoseValueExtensionKt.valueToUnitsString(lastBG, units, sp));
         dataMap.putString("glucoseUnits", units.getAsText());
         dataMap.putLong("timestamp", lastBG.getTimestamp());
         if (glucoseStatus == null) {
@@ -508,7 +508,8 @@ public class WatchUpdaterService extends WearableListenerService implements Goog
         if (sp.getBoolean("wear_predictions", true) && finalLastRun != null && finalLastRun.getRequest().getHasPredictions() && finalLastRun.getConstraintsProcessed() != null) {
             List<GlucoseValueDataPoint> predArray =
                     finalLastRun.getConstraintsProcessed().getPredictions()
-                            .stream().map(bg -> new GlucoseValueDataPoint(bg, defaultValueHelper, profileFunction, rh))
+                            .stream().map(bg -> new GlucoseValueDataPoint(bg, defaultValueHelper,
+                            profileFunction, rh, sp))
                             .collect(Collectors.toList());
 
             if (!predArray.isEmpty()) {

@@ -350,7 +350,7 @@ class WizardDialog : DaggerDialogFragment() {
         binding.bgInput.step = if (units == GlucoseUnit.MGDL) 1.0 else 0.1
 
         // Set BG if not old
-        binding.bgInput.value = iobCobCalculator.ads.actualBg()?.valueToUnits(units) ?: 0.0
+        binding.bgInput.value = iobCobCalculator.ads.actualBg()?.valueToUnits(units, sp) ?: 0.0
 
         binding.ttCheckbox.isEnabled = repository.getTemporaryTargetActiveAt(dateUtil.now()).blockingGet() is ValueWrapper.Existing
         binding.ttCheckboxIcon.visibility = binding.ttCheckbox.isEnabled.toVisibility()

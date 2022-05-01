@@ -66,7 +66,7 @@ class TomatoPlugin @Inject constructor(
                 value = inputData.getDouble("com.fanqies.tomatofn.Extras.BgEstimate", 0.0),
                 raw = 0.0,
                 noise = null,
-                smoothed = null,
+                smoothed = 0.0,
                 trendArrow = GlucoseValue.TrendArrow.NONE,
                 sourceSensor = GlucoseValue.SourceSensor.LIBRE_1_TOMATO
             )

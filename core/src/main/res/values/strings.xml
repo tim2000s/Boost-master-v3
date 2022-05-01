@@ -65,6 +65,7 @@
     <string name="key_pregnant" translatable="false">pregnant</string>
     <string name="key_app_expiration" translatable="false">app_expiration</string>
     <string name="key_use_dark_mode" translatable="false">use_dark_mode</string>
+    <string name="key_use_data_smoothing" translatable="false">plot_smoothed_data</string>
 
     <!--    General-->
     <string name="refresh">Refresh</string>
