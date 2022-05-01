@@ -5,7 +5,6 @@ import info.nightscout.androidaps.utils.Round
 
 data class GlucoseStatus(
     val glucose: Double,
-    //val smoothedGlucose: Double,
     val noise: Double = 0.0,
     val delta: Double = 0.0,
     val shortAvgDelta: Double = 0.0,
