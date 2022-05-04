@@ -24,20 +24,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/loop"
-                style="@style/Widget.MaterialComponents.CardView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginTop="4dp"
-                app:cardCornerRadius="4dp"
-                app:contentPadding="2dp"
-                app:cardElevation="4dp"
-                app:cardUseCompatPadding="false"
-                android:layout_gravity="center">
-
                 <LinearLayout
                     android:id="@+id/loop_layout"
                     android:layout_width="match_parent"
@@ -52,11 +38,13 @@
                         android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:gravity="center_vertical|center_horizontal"
-                        android:paddingTop="6dp"
-                        android:paddingBottom="6dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
                         android:hint="active profile"
                         android:text="Profile"
                         android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        app:drawableStartCompat="@drawable/ic_ribbon_profile"
                         tools:ignore="HardcodedText" />
 
                     <TextView
@@ -66,19 +54,19 @@
                         android:layout_gravity="end"
                         android:layout_weight="1"
                         android:gravity="center_vertical|center_horizontal"
-                        android:paddingTop="6dp"
-                        android:paddingBottom="6dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
                         android:hint="temp target"
                         android:text="@string/notavailable"
                         android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        app:drawableStartCompat="@drawable/ic_crosstarget"
                         tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
-
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/info"
+                android:id="@+id/infoCard"
                 style="@style/Widget.MaterialComponents.CardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,7 +75,7 @@
                 android:layout_marginTop="4dp"
                 app:cardCornerRadius="4dp"
                 app:contentPadding="2dp"
-                app:cardElevation="4dp"
+                app:cardElevation="2dp"
                 app:cardUseCompatPadding="false"
                 android:layout_gravity="center">
 
@@ -98,7 +86,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/status"
+                android:id="@+id/statusCard"
                 style="@style/Widget.MaterialComponents.CardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -107,7 +95,7 @@
                 android:layout_marginTop="4dp"
                 app:cardCornerRadius="4dp"
                 app:contentPadding="2dp"
-                app:cardElevation="4dp"
+                app:cardElevation="2dp"
                 app:cardUseCompatPadding="false"
                 android:layout_gravity="center">
 
@@ -118,7 +106,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/nsclient_layout"
+                android:id="@+id/nsclientCard"
                 style="@style/Widget.MaterialComponents.CardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,7 +115,7 @@
                 android:layout_marginTop="4dp"
                 app:cardCornerRadius="4dp"
                 app:contentPadding="2dp"
-                app:cardElevation="4dp"
+                app:cardElevation="2dp"
                 app:cardUseCompatPadding="false"
                 android:layout_gravity="center">
 
@@ -135,7 +123,6 @@
                     android:id="@+id/nsclient"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/colorControlHighlight"
                     app:alignContent="stretch"
                     app:alignItems="stretch"
                     app:flexDirection="row"
@@ -179,7 +166,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/graph"
+                android:id="@+id/graphCard"
                 style="@style/Widget.MaterialComponents.CardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -189,7 +176,7 @@
                 android:layout_marginBottom="4dp"
                 app:cardCornerRadius="4dp"
                 app:contentPadding="2dp"
-                app:cardElevation="4dp"
+                app:cardElevation="2dp"
                 app:cardUseCompatPadding="false"
                 android:layout_gravity="center">
 
