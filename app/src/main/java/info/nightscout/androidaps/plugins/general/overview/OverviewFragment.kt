@@ -906,7 +906,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             activity?.let { OKDialog.show(it, rh.gs(R.string.iob), overviewData.iobDialogText(iobCobCalculator)) }
         }
         // cob
-        var cobText = overviewData.cobInfo(iobCobCalculator).displayText(rh, dateUtil, buildHelper.isEngineeringMode()) ?: rh.gs(R.string.value_unavailable_short)
+        var cobText = overviewData.cobInfo(iobCobCalculator).displayText(rh, dateUtil, false) ?: rh.gs(R.string.value_unavailable_short)
 
         val constraintsProcessed = loop.lastRun?.constraintsProcessed
         val lastRun = loop.lastRun

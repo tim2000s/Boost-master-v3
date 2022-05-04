@@ -55,7 +55,7 @@ class PrepareTsunamiDataWorker(
         var lastTsunami = -1.0
         loop.lastRun?.constraintsProcessed?.let { toTime = max(it.latestPredictionsTime, toTime) }
         var time = data.overviewData.fromTime
-        val upperLimit = data.overviewData.maxBgValue
+        val upperLimit = 1000.0 //data.overviewData.maxBgValue
 
         while (time < toTime) {
             val progress = (time - data.overviewData.fromTime).toDouble() / (data.overviewData.toTime - data.overviewData.fromTime) * 100.0
