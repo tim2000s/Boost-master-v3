@@ -335,12 +335,6 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         mGlucoseStatus.put("long_avgdelta", glucoseStatus.longAvgDelta)
         mGlucoseStatus.put("date", glucoseStatus.date)
 //**********************************************************************************************************************************************
-        // MP data smoothing START
-        mGlucoseStatus.put("insufficientSmoothingData", glucoseStatus.insufficientSmoothingData)
-        mGlucoseStatus.put("ssBGnow", glucoseStatus.ssBGnow)
-        mGlucoseStatus.put("ssDnow", glucoseStatus.ssDnow)
-        // MP data smoothing END
-//**********************************************************************************************************************************************
         this.mealData.put("carbs", mealData.carbs)
         this.mealData.put("mealCOB", mealData.mealCOB)
         this.mealData.put("slopeFromMaxDeviation", mealData.slopeFromMaxDeviation)
