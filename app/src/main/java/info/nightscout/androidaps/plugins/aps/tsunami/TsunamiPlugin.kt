@@ -46,7 +46,8 @@ class TsunamiPlugin @Inject constructor(
     private val dateUtil: DateUtil,
     private val repository: AppRepository,
     private val glucoseStatusProvider: GlucoseStatusProvider
-) : PluginBase(PluginDescription()
+) : PluginBase(
+    PluginDescription()
     .mainType(PluginType.APS)
     .fragmentClass(TsunamiFragment::class.java.name)
     .pluginIcon(R.drawable.ic_generic_icon)
@@ -194,7 +195,7 @@ class TsunamiPlugin @Inject constructor(
                 smbAllowed.value(),
                 uam.value(),
                 advancedFiltering.value(),
-                activePlugin.activeBgSource.javaClass.simpleName == "DexcomPlugin",
+                activePlugin.activeBgSource.javaClass.simpleName == "DexcomPlugin"
             )
             val now = System.currentTimeMillis()
             val determineBasalResultTAE = determineBasalAdapterTAEJS.invoke()
