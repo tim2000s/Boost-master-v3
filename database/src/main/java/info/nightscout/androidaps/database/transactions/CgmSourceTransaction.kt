@@ -171,9 +171,6 @@ class CgmSourceTransaction(
         }
 
         // CALCULATE SMOOTHING WINDOW - 2nd order exponential smoothing
-        o2_sBG.clear() // MP reset smoothed bg array
-        o2_sD.clear() // MP reset smoothed delta array
-
         if (windowSize >= 4) { //MP: Require a valid windowSize of at least 4 readings
             o2_sBG.add(Data[windowSize - 1].value) //MP Start 2nd order exponential data smoothing with the oldest valid bg
             o2_sD.add(Data[windowSize - 2].value - Data[windowSize - 1].value) //MP Start 2nd order exponential data smoothing with the oldest valid delta
