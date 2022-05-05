@@ -360,7 +360,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //MP Calculate absolute activity to neutralise delta
     var act_curr = glucose_status.sensorLagActivity; //MP Current delta value, due to sensor lag, is more likely to represent situation from about 10 minutes ago - therefore activity from 10 minutes ago is used for activity calculations.
     var act_future = glucose_status.futureActivity; //MP prognosed activity in "peak-time" minutes (peak-time must be set by the user using free-peak oref)
-    var pure_delta = round(glucose_status.delta + Math.max(act_curr * profile_sens, 0), 1); //MP 5-minute-delta value if insulin activity was zero;
+    var pure_delta = round(Math.min(glucose_status.delta + Math.max(act_curr * profile_sens, 0), 35), 1); //MP 5-minute-delta value if insulin activity was zero;
     var act_targetDelta = (pure_delta / profile_sens) * deltaReductionPCT; //MP 5-min-insulin activity at which delta should be at the desired target value (if delta remains unchanged)
     var act_missing;
 
