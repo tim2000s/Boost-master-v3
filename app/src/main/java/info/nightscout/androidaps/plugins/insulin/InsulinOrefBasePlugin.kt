@@ -81,14 +81,14 @@ abstract class InsulinOrefBasePlugin(
             if (t < 8 * 60 && (insulinID == 105 || insulinID == 205)) { //MP: Fixed DIA cut-off of 8 h - the model automatically changes its DIA based on the bolus size, thus no user-set DIA is
                 // required.
                 //MP Model for estimation of PD-based peak time: (a0 + a1*X)/(1+b1*X), where X = bolus size
-                val a0 = 61.33
+                val a0 = 61.33 //MP Units = min
                 val a1 = 12.27
                 val b1 = 0.05185
                 val tp: Double
                 if (insulinID == 205) { //MP ID = 205 for Lyumjev U200
-                    tp = (a0 + a1 * 2 * bolus.amount)/(1 + b1 * 2 * bolus.amount)
+                    tp = (a0 + a1 * 2 * bolus.amount)/(1 + b1 * 2 * bolus.amount) //MP Units = min
                 } else {
-                    tp = (a0 + a1 * bolus.amount) / (1 + b1 * bolus.amount)
+                    tp = (a0 + a1 * bolus.amount) / (1 + b1 * bolus.amount) //MP Units = min
                 }
                 val tp_model = tp.pow(2.0) * 2 //MP The peak time in the model is defined as half of the square root of this variable - thus the tp entered into the model must be transformed first
                 //MP Calculate remaining IOB of this bolus (PD based approach)
@@ -109,10 +109,11 @@ abstract class InsulinOrefBasePlugin(
                 result.activityContrib = (2 * bolus.amount / tp_model) * t * exp(-t.pow(2.0) / tp_model)
 
                 //MP New IOB formula - integrated version of the above activity curve
-                val lowerLimit = t //MP lower integration limit
-                val upperLimit = 8.0 //MP upper integration limit
-                result.iobContrib = bolus.amount - (0.5 * (2 * bolus.amount / tp_model) * tp_model * (exp(-upperLimit.pow(2)/tp_model) - exp(-lowerLimit.pow(2)/tp_model)))
+                val lowerLimit = t //MP lower integration limit, in min
+                val upperLimit = 8.0 * 60 //MP upper integration limit, in min
+                result.iobContrib = bolus.amount * (exp(-lowerLimit.pow(2.0)/tp_model) - exp(-upperLimit.pow(2.0)/tp_model))
 
+                //bolus.amount * (exp(-lowerLimit.pow(2.0)/tp_model) - exp(-upperLimit.pow(2.0)/tp_model))
                 //MP Below: old IOB formula; produces (almost?) identical results, but requires for loop
                 //var pct_ins_left = 0.0 //MP insulin equivalents in U that are still "unused"
                 //for (i in 0..t.toInt()) {
