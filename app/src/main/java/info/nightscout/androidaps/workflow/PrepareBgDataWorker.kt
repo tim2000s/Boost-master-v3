@@ -6,6 +6,7 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.database.AppRepository
+import info.nightscout.androidaps.extensions.rawOrSmoothed
 import info.nightscout.androidaps.interfaces.GlucoseUnit
 import info.nightscout.androidaps.interfaces.IobCobCalculator
 import info.nightscout.androidaps.interfaces.Profile
@@ -53,7 +54,7 @@ class PrepareBgDataWorker(
         val bgListArray: MutableList<DataPointWithLabelInterface> = ArrayList()
         for (bg in data.overviewData.bgReadingsArray) {
             if (bg.timestamp < data.overviewData.fromTime || bg.timestamp > data.overviewData.toTime) continue
-            if (bg.value > data.overviewData.maxBgValue) data.overviewData.maxBgValue = bg.value
+            if (bg.rawOrSmoothed(sp) > data.overviewData.maxBgValue) data.overviewData.maxBgValue = bg.rawOrSmoothed(sp)
             bgListArray.add(GlucoseValueDataPoint(bg, defaultValueHelper, profileFunction, rh, sp))
         }
         bgListArray.sortWith { o1: DataPointWithLabelInterface, o2: DataPointWithLabelInterface -> o1.x.compareTo(o2.x) }
