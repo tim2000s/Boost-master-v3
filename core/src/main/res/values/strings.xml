@@ -471,9 +471,6 @@
     <string name="uel_exit_aaps">EXIT AAPS</string>
     <string name="uel_plugin_enabled">PLUGIN ENABLED</string>
     <string name="uel_plugin_disabled">PLUGIN DISABLED</string>
-    <string name="uel_tsunami">TSUNAMI</string>
-    <string name="uel_tsunami_bolus">TSUNAMI+BOLUS</string>
-    <string name="uel_cancel_tsunami">CANCEL TSUNAMI</string>
     <string name="uel_unknown">UNKNOWN</string>
     <string name="ue_string">String</string>
     <string name="ue_source">Source</string>
@@ -601,7 +598,11 @@
     <string name="autotune_run_with_error">Error during last Autotune run</string>
 
     <!-- Tsunami -->
+    <string name="uel_tsunami">TSUNAMI</string>
+    <string name="uel_tsunami_bolus">TSUNAMI+BOLUS</string>
+    <string name="uel_cancel_tsunami">CANCEL TSUNAMI</string>
     <string name="tsunami_shortname">TSU</string>
+    <!-- Tsunami -->
 
     <plurals name="days">
         <item quantity="one">%1$d day</item>
