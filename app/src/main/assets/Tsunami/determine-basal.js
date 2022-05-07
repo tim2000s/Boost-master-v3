@@ -323,19 +323,25 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (profile.tsunamiActive) {
         tsuMode = 2;
         deltaReductionPCT = 1;
-        SMBcap = profile.tsuSMBCap * Math.min(profile.percentage / 100, 1.3); //MP: User-set may SMB size for TAE. SMBcap grows and shrinks with profile percentage;;
+        SMBcap = profile.tsuSMBCap; //MP: User-set may SMB size for TAE.
+        if (profile.tsuSMBCapScaling) {
+        SMBcap = SMBcap * Math.min(profile.percentage / 100, 1.3); //SMBcap grows and shrinks with profile percentage;
+        }
         insulinReqPCT = profile.tsuInsReqPCT / 100; // User-set percentage to modify insulin required
-        startTime = profile.tsuStart;
-        endTime = profile.tsuEnd;
-        activity_target = 0.75; // MP for near-constant deltas
+        startTime = 0; // dummy value
+        endTime = 23; // dummy value
+        activity_target = profile.tsuActivityTarget; // MP for small deltas
     } else if (profile.enableWaveMode) {
         tsuMode = 1;
         deltaReductionPCT = 0.5;
-        SMBcap = profile.waveSMBCap * Math.min(profile.percentage / 100, 1.3); //MP: User-set may SMB size for TAE. SMBcap grows and shrinks with profile percentage;;
+        SMBcap = profile.waveSMBCap; //MP: User-set may SMB size for TAE.
+        if (profile.waveSMBCapScaling) {
+        SMBcap = SMBcap * Math.min(profile.percentage / 100, 1.3); //SMBcap grows and shrinks with profile percentage;
+        }
         insulinReqPCT = profile.waveInsReqPCT / 100; // User-set percentage to modify insulin required
         startTime = profile.waveStart;
         endTime = profile.waveEnd;
-        activity_target = 0.5; // MP for near-constant deltas
+        activity_target = profile.waveActivityTarget; // MP for small deltas
     }
 
     // active hours redefinition (allowing end times < start times)
