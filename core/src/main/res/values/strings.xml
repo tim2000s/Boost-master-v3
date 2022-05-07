@@ -73,6 +73,7 @@
     <string name="key_autotune_additional_log" translatable="false">autotune_additional_log</string>
     <string name="key_autotune_plugin" translatable="false">key_autotune_plugin</string>
     <string name="key_autotune_last_run" translatable="false">key_autotune_last_run</string>
+    <string name="key_use_data_smoothing" translatable="false">plot_smoothed_data</string>
 
     <!--    General-->
     <string name="refresh">Refresh</string>

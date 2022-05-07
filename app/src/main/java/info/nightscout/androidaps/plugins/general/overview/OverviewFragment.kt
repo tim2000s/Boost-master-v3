@@ -770,7 +770,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     fun updateBg() {
         _binding ?: return
         val units = profileFunction.getUnits()
-        binding.infoLayout.bg.text = overviewData.lastBg?.valueToUnitsString(units)
+        binding.infoLayout.bg.text = overviewData.lastBg?.valueToUnitsString(units, sp)
             ?: rh.gs(R.string.notavailable)
         binding.infoLayout.bg.setTextColor(overviewData.lastBgColor(context))
         binding.infoLayout.arrow.setImageResource(trendCalculator.getTrendArrow(overviewData.lastBg).directionToIcon())

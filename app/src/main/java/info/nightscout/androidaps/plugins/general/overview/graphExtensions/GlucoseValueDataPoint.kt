@@ -8,17 +8,23 @@ import info.nightscout.androidaps.interfaces.GlucoseUnit
 import info.nightscout.androidaps.interfaces.ProfileFunction
 import info.nightscout.androidaps.utils.DefaultValueHelper
 import info.nightscout.androidaps.interfaces.ResourceHelper
+import info.nightscout.shared.sharedPreferences.SP
 import javax.inject.Inject
 
 class GlucoseValueDataPoint @Inject constructor(
     val data: GlucoseValue,
     private val defaultValueHelper: DefaultValueHelper,
     private val profileFunction: ProfileFunction,
-    private val rh: ResourceHelper
+    private val rh: ResourceHelper,
+    private val sp: SP
 ) : DataPointWithLabelInterface {
 
-    fun valueToUnits(units: GlucoseUnit): Double =
-        if (units == GlucoseUnit.MGDL) data.value else data.value * Constants.MGDL_TO_MMOLL
+    fun valueToUnits(units: GlucoseUnit): Double {
+        var bg: Double
+        if (sp.getBoolean(info.nightscout.androidaps.R.string.key_use_data_smoothing, false)) bg = data.smoothed else bg = data.value
+        if (units == GlucoseUnit.MGDL) bg else bg * Constants.MGDL_TO_MMOLL
+        return bg
+    }
 
     override fun getX(): Double = data.timestamp.toDouble()
     override fun getY(): Double = valueToUnits(profileFunction.getUnits())

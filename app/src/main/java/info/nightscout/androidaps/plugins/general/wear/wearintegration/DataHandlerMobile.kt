@@ -350,7 +350,7 @@ class DataHandlerMobile @Inject constructor(
 
         val bolusWizard = BolusWizard(injector).doCalc(
             profile, profileName, tempTarget,
-            carbsAfterConstraints, cobInfo.displayCob!!, bgReading.valueToUnits(profileFunction.getUnits()),
+            carbsAfterConstraints, cobInfo.displayCob!!, bgReading.valueToUnits(profileFunction.getUnits(), sp),
             0.0, percentage, useBG, useCOB, useBolusIOB, useBasalIOB, false, useTT, useTrend, false
         )
         val insulinAfterConstraints = bolusWizard.insulinAfterConstraints
@@ -801,7 +801,7 @@ class DataHandlerMobile @Inject constructor(
         val finalLastRun = loop.lastRun
         if (sp.getBoolean("wear_predictions", true) && finalLastRun?.request?.hasPredictions == true && finalLastRun.constraintsProcessed != null) {
             val predArray = finalLastRun.constraintsProcessed!!.predictions
-                .stream().map { bg: GlucoseValue -> GlucoseValueDataPoint(bg, defaultValueHelper, profileFunction, rh) }
+                .stream().map { bg: GlucoseValue -> GlucoseValueDataPoint(bg, defaultValueHelper, profileFunction, rh, sp) }
                 .collect(Collectors.toList())
             if (predArray.isNotEmpty())
                 for (bg in predArray) if (bg.data.value > 39)
@@ -888,7 +888,7 @@ class DataHandlerMobile @Inject constructor(
 
         return EventData.SingleBg(
             timeStamp = glucoseValue.timestamp,
-            sgvString = glucoseValue.valueToUnitsString(units),
+            sgvString = glucoseValue.valueToUnitsString(units, sp),
             glucoseUnits = units.asText,
             slopeArrow = trendCalculator.getTrendArrow(glucoseValue).symbol,
             delta = glucoseStatus?.let { deltaString(it.delta, it.delta * Constants.MGDL_TO_MMOLL, units) } ?: "--",
