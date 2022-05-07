@@ -56,7 +56,6 @@ import info.nightscout.androidaps.plugins.general.overview.activities.QuickWizar
 import info.nightscout.androidaps.plugins.general.overview.events.*
 import info.nightscout.androidaps.plugins.general.overview.graphData.GraphData
 import info.nightscout.androidaps.plugins.general.overview.notifications.NotificationStore
-import info.nightscout.androidaps.plugins.general.wear.events.EventWearInitiateAction
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.GlucoseStatusProvider
 import info.nightscout.androidaps.plugins.pump.common.defs.PumpType
 import info.nightscout.androidaps.plugins.pump.omnipod.eros.OmnipodErosPumpPlugin
@@ -71,13 +70,14 @@ import info.nightscout.androidaps.utils.TrendCalculator
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.buildHelper.BuildHelper
 import info.nightscout.androidaps.utils.protection.ProtectionCheck
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.androidaps.utils.ui.SingleClickButton
 import info.nightscout.androidaps.utils.ui.UIRunnable
 import info.nightscout.androidaps.utils.wizard.QuickWizard
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.sharedPreferences.SP
+import info.nightscout.shared.weardata.EventData
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
 import java.util.*
@@ -168,7 +168,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         val landscape = screenHeight < screenWidth
 
         skinProvider.activeSkin().preProcessLandscapeOverviewLayout(dm, binding, landscape, rh.gb(R.bool.isTablet), smallHeight)
-        binding.nsclientLayout.visibility = config.NSCLIENT.toVisibility()
+        binding.nsclientCard.visibility = config.NSCLIENT.toVisibility()
 
         binding.notifications.setHasFixedSize(false)
         binding.notifications.layoutManager = LinearLayoutManager(view.context)
@@ -421,7 +421,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                                             ?: "".toSpanned(), {
                                                                       uel.log(Action.ACCEPTS_TEMP_BASAL, Sources.Overview)
                                                                       (context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?)?.cancel(Constants.notificationID)
-                                                                      rxBus.send(EventWearInitiateAction("cancelChangeRequest"))
+                                                                      rxBus.send(EventMobileToWear(EventData.CancelNotification(dateUtil.now())))
                                                                       Thread { loop.acceptChangeRequest() }.run()
                                                                       binding.buttonsLayout.acceptTempButton.visibility = View.GONE
                                                                   })
@@ -770,7 +770,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     fun updateBg() {
         _binding ?: return
         val units = profileFunction.getUnits()
-        binding.infoLayout.bg.text = overviewData.lastBg?.valueToUnitsString(units)
+        binding.infoLayout.bg.text = overviewData.lastBg?.valueToUnitsString(units, sp)
             ?: rh.gs(R.string.notavailable)
         binding.infoLayout.bg.setTextColor(overviewData.lastBgColor(context))
         binding.infoLayout.arrow.setImageResource(trendCalculator.getTrendArrow(overviewData.lastBg).directionToIcon())
@@ -823,31 +823,28 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             profileFunction.getProfile()?.let {
                 if (it is ProfileSealed.EPS) {
                     if (it.value.originalPercentage != 100 || it.value.originalTimeshift != 0L || it.value.originalDuration != 0L)
-                        rh.gac(context, R.attr.ribbonWarningColor)
-                    else rh.gac(context, R.attr.ribbonDefaultColor)
+                        R.attr.ribbonWarningColor
+                    else R.attr.ribbonDefaultColor
                 } else if (it is ProfileSealed.PS) {
-                    rh.gac(context, R.attr.ribbonDefaultColor)
+                    R.attr.ribbonDefaultColor
                 } else {
-                    rh.gac(context, R.attr.ribbonDefaultColor)
+                    R.attr.ribbonDefaultColor
                 }
-            } ?: rh.gac(context, R.attr.ribbonCriticalColor)
+            } ?: R.attr.ribbonCriticalColor
 
         val profileTextColor =
             profileFunction.getProfile()?.let {
                 if (it is ProfileSealed.EPS) {
                     if (it.value.originalPercentage != 100 || it.value.originalTimeshift != 0L || it.value.originalDuration != 0L)
-                        rh.gac(context, R.attr.ribbonTextWarningColor)
-                    else rh.gac(context, R.attr.ribbonTextDefaultColor)
+                        R.attr.ribbonTextWarningColor
+                    else R.attr.ribbonTextDefaultColor
                 } else if (it is ProfileSealed.PS) {
-                    rh.gac(context, R.attr.ribbonTextDefaultColor)
+                    R.attr.ribbonTextDefaultColor
                 } else {
-                    rh.gac(context, R.attr.ribbonTextDefaultColor)
+                    R.attr.ribbonTextDefaultColor
                 }
-            } ?: rh.gac(context, R.attr.ribbonTextDefaultColor)
-
-        binding.activeProfile.text = profileFunction.getProfileNameWithRemainingTime()
-        binding.activeProfile.setBackgroundColor(profileBackgroundColor)
-        binding.activeProfile.setTextColor(profileTextColor)
+            } ?: R.attr.ribbonTextDefaultColor
+        setRibbon(binding.activeProfile, profileTextColor, profileBackgroundColor, profileFunction.getProfileNameWithRemainingTime())
     }
 
     private fun updateTemporaryBasal() {
@@ -909,7 +906,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             activity?.let { OKDialog.show(it, rh.gs(R.string.iob), overviewData.iobDialogText(iobCobCalculator)) }
         }
         // cob
-        var cobText = overviewData.cobInfo(iobCobCalculator).displayText(rh, dateUtil, buildHelper.isEngineeringMode()) ?: rh.gs(R.string.value_unavailable_short)
+        var cobText = overviewData.cobInfo(iobCobCalculator).displayText(rh, dateUtil, false) ?: rh.gs(R.string.value_unavailable_short)
 
         val constraintsProcessed = loop.lastRun?.constraintsProcessed
         val lastRun = loop.lastRun
@@ -935,9 +932,12 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         val units = profileFunction.getUnits()
         val tempTarget = overviewData.temporaryTarget
         if (tempTarget != null) {
-            binding.tempTarget.setTextColor(rh.gac(context, R.attr.ribbonTextWarningColor))
-            binding.tempTarget.setBackgroundColor(rh.gac(context, R.attr.ribbonWarningColor))
-            binding.tempTarget.text = Profile.toTargetRangeString(tempTarget.lowTarget, tempTarget.highTarget, GlucoseUnit.MGDL, units) + " " + dateUtil.untilString(tempTarget.end, rh)
+            setRibbon(
+                binding.tempTarget,
+                R.attr.ribbonTextWarningColor,
+                R.attr.ribbonWarningColor,
+                Profile.toTargetRangeString(tempTarget.lowTarget, tempTarget.highTarget, GlucoseUnit.MGDL, units) + " " + dateUtil.untilString(tempTarget.end, rh)
+            )
         } else {
             // If the target is not the same as set in the profile then oref has overridden it
             profileFunction.getProfile()?.let { profile ->
@@ -945,13 +945,19 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
 
                 if (targetUsed != 0.0 && abs(profile.getTargetMgdl() - targetUsed) > 0.01) {
                     aapsLogger.debug("Adjusted target. Profile: ${profile.getTargetMgdl()} APS: $targetUsed")
-                    binding.tempTarget.text = Profile.toTargetRangeString(targetUsed, targetUsed, GlucoseUnit.MGDL, units)
-                    binding.tempTarget.setTextColor(rh.gac(context, R.attr.ribbonTextWarningColor))
-                    binding.tempTarget.setBackgroundColor(rh.gac(context, R.attr.tempTargetBackgroundColor))
+                    setRibbon(
+                        binding.tempTarget,
+                        R.attr.ribbonTextWarningColor,
+                        R.attr.tempTargetBackgroundColor,
+                        Profile.toTargetRangeString(targetUsed, targetUsed, GlucoseUnit.MGDL, units)
+                    )
                 } else {
-                    binding.tempTarget.setTextColor(rh.gac(context, R.attr.ribbonTextDefaultColor))
-                    binding.tempTarget.setBackgroundColor(rh.gac(context, R.attr.ribbonDefaultColor))
-                    binding.tempTarget.text = Profile.toTargetRangeString(profile.getTargetLowMgdl(), profile.getTargetHighMgdl(), GlucoseUnit.MGDL, units)
+                    setRibbon(
+                        binding.tempTarget,
+                        R.attr.ribbonTextDefaultColor,
+                        R.attr.ribbonDefaultColor,
+                        Profile.toTargetRangeString(profile.getTargetLowMgdl(), profile.getTargetHighMgdl(), GlucoseUnit.MGDL, units)
+                    )
                 }
             }
         }
@@ -974,6 +980,15 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.tsunamiButtonColor))
             binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.defaultButtonColor))
             binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
+        }
+    }
+
+    private fun setRibbon(view: TextView, attrResText: Int, attrResBack: Int, text: String) {
+        with(view) {
+            setText(text)
+            setBackgroundColor(rh.gac(context, attrResBack))
+            setTextColor(rh.gac(context, attrResText))
+            compoundDrawables[0]?.setTint(rh.gac(context, attrResText))
         }
     }
 

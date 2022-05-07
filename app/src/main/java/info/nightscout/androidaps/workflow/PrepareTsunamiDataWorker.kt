@@ -15,10 +15,9 @@ import info.nightscout.androidaps.interfaces.ProfileFunction
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.general.overview.OverviewData
 import info.nightscout.androidaps.plugins.general.overview.OverviewPlugin
-import info.nightscout.androidaps.plugins.general.overview.events.EventUpdateOverviewGraph
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventIobCalculationProgress
 import info.nightscout.androidaps.receivers.DataWorker
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import javax.inject.Inject
 import kotlin.math.max
 
@@ -55,7 +54,7 @@ class PrepareTsunamiDataWorker(
         var lastTsunami = -1.0
         loop.lastRun?.constraintsProcessed?.let { toTime = max(it.latestPredictionsTime, toTime) }
         var time = data.overviewData.fromTime
-        val upperLimit = data.overviewData.maxBgValue
+        val upperLimit = maxOf(data.overviewData.maxBgValue, data.overviewData.maxIAValue, data.overviewData.maxBasalValueFound, data.overviewData.maxCobValueFound)
 
         while (time < toTime) {
             val progress = (time - data.overviewData.fromTime).toDouble() / (data.overviewData.toTime - data.overviewData.fromTime) * 100.0
@@ -76,11 +75,12 @@ class PrepareTsunamiDataWorker(
         // final points
         val tsuEnabled = repository.getTsunamiModeActiveAt(System.currentTimeMillis()).blockingGet()
         if (tsuEnabled is ValueWrapper.Existing) {
-            tsunamiArray.add(DataPoint((tsuEnabled.value.timestamp + tsuEnabled.value.duration).toDouble(), upperLimit))
+            tsunamiArray.add(DataPoint((tsuEnabled.value.timestamp + tsuEnabled.value.duration).toDouble(), upperLimit)) //MP upperLimit must not exceed chart height, else background will be invisible!
             tsunamiArray.add(DataPoint((tsuEnabled.value.timestamp + tsuEnabled.value.duration).toDouble(), 0.0))
         }
 
         // create series
+        //data.overviewData.tempBasalGraphSeries = LineGraphSeries(Array(tempBasalArray.size) { i -> tempBasalArray[i] }).also {
         data.overviewData.tsunamiSeries = LineGraphSeries(Array(tsunamiArray.size) { i -> tsunamiArray[i] }).also {
             it.isDrawBackground = true
             it.backgroundColor = Color.argb(50, 0, 211, 141)

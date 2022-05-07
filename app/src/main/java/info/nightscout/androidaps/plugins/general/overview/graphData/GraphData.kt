@@ -17,7 +17,7 @@ import info.nightscout.androidaps.plugins.general.overview.graphExtensions.Doubl
 import info.nightscout.androidaps.plugins.general.overview.graphExtensions.TimeAsXAxisLabelFormatter
 import info.nightscout.androidaps.utils.DefaultValueHelper
 import info.nightscout.androidaps.utils.Round
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -69,17 +69,8 @@ class GraphData(
         })
     }
     //MP graph test
-    fun addTsunamiArea(/* fromTime: Long, toTime: Long, startLine: Double, endLine: Double */) {
-        /*
-        val tsunamiAreaDataPoints = arrayOf(
-            DoubleDataPoint(fromTime.toDouble(), startLine, endLine),
-            DoubleDataPoint(toTime.toDouble(), startLine, endLine)
-        )
-         */
-        //overviewData.prepareTsunamiData(overviewData.fromTime.toString())
-        //val scale = defaultValueHelper.determineLowLine() / maxY / 1.2
+    fun addTsunamiArea() {
         addSeries(overviewData.tsunamiSeries)
-        //overviewData.basalScale.multiplier = maxY * scale / overviewData.maxBasalValueFound
     }
 
     fun addBasals() {

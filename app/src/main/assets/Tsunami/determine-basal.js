@@ -309,8 +309,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     
     // General variable definitions
     var activity_controller = false; //MP TAE main switch; controls whether TAE (true) or oref1 (false) is used
-    var tae_bg = glucose_status.ssBGnow; //MP BG used by TAE
-    var tae_delta = Math.min(glucose_status.ssDnow, glucose_status.delta); //MP Delta used by TAE will switch between sensor data and smoothed data, depending on which is lower - for added safety
     var deltaScore = Math.min(1, Math.max(glucose_status.deltaScore, 0)); //MP Modifies insulinReqPCT; deltaScore grows larger the largest the previous deltas were, until it reaches 1
 
     // Specific variable definitions & determination of loop mode
@@ -325,19 +323,25 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     if (profile.tsunamiActive) {
         tsuMode = 2;
         deltaReductionPCT = 1;
-        SMBcap = profile.tsuSMBCap * Math.min(profile.percentage / 100, 1.3); //MP: User-set may SMB size for TAE. SMBcap grows and shrinks with profile percentage;;
+        SMBcap = profile.tsuSMBCap; //MP: User-set may SMB size for TAE.
+        if (profile.tsuSMBCapScaling) {
+        SMBcap = SMBcap * Math.min(profile.percentage / 100, 1.3); //SMBcap grows and shrinks with profile percentage;
+        }
         insulinReqPCT = profile.tsuInsReqPCT / 100; // User-set percentage to modify insulin required
-        startTime = profile.tsuStart;
-        endTime = profile.tsuEnd;
-        activity_target = 0.75; // MP for near-constant deltas
+        startTime = 0; // dummy value
+        endTime = 23; // dummy value
+        activity_target = profile.tsuActivityTarget; // MP for small deltas
     } else if (profile.enableWaveMode) {
         tsuMode = 1;
         deltaReductionPCT = 0.5;
-        SMBcap = profile.waveSMBCap * Math.min(profile.percentage / 100, 1.3); //MP: User-set may SMB size for TAE. SMBcap grows and shrinks with profile percentage;;
+        SMBcap = profile.waveSMBCap; //MP: User-set may SMB size for TAE.
+        if (profile.waveSMBCapScaling) {
+        SMBcap = SMBcap * Math.min(profile.percentage / 100, 1.3); //SMBcap grows and shrinks with profile percentage;
+        }
         insulinReqPCT = profile.waveInsReqPCT / 100; // User-set percentage to modify insulin required
         startTime = profile.waveStart;
         endTime = profile.waveEnd;
-        activity_target = 0.5; // MP for near-constant deltas
+        activity_target = profile.waveActivityTarget; // MP for small deltas
     }
 
     // active hours redefinition (allowing end times < start times)
@@ -362,15 +366,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //MP Calculate absolute activity to neutralise delta
     var act_curr = glucose_status.sensorLagActivity; //MP Current delta value, due to sensor lag, is more likely to represent situation from about 10 minutes ago - therefore activity from 10 minutes ago is used for activity calculations.
     var act_future = glucose_status.futureActivity; //MP prognosed activity in "peak-time" minutes (peak-time must be set by the user using free-peak oref)
-    var pure_delta = round(tae_delta + Math.max(act_curr * profile_sens, 0), 1); //MP 5-minute-delta value if insulin activity was zero;
+    var pure_delta = round(Math.min(glucose_status.delta + Math.max(act_curr * profile_sens, 0), 35), 1); //MP 5-minute-delta value if insulin activity was zero;
     var act_targetDelta = (pure_delta / profile_sens) * deltaReductionPCT; //MP 5-min-insulin activity at which delta should be at the desired target value (if delta remains unchanged)
     var act_missing;
 
     //MP Switch between activity control and activity build-up modes
-    if (tae_delta <= 4.1) {
+    if (glucose_status.delta <= 4.1) {
         //MP Adjust activity target to activity_target % of current activity if glucose is near constant / delta is low (near-constant activity)
         act_missing = round((act_curr * activity_target - Math.max(act_future, 0)) / 5, 4); //MP Use activity_target% of current activity as target activity in the future; Divide by 5 to get per-minute activity
-        deltaScore = Math.min(1, Math.max((tae_bg - target_bg) / 100, 0)); //MP redefines deltaScore as it otherwise would be near-zero (low deltas). The higher the bg, the larger deltaScore
+        deltaScore = Math.min(1, Math.max((bg - target_bg) / 100, 0)); //MP redefines deltaScore as it otherwise would be near-zero (low deltas). The higher the bg, the larger deltaScore
     } else {
         //MP Escalate activity at medium to high delta (activity build-up)
         act_missing = round((act_targetDelta - Math.max(act_future, 0)) / 5, 4); //MP Calculate required activity to end a rise in t minutes; Divide by 5 to get per-minute activity
@@ -433,7 +437,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     iterations -= 1; //MP Minus 1 as the iterations are overcounted by 1 in the while loop
 
     //MP If the usual bg correction equation yields a higher insulin requirement than TAE,
-    var bg_correction = (tae_bg - target_bg) / sens;
+    var bg_correction = (bg - target_bg) / sens;
     if (bg_correction > iob_data.iob && bg_correction > tsunami_insreq) {
         tsunami_insreq = bg_correction;
     }
@@ -443,18 +447,18 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     insulinReqPCT = round(insulinReqPCT * deltaScore, 3); //MP Modify insulinReqPCT in dependence of previous delta values
     var bgScore_upper_threshold = 140; //MP BG above which no penalty will be given
     var bgScore_lower_threshold = 80; //MP BG below which tae will not deliver SMBs
-    var bgScore = round(Math.min((tae_bg - bgScore_lower_threshold) / (bgScore_upper_threshold - bgScore_lower_threshold), 1), 3); //MP Penalty at low or near-target bg values. Modifies SMBcap.
+    var bgScore = round(Math.min((bg - bgScore_lower_threshold) / (bgScore_upper_threshold - bgScore_lower_threshold), 1), 3); //MP Penalty at low or near-target bg values. Modifies SMBcap.
     SMBcap = round(SMBcap * bgScore, 2);
 
     //MP Enable TAE SMB sizing if the safety conditions are all met
     if (referenceTimer >= startTime &&
         referenceTimer <= endTime &&
-        tae_delta >= 0 &&
-        tae_bg >= target_bg &&
+        glucose_status.delta >= 0 &&
+        bg >= target_bg &&
         iob_data.iob > 0.1 &&
         //meal_data.mealCOB == 0 &&
         act_curr > 0 &&
-        tsunami_insreq + iob_data.iob >= (tae_bg - target_bg) / profile_sens &&
+        tsunami_insreq + iob_data.iob >= (bg - target_bg) / profile_sens &&
         (profile.tsunamiActive || profile.enableWaveMode)) {
         activity_controller = true; //MP Enable TAE
         //MP Reporting messages
@@ -472,11 +476,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("act. future: " + glucose_status.futureActivity);
         console.log("miss./act. future: " + act_missing);
         console.log("-------------");
+        console.log("bg: " + bg);
         console.log("delta: " + glucose_status.delta);
-        console.log("smoothed delta: " + glucose_status.ssDnow);
-        console.log("used delta: " + tae_delta);
         console.log("pure delta: " + pure_delta);
-        console.log("used bg: " + tae_bg);
         console.log("-------------");
         console.log("deltaScore_live: " + round(deltaScore, 3));
         console.log("bgScore_live: " + bgScore);
@@ -487,7 +489,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (bg_correction > iob_data.iob && bg_correction > tsunami_insreq) {
             console.log("Mode: IOB too low, correcting for BG.");
         } else {
-            if (tae_delta <= 4.1 && act_curr > 0) {
+            if (glucose_status.delta <= 4.1 && act_curr > 0) {
                 console.log("Mode: Activity control. Target: " + round(activity_target * 100, 0) + "%");
             } else if (act_curr > 0) {
                 console.log("Mode: Building up activity.");
@@ -509,10 +511,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (referenceTimer < startTime || referenceTimer > endTime) {
             console.log("Outside active hours.");
         }
-        if (tae_delta < 0) {
-            console.log("Negative delta reported. (" + tae_delta + ")");
+        if (glucose_status.delta < 0) {
+            console.log("Negative delta reported. (" + glucose_status.delta + ")");
         }
-        if (tae_bg < target_bg) {
+        if (bg < target_bg) {
             console.log("Glucose is below target.");
         }
         if (iob_data.iob <= 0.1) {
@@ -524,7 +526,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         if (act_curr <= 0) {
             console.log("Insulin activity is negative or 0.");
         }
-        if (tsunami_insreq + iob_data.iob < (tae_bg - target_bg) / profile_sens) {
+        if (tsunami_insreq + iob_data.iob < (bg - target_bg) / profile_sens) {
             console.log("Incompatible insulin & glucose status. Let oref1 take over for now.");
         }
         if (!profile.tsunamiActive) {
@@ -1475,11 +1477,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason += "; act. future: " + glucose_status.futureActivity;
                 rT.reason += "; miss./act. future: " + act_missing;
                 rT.reason += "; ###";
-                rT.reason += " delta: " + glucose_status.delta;
-                rT.reason += "; smoothed delta: " + glucose_status.ssDnow;
-                rT.reason += "; used delta: " + tae_delta;
+                rT.reason += " bg: " + bg;
+                rT.reason += "; delta: " + glucose_status.delta;
                 rT.reason += "; pure delta: " + pure_delta;
-                rT.reason += "; used bg: " + tae_bg;
                 rT.reason += "; ###";
                 rT.reason += " deltaScore_live: " + round(deltaScore, 3);
                 rT.reason += "; bgScore_live: " + bgScore;
@@ -1491,7 +1491,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (bg_correction > iob_data.iob && bg_correction > tsunami_insreq) {
                     rT.reason += " Mode: IOB too low, correcting for BG.";
                 } else {
-                    if (tae_delta <= 4.1 && act_curr > 0) {
+                    if (glucose_status.delta <= 4.1 && act_curr > 0) {
                         rT.reason += " Mode: Activity control. Target: " + round(activity_target * 100, 0) + "%";
                     } else if (act_curr > 0) {
                         rT.reason += " Mode: Building up activity.";
@@ -1504,8 +1504,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason += "; insulinReqPCT_live: " + round(profile.insulinReqPCT * deltaScore, 3);
                 rT.reason += "; SMBcap_live: " + SMBcap;
                 rT.reason += "; tsunami_insreq: " + tsunami_insreq;
-                rT.reason += "; tae_delta: " + tae_delta;
-                rT.reason += "; tae_bg: " + tae_bg;
+                rT.reason += "; glucose_status.delta: " + glucose_status.delta;
+                rT.reason += "; bg: " + bg;
                 */
             }
 

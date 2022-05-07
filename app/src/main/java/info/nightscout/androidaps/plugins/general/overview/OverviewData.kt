@@ -32,7 +32,7 @@ import info.nightscout.androidaps.plugins.iob.iobCobCalculator.CobInfo
 import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.DefaultValueHelper
 import info.nightscout.androidaps.utils.T
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.sharedPreferences.SP
 import java.util.*
@@ -125,12 +125,14 @@ class OverviewData @Inject constructor(
 
     val isLow: Boolean
         get() = lastBg?.let { lastBg ->
-            lastBg.valueToUnits(profileFunction.getUnits()) < defaultValueHelper.determineLowLine()
+            lastBg.valueToUnits(profileFunction.getUnits(), sp) < defaultValueHelper
+                .determineLowLine()
         } ?: false
 
     val isHigh: Boolean
         get() = lastBg?.let { lastBg ->
-            lastBg.valueToUnits(profileFunction.getUnits()) > defaultValueHelper.determineHighLine()
+            lastBg.valueToUnits(profileFunction.getUnits(), sp) > defaultValueHelper
+                .determineHighLine()
         } ?: false
 
     @ColorInt

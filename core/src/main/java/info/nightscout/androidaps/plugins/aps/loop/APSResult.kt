@@ -18,7 +18,7 @@ import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker
 import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.DecimalFormatter
 import info.nightscout.androidaps.utils.HtmlHelper.fromHtml
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.sharedPreferences.SP
 import org.json.JSONException
 import org.json.JSONObject
@@ -199,6 +199,7 @@ open class APSResult @Inject constructor(val injector: HasAndroidInjector) {
                                 raw = 0.0,
                                 noise = 0.0,
                                 value = iob.getInt(i).toDouble(),
+                                smoothed = iob.getInt(i).toDouble(),
                                 timestamp = startTime + i * 5 * 60 * 1000L,
                                 sourceSensor = GlucoseValue.SourceSensor.IOB_PREDICTION,
                                 trendArrow = GlucoseValue.TrendArrow.NONE
@@ -213,6 +214,7 @@ open class APSResult @Inject constructor(val injector: HasAndroidInjector) {
                                 raw = 0.0,
                                 noise = 0.0,
                                 value = iob.getInt(i).toDouble(),
+                                smoothed = iob.getInt(i).toDouble(),
                                 timestamp = startTime + i * 5 * 60 * 1000L,
                                 sourceSensor = GlucoseValue.SourceSensor.A_COB_PREDICTION,
                                 trendArrow = GlucoseValue.TrendArrow.NONE
@@ -227,6 +229,7 @@ open class APSResult @Inject constructor(val injector: HasAndroidInjector) {
                                 raw = 0.0,
                                 noise = 0.0,
                                 value = iob.getInt(i).toDouble(),
+                                smoothed = iob.getInt(i).toDouble(),
                                 timestamp = startTime + i * 5 * 60 * 1000L,
                                 sourceSensor = GlucoseValue.SourceSensor.COB_PREDICTION,
                                 trendArrow = GlucoseValue.TrendArrow.NONE
@@ -241,6 +244,7 @@ open class APSResult @Inject constructor(val injector: HasAndroidInjector) {
                                 raw = 0.0,
                                 noise = 0.0,
                                 value = iob.getInt(i).toDouble(),
+                                smoothed = iob.getInt(i).toDouble(),
                                 timestamp = startTime + i * 5 * 60 * 1000L,
                                 sourceSensor = GlucoseValue.SourceSensor.UAM_PREDICTION,
                                 trendArrow = GlucoseValue.TrendArrow.NONE
@@ -255,6 +259,7 @@ open class APSResult @Inject constructor(val injector: HasAndroidInjector) {
                                 raw = 0.0,
                                 noise = 0.0,
                                 value = iob.getInt(i).toDouble(),
+                                smoothed = iob.getInt(i).toDouble(),
                                 timestamp = startTime + i * 5 * 60 * 1000L,
                                 sourceSensor = GlucoseValue.SourceSensor.ZT_PREDICTION,
                                 trendArrow = GlucoseValue.TrendArrow.NONE

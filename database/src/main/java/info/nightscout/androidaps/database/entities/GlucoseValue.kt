@@ -39,6 +39,7 @@ data class GlucoseValue(
     override var utcOffset: Long = TimeZone.getDefault().getOffset(timestamp).toLong(),
     var raw: Double?,
     var value: Double,
+    var smoothed: Double,
     var trendArrow: TrendArrow,
     var noise: Double?,
     var sourceSensor: SourceSensor
@@ -111,6 +112,7 @@ data class GlucoseValue(
         GLUNOVO_NATIVE("Glunovo"),
         MM_600_SERIES("MM600Series"),
         EVERSENSE("Eversense"),
+        AIDEX("GlucoRx Aidex"),
         RANDOM("Random"),
         UNKNOWN("Unknown"),
 

@@ -27,13 +27,6 @@
             validate:floatmaxNumber="25.0"
             validate:floatminNumber="0"
             validate:testType="floatNumericRange" />
-        <!-- MP Make data smoothing optional
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="@string/key_enable_datasmoothing"
-            android:summary="@string/enable_datasmoothing_summary"
-            android:title="@string/enable_datasmoothing" />
-        MP data smoothing end -->
 
         <androidx.preference.PreferenceScreen
             android:key="tsunami_mode_settings"
@@ -48,50 +41,11 @@
                 validate:floatmaxNumber="3"
                 validate:floatminNumber="0.1"
                 validate:testType="floatNumericRange" />
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="65"
-                android:dialogMessage="@string/insulinReqPCT_summary"
-                android:inputType="numberDecimal"
-                android:key="@string/key_insulinReqPCT"
-                android:title="@string/insulinReqPCT_title"
-                validate:floatmaxNumber="100"
-                validate:floatminNumber="50"
-                validate:testType="floatNumericRange" />
-<!--
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="11"
-                android:dialogMessage="@string/tsunami_start_summary"
-                android:digits="0123456789.,"
-                android:inputType="number"
-                android:key="@string/key_tsunami_start"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:title="@string/tsunami_start_title"
-                validate:floatmaxNumber="23"
-                validate:floatminNumber="0"
-                validate:testType="floatNumericRange" />
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="21"
-                android:dialogMessage="@string/tsunami_end_summary"
-                android:digits="0123456789.,"
-                android:inputType="number"
-                android:key="@string/key_tsunami_end"
-                android:maxLines="20"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:title="@string/tsunami_end_title"
-                validate:floatmaxNumber="23"
-                validate:floatminNumber="0"
-                validate:testType="floatNumericRange" />
--->
-            <!--
             <SwitchPreference
-                android:defaultValue="true"
-                android:key="@string/key_show_tsunami_button"
-                android:summary="@string/show_tsunami_button_summary"
-                android:title="@string/show_tsunami_button_title" />
-            -->
+                android:defaultValue="false"
+                android:key="@string/key_tsu_SMB_scaling"
+                android:summary="@string/tsu_SMB_scaling_summary"
+                android:title="@string/tsu_SMB_scaling_title" />
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
                 android:defaultValue="0.5"
                 android:dialogMessage="@string/prebolus_increment_button_message"
@@ -144,6 +98,32 @@
                 validate:minNumber="0"
                 validate:testType="numericRange" />
 
+            <PreferenceCategory
+                android:key="@string/key_advanced_tsunami"
+                android:title="@string/advanced_tsunami_title">
+                <Preference android:summary="@string/advanced_tsunami_disclaimer">
+                </Preference>
+
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:key="@string/key_tsu_activity_target"
+                    android:title="@string/tsu_activity_target_title"
+                    android:dialogMessage="@string/tsu_activity_target_summary"
+                    android:defaultValue="75"
+                    validate:floatmaxNumber="100"
+                    validate:floatminNumber="50"
+                    android:inputType="numberDecimal"
+                    validate:testType="floatNumericRange" />
+            </PreferenceCategory>
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="65"
+                android:dialogMessage="@string/insulinReqPCT_summary"
+                android:inputType="numberDecimal"
+                android:key="@string/key_insulinReqPCT"
+                android:title="@string/insulinReqPCT_title"
+                validate:floatmaxNumber="100"
+                validate:floatminNumber="50"
+                validate:testType="floatNumericRange" />
         </androidx.preference.PreferenceScreen>
 
         <androidx.preference.PreferenceScreen
@@ -207,16 +187,42 @@
                 validate:floatminNumber="0"
                 validate:testType="floatNumericRange" />
 
-            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+            <SwitchPreference
+                android:dependency="@string/key_use_wave_smbcap"
+                android:defaultValue="false"
+                android:key="@string/key_wave_SMB_scaling"
+                android:summary="@string/wave_SMB_scaling_summary"
+                android:title="@string/wave_SMB_scaling_title" />
+
+            <PreferenceCategory
                 android:dependency="@string/key_enable_wave_mode"
-                android:defaultValue="65"
-                android:dialogMessage="@string/wave_insulinReqPCT_message"
-                android:inputType="numberDecimal"
-                android:key="@string/key_wave_insulinReqPCT"
-                android:title="@string/wave_insulinReqPCT_title"
-                validate:floatmaxNumber="100"
-                validate:floatminNumber="30"
-                validate:testType="floatNumericRange" />
+                android:key="@string/key_advanced_wave"
+                android:title="@string/advanced_wave_title">
+                <Preference android:summary="@string/advanced_wave_disclaimer">
+                </Preference>
+
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:dependency="@string/key_enable_wave_mode"
+                    android:key="@string/key_wave_activity_target"
+                    android:title="@string/wave_activity_target_title"
+                    android:dialogMessage="@string/wave_activity_target_summary"
+                    android:defaultValue="50"
+                    validate:floatmaxNumber="100"
+                    validate:floatminNumber="50"
+                    android:inputType="numberDecimal"
+                    validate:testType="floatNumericRange" />
+
+                <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                    android:dependency="@string/key_enable_wave_mode"
+                    android:defaultValue="65"
+                    android:dialogMessage="@string/wave_insulinReqPCT_message"
+                    android:inputType="numberDecimal"
+                    android:key="@string/key_wave_insulinReqPCT"
+                    android:title="@string/wave_insulinReqPCT_title"
+                    validate:floatmaxNumber="100"
+                    validate:floatminNumber="30"
+                    validate:testType="floatNumericRange" />
+            </PreferenceCategory>
 
         </androidx.preference.PreferenceScreen>
 

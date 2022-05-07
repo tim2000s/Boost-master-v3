@@ -21,7 +21,7 @@ import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.HardLimits
 import info.nightscout.androidaps.utils.Profiler
 import info.nightscout.androidaps.utils.Round
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.shared.sharedPreferences.SP
@@ -46,7 +46,8 @@ class TsunamiPlugin @Inject constructor(
     private val dateUtil: DateUtil,
     private val repository: AppRepository,
     private val glucoseStatusProvider: GlucoseStatusProvider
-) : PluginBase(PluginDescription()
+) : PluginBase(
+    PluginDescription()
     .mainType(PluginType.APS)
     .fragmentClass(TsunamiFragment::class.java.name)
     .pluginIcon(R.drawable.ic_generic_icon)
@@ -194,7 +195,7 @@ class TsunamiPlugin @Inject constructor(
                 smbAllowed.value(),
                 uam.value(),
                 advancedFiltering.value(),
-                activePlugin.activeBgSource.javaClass.simpleName == "DexcomPlugin",
+                activePlugin.activeBgSource.javaClass.simpleName == "DexcomPlugin"
             )
             val now = System.currentTimeMillis()
             val determineBasalResultTAE = determineBasalAdapterTAEJS.invoke()

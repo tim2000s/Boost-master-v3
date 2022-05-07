@@ -469,7 +469,6 @@ L\'ENSEMBLE DES RISQUES LIÉS À LA QUALITÉ ET À LA PERFORMANCE DU PROGRAMME S
     <string name="shortenergy">En</string>
     <string name="shortprotein">Protéines</string>
     <string name="shortfat">Gras (Lipides)</string>
-    <string name="active"><![CDATA[<Actif>]]></string>
     <string name="executingrightnow">Commande exécutée à l\'instant</string>
     <string name="missed_bg_readings">Valeurs de glycémie manquantes</string>
     <string name="raise_notifications_as_android_notifications">Utiliser les notifications système pour les alertes et notifications</string>
@@ -1009,4 +1008,18 @@ L\'ENSEMBLE DES RISQUES LIÉS À LA QUALITÉ ET À LA PERFORMANCE DU PROGRAMME S
     <string name="show_hide_records">Masquer les entrées de la boucle</string>
     <string name="widget_description">Widget AndroidAPS</string>
     <string name="configure">Configurer l’opacité</string>
+    <string name="loop_status">État de la boucle</string>
+    <string name="a11y_otp_qr_code">Code QR pour configurer un mot de passe à usage unique</string>
+    <string name="a11y_open_settings">ouvrir les paramètres</string>
+    <string name="a11y_set_carb_timer">définir l\'alarme du minuteur de glucides</string>
+    <string name="device_all">Tous</string>
+    <string name="device_phone">Téléphone</string>
+    <string name="device_watch">Montre</string>
+    <string name="a11y_only_on_watch">seulement sur la montre</string>
+    <string name="a11y_only_on_phone">uniquement sur le téléphone</string>
+    <string name="a11y_drag_and_drop_handle">glissez déposez ici</string>
+    <!-- Aidex Cgms -->
+    <string name="aidex">GlucoRx Aidex</string>
+    <string name="aidex_short">Aidex</string>
+    <string name="description_source_aidex">Recevoir les valeurs de glycémie du MGC GlucoRx Aidex.</string>
 </resources>

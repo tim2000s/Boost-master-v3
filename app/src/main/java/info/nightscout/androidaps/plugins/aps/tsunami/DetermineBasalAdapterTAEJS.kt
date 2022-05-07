@@ -19,7 +19,7 @@ import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.GlucoseStatus
 import info.nightscout.androidaps.utils.Round
 import info.nightscout.shared.SafeParse
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.sharedPreferences.SP
 import org.json.JSONArray
 import org.json.JSONException
@@ -32,7 +32,6 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.IobCobCalculatorPlugin
-
 
 class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: ScriptReader, private val injector: HasAndroidInjector) : DetermineBasalAdapterInterface {
 
@@ -172,7 +171,7 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         microBolusAllowed: Boolean,
         uamAllowed: Boolean,
         advancedFiltering: Boolean,
-        isSaveCgmSource: Boolean,
+        isSaveCgmSource: Boolean
     ) {
         val pump = activePlugin.activePump
         val pumpBolusStep = pump.pumpDescription.bolusStep
@@ -204,7 +203,7 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         //if (mealData.usedMinCarbsImpact > 0) {
         //    mProfile.put("min_5m_carbimpact", mealData.usedMinCarbsImpact);
         //} else {
-        //    mProfile.put("min_5m_carbimpact", SP.getDouble(R.string.key_openapsama_min_5m_carbimpact, UAMDefaults.min_5m_carbimpact));
+        //    mProfile.put("min_5m_carbimpact", SP.getDouble(R.string.key_openapsama_min_5m_carbimpact, TAEDefaults.min_5m_carbimpact));
         //}
         this.profile.put("remainingCarbsCap", TAEDefaults.remainingCarbsCap)
         this.profile.put("enableUAM", uamAllowed)
@@ -234,48 +233,53 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         currentTemp.put("rate", tb?.convertedToAbsolute(now, profile) ?: 0.0)
         // as we have non default temps longer than 30 mintues
         if (tb != null) currentTemp.put("minutesrunning", tb.getPassedDurationToTimeInMinutes(now))
-//**********************************************************************************************************************************************
-        this.profile.put("tsuSMBCap", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_smbcap, "1")))
-        this.profile.put("tsuInsReqPCT", SafeParse.stringToDouble(sp.getString(R.string.key_insulinReqPCT, "65")))
-        this.profile.put("tsuStart", 0)
-        this.profile.put("tsuEnd", 23)
-        //this.profile.put("tsuStart", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_start, "11.0")))
-        //this.profile.put("tsuEnd", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_end, "23.0")))
-        this.profile.put("percentage", profile.percentage)
-        this.profile.put("dia", profile.dia)
 
+        iobData = iobCobCalculator.convertToJSONArray(iobArray)
+        mGlucoseStatus.put("glucose", glucoseStatus.glucose)
+        mGlucoseStatus.put("noise", glucoseStatus.noise)
+        if (sp.getBoolean(R.string.key_always_use_shortavg, false)) {
+            mGlucoseStatus.put("delta", glucoseStatus.shortAvgDelta)
+        } else {
+            mGlucoseStatus.put("delta", glucoseStatus.delta)
+        }
+        mGlucoseStatus.put("short_avgdelta", glucoseStatus.shortAvgDelta)
+        mGlucoseStatus.put("long_avgdelta", glucoseStatus.longAvgDelta)
+        mGlucoseStatus.put("date", glucoseStatus.date)
+        this.mealData.put("carbs", mealData.carbs)
+        this.mealData.put("mealCOB", mealData.mealCOB)
+        this.mealData.put("slopeFromMaxDeviation", mealData.slopeFromMaxDeviation)
+        this.mealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation)
+        this.mealData.put("lastBolusTime", mealData.lastBolusTime)
+        this.mealData.put("lastCarbTime", mealData.lastCarbTime)
+        if (constraintChecker.isAutosensModeEnabled().value()) {
+            autosensData.put("ratio", autosensDataRatio)
+        } else {
+            autosensData.put("ratio", 1.0)
+        }
+        this.microBolusAllowed = microBolusAllowed
+        smbAlwaysAllowed = advancedFiltering
+        currentTime = now
+        saveCgmSource = isSaveCgmSource
+
+        /*
+        ** Tsunami specific variables
+        */
+        // Get peak time if using a PK insulin model
         val activityPredTime_PK = TimeUnit.MILLISECONDS.toMinutes(activePlugin.activeInsulin.insulinConfiguration.peak) //MP act. pred. time for PK ins. models; target time = insulin peak time
-        val activityPredTime_PD = 65L //MP activity prediction time for pharmacodynamic model; fixed to 65 min (approx. peak time of 1 U bolus)
-        this.profile.put("peaktime", activityPredTime_PK) //            SafeParse.stringToDouble(sp.getString(R.string.key_insulin_oref_peak, "45"))
+
+        // Get the ID of the currently used insulin preset
         val insulinInterface = activePlugin.activeInsulin
         val insulinID = insulinInterface.id.value
-        this.profile.put("insulinID", insulinID)
+
+        // Get the ID of the current tsunami mode (currently unused)
         val tsunamiMode = repository.getTsunamiModeActiveAt(now).blockingGet()
         val tsunamiActive:Boolean = tsunamiMode is ValueWrapper.Existing
-        var tsunamiModeID: Int = 1
+        var tsunamiModeID = 1
         if (tsunamiMode is ValueWrapper.Existing) {
             tsunamiModeID = tsunamiMode.value.tsunamiMode
         }
-        this.profile.put("tsunamiModeID", tsunamiModeID)
-        this.profile.put("tsunamiActive", tsunamiActive)
-        this.profile.put("enableWaveMode", sp.getBoolean(R.string.key_enable_wave_mode, false))
-        this.profile.put("waveStart", SafeParse.stringToDouble(sp.getString(R.string.key_wave_start, "11")))
-        this.profile.put("waveEnd", SafeParse.stringToDouble(sp.getString(R.string.key_wave_end, "21")))
-        this.profile.put("waveUseSMBCap", sp.getBoolean(R.string.key_use_wave_smbcap, false))
-        this.profile.put("waveSMBCap", SafeParse.stringToDouble(sp.getString(R.string.key_wave_smbcap, "0.5")))
-        this.profile.put("waveInsReqPCT", SafeParse.stringToDouble(sp.getString(R.string.key_wave_insulinReqPCT, "65")))
 
-        //MP UAM tsunami profile variables END
-//**********************************************************************************************************************************************
-        //MD: TempTarget Info ==== START
-        //MD: TempTarget Info ==== START
-        //val tempTarget = repository.getTemporaryTargetActiveAt(now).blockingGet()
-
-        //if (tempTarget is ValueWrapper.Existing) {
-        //    this.profile.put("temptarget_duration", TimeUnit.MILLISECONDS.toMinutes(tempTarget.value.duration))
-        //    this.profile.put("temptarget_minutesrunning", tempTarget.value.realTTDuration)
-        //}
-
+        // Calculate reference activity values
         var currentActivity = 0.0
         for (i in -4..0) { //MP: -4 to 0 calculates all the insulin active during the last 5 minutes
             val iob = iobCobCalculator.calculateFromTreatmentsAndTemps(System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(i.toLong()), profile)
@@ -284,6 +288,7 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
 
         var futureActivity = 0.0
         var activityPredTime: Long
+        val activityPredTime_PD = 65L //MP activity prediction time for pharmacodynamic model; fixed to 65 min (approx. peak time of 1 U bolus)
         if (insulinID != 105 && insulinID != 205) { //MP if not using PD insulin models
             activityPredTime = activityPredTime_PK
         } else { //MP if using PD insulin models
@@ -313,54 +318,40 @@ class DetermineBasalAdapterTAEJS internal constructor(private val scriptReader: 
         historicActivity = Round.roundTo(historicActivity, 0.0001)
         currentActivity = Round.roundTo(currentActivity, 0.0001)
 
-        //MD: TempTarget Info ==== END
-//**********************************************************************************************************************************************
-        iobData = iobCobCalculator.convertToJSONArray(iobArray)
-//**********************************************************************************************************************************************
+        // Register profile variables
+        this.profile.put("tsunamiModeID", tsunamiModeID)
+        this.profile.put("peaktime", activityPredTime_PK)
+        this.profile.put("insulinID", insulinID)
+        this.profile.put("tsuSMBCap", SafeParse.stringToDouble(sp.getString(R.string.key_tsunami_smbcap, "1")))
+        this.profile.put("tsuInsReqPCT", SafeParse.stringToDouble(sp.getString(R.string.key_insulinReqPCT, "65")))
+        this.profile.put("percentage", profile.percentage)
+        this.profile.put("dia", profile.dia)
+        this.profile.put("tsunamiActive", tsunamiActive)
+        this.profile.put("enableWaveMode", sp.getBoolean(R.string.key_enable_wave_mode, false))
+        this.profile.put("waveStart", SafeParse.stringToDouble(sp.getString(R.string.key_wave_start, "11")))
+        this.profile.put("waveEnd", SafeParse.stringToDouble(sp.getString(R.string.key_wave_end, "21")))
+        this.profile.put("waveUseSMBCap", sp.getBoolean(R.string.key_use_wave_smbcap, false))
+        this.profile.put("waveSMBCap", SafeParse.stringToDouble(sp.getString(R.string.key_wave_smbcap, "0.5")))
+        this.profile.put("waveInsReqPCT", SafeParse.stringToDouble(sp.getString(R.string.key_wave_insulinReqPCT, "65")))
+        this.profile.put("tsuSMBCapScaling", sp.getBoolean(R.string.key_tsu_SMB_scaling, false))
+        this.profile.put("tsuActivityTarget", SafeParse.stringToDouble(sp.getString(R.string.key_tsu_activity_target, "75")))
+        this.profile.put("waveSMBCapScaling", sp.getBoolean(R.string.key_wave_SMB_scaling, false))
+        this.profile.put("waveActivityTarget", SafeParse.stringToDouble(sp.getString(R.string.key_wave_activity_target, "50")))
+
+        // Register glucose_status variables
         mGlucoseStatus.put("futureActivity", futureActivity);
         mGlucoseStatus.put("activityPredTime", activityPredTime);
         mGlucoseStatus.put("sensorLagActivity", sensorLagActivity)
         mGlucoseStatus.put("historicActivity", historicActivity)
         mGlucoseStatus.put("currentActivity", currentActivity)
         mGlucoseStatus.put("deltaScore", glucoseStatus.deltaScore);
-//**********************************************************************************************************************************************
-        mGlucoseStatus.put("glucose", glucoseStatus.glucose)
-        mGlucoseStatus.put("noise", glucoseStatus.noise)
-        if (sp.getBoolean(R.string.key_always_use_shortavg, false)) {
-            mGlucoseStatus.put("delta", glucoseStatus.shortAvgDelta)
-        } else {
-            mGlucoseStatus.put("delta", glucoseStatus.delta)
-        }
-        mGlucoseStatus.put("short_avgdelta", glucoseStatus.shortAvgDelta)
-        mGlucoseStatus.put("long_avgdelta", glucoseStatus.longAvgDelta)
-        mGlucoseStatus.put("date", glucoseStatus.date)
-//**********************************************************************************************************************************************
-        // MP data smoothing START
-        mGlucoseStatus.put("insufficientSmoothingData", glucoseStatus.insufficientSmoothingData)
-        mGlucoseStatus.put("ssBGnow", glucoseStatus.ssBGnow)
-        mGlucoseStatus.put("ssDnow", glucoseStatus.ssDnow)
-        // MP data smoothing END
-//**********************************************************************************************************************************************
-        this.mealData.put("carbs", mealData.carbs)
-        this.mealData.put("mealCOB", mealData.mealCOB)
-        this.mealData.put("slopeFromMaxDeviation", mealData.slopeFromMaxDeviation)
-        this.mealData.put("slopeFromMinDeviation", mealData.slopeFromMinDeviation)
-        this.mealData.put("lastBolusTime", mealData.lastBolusTime)
-//**********************************************************************************************************************************************
-        this.mealData.put("lastBolus", mealData.lastBolus)
-//**********************************************************************************************************************************************
-        this.mealData.put("lastCarbTime", mealData.lastCarbTime)
-        if (constraintChecker.isAutosensModeEnabled().value()) {
-            autosensData.put("ratio", autosensDataRatio)
-        } else {
-            autosensData.put("ratio", 1.0)
-        }
-        this.microBolusAllowed = microBolusAllowed
-        smbAlwaysAllowed = advancedFiltering
-        currentTime = now
-        saveCgmSource = isSaveCgmSource
-    }
 
+        // Register meal_data variables
+        this.mealData.put("lastBolus", mealData.lastBolus)
+        /*
+        ** Tsunami specific variables END
+        */
+    }
     private fun makeParam(jsonObject: JSONObject?, rhino: Context, scope: Scriptable): Any {
         return if (jsonObject == null) Undefined.instance
         else NativeJSON.parse(rhino, scope, jsonObject.toString()) { _: Context?, _: Scriptable?, _: Scriptable?, objects: Array<Any?> -> objects[1] }

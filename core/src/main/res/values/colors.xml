@@ -60,7 +60,7 @@
     <color name="errorAlertHeaderText">#FF000000</color>
     <color name="helperProfile">#C803A9F4</color>
     <color name="examinedProfile">#FFFF5555</color>
-    <color name="defaultText">#BBBBBB</color>
+    <color name="defaultText">#666666</color>
 
     <!--    Datepicker-->
     <color name="dateTimePickerBackground">@color/white</color>
@@ -352,7 +352,7 @@
     <color name="aaps_theme_dark_onErrorContainer">#F9DEDC</color>
     <color name="aaps_theme_dark_background">#1D1B1E</color>
     <color name="aaps_theme_dark_onBackground">#E7E1E5</color>
-    <color name="aaps_theme_dark_surface">#1D1B1E</color>
+    <color name="aaps_theme_dark_surface">#0F0F0F</color>
     <color name="aaps_theme_dark_onSurface">#E7E1E5</color>
     <color name="aaps_theme_dark_surfaceVariant">#49454F</color>
     <color name="aaps_theme_dark_onSurfaceVariant">#CAC4D0</color>

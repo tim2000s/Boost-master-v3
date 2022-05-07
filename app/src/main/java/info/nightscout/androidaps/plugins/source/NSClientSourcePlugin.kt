@@ -25,7 +25,7 @@ import info.nightscout.androidaps.receivers.DataWorker
 import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.XDripBroadcast
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.sharedPreferences.SP
 import org.json.JSONObject
 import javax.inject.Inject
@@ -104,8 +104,9 @@ class NSClientSourcePlugin @Inject constructor(
             return CgmSourceTransaction.TransactionGlucoseValue(
                 timestamp = sgv.mills ?: return null,
                 value = sgv.mgdl?.toDouble() ?: return null,
-                noise = null,
                 raw = sgv.filtered?.toDouble() ?: sgv.mgdl?.toDouble(),
+                smoothed = 0.0,
+                noise = null,
                 trendArrow = GlucoseValue.TrendArrow.fromString(sgv.direction),
                 nightscoutId = sgv.id,
                 sourceSensor = GlucoseValue.SourceSensor.fromString(sgv.device)

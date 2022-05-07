@@ -30,7 +30,7 @@ import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.extensions.toSignedString
 import info.nightscout.androidaps.utils.protection.ProtectionCheck
 import info.nightscout.androidaps.utils.protection.ProtectionCheck.Protection.BOLUS
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.SafeParse
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
@@ -150,6 +150,7 @@ class TsunamiDialog : DialogFragmentWithDate() {
             binding.amount.value = 0.0
             if (submit()) dismiss()
         }
+        binding.tsunamiLabel.labelFor = binding.amount.editTextId
     }
 
     override fun onDestroyView() {
@@ -167,9 +168,9 @@ class TsunamiDialog : DialogFragmentWithDate() {
         val duration = binding.tsuDuration.value.toInt()
 
         if (insulinAfterConstraints > 0) {
-            actions.add(rh.gs(R.string.prebolus) + ": " + DecimalFormatter.toPumpSupportedBolus(insulinAfterConstraints, activePlugin.activePump, rh).formatColor(rh, R.color.bolus))
+            actions.add(rh.gs(R.string.prebolus) + ": " + DecimalFormatter.toPumpSupportedBolus(insulinAfterConstraints, activePlugin.activePump, rh).formatColor(context, rh, R.attr.bolusColor))
             if (abs(insulinAfterConstraints - insulin) > pumpDescription.pumpType.determineCorrectBolusStepSize(insulinAfterConstraints))
-                actions.add(rh.gs(R.string.bolusconstraintappliedwarn, insulin, insulinAfterConstraints).formatColor(rh, R.color.warning))
+                actions.add(rh.gs(R.string.bolusconstraintappliedwarn, insulin, insulinAfterConstraints).formatColor(context, rh, R.attr.warningColor))
         }
         if (duration > 0) {
             actions.add(rh.gs(R.string.tsunami_duration) + ": " + rh.gs(R.string.format_mins, duration).formatColor(rh, R.color.colorTsunamiButton))

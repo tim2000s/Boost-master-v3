@@ -17,7 +17,7 @@ import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.receivers.DataWorker
 import info.nightscout.androidaps.services.Intents
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -83,6 +83,7 @@ class XdripPlugin @Inject constructor(
                 timestamp = bundle.getLong(Intents.EXTRA_TIMESTAMP, 0),
                 value = bundle.getDouble(Intents.EXTRA_BG_ESTIMATE, 0.0),
                 raw = bundle.getDouble(Intents.EXTRA_RAW, 0.0),
+                smoothed = 0.0,
                 noise = null,
                 trendArrow = GlucoseValue.TrendArrow.fromString(bundle.getString(Intents.EXTRA_BG_SLOPE_NAME)),
                 sourceSensor = GlucoseValue.SourceSensor.fromString(bundle.getString(Intents.XDRIP_DATA_SOURCE_DESCRIPTION)

@@ -16,7 +16,7 @@ import info.nightscout.androidaps.interfaces.PluginType
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.utils.XDripBroadcast
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.sharedPreferences.SP
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -66,6 +66,7 @@ class TomatoPlugin @Inject constructor(
                 value = inputData.getDouble("com.fanqies.tomatofn.Extras.BgEstimate", 0.0),
                 raw = 0.0,
                 noise = null,
+                smoothed = 0.0,
                 trendArrow = GlucoseValue.TrendArrow.NONE,
                 sourceSensor = GlucoseValue.SourceSensor.LIBRE_1_TOMATO
             )

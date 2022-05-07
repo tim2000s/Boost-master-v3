@@ -13,7 +13,7 @@ import info.nightscout.androidaps.automation.R
 import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.plugins.general.automation.dialogs.ChooseOperationDialog
 import info.nightscout.androidaps.utils.JsonHelper.safeGetString
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.utils.ui.VerticalTextView
 import org.json.JSONArray
 import org.json.JSONObject
@@ -115,7 +115,7 @@ class TriggerConnector(injector: HasAndroidInjector) : Trigger(injector) {
         return result.toString()
     }
 
-    override fun icon(): Optional<Int?> = Optional.absent()
+    override fun icon(): Optional<Int> = Optional.absent()
 
     override fun duplicate(): Trigger = TriggerConnector(injector, connectorType)
 
