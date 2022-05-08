@@ -330,7 +330,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         insulinReqPCT = profile.tsuInsReqPCT / 100; // User-set percentage to modify insulin required
         startTime = 0; // dummy value
         endTime = 23; // dummy value
-        activity_target = profile.tsuActivityTarget; // MP for small deltas
+        activity_target = profile.tsuActivityTarget/100; // MP for small deltas
     } else if (profile.enableWaveMode) {
         tsuMode = 1;
         deltaReductionPCT = 0.5;
@@ -341,7 +341,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         insulinReqPCT = profile.waveInsReqPCT / 100; // User-set percentage to modify insulin required
         startTime = profile.waveStart;
         endTime = profile.waveEnd;
-        activity_target = profile.waveActivityTarget; // MP for small deltas
+        activity_target = profile.waveActivityTarget/100; // MP for small deltas
     }
 
     // active hours redefinition (allowing end times < start times)
