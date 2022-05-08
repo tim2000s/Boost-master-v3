@@ -1,5 +1,6 @@
 package info.nightscout.androidaps.dialogs
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.LayoutInflater
@@ -22,7 +23,7 @@ import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.general.overview.events.EventDismissBolusProgressIfRunning
 import info.nightscout.androidaps.plugins.general.overview.events.EventOverviewBolusProgress
 import info.nightscout.androidaps.utils.FabricPrivacy
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
@@ -82,6 +83,9 @@ class BolusProgressDialog : DaggerDialogFragment() {
         dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         isCancelable = false
         dialog?.setCanceledOnTouchOutside(false)
+
+        val theme: Resources.Theme? = context?.theme
+        theme?.applyStyle(R.style.AppTheme_NoActionBar,  true)
 
         _binding = DialogBolusprogressBinding.inflate(inflater, container, false)
         return binding.root

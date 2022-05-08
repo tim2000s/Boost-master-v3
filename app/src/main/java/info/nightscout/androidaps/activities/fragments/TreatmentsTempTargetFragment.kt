@@ -23,7 +23,6 @@ import info.nightscout.androidaps.databinding.TreatmentsTemptargetItemBinding
 import info.nightscout.androidaps.events.EventEffectiveProfileSwitchChanged
 import info.nightscout.androidaps.events.EventProfileSwitchChanged
 import info.nightscout.androidaps.events.EventTempTargetChange
-import info.nightscout.androidaps.events.EventTreatmentUpdateGui
 import info.nightscout.androidaps.extensions.friendlyDescription
 import info.nightscout.androidaps.extensions.highValueToUnitsToString
 import info.nightscout.androidaps.extensions.lowValueToUnitsToString
@@ -36,7 +35,7 @@ import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventNewHi
 import info.nightscout.androidaps.utils.*
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.buildHelper.BuildHelper
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
@@ -84,6 +83,8 @@ class TreatmentsTempTargetFragment : DaggerFragment() {
         actionHelper.setOnRemoveHandler { removeSelected(it) }
         setHasOptionsMenu(true)
         binding.recyclerview.layoutManager = LinearLayoutManager(view.context)
+        binding.recyclerview.emptyView = binding.noRecordsText
+        binding.recyclerview.loadingView = binding.progressBar
     }
 
     private fun refreshFromNightscout() {
@@ -112,6 +113,7 @@ class TreatmentsTempTargetFragment : DaggerFragment() {
 
     fun swapAdapter() {
         val now = System.currentTimeMillis()
+        binding.recyclerview.isLoading = true
         disposable +=
             if (showInvalidated)
                 repository
@@ -131,11 +133,6 @@ class TreatmentsTempTargetFragment : DaggerFragment() {
         swapAdapter()
         disposable += rxBus
             .toObservable(EventTempTargetChange::class.java)
-            .observeOn(aapsSchedulers.io)
-            .debounce(1L, TimeUnit.SECONDS)
-            .subscribe({ swapAdapter() }, fabricPrivacy::logException)
-        disposable += rxBus
-            .toObservable(EventTreatmentUpdateGui::class.java) // TODO join with above
             .observeOn(aapsSchedulers.io)
             .debounce(1L, TimeUnit.SECONDS)
             .subscribe({ swapAdapter() }, fabricPrivacy::logException)
@@ -195,8 +192,6 @@ class TreatmentsTempTargetFragment : DaggerFragment() {
                     else                                       -> holder.binding.reasonColon.currentTextColor
                 }
             )
-            val nextTimestamp = if (tempTargetList.size != position + 1) tempTargetList[position + 1].timestamp else 0L
-            holder.binding.delimiter.visibility = dateUtil.isSameDayGroup(tempTarget.timestamp, nextTimestamp).toVisibility()
         }
 
         override fun getItemCount() = tempTargetList.size
@@ -235,7 +230,7 @@ class TreatmentsTempTargetFragment : DaggerFragment() {
                 showInvalidated = true
                 updateMenuVisibility()
                 ToastUtils.showToastInUiThread(context, rh.gs(R.string.show_invalidated_records))
-                rxBus.send(EventTreatmentUpdateGui())
+                swapAdapter()
                 true
             }
 
@@ -243,7 +238,7 @@ class TreatmentsTempTargetFragment : DaggerFragment() {
                 showInvalidated = false
                 updateMenuVisibility()
                 ToastUtils.showToastInUiThread(context, rh.gs(R.string.show_invalidated_records))
-                rxBus.send(EventTreatmentUpdateGui())
+                swapAdapter()
                 true
             }
 

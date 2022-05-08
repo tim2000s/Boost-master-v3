@@ -434,8 +434,8 @@
     <string name="ns_localbroadcasts_title">启用本地广播。</string>
     <string name="openapssmb">OpenAPS SMB</string>
     <string name="openaps_smb_dynamic_isf">动态ISF(胰岛素敏感系数)</string>
-    <string name="DynISFAdjust_title">动态ISF 调整因数 %</string>
-    <string name="DynISFAdjust_summary">动态ISF的调整因子。设置100%以上用于更积极的校正，100%以下则不那么积极校正。</string>
+    <string name="DynISFAdjust_title">动态ISF胰岛素敏系数调整比例 %%</string>
+    <string name="DynISFAdjust_summary">动态ISF的调整因子。设置100%%以上用于更积极的校正，100%%以下则不那么积极校正。</string>
     <string name="enableuam">启用 UAM</string>
     <string name="enablesmb">启用微型大剂量</string>
     <string name="enablesmb_summary">使用微型大剂量代替使用临时基础率，更快的干预</string>
@@ -468,7 +468,6 @@
     <string name="shortenergy">En</string>
     <string name="shortprotein">蛋白质</string>
     <string name="shortfat">脂肪</string>
-    <string name="active"><![CDATA[<Active>]]></string>
     <string name="executingrightnow">现在命令被执行了</string>
     <string name="missed_bg_readings">血糖读数丢失</string>
     <string name="raise_notifications_as_android_notifications">对警报和通知使用系统通知音</string>
@@ -815,6 +814,7 @@
     <string name="smscommunicator_otp_install_info">在其他遥控手机上安装支持RFC 6238 TOTP令牌协议的应用程序。常用的免费应用有:\n • Authy\n • Google Authenticator\n • LastPass Authenticator\n • FreeOTP Authenticator</string>
     <string name="smscommunicator_otp_reset_warning">通过重置验证码核心密钥，可以使所有已设置的OTP随机验证码生成配置无效，您需要在遥控手机上重新设置!</string>
     <string name="overview_show_predictions">预测</string>
+    <string name="overview_show_treatments">治疗</string>
     <string name="overview_show_deviationslope">斜度偏差</string>
     <string name="authorizationfailed">授权失败</string>
     <string name="overview_show_absinsulin">胰岛素绝对值</string>
@@ -985,6 +985,8 @@
     <string name="wear_unknown_action_string">未知操作命令：</string>
     <string name="overview_editquickwizard_percentage">百分比</string>
     <string name="app_default">应用程序预设</string>
+    <string name="show_invalidated_records">显示无效/已删除的记录</string>
+    <string name="hide_invalidated_records">隐藏无效/已删除的记录</string>
     <string name="select_profile">选择要编辑的配置文件</string>
     <string name="refresh_from_nightscout">从 Nightscout 刷新</string>
     <string name="remove_selected_items">删除选中项？</string>
@@ -993,6 +995,7 @@
     <string name="tempt_targets">临时目标</string>
     <string name="carbs_and_bolus">碳水与大剂量</string>
     <string name="confirm_remove_multiple_items">你确定要删除 %1$d 吗？</string>
+    <string name="no_records_available">当前暂无记录</string>
     <string name="hide_loop">隐藏闭环</string>
     <string name="show_loop">显示闭环</string>
     <string name="count_selected">已选中 %1$d</string>
@@ -1001,4 +1004,21 @@
     <string name="below" comment="below &quot;in range&quot;">底部</string>
     <string name="in_range">在范围内</string>
     <string name="above" comment="above &quot;in range&quot;">上方</string>
+    <string name="show_loop_records">显示闭环记录</string>
+    <string name="show_hide_records">隐藏闭环记录</string>
+    <string name="widget_description">AndroidAPS小部件</string>
+    <string name="configure">配置透明度</string>
+    <string name="a11y_otp_qr_code">用于安装一次性随机验证码的二维码</string>
+    <string name="a11y_open_settings">打开设置</string>
+    <string name="a11y_set_carb_timer">设置碳水计时器提醒</string>
+    <string name="device_all">全部</string>
+    <string name="device_phone">手机</string>
+    <string name="device_watch">手表</string>
+    <string name="a11y_only_on_watch">仅在手表时</string>
+    <string name="a11y_only_on_phone">仅在手机上</string>
+    <string name="a11y_drag_and_drop_handle">拖放操作</string>
+    <!-- Aidex Cgms -->
+    <string name="aidex">GlucoRx Aidex动泰</string>
+    <string name="aidex_short">Aidex动泰</string>
+    <string name="description_source_aidex">从GlucoRx Aidex动泰持续葡萄糖监测系统接收血糖值。</string>
 </resources>

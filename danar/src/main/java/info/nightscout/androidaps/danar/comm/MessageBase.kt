@@ -17,7 +17,7 @@ import info.nightscout.androidaps.plugins.pump.common.bolusInfo.DetailedBolusInf
 import info.nightscout.androidaps.plugins.pump.common.bolusInfo.TemporaryBasalStorage
 import info.nightscout.androidaps.utils.CRC.getCrc16
 import info.nightscout.androidaps.utils.DateUtil
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import org.joda.time.DateTime
@@ -122,7 +122,7 @@ open class MessageBase(injector: HasAndroidInjector) {
         }
     }
 
-    open fun handleMessageNotReceived() {}
+    open fun handleMessageNotReceived() {} // do nothing by default
     val command: Int
         get() = byteFromRawBuff(buffer, 5) or (byteFromRawBuff(buffer, 4) shl 8)
 

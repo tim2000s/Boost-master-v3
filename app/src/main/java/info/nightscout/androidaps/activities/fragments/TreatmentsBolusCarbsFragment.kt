@@ -14,6 +14,7 @@ import info.nightscout.androidaps.database.AppRepository
 import info.nightscout.androidaps.database.entities.Bolus
 import info.nightscout.androidaps.database.entities.BolusCalculatorResult
 import info.nightscout.androidaps.database.entities.Carbs
+import info.nightscout.androidaps.database.entities.UserEntry
 import info.nightscout.androidaps.database.entities.UserEntry.Action
 import info.nightscout.androidaps.database.entities.UserEntry.Sources
 import info.nightscout.androidaps.database.entities.ValueWithUnit
@@ -24,9 +25,7 @@ import info.nightscout.androidaps.database.transactions.InvalidateCarbsTransacti
 import info.nightscout.androidaps.databinding.TreatmentsBolusCarbsFragmentBinding
 import info.nightscout.androidaps.databinding.TreatmentsBolusCarbsItemBinding
 import info.nightscout.androidaps.dialogs.WizardInfoDialog
-import info.nightscout.androidaps.events.EventAutosensCalculationFinished
 import info.nightscout.androidaps.events.EventTreatmentChange
-import info.nightscout.androidaps.events.EventTreatmentUpdateGui
 import info.nightscout.androidaps.extensions.iobCalc
 import info.nightscout.androidaps.extensions.toVisibility
 import info.nightscout.androidaps.interfaces.ActivePlugin
@@ -42,7 +41,7 @@ import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.ToastUtils
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.buildHelper.BuildHelper
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
@@ -84,8 +83,6 @@ class TreatmentsBolusCarbsFragment : DaggerFragment() {
     private val disposable = CompositeDisposable()
     private lateinit var actionHelper: ActionModeHelper<MealLink>
     private val millsToThePast = T.days(30).msecs()
-
-    // private var selectedItems: SparseArray<MealLink> = SparseArray()
     private var showInvalidated = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
@@ -100,6 +97,8 @@ class TreatmentsBolusCarbsFragment : DaggerFragment() {
         setHasOptionsMenu(true)
         binding.recyclerview.setHasFixedSize(true)
         binding.recyclerview.layoutManager = LinearLayoutManager(view.context)
+        binding.recyclerview.emptyView = binding.noRecordsText
+        binding.recyclerview.loadingView = binding.progressBar
     }
 
     private fun bolusMealLinksWithInvalid(now: Long) = repository
@@ -128,7 +127,7 @@ class TreatmentsBolusCarbsFragment : DaggerFragment() {
 
     fun swapAdapter() {
         val now = System.currentTimeMillis()
-
+        binding.recyclerview.isLoading = true
         disposable +=
             if (showInvalidated)
                 carbsMealLinksWithInvalid(now)
@@ -167,16 +166,6 @@ class TreatmentsBolusCarbsFragment : DaggerFragment() {
         swapAdapter()
         disposable += rxBus
             .toObservable(EventTreatmentChange::class.java)
-            .observeOn(aapsSchedulers.main)
-            .debounce(1L, TimeUnit.SECONDS)
-            .subscribe({ swapAdapter() }, fabricPrivacy::logException)
-        disposable += rxBus
-            .toObservable(EventTreatmentUpdateGui::class.java) // TODO join with above
-            .observeOn(aapsSchedulers.io)
-            .debounce(1L, TimeUnit.SECONDS)
-            .subscribe({ swapAdapter() }, fabricPrivacy::logException)
-        disposable += rxBus
-            .toObservable(EventAutosensCalculationFinished::class.java)
             .observeOn(aapsSchedulers.main)
             .debounce(1L, TimeUnit.SECONDS)
             .subscribe({ swapAdapter() }, fabricPrivacy::logException)
@@ -280,8 +269,6 @@ class TreatmentsBolusCarbsFragment : DaggerFragment() {
             }
 
             holder.binding.calculation.tag = ml
-            val nextTimestamp = if (mealLinks.size != position + 1) timestamp(mealLinks[position + 1]) else 0L
-            holder.binding.delimiter.visibility = dateUtil.isSameDayGroup(timestamp(ml), nextTimestamp).toVisibility()
         }
 
         override fun getItemCount() = mealLinks.size
@@ -334,7 +321,7 @@ class TreatmentsBolusCarbsFragment : DaggerFragment() {
                 showInvalidated = true
                 updateMenuVisibility()
                 ToastUtils.showToastInUiThread(context, rh.gs(R.string.show_invalidated_records))
-                rxBus.send(EventTreatmentUpdateGui())
+                swapAdapter()
                 true
             }
 
@@ -342,7 +329,7 @@ class TreatmentsBolusCarbsFragment : DaggerFragment() {
                 showInvalidated = false
                 updateMenuVisibility()
                 ToastUtils.showToastInUiThread(context, rh.gs(R.string.hide_invalidated_records))
-                rxBus.send(EventTreatmentUpdateGui())
+                swapAdapter()
                 true
             }
 

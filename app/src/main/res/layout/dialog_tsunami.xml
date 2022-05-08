@@ -30,8 +30,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:text="@string/tsunami_label"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -63,7 +63,9 @@
             <info.nightscout.androidaps.utils.ui.MinutesNumberPicker
                 android:id="@+id/tsu_duration"
                 android:layout_width="130dp"
-                android:layout_height="40dp" />
+                android:layout_height="40dp"
+                android:layout_marginBottom="2dp"
+                app:customContentDescription="@string/tsunami_duration" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -84,6 +86,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/tsunami_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -118,28 +121,28 @@
             android:padding="5dp">
 
             <com.google.android.material.button.MaterialButton
-                style="@style/GrayButton"
                 android:id="@+id/plus05"
+                style="@style/GrayButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="+0.5" />
+                tools:text="+0.5" />
 
             <com.google.android.material.button.MaterialButton
-                style="@style/GrayButton"
                 android:id="@+id/plus10"
+                style="@style/GrayButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="+1.0" />
+                tools:text="+1.0" />
 
             <com.google.android.material.button.MaterialButton
-                style="@style/GrayButton"
                 android:id="@+id/plus20"
+                style="@style/GrayButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="+2.0" />
+                tools:text="+2.0" />
 
         </LinearLayout>
 
@@ -150,17 +153,17 @@
 
         <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/tsu_cancel"
-            style="?android:attr/buttonStyle"
+            style="@style/ButtonSmallFontStyle"
             android:layout_width="0px"
             android:layout_height="fill_parent"
             android:layout_marginEnd="-4dp"
             android:layout_weight="0.5"
             android:drawableTop="@drawable/ic_tsunami_cancel"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:text="@string/cancel"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/tempTargetConfirmation"
+            android:textColor="?attr/tsunamiButtonColor"
             android:textSize="11sp" />
 
     </LinearLayout>

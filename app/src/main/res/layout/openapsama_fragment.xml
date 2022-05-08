@@ -1,28 +1,19 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:id = "@+id/swipeRefresh"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+    tools:context=".plugins.aps.openAPSAMA.OpenAPSAMAFragment">
+
+<androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="2dp"
-    tools:context=".plugins.aps.openAPSAMA.OpenAPSAMAFragment">
+    android:paddingTop="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                style="@style/GrayButton"
-                android:id="@+id/run"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/openapsma_run" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,9 +54,9 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
@@ -88,9 +79,9 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
@@ -133,9 +124,9 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
@@ -178,9 +169,9 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
@@ -223,9 +214,9 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
@@ -268,9 +259,9 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
@@ -313,9 +304,9 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
@@ -358,9 +349,9 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
@@ -403,9 +394,9 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
@@ -428,18 +419,18 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
         <View
             android:layout_width="fill_parent"
             android:layout_height="0dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
@@ -482,9 +473,9 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
@@ -527,9 +518,9 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
@@ -572,12 +563,14 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dip"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/dividerHorizontal" />
 
     </LinearLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

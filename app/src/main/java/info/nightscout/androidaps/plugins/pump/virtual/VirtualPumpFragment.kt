@@ -19,7 +19,7 @@ import info.nightscout.androidaps.plugins.pump.virtual.events.EventVirtualPumpUp
 import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.FabricPrivacy
 import info.nightscout.androidaps.utils.T
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
@@ -47,10 +47,8 @@ class VirtualPumpFragment : DaggerFragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = VirtualpumpFragmentBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        VirtualpumpFragmentBinding.inflate(inflater, container, false).also { _binding = it }.root
 
     @Synchronized
     override fun onResume() {

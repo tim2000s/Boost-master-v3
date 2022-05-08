@@ -15,7 +15,7 @@ import info.nightscout.androidaps.extensions.waitMillis
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.plugins.bus.RxBus
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import java.util.*
 import java.util.concurrent.ScheduledFuture
 import javax.inject.Inject
@@ -47,7 +47,6 @@ class BLECommonService @Inject internal constructor(
     private val bluetoothAdapter: BluetoothAdapter? get() = (context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?)?.adapter
     private var connectDeviceName: String? = null
     private var bluetoothGatt: BluetoothGatt? = null
-
 
     var isConnected = false
     var isConnecting = false

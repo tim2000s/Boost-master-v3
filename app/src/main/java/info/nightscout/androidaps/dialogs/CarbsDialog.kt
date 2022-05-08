@@ -29,7 +29,7 @@ import info.nightscout.androidaps.utils.*
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.protection.ProtectionCheck
 import info.nightscout.androidaps.utils.protection.ProtectionCheck.Protection.BOLUS
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
 import java.text.DecimalFormat
@@ -199,9 +199,9 @@ class CarbsDialog : DialogFragmentWithDate() {
             binding.hypoTt.isChecked = false
             binding.activityTt.isChecked = false
         }
-        binding.duration.editText?.id?.let { binding.durationLabel.labelFor = it }
-        binding.time.editText?.id?.let { binding.timeLabel.labelFor = it }
-        binding.carbs.editText?.id?.let { binding.carbsLabel.labelFor = it }
+        binding.durationLabel.labelFor = binding.duration.editTextId
+        binding.timeLabel.labelFor = binding.time.editTextId
+        binding.carbsLabel.labelFor = binding.carbs.editTextId
     }
 
     override fun onDestroyView() {

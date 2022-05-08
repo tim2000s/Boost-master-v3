@@ -10,7 +10,7 @@ import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.DecimalFormatter
 import info.nightscout.androidaps.utils.JsonHelper
 import info.nightscout.androidaps.utils.T
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
@@ -99,6 +99,7 @@ fun TemporaryTarget.toJson(isAdd: Boolean, units: GlucoseUnit, dateUtil: DateUti
         .put("durationInMilliseconds", duration)
         .put("isValid", isValid)
         .put("created_at", dateUtil.toISOString(timestamp))
+        .put("timestamp", timestamp)
         .put("enteredBy", "AndroidAPS").also {
             if (lowTarget > 0) it
                 .put("reason", reason.text)

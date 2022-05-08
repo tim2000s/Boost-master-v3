@@ -1,6 +1,5 @@
 package info.nightscout.androidaps.plugins.general.overview.graphData
 
-import android.graphics.Color
 import android.graphics.DashPathEffect
 import android.graphics.Paint
 import com.jjoe64.graphview.GraphView
@@ -18,7 +17,7 @@ import info.nightscout.androidaps.plugins.general.overview.graphExtensions.Doubl
 import info.nightscout.androidaps.plugins.general.overview.graphExtensions.TimeAsXAxisLabelFormatter
 import info.nightscout.androidaps.utils.DefaultValueHelper
 import info.nightscout.androidaps.utils.Round
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -66,21 +65,12 @@ class GraphData(
         addSeries(AreaGraphSeries(inRangeAreaDataPoints).also {
             it.color = 0
             it.isDrawBackground = true
-            it.backgroundColor = rh.gac(graph.context,R.attr.inrangeBackground)
+            it.backgroundColor = rh.gac(graph.context,R.attr.inRangeBackground)
         })
     }
     //MP graph test
-    fun addTsunamiArea(/* fromTime: Long, toTime: Long, startLine: Double, endLine: Double */) {
-        /*
-        val tsunamiAreaDataPoints = arrayOf(
-            DoubleDataPoint(fromTime.toDouble(), startLine, endLine),
-            DoubleDataPoint(toTime.toDouble(), startLine, endLine)
-        )
-         */
-        //overviewData.prepareTsunamiData(overviewData.fromTime.toString())
-        //val scale = defaultValueHelper.determineLowLine() / maxY / 1.2
+    fun addTsunamiArea() {
         addSeries(overviewData.tsunamiSeries)
-        //overviewData.basalScale.multiplier = maxY * scale / overviewData.maxBasalValueFound
     }
 
     fun addBasals() {
@@ -99,6 +89,11 @@ class GraphData(
     fun addTreatments() {
         maxY = maxOf(maxY, overviewData.maxTreatmentsValue)
         addSeries(overviewData.treatmentsSeries)
+    }
+
+    fun addTherapyEvents() {
+        maxY = maxOf(maxY, overviewData.maxTherapyEventValue)
+        addSeries(overviewData.therapyEventSeries)
     }
 
     fun addActivity(scale: Double) {
@@ -209,7 +204,7 @@ class GraphData(
                 paint.style = Paint.Style.STROKE
                 paint.strokeWidth = 2f
                 paint.pathEffect = DashPathEffect(floatArrayOf(10f, 20f), 0f)
-                paint.color = Color.WHITE
+                paint.color = rh.gac(graph.context, R.attr.dotLineColor)
             })
         })
     }

@@ -35,7 +35,7 @@ import info.nightscout.androidaps.utils.ToastUtils
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.protection.ProtectionCheck
 import info.nightscout.androidaps.utils.protection.ProtectionCheck.Protection.BOLUS
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
 import java.text.DecimalFormat
@@ -152,9 +152,9 @@ class ProfileSwitchDialog : DialogFragmentWithDate() {
                 }
         }
         binding.ttLayout.visibility = View.GONE
-        binding.duration.editText?.id?.let { binding.durationLabel.labelFor = it }
-        binding.percentage.editText?.id?.let { binding.percentageLabel.labelFor = it }
-        binding.timeshift.editText?.id?.let { binding.timeshiftLabel.labelFor = it }
+        binding.durationLabel.labelFor = binding.duration.editTextId
+        binding.percentageLabel.labelFor = binding.percentage.editTextId
+        binding.timeshiftLabel.labelFor = binding.timeshift.editTextId
     }
 
     override fun onDestroyView() {

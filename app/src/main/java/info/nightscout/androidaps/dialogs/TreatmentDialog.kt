@@ -32,7 +32,7 @@ import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.extensions.formatColor
 import info.nightscout.androidaps.utils.protection.ProtectionCheck
 import info.nightscout.androidaps.utils.protection.ProtectionCheck.Protection.BOLUS
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
 import java.text.DecimalFormat
@@ -108,8 +108,8 @@ class TreatmentDialog : DialogFragmentWithDate() {
         binding.insulin.setParams(savedInstanceState?.getDouble("insulin")
             ?: 0.0, 0.0, maxInsulin, pumpDescription.bolusStep, DecimalFormatter.pumpSupportedBolusFormat(activePlugin.activePump), false, binding.okcancel.ok, textWatcher)
         binding.recordOnlyLayout.visibility = View.GONE
-        binding.insulin.editText?.id?.let { binding.insulinLabel.labelFor = it }
-        binding.carbs.editText?.id?.let { binding.carbsLabel.labelFor = it }
+        binding.insulinLabel.labelFor = binding.insulin.editTextId
+        binding.carbsLabel.labelFor = binding.carbs.editTextId
     }
 
     override fun onDestroyView() {

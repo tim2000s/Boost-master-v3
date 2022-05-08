@@ -30,7 +30,7 @@ import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.extensions.toSignedString
 import info.nightscout.androidaps.utils.protection.ProtectionCheck
 import info.nightscout.androidaps.utils.protection.ProtectionCheck.Protection.BOLUS
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.SafeParse
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
@@ -150,8 +150,8 @@ class InsulinDialog : DialogFragmentWithDate() {
         binding.recordOnly.setOnCheckedChangeListener { _, isChecked: Boolean ->
             binding.timeLayout.visibility = isChecked.toVisibility()
         }
-        binding.amount.editText?.id?.let { binding.insulinLabel.labelFor = it }
-        binding.time.editText?.id?.let { binding.timeLabel.labelFor = it }
+        binding.insulinLabel.labelFor = binding.amount.editTextId
+        binding.timeLabel.labelFor = binding.time.editTextId
     }
 
     override fun onDestroyView() {

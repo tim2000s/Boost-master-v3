@@ -23,7 +23,7 @@ import info.nightscout.androidaps.extensions.formatColor
 import info.nightscout.androidaps.utils.ToastUtils
 import info.nightscout.androidaps.utils.protection.ProtectionCheck
 import info.nightscout.androidaps.utils.protection.ProtectionCheck.Protection.BOLUS
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.logging.LTag
 import java.text.DecimalFormat
 import java.util.*
@@ -89,9 +89,9 @@ class TempBasalDialog : DialogFragmentWithDate() {
             binding.percentLayout.visibility = View.GONE
             binding.absoluteLayout.visibility = View.VISIBLE
         }
-        binding.basalPercentInput.editText?.id?.let { binding.basalPercentLabel.labelFor = it }
-        binding.basalAbsoluteInput.editText?.id?.let { binding.basalAbsoluteLabel.labelFor = it }
-        binding.duration.editText?.id?.let { binding.durationLabel.labelFor = it }
+        binding.basalPercentLabel.labelFor = binding.basalPercentInput.editTextId
+        binding.basalAbsoluteLabel.labelFor = binding.basalAbsoluteInput.editTextId
+        binding.durationLabel.labelFor = binding.duration.editTextId
     }
 
     override fun onDestroyView() {

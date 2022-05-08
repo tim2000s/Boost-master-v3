@@ -34,7 +34,7 @@ import info.nightscout.androidaps.plugins.pump.common.bolusInfo.TemporaryBasalSt
 import info.nightscout.androidaps.plugins.pump.common.defs.PumpType
 import info.nightscout.androidaps.utils.*
 import info.nightscout.androidaps.utils.T
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.shared.sharedPreferences.SP
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -242,8 +242,8 @@ class DanaRSPlugin @Inject constructor(
     }
 
     override fun isThisProfileSet(profile: Profile): Boolean {
-        if (!isInitialized()) return true // TODO: not sure what's better. so far TRUE to prevent too many SMS
-        if (danaPump.pumpProfiles == null) return true // TODO: not sure what's better. so far TRUE to prevent too many SMS
+        if (!isInitialized()) return true
+        if (danaPump.pumpProfiles == null) return true
         val basalValues = if (danaPump.basal48Enable) 48 else 24
         val basalIncrement = if (danaPump.basal48Enable) 30 * 60 else 60 * 60
         for (h in 0 until basalValues) {

@@ -16,7 +16,7 @@ import info.nightscout.androidaps.plugins.pump.medtronic.comm.history.pump.PumpH
 import info.nightscout.androidaps.plugins.pump.medtronic.data.dto.TempBasalPair
 import info.nightscout.androidaps.plugins.pump.medtronic.driver.MedtronicPumpStatus
 import info.nightscout.androidaps.plugins.pump.medtronic.util.MedtronicUtil
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.sharedPreferences.SP
 
 import org.junit.Test
@@ -34,13 +34,11 @@ class MedtronicHistoryDataUTest : TestBase() {
     @Mock lateinit var rh: ResourceHelper
     @Mock lateinit var rxBus: RxBus
 
-
     private val packetInjector = HasAndroidInjector {
         AndroidInjector {
 
         }
     }
-
 
 
     @Test
@@ -51,7 +49,6 @@ class MedtronicHistoryDataUTest : TestBase() {
         medtronicPumpStatus,
         pumpSync,
         pumpSyncStorage)
-
 
         val gson = Gson()
 
@@ -85,7 +82,6 @@ class MedtronicHistoryDataUTest : TestBase() {
 
     }
 
-
     @Test
     fun createTBRProcessList_SpecialCase() {
 
@@ -94,7 +90,6 @@ class MedtronicHistoryDataUTest : TestBase() {
                                               medtronicPumpStatus,
                                               pumpSync,
                                               pumpSyncStorage)
-
 
         val gson = Gson()
 
@@ -127,6 +122,5 @@ class MedtronicHistoryDataUTest : TestBase() {
         }
 
     }
-
 
 }

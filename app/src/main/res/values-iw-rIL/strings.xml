@@ -161,6 +161,7 @@
     <string name="end_user_license_agreement">הסכם רישיון למשתמש</string>
     <string name="end_user_license_agreement_text">לא מיועד לשימוש למטרת קבלת החלטות רפואיות. בעלי הזכויות מספקים את התוכנית כפי שהיא - \"AS IS\", ללא אחריות מכל סוג שהוא. כל סיכון הנובע מאיכות ו\\או ביצועי התוכנה הוא באחריותך בלבד. במידה ותימצא תקלה בתוכנית, אתם תשאו בכל עלויות שיגרמו לך בשל התקלה.</string>
     <string name="end_user_license_agreement_i_understand">אני מבין\\ה ומסכים\\ה</string>
+    <string name="save">שמירה</string>
     <string name="reloadprofile">טעינה מחדש של הפרופיל</string>
     <string name="smscommunicator">תקשורת SMS</string>
     <string name="smscommunicator_allowednumbers">מספרי טלפון מורשים</string>
@@ -433,7 +434,8 @@
     <string name="ns_localbroadcasts_title">אפשר שידורים מקומיים.</string>
     <string name="openapssmb">OpenAPS SMB</string>
     <string name="openaps_smb_dynamic_isf">רגישות דינאמית</string>
-    <string name="DynISFAdjust_summary">כיוונון פקטור הרגישות הדינאמית. הגדירו יותר מ-100% לקבלת תיקונים אגרסיביים יותר ופחות מ-100% לקבלת תיקונים עדינים יותר.</string>
+    <string name="DynISFAdjust_title">כיוונון פקטור הרגישות הדינאמית %%</string>
+    <string name="DynISFAdjust_summary">כיוונון פקטור הרגישות הדינאמית. קבעו יותר מ-100%% לקבלת תיקונים אגרסיביים יותר ופחות מ-100%% לקבלת תיקונים עדינים יותר.</string>
     <string name="enableuam">הפעלת UAM</string>
     <string name="enablesmb">אפשר SMB</string>
     <string name="enablesmb_summary">השתמש בסופר מיקרו בולוסים במקום בבזאלי זמני לפעילות מהירה יותר</string>
@@ -448,7 +450,7 @@
     <string name="activate_profile">הפעלת פרופיל</string>
     <string name="invalid">לא חוקי</string>
     <string name="careportal_newnstreatment_percentage_label">אחוזים</string>
-    <string name="careportal_newnstreatment_timeshift_label">קיזוז זמנים</string>
+    <string name="careportal_newnstreatment_timeshift_label">היסט זמן</string>
     <string name="default_temptargets">ברירות מחדל ערכי מטרה</string>
     <string name="eatingsoon_duration">משך אוכלים בקרוב</string>
     <string name="eatingsoon_target">ערך מטרת אוכלים בקרוב</string>
@@ -466,7 +468,6 @@
     <string name="shortenergy">אנרגיה</string>
     <string name="shortprotein">חלבון</string>
     <string name="shortfat">שומן</string>
-    <string name="active"><![CDATA[<Active>]]></string>
     <string name="executingrightnow">הפקודה מבוצעת כעת</string>
     <string name="missed_bg_readings">לא התקבלו קריאות סוכר</string>
     <string name="raise_notifications_as_android_notifications">שימוש בהודעות מערכת עבור התראות ודיווחים</string>
@@ -510,9 +511,9 @@
     <string name="maxiobset">ערך IOB מקסימלי הוגדר כראוי</string>
     <string name="hasbgdata">ערכי סוכר זמינים מהמקור הנבחר</string>
     <string name="extendedbolusdeliveryerror">שגיאה במתן הבולוס הממושך</string>
-    <string name="enablesmbalways">הפעלת SMB תמיד</string>
+    <string name="enablesmbalways">הפעל SMB תמיד</string>
     <string name="enablesmbalways_summary">אפשר SMB תמיד באופן עצמאי מבולוסים. אפשרי רק עם מקור ערכי סוכר עם דיוק של נתונים כמו G5</string>
-    <string name="enablesmbaftercarbs">הפעלת SMB אחרי פחמימות</string>
+    <string name="enablesmbaftercarbs">הפעל SMB אחרי פחמימות</string>
     <string name="enablesmbaftercarbs_summary">הפעלת SMB במשך 6 ש\' אחרי פחמימות, גם אם אין פחמ\' פעילות. אפשרי רק עם מקור ערכי סוכר עם דיוק נתונים כמו G5</string>
     <string name="enablesmbwithcob">הפעלת SMB עם פחמ\' פעילות</string>
     <string name="enablesmbwithcob_summary">הפעלת SMB כשיש פחמ\' פעילות.</string>
@@ -811,6 +812,7 @@
     <string name="smscommunicator_otp_install_info">בכל אחד מהטלפונים העוקבים, התקינו יישום מאמת התומך באסימוני RFC 6238 TOTP. יישומים פופולריים בחינם הם:\n • Authy\n • Google Authenticator\n • LastPass Authenticator\n • FreeOTP Authenticator</string>
     <string name="smscommunicator_otp_reset_warning">אתחול המאמת גורם למאמתים שסופקו לכם להפסיק להיות חוקיים ויהיה צורך להגדירם שוב!</string>
     <string name="overview_show_predictions">חיזוי</string>
+    <string name="overview_show_treatments">טיפולים</string>
     <string name="overview_show_deviationslope">שיפוע הסטייה</string>
     <string name="authorizationfailed">ההרשאה נכשלה</string>
     <string name="overview_show_absinsulin">אינסולין מוחלט</string>
@@ -954,6 +956,8 @@
     <string name="wizard_explain_trend">מגמת 15 דק\': %1$.2f יח\'</string>
     <string name="overview_editquickwizard_percentage">אחוזים</string>
     <string name="app_default">ברירת המחדל של היישום</string>
+    <string name="show_invalidated_records">הצג רשומות מבוטלות\\מחוקות</string>
+    <string name="hide_invalidated_records">הסתר רשומות מבוטלות\\מחוקות</string>
     <string name="select_profile">בחרו פרופיל לעריכה</string>
     <string name="refresh_from_nightscout">רענן מנייטסקאוט</string>
     <string name="remove_selected_items">הסר פריטים נבחרים</string>
@@ -962,8 +966,26 @@
     <string name="tempt_targets">ערכי מטרה זמניים</string>
     <string name="carbs_and_bolus">פחמ\' ובולוס</string>
     <string name="confirm_remove_multiple_items">האם אתם בטוחים שברצונכם להסיר %1$d פריטים?</string>
+    <string name="no_records_available">אין רישומים זמינים</string>
     <string name="hide_loop">החבא לולאה</string>
     <string name="show_loop">הצג לולאה</string>
     <string name="count_selected">%1$d נבחרו</string>
     <string name="sort_label">מיין</string>
+    <string name="dialog_canceled">דו-שיח בוטל</string>
+    <string name="below" comment="below &quot;in range&quot;">מתחת</string>
+    <string name="in_range">בטווח</string>
+    <string name="above" comment="above &quot;in range&quot;">מעל</string>
+    <string name="show_loop_records">הצג רשומות לולאה</string>
+    <string name="show_hide_records">החבא רשומות לולאה</string>
+    <string name="widget_description">ווידג\'ט AndroidAPS</string>
+    <string name="configure">הגדרת אטימות</string>
+    <string name="device_phone">טלפון</string>
+    <string name="device_watch">שעון</string>
+    <string name="a11y_only_on_watch">על השעון בלבד</string>
+    <string name="a11y_only_on_phone">על הטלפון בלבד</string>
+    <string name="a11y_drag_and_drop_handle">ידית גרירה</string>
+    <!-- Aidex Cgms -->
+    <string name="aidex">GlucoRx Aidex</string>
+    <string name="aidex_short">Aidex</string>
+    <string name="description_source_aidex">קבלת נתוני סוכר מחיישני GlucoRx Aidex.</string>
 </resources>

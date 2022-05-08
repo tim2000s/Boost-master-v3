@@ -35,7 +35,7 @@ import info.nightscout.androidaps.utils.FabricPrivacy
 import info.nightscout.androidaps.utils.HtmlHelper.fromHtml
 import info.nightscout.androidaps.utils.ToastUtils
 import info.nightscout.androidaps.utils.buildHelper.BuildHelper
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.shared.sharedPreferences.SP
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -170,8 +170,7 @@ class NSClientPlugin @Inject constructor(
 
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             aapsLogger.debug(LTag.NSCLIENT, "Service is connected")
-            val mLocalBinder = service as NSClientService.LocalBinder
-            @Suppress("UNNECESSARY_SAFE_CALL")
+            val mLocalBinder = service as NSClientService.LocalBinder?
             nsClientService = mLocalBinder?.serviceInstance // is null when running in roboelectric
         }
     }

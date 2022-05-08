@@ -7,7 +7,11 @@ import android.os.SystemClock
 import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.annotations.OpenForTesting
 import info.nightscout.androidaps.automation.R
-import info.nightscout.androidaps.events.*
+import info.nightscout.androidaps.events.EventBTChange
+import info.nightscout.androidaps.events.EventChargingState
+import info.nightscout.androidaps.events.EventLocationChange
+import info.nightscout.androidaps.events.EventNetworkChange
+import info.nightscout.androidaps.events.EventPreferenceChange
 import info.nightscout.androidaps.interfaces.*
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker
@@ -20,7 +24,6 @@ import info.nightscout.androidaps.services.LocationServiceHelper
 import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.FabricPrivacy
 import info.nightscout.androidaps.utils.T
-import info.nightscout.androidaps.utils.resources.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
@@ -33,7 +36,6 @@ import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.collections.ArrayList
 
 @OpenForTesting
 @Singleton
@@ -128,10 +130,6 @@ class AutomationPlugin @Inject constructor(
             .observeOn(aapsSchedulers.io)
             .subscribe({ processActions() }, fabricPrivacy::logException)
         disposable += rxBus
-            .toObservable(EventAutosensCalculationFinished::class.java)
-            .observeOn(aapsSchedulers.io)
-            .subscribe({ processActions() }, fabricPrivacy::logException)
-        disposable += rxBus
             .toObservable(EventBTChange::class.java)
             .observeOn(aapsSchedulers.io)
             .subscribe({
@@ -150,7 +148,7 @@ class AutomationPlugin @Inject constructor(
 
     private fun storeToSP() {
         val array = JSONArray()
-        val iterator = automationEvents.iterator()
+        val iterator = ArrayList(automationEvents).iterator()
         try {
             while (iterator.hasNext()) {
                 val event = iterator.next()
@@ -181,8 +179,7 @@ class AutomationPlugin @Inject constructor(
             automationEvents.add(AutomationEvent(injector).fromJSON(event, 0))
     }
 
-    @Synchronized
-    private fun processActions() {
+    @Synchronized internal fun processActions() {
         var commonEventsEnabled = true
         if (loop.isSuspended || !(loop as PluginBase).isEnabled()) {
             aapsLogger.debug(LTag.AUTOMATION, "Loop deactivated")

@@ -18,7 +18,7 @@ import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.utils.JsonHelper.safeGetString
 import info.nightscout.androidaps.utils.XDripBroadcast
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.sharedPreferences.SP
 import org.json.JSONArray
 import org.json.JSONException
@@ -72,6 +72,7 @@ class PoctechPlugin @Inject constructor(
                         timestamp = json.getLong("date"),
                         value = if (safeGetString(json, "units", Constants.MGDL) == "mmol/L") json.getDouble("current") * Constants.MMOLL_TO_MGDL
                         else json.getDouble("current"),
+                        smoothed = 0.0,
                         raw = json.getDouble("raw"),
                         noise = null,
                         trendArrow = GlucoseValue.TrendArrow.fromString(json.getString("direction")),

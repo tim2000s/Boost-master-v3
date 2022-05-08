@@ -13,7 +13,6 @@ import info.nightscout.androidaps.database.entities.UserEntry.Sources
 import info.nightscout.androidaps.databinding.TreatmentsUserEntryFragmentBinding
 import info.nightscout.androidaps.databinding.TreatmentsUserEntryItemBinding
 import info.nightscout.androidaps.events.EventPreferenceChange
-import info.nightscout.androidaps.events.EventTreatmentUpdateGui
 import info.nightscout.androidaps.extensions.toVisibility
 import info.nightscout.androidaps.interfaces.ImportExportPrefs
 import info.nightscout.androidaps.interfaces.ProfileFunction
@@ -25,12 +24,11 @@ import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.ToastUtils
 import info.nightscout.androidaps.utils.Translator
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.androidaps.utils.userEntry.UserEntryPresentationHelper
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class TreatmentsUserEntryFragment : DaggerFragment() {
@@ -65,6 +63,8 @@ class TreatmentsUserEntryFragment : DaggerFragment() {
         setHasOptionsMenu(true)
         binding.recyclerview.setHasFixedSize(true)
         binding.recyclerview.layoutManager = LinearLayoutManager(view.context)
+        binding.recyclerview.emptyView = binding.noRecordsText
+        binding.recyclerview.loadingView = binding.progressBar
     }
 
     private fun exportUserEntries() {
@@ -78,6 +78,7 @@ class TreatmentsUserEntryFragment : DaggerFragment() {
 
     fun swapAdapter() {
         val now = System.currentTimeMillis()
+        binding.recyclerview.isLoading = true
         disposable +=
             if (showLoop)
                 repository
@@ -98,11 +99,6 @@ class TreatmentsUserEntryFragment : DaggerFragment() {
         disposable += rxBus
             .toObservable(EventPreferenceChange::class.java)
             .observeOn(aapsSchedulers.io)
-            .subscribe({ swapAdapter() }, fabricPrivacy::logException)
-        disposable += rxBus
-            .toObservable(EventTreatmentUpdateGui::class.java)
-            .observeOn(aapsSchedulers.io)
-            .debounce(1L, TimeUnit.SECONDS)
             .subscribe({ swapAdapter() }, fabricPrivacy::logException)
     }
 
@@ -138,8 +134,6 @@ class TreatmentsUserEntryFragment : DaggerFragment() {
             holder.binding.iconSource.setImageResource(userEntryPresentationHelper.iconId(current.source))
             holder.binding.values.text = userEntryPresentationHelper.listToPresentationString(current.values)
             holder.binding.values.visibility = (holder.binding.values.text != "").toVisibility()
-            val nextTimestamp = if (entries.size != position + 1) entries[position + 1].timestamp else 0L
-            holder.binding.delimiter.visibility = dateUtil.isSameDayGroup(current.timestamp, nextTimestamp).toVisibility()
         }
 
         inner class UserEntryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -172,7 +166,7 @@ class TreatmentsUserEntryFragment : DaggerFragment() {
                 showLoop = true
                 updateMenuVisibility()
                 ToastUtils.showToastInUiThread(context, rh.gs(R.string.show_loop_records))
-                rxBus.send(EventTreatmentUpdateGui())
+                swapAdapter()
                 true
             }
 
@@ -180,7 +174,7 @@ class TreatmentsUserEntryFragment : DaggerFragment() {
                 showLoop = false
                 updateMenuVisibility()
                 ToastUtils.showToastInUiThread(context, rh.gs(R.string.show_hide_records))
-                rxBus.send(EventTreatmentUpdateGui())
+                swapAdapter()
                 true
             }
 

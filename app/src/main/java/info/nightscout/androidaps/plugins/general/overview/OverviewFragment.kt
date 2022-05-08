@@ -37,13 +37,9 @@ import info.nightscout.androidaps.database.entities.UserEntry.Sources
 import info.nightscout.androidaps.database.interfaces.end
 import info.nightscout.androidaps.databinding.OverviewFragmentBinding
 import info.nightscout.androidaps.dialogs.*
-import info.nightscout.androidaps.events.EventAcceptOpenLoopChange
-import info.nightscout.androidaps.events.EventInitializationChanged
-import info.nightscout.androidaps.events.EventPreferenceChange
-import info.nightscout.androidaps.events.EventPumpStatusChanged
-import info.nightscout.androidaps.events.EventRefreshOverview
+import info.nightscout.androidaps.events.*
 import info.nightscout.androidaps.extensions.directionToIcon
-import info.nightscout.androidaps.extensions.isInProgress
+import info.nightscout.androidaps.extensions.runOnUiThread
 import info.nightscout.androidaps.extensions.toVisibility
 import info.nightscout.androidaps.extensions.valueToUnitsString
 import info.nightscout.androidaps.interfaces.*
@@ -60,7 +56,6 @@ import info.nightscout.androidaps.plugins.general.overview.activities.QuickWizar
 import info.nightscout.androidaps.plugins.general.overview.events.*
 import info.nightscout.androidaps.plugins.general.overview.graphData.GraphData
 import info.nightscout.androidaps.plugins.general.overview.notifications.NotificationStore
-import info.nightscout.androidaps.plugins.general.wear.events.EventWearInitiateAction
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.GlucoseStatusProvider
 import info.nightscout.androidaps.plugins.pump.common.defs.PumpType
 import info.nightscout.androidaps.plugins.pump.omnipod.eros.OmnipodErosPumpPlugin
@@ -75,13 +70,14 @@ import info.nightscout.androidaps.utils.TrendCalculator
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.buildHelper.BuildHelper
 import info.nightscout.androidaps.utils.protection.ProtectionCheck
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.androidaps.utils.ui.SingleClickButton
 import info.nightscout.androidaps.utils.ui.UIRunnable
 import info.nightscout.androidaps.utils.wizard.QuickWizard
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.sharedPreferences.SP
+import info.nightscout.shared.weardata.EventData
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
 import java.util.*
@@ -172,12 +168,12 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         val landscape = screenHeight < screenWidth
 
         skinProvider.activeSkin().preProcessLandscapeOverviewLayout(dm, binding, landscape, rh.gb(R.bool.isTablet), smallHeight)
-        binding.nsclientLayout.visibility = config.NSCLIENT.toVisibility()
+        binding.nsclientCard.visibility = config.NSCLIENT.toVisibility()
 
         binding.notifications.setHasFixedSize(false)
         binding.notifications.layoutManager = LinearLayoutManager(view.context)
         axisWidth = if (dm.densityDpi <= 120) 3 else if (dm.densityDpi <= 160) 10 else if (dm.densityDpi <= 320) 35 else if (dm.densityDpi <= 420) 50 else if (dm.densityDpi <= 560) 70 else 80
-        binding.graphsLayout.bgGraph.gridLabelRenderer?.gridColor = rh.gac(context, R.attr.graphgrid)
+        binding.graphsLayout.bgGraph.gridLabelRenderer?.gridColor = rh.gac(context, R.attr.graphGrid)
         binding.graphsLayout.bgGraph.gridLabelRenderer?.reloadStyles()
         binding.graphsLayout.bgGraph.gridLabelRenderer?.labelVerticalWidth = axisWidth
         binding.graphsLayout.bgGraph.layoutParams?.height = rh.dpToPx(skinProvider.activeSkin().mainGraphHeight)
@@ -186,15 +182,10 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         carbAnimation?.setEnterFadeDuration(1200)
         carbAnimation?.setExitFadeDuration(1200)
 
-
         binding.graphsLayout.bgGraph.setOnLongClickListener {
             overviewData.rangeToDisplay += 6
             overviewData.rangeToDisplay = if (overviewData.rangeToDisplay > 24) 6 else overviewData.rangeToDisplay
             sp.putInt(R.string.key_rangetodisplay, overviewData.rangeToDisplay)
-            overviewData.initRange()
-            overviewData.prepareBucketedData("EventBucketedDataCreated")
-            overviewData.prepareBgData("EventBucketedDataCreated")
-            updateGraph("rangeChange")
             rxBus.send(EventPreferenceChange(rh, R.string.key_rangetodisplay))
             sp.putBoolean(R.string.key_objectiveusescale, true)
             false
@@ -232,118 +223,112 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     override fun onResume() {
         super.onResume()
         disposable += activePlugin.activeOverview.overviewBus
-            .toObservable(EventUpdateOverviewTime::class.java)
-            .debounce(1L, TimeUnit.SECONDS)
-            .observeOn(aapsSchedulers.main)
-            .subscribe({ updateTime(it.from) }, fabricPrivacy::logException)
-        disposable += activePlugin.activeOverview.overviewBus
             .toObservable(EventUpdateOverviewCalcProgress::class.java)
             .observeOn(aapsSchedulers.main)
-            .subscribe({ updateCalcProgress(it.from) }, fabricPrivacy::logException)
-        disposable += activePlugin.activeOverview.overviewBus
-            .toObservable(EventUpdateOverviewProfile::class.java)
-            .debounce(1L, TimeUnit.SECONDS)
-            .observeOn(aapsSchedulers.main)
-            .subscribe({ updateProfile(it.from) }, fabricPrivacy::logException)
-        disposable += activePlugin.activeOverview.overviewBus
-            .toObservable(EventUpdateOverviewTemporaryBasal::class.java)
-            .debounce(1L, TimeUnit.SECONDS)
-            .observeOn(aapsSchedulers.main)
-            .subscribe({ updateTemporaryBasal(it.from) }, fabricPrivacy::logException)
-        disposable += activePlugin.activeOverview.overviewBus
-            .toObservable(EventUpdateOverviewExtendedBolus::class.java)
-            .debounce(1L, TimeUnit.SECONDS)
-            .observeOn(aapsSchedulers.main)
-            .subscribe({ updateExtendedBolus(it.from) }, fabricPrivacy::logException)
-        disposable += activePlugin.activeOverview.overviewBus
-            .toObservable(EventUpdateOverviewTemporaryTarget::class.java)
-            .debounce(1L, TimeUnit.SECONDS)
-            .observeOn(aapsSchedulers.main)
-            .subscribe({ updateTemporaryTarget(it.from) }, fabricPrivacy::logException)
-        disposable += activePlugin.activeOverview.overviewBus
-            .toObservable(EventUpdateOverviewTsunamiButton::class.java)
-            .debounce(1L, TimeUnit.SECONDS)
-            .observeOn(aapsSchedulers.main)
-            .subscribe({ updateTsunamiButton(it.from) }, fabricPrivacy::logException)
-        disposable += activePlugin.activeOverview.overviewBus
-            .toObservable(EventUpdateOverviewBg::class.java)
-            .debounce(1L, TimeUnit.SECONDS)
-            .observeOn(aapsSchedulers.main)
-            .subscribe({ updateBg(it.from) }, fabricPrivacy::logException)
+            .subscribe({ updateCalcProgress() }, fabricPrivacy::logException)
         disposable += activePlugin.activeOverview.overviewBus
             .toObservable(EventUpdateOverviewIobCob::class.java)
             .debounce(1L, TimeUnit.SECONDS)
             .observeOn(aapsSchedulers.main)
-            .subscribe({ updateIobCob(it.from) }, fabricPrivacy::logException)
+            .subscribe({ updateIobCob() }, fabricPrivacy::logException)
         disposable += activePlugin.activeOverview.overviewBus
             .toObservable(EventUpdateOverviewSensitivity::class.java)
             .debounce(1L, TimeUnit.SECONDS)
             .observeOn(aapsSchedulers.main)
-            .subscribe({ updateSensitivity(it.from) }, fabricPrivacy::logException)
+            .subscribe({ updateSensitivity() }, fabricPrivacy::logException)
         disposable += activePlugin.activeOverview.overviewBus
             .toObservable(EventUpdateOverviewGraph::class.java)
             .debounce(1L, TimeUnit.SECONDS)
             .observeOn(aapsSchedulers.main)
-            .subscribe({ updateGraph(it.from) }, fabricPrivacy::logException)
+            .subscribe({ updateGraph() }, fabricPrivacy::logException)
         disposable += activePlugin.activeOverview.overviewBus
             .toObservable(EventUpdateOverviewPumpStatus::class.java)
             .observeOn(aapsSchedulers.main)
-            .subscribe({ updatePumpStatus(it.from) }, fabricPrivacy::logException)
+            .subscribe({ updatePumpStatus() }, fabricPrivacy::logException)
         disposable += activePlugin.activeOverview.overviewBus
             .toObservable(EventUpdateOverviewNotification::class.java)
             .observeOn(aapsSchedulers.main)
-            .subscribe({ updateNotification(it.from) }, fabricPrivacy::logException)
+            .subscribe({ updateNotification() }, fabricPrivacy::logException)
+        disposable += rxBus
+            .toObservable(EventNewBG::class.java)
+            .debounce(1L, TimeUnit.SECONDS)
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ updateBg() }, fabricPrivacy::logException)
         disposable += rxBus
             .toObservable(EventRefreshOverview::class.java)
             .observeOn(aapsSchedulers.io)
             .subscribe({
-                           if (it.now) overviewPlugin.refreshLoop(it.from)
-                           else scheduleUpdateGUI(it.from)
+                           if (it.now) refreshAll()
+                           else scheduleUpdateGUI()
                        }, fabricPrivacy::logException)
         disposable += rxBus
             .toObservable(EventAcceptOpenLoopChange::class.java)
             .observeOn(aapsSchedulers.io)
-            .subscribe({ scheduleUpdateGUI("EventAcceptOpenLoopChange") }, fabricPrivacy::logException)
-        disposable += rxBus
-            .toObservable(EventInitializationChanged::class.java)
-            .observeOn(aapsSchedulers.main)
-            .subscribe({ updateTime("EventInitializationChanged") }, fabricPrivacy::logException)
+            .subscribe({ scheduleUpdateGUI() }, fabricPrivacy::logException)
         disposable += rxBus
             .toObservable(EventPreferenceChange::class.java)
             .observeOn(aapsSchedulers.io)
-            .subscribe({ scheduleUpdateGUI("EventPreferenceChange") }, fabricPrivacy::logException)
+            .subscribe({ scheduleUpdateGUI() }, fabricPrivacy::logException)
         disposable += rxBus
             .toObservable(EventNewOpenLoopNotification::class.java)
             .observeOn(aapsSchedulers.io)
-            .subscribe({ scheduleUpdateGUI("EventNewOpenLoopNotification") }, fabricPrivacy::logException)
+            .subscribe({ scheduleUpdateGUI() }, fabricPrivacy::logException)
         disposable += rxBus
             .toObservable(EventPumpStatusChanged::class.java)
             .observeOn(aapsSchedulers.main)
             .delay(30, TimeUnit.MILLISECONDS, aapsSchedulers.main)
             .subscribe({
                            overviewData.pumpStatus = it.getStatus(rh)
-                           updatePumpStatus("EventPumpStatusChanged")
+                           updatePumpStatus()
                        }, fabricPrivacy::logException)
+        disposable += rxBus
+            .toObservable(EventEffectiveProfileSwitchChanged::class.java)
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ updateProfile() }, fabricPrivacy::logException)
+        disposable += rxBus
+            .toObservable(EventTempTargetChange::class.java)
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ updateTemporaryTarget() }, fabricPrivacy::logException)
+        disposable += rxBus
+            .toObservable(EventExtendedBolusChange::class.java)
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ updateExtendedBolus() }, fabricPrivacy::logException)
+        disposable += rxBus
+            .toObservable(EventTempBasalChange::class.java)
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ updateTemporaryBasal() }, fabricPrivacy::logException)
+        disposable += rxBus
+            .toObservable(EventTsunamiModeChange::class.java)
+            //.debounce(1L, TimeUnit.SECONDS)
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ updateTsunamiButton() }, fabricPrivacy::logException)
 
         refreshLoop = Runnable {
-            overviewPlugin.refreshLoop("refreshLoop")
+            refreshAll()
             handler.postDelayed(refreshLoop, 60 * 1000L)
         }
         handler.postDelayed(refreshLoop, 60 * 1000L)
 
-        updateTime("onResume")
-        updateCalcProgress("onResume")
-        updateProfile("onResume")
-        updateTemporaryBasal("onResume")
-        updateExtendedBolus("onResume")
-        updateTemporaryTarget("onResume")
-        updateTsunamiButton("onResume")
-        updateBg("onResume")
-        updateIobCob("onResume")
-        updateSensitivity("onResume")
-        updateGraph("onResume")
-        updatePumpStatus("onResume")
-        updateNotification("onResume")
+        refreshAll()
+        updatePumpStatus()
+        updateCalcProgress()
+    }
+
+    fun refreshAll() {
+        runOnUiThread {
+            _binding ?: return@runOnUiThread
+            updateBg()
+            updateTime()
+            updateProfile()
+            updateTemporaryBasal()
+            updateExtendedBolus()
+            updateTemporaryTarget()
+            updateIobCob()
+            updateSensitivity()
+            updateTsunamiButton()
+            updateGraph()
+            updateNotification()
+        }
     }
 
     @Synchronized
@@ -436,7 +421,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                                             ?: "".toSpanned(), {
                                                                       uel.log(Action.ACCEPTS_TEMP_BASAL, Sources.Overview)
                                                                       (context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?)?.cancel(Constants.notificationID)
-                                                                      rxBus.send(EventWearInitiateAction("cancelChangeRequest"))
+                                                                      rxBus.send(EventMobileToWear(EventData.CancelNotification(dateUtil.now())))
                                                                       Thread { loop.acceptChangeRequest() }.run()
                                                                       binding.buttonsLayout.acceptTempButton.visibility = View.GONE
                                                                   })
@@ -579,16 +564,16 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
             binding.buttonsLayout.cgmButton.setCompoundDrawablesWithIntrinsicBounds(null, rh.gd(R.drawable.ic_byoda), null, null)
             for (drawable in binding.buttonsLayout.cgmButton.compoundDrawables) {
                 drawable?.mutate()
-                drawable?.colorFilter = PorterDuffColorFilter(rh.gac( context,R.attr.cgmdexColor ), PorterDuff.Mode.SRC_IN)
+                drawable?.colorFilter = PorterDuffColorFilter(rh.gac(context, R.attr.cgmDexColor), PorterDuff.Mode.SRC_IN)
             }
-            binding.buttonsLayout.cgmButton.setTextColor(rh.gac(context, R.attr.cgmdexColor))
+            binding.buttonsLayout.cgmButton.setTextColor(rh.gac(context, R.attr.cgmDexColor))
         } else if (xDripIsBgSource) {
             binding.buttonsLayout.cgmButton.setCompoundDrawablesWithIntrinsicBounds(null, rh.gd(R.drawable.ic_xdrip), null, null)
             for (drawable in binding.buttonsLayout.cgmButton.compoundDrawables) {
                 drawable?.mutate()
-                drawable?.colorFilter = PorterDuffColorFilter(rh.gac( context,R.attr.cgmxdripColor ), PorterDuff.Mode.SRC_IN)
+                drawable?.colorFilter = PorterDuffColorFilter(rh.gac(context, R.attr.cgmXdripColor), PorterDuff.Mode.SRC_IN)
             }
-            binding.buttonsLayout.cgmButton.setTextColor(rh.gac(context, R.attr.cgmxdripColor))
+            binding.buttonsLayout.cgmButton.setTextColor(rh.gac(context, R.attr.cgmXdripColor))
         }
         binding.buttonsLayout.cgmButton.visibility = (sp.getBoolean(R.string.key_show_cgm_button, false) && (xDripIsBgSource || dexcomIsSource)).toVisibility()
 
@@ -744,12 +729,12 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                 val graph = GraphView(context)
                 graph.layoutParams =
                     LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, rh.dpToPx(skinProvider.activeSkin().secondaryGraphHeight)).also { it.setMargins(0, rh.dpToPx(15), 0, rh.dpToPx(10)) }
-                graph.gridLabelRenderer?.gridColor = rh.gac(context, R.attr.graphgrid)
+                graph.gridLabelRenderer?.gridColor = rh.gac(context, R.attr.graphGrid)
                 graph.gridLabelRenderer?.reloadStyles()
                 graph.gridLabelRenderer?.isHorizontalLabelsVisible = false
                 graph.gridLabelRenderer?.labelVerticalWidth = axisWidth
                 graph.gridLabelRenderer?.numVerticalLabels = 3
-                graph.viewport.backgroundColor = rh.gac(context, R.attr.viewPortbackgroundColor)
+                graph.viewport.backgroundColor = rh.gac(context, R.attr.viewPortBackgroundColor)
                 relativeLayout.addView(graph)
 
                 val label = TextView(context)
@@ -768,11 +753,11 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
 
     var task: Runnable? = null
 
-    private fun scheduleUpdateGUI(from: String) {
+    private fun scheduleUpdateGUI() {
         class UpdateRunnable : Runnable {
 
             override fun run() {
-                overviewPlugin.refreshLoop(from)
+                refreshAll()
                 task = null
             }
         }
@@ -782,10 +767,10 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     }
 
     @SuppressLint("SetTextI18n")
-    @Suppress("UNUSED_PARAMETER")
-    fun updateBg(from: String) {
+    fun updateBg() {
+        _binding ?: return
         val units = profileFunction.getUnits()
-        binding.infoLayout.bg.text = overviewData.lastBg?.valueToUnitsString(units)
+        binding.infoLayout.bg.text = overviewData.lastBg?.valueToUnitsString(units, sp)
             ?: rh.gs(R.string.notavailable)
         binding.infoLayout.bg.setTextColor(overviewData.lastBgColor(context))
         binding.infoLayout.arrow.setImageResource(trendCalculator.getTrendArrow(overviewData.lastBg).directionToIcon())
@@ -832,61 +817,58 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun updateProfile(from: String) {
+    fun updateProfile() {
+        _binding ?: return
         val profileBackgroundColor =
             profileFunction.getProfile()?.let {
                 if (it is ProfileSealed.EPS) {
                     if (it.value.originalPercentage != 100 || it.value.originalTimeshift != 0L || it.value.originalDuration != 0L)
-                        rh.gac(context, R.attr.ribbonWarningColor)
-                    else rh.gac(context, R.attr.ribbonDefaultColor)
+                        R.attr.ribbonWarningColor
+                    else R.attr.ribbonDefaultColor
                 } else if (it is ProfileSealed.PS) {
-                    rh.gac(context, R.attr.ribbonDefaultColor)
+                    R.attr.ribbonDefaultColor
                 } else {
-                    rh.gac(context, R.attr.ribbonDefaultColor)
+                    R.attr.ribbonDefaultColor
                 }
-            } ?: rh.gac(context, R.attr.ribbonCriticalColor)
+            } ?: R.attr.ribbonCriticalColor
 
         val profileTextColor =
             profileFunction.getProfile()?.let {
                 if (it is ProfileSealed.EPS) {
                     if (it.value.originalPercentage != 100 || it.value.originalTimeshift != 0L || it.value.originalDuration != 0L)
-                        rh.gac(context, R.attr.ribbonTextWarningColor)
-                    else rh.gac(context, R.attr.ribbonTextDefaultColor)
+                        R.attr.ribbonTextWarningColor
+                    else R.attr.ribbonTextDefaultColor
                 } else if (it is ProfileSealed.PS) {
-                    rh.gac(context, R.attr.ribbonTextDefaultColor)
+                    R.attr.ribbonTextDefaultColor
                 } else {
-                    rh.gac(context, R.attr.ribbonTextDefaultColor)
+                    R.attr.ribbonTextDefaultColor
                 }
-            } ?: rh.gac(context, R.attr.ribbonTextDefaultColor)
-
-        binding.activeProfile.text = profileFunction.getProfileNameWithRemainingTime()
-        binding.activeProfile.setBackgroundColor(profileBackgroundColor)
-        binding.activeProfile.setTextColor(profileTextColor)
+            } ?: R.attr.ribbonTextDefaultColor
+        setRibbon(binding.activeProfile, profileTextColor, profileBackgroundColor, profileFunction.getProfileNameWithRemainingTime())
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun updateTemporaryBasal(from: String) {
-        binding.infoLayout.baseBasal.text = overviewData.temporaryBasalText
-        binding.infoLayout.baseBasal.setTextColor(overviewData.temporaryBasalColor)
-        binding.infoLayout.baseBasalIcon.setImageResource(overviewData.temporaryBasalIcon)
+    private fun updateTemporaryBasal() {
+        _binding ?: return
+        binding.infoLayout.baseBasal.text = overviewData.temporaryBasalText(iobCobCalculator)
+        binding.infoLayout.baseBasal.setTextColor(overviewData.temporaryBasalColor(context, iobCobCalculator))
+        binding.infoLayout.baseBasalIcon.setImageResource(overviewData.temporaryBasalIcon(iobCobCalculator))
         binding.infoLayout.basalLayout.setOnClickListener {
-            activity?.let { OKDialog.show(it, rh.gs(R.string.basal), overviewData.temporaryBasalDialogText) }
+            activity?.let { OKDialog.show(it, rh.gs(R.string.basal), overviewData.temporaryBasalDialogText(iobCobCalculator)) }
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun updateExtendedBolus(from: String) {
+    private fun updateExtendedBolus() {
+        _binding ?: return
         val pump = activePlugin.activePump
-        binding.infoLayout.extendedBolus.text = overviewData.extendedBolusText
+        binding.infoLayout.extendedBolus.text = overviewData.extendedBolusText(iobCobCalculator)
         binding.infoLayout.extendedLayout.setOnClickListener {
-            activity?.let { OKDialog.show(it, rh.gs(R.string.extended_bolus), overviewData.extendedBolusDialogText) }
+            activity?.let { OKDialog.show(it, rh.gs(R.string.extended_bolus), overviewData.extendedBolusDialogText(iobCobCalculator)) }
         }
         binding.infoLayout.extendedLayout.visibility = (iobCobCalculator.getExtendedBolus(dateUtil.now()) != null && !pump.isFakingTempsByExtendedBoluses).toVisibility()
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun updateTime(from: String) {
+    fun updateTime() {
+        _binding ?: return
         binding.infoLayout.time.text = dateUtil.timeString(dateUtil.now())
         // Status lights
         val pump = activePlugin.activePump
@@ -917,14 +899,14 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         processAps()
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun updateIobCob(from: String) {
-        binding.infoLayout.iob.text = overviewData.iobText
+    fun updateIobCob() {
+        _binding ?: return
+        binding.infoLayout.iob.text = overviewData.iobText(iobCobCalculator)
         binding.infoLayout.iobLayout.setOnClickListener {
-            activity?.let { OKDialog.show(it, rh.gs(R.string.iob), overviewData.iobDialogText) }
+            activity?.let { OKDialog.show(it, rh.gs(R.string.iob), overviewData.iobDialogText(iobCobCalculator)) }
         }
         // cob
-        var cobText = overviewData.cobInfo?.displayText(rh, dateUtil, buildHelper.isEngineeringMode()) ?: rh.gs(R.string.value_unavailable_short)
+        var cobText = overviewData.cobInfo(iobCobCalculator).displayText(rh, dateUtil, false) ?: rh.gs(R.string.value_unavailable_short)
 
         val constraintsProcessed = loop.lastRun?.constraintsProcessed
         val lastRun = loop.lastRun
@@ -945,15 +927,17 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
     }
 
     @SuppressLint("SetTextI18n")
-    @Suppress("UNUSED_PARAMETER")
-    fun updateTemporaryTarget(from: String) {
+    fun updateTemporaryTarget() {
+        _binding ?: return
         val units = profileFunction.getUnits()
-        if (overviewData.temporaryTarget?.isInProgress(dateUtil) == false) overviewData.temporaryTarget = null
         val tempTarget = overviewData.temporaryTarget
         if (tempTarget != null) {
-            binding.tempTarget.setTextColor(rh.gac(context, R.attr.ribbonTextWarningColor))
-            binding.tempTarget.setBackgroundColor(rh.gac(context, R.attr.ribbonWarningColor))
-            binding.tempTarget.text = Profile.toTargetRangeString(tempTarget.lowTarget, tempTarget.highTarget, GlucoseUnit.MGDL, units) + " " + dateUtil.untilString(tempTarget.end, rh)
+            setRibbon(
+                binding.tempTarget,
+                R.attr.ribbonTextWarningColor,
+                R.attr.ribbonWarningColor,
+                Profile.toTargetRangeString(tempTarget.lowTarget, tempTarget.highTarget, GlucoseUnit.MGDL, units) + " " + dateUtil.untilString(tempTarget.end, rh)
+            )
         } else {
             // If the target is not the same as set in the profile then oref has overridden it
             profileFunction.getProfile()?.let { profile ->
@@ -961,22 +945,25 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
 
                 if (targetUsed != 0.0 && abs(profile.getTargetMgdl() - targetUsed) > 0.01) {
                     aapsLogger.debug("Adjusted target. Profile: ${profile.getTargetMgdl()} APS: $targetUsed")
-                    binding.tempTarget.text = Profile.toTargetRangeString(targetUsed, targetUsed, GlucoseUnit.MGDL, units)
-                    binding.tempTarget.setTextColor(rh.gac(context, R.attr.ribbonTextWarningColor))
-                    binding.tempTarget.setBackgroundColor(rh.gac(context, R.attr.tempTargetBackgroundColor))
+                    setRibbon(
+                        binding.tempTarget,
+                        R.attr.ribbonTextWarningColor,
+                        R.attr.tempTargetBackgroundColor,
+                        Profile.toTargetRangeString(targetUsed, targetUsed, GlucoseUnit.MGDL, units)
+                    )
                 } else {
-                    binding.tempTarget.setTextColor(rh.gac(context, R.attr.ribbonTextDefaultColor))
-                    binding.tempTarget.setBackgroundColor(rh.gac(context, R.attr.ribbonDefaultColor))
-                    binding.tempTarget.text = Profile.toTargetRangeString(profile.getTargetLowMgdl(), profile.getTargetHighMgdl(), GlucoseUnit.MGDL, units)
+                    setRibbon(
+                        binding.tempTarget,
+                        R.attr.ribbonTextDefaultColor,
+                        R.attr.ribbonDefaultColor,
+                        Profile.toTargetRangeString(profile.getTargetLowMgdl(), profile.getTargetHighMgdl(), GlucoseUnit.MGDL, units)
+                    )
                 }
             }
         }
     }
-
-
     @SuppressLint("SetTextI18n")
-    @Suppress("UNUSED_PARAMETER")
-    fun updateTsunamiButton(from: String) {
+    fun updateTsunamiButton() {
         val tsunamiMode = overviewData.tsunami
         if (tsunamiMode != null) {
             val remaining = tsunamiMode.duration + tsunamiMode.timestamp - dateUtil.now()
@@ -986,19 +973,27 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                 binding.buttonsLayout.tsunamiButton.text = dateUtil.untilString(tsunamiMode.end, rh)
             } else {
                 binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.tsunamiButtonColor))
-                binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.ribbonDefaultColor))
+                binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.defaultButtonColor))
                 binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
             }
         } else {
             binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.tsunamiButtonColor))
-            binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.ribbonDefaultColor))
+            binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.defaultButtonColor))
             binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
         }
     }
 
+    private fun setRibbon(view: TextView, attrResText: Int, attrResBack: Int, text: String) {
+        with(view) {
+            setText(text)
+            setBackgroundColor(rh.gac(context, attrResBack))
+            setTextColor(rh.gac(context, attrResText))
+            compoundDrawables[0]?.setTint(rh.gac(context, attrResText))
+        }
+    }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun updateGraph(from: String) {
+    private fun updateGraph() {
+        _binding ?: return
         val pump = activePlugin.activePump
         val graphData = GraphData(injector, binding.graphsLayout.bgGraph, overviewData)
         val menuChartSettings = overviewMenus.setting
@@ -1009,6 +1004,8 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         graphData.addBgReadings(menuChartSettings[0][OverviewMenus.CharType.PRE.ordinal])
         if (buildHelper.isDev()) graphData.addBucketedData()
         graphData.addTreatments()
+        if (menuChartSettings[0][OverviewMenus.CharType.TREAT.ordinal])
+            graphData.addTherapyEvents()
         if (menuChartSettings[0][OverviewMenus.CharType.ACT.ordinal])
             graphData.addActivity(0.8)
         if ((pump.pumpDescription.isTempBasalCapable || config.NSCLIENT) && menuChartSettings[0][OverviewMenus.CharType.BAS.ordinal])
@@ -1079,14 +1076,14 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun updateCalcProgress(from: String) {
+    private fun updateCalcProgress() {
+        _binding ?: return
         binding.progressBar.progress = overviewData.calcProgressPct
         binding.progressBar.visibility = (overviewData.calcProgressPct != 100).toVisibility()
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun updateSensitivity(from: String) {
+    private fun updateSensitivity() {
+        _binding ?: return
         if (sp.getBoolean(R.string.key_openapsama_useautosens, false) && constraintChecker.isAutosensModeEnabled().value()) {
             binding.infoLayout.sensitivityIcon.setImageResource(R.drawable.ic_swap_vert_black_48dp_green)
         } else {
@@ -1094,20 +1091,20 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         }
 
         binding.infoLayout.sensitivity.text =
-            overviewData.lastAutosensData?.let { autosensData ->
+            overviewData.lastAutosensData(iobCobCalculator)?.let { autosensData ->
                 String.format(Locale.ENGLISH, "%.0f%%", autosensData.autosensResult.ratio * 100)
             } ?: ""
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun updatePumpStatus(from: String) {
+    private fun updatePumpStatus() {
+        _binding ?: return
         val status = overviewData.pumpStatus
         binding.pumpStatus.text = status
         binding.pumpStatusLayout.visibility = (status != "").toVisibility()
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun updateNotification(from: String) {
+    private fun updateNotification() {
+        _binding ?: return
         binding.notifications.let { notificationStore.updateNotifications(it) }
     }
 }

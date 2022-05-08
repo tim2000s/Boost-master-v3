@@ -20,7 +20,6 @@ import info.nightscout.androidaps.database.transactions.InvalidateExtendedBolusT
 import info.nightscout.androidaps.databinding.TreatmentsExtendedbolusFragmentBinding
 import info.nightscout.androidaps.databinding.TreatmentsExtendedbolusItemBinding
 import info.nightscout.androidaps.events.EventExtendedBolusChange
-import info.nightscout.androidaps.events.EventTreatmentUpdateGui
 import info.nightscout.androidaps.extensions.iobCalc
 import info.nightscout.androidaps.extensions.isInProgress
 import info.nightscout.androidaps.extensions.toVisibility
@@ -34,7 +33,7 @@ import info.nightscout.androidaps.utils.FabricPrivacy
 import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.ToastUtils
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
@@ -80,10 +79,13 @@ class TreatmentsExtendedBolusesFragment : DaggerFragment() {
         setHasOptionsMenu(true)
         binding.recyclerview.setHasFixedSize(true)
         binding.recyclerview.layoutManager = LinearLayoutManager(view.context)
+        binding.recyclerview.emptyView = binding.noRecordsText
+        binding.recyclerview.loadingView = binding.progressBar
     }
 
     fun swapAdapter() {
         val now = System.currentTimeMillis()
+        binding.recyclerview.isLoading = true
         disposable += if (showInvalidated)
             repository
                 .getExtendedBolusDataIncludingInvalidFromTime(now - millsToThePast, false)
@@ -102,11 +104,6 @@ class TreatmentsExtendedBolusesFragment : DaggerFragment() {
         swapAdapter()
         disposable += rxBus
             .toObservable(EventExtendedBolusChange::class.java)
-            .observeOn(aapsSchedulers.io)
-            .debounce(1L, TimeUnit.SECONDS)
-            .subscribe({ swapAdapter() }, fabricPrivacy::logException)
-        disposable += rxBus
-            .toObservable(EventTreatmentUpdateGui::class.java) // TODO join with above
             .observeOn(aapsSchedulers.io)
             .debounce(1L, TimeUnit.SECONDS)
             .subscribe({ swapAdapter() }, fabricPrivacy::logException)
@@ -166,8 +163,6 @@ class TreatmentsExtendedBolusesFragment : DaggerFragment() {
                 }
                 holder.binding.cbRemove.isChecked = actionHelper.isSelected(position)
             }
-            val nextTimestamp = if (extendedBolusList.size != position + 1) extendedBolusList[position + 1].timestamp else 0L
-            holder.binding.delimiter.visibility = dateUtil.isSameDayGroup(extendedBolus.timestamp, nextTimestamp).toVisibility()
         }
 
         override fun getItemCount() = extendedBolusList.size
@@ -203,7 +198,7 @@ class TreatmentsExtendedBolusesFragment : DaggerFragment() {
                 showInvalidated = true
                 updateMenuVisibility()
                 ToastUtils.showToastInUiThread(context, rh.gs(R.string.show_invalidated_records))
-                rxBus.send(EventTreatmentUpdateGui())
+                swapAdapter()
                 true
             }
 
@@ -211,7 +206,7 @@ class TreatmentsExtendedBolusesFragment : DaggerFragment() {
                 showInvalidated = false
                 updateMenuVisibility()
                 ToastUtils.showToastInUiThread(context, rh.gs(R.string.hide_invalidated_records))
-                rxBus.send(EventTreatmentUpdateGui())
+                swapAdapter()
                 true
             }
 

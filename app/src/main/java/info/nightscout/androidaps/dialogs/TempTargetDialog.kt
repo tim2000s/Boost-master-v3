@@ -31,7 +31,7 @@ import info.nightscout.androidaps.utils.ToastUtils
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.protection.ProtectionCheck
 import info.nightscout.androidaps.utils.protection.ProtectionCheck.Protection.BOLUS
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.plusAssign
 import java.text.DecimalFormat
@@ -123,8 +123,8 @@ class TempTargetDialog : DialogFragmentWithDate() {
                 longClick(it)
                 return@setOnLongClickListener true
             }
-            binding.duration.editText?.id?.let { binding.durationLabel.labelFor = it }
-            binding.temptarget.editText?.id?.let { binding.temptargetLabel.labelFor = it }
+            binding.durationLabel.labelFor = binding.duration.editTextId
+            binding.temptargetLabel.labelFor = binding.temptarget.editTextId
         }
     }
 

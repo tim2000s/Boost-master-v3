@@ -25,7 +25,7 @@ import info.nightscout.androidaps.receivers.DataWorker
 import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.XDripBroadcast
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.shared.sharedPreferences.SP
@@ -143,6 +143,7 @@ class DexcomPlugin @Inject constructor(
                         glucoseValues += CgmSourceTransaction.TransactionGlucoseValue(
                             timestamp = timestamp,
                             value = glucoseValueBundle.getInt("glucoseValue").toDouble(),
+                            smoothed = 0.0,
                             noise = null,
                             raw = null,
                             trendArrow = GlucoseValue.TrendArrow.fromString(glucoseValueBundle.getString("trendArrow")!!),

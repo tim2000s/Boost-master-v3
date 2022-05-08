@@ -32,7 +32,7 @@ import info.nightscout.androidaps.plugins.configBuilder.ConstraintChecker
 import info.nightscout.androidaps.utils.*
 import info.nightscout.androidaps.utils.protection.ProtectionCheck
 import info.nightscout.androidaps.utils.protection.ProtectionCheck.Protection.BOLUS
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.androidaps.utils.wizard.BolusWizard
 import info.nightscout.shared.SafeParse
@@ -130,7 +130,7 @@ class WizardDialog : DaggerDialogFragment() {
         val useSuperBolus = sp.getBoolean(R.string.key_usesuperbolus, false)
         binding.sbCheckbox.visibility = useSuperBolus.toVisibility()
         binding.superBolusRow.visibility = useSuperBolus.toVisibility()
-        binding.notesLayout.visibility = sp.getBoolean(R.string.key_show_notes_entry_dialogs, false).toVisibility()
+        binding.notesLayout.root.visibility = sp.getBoolean(R.string.key_show_notes_entry_dialogs, false).toVisibility()
 
         val maxCarbs = constraintChecker.getMaxCarbsAllowed().value()
         val maxCorrection = constraintChecker.getMaxBolusAllowed().value()
@@ -248,10 +248,10 @@ class WizardDialog : DaggerDialogFragment() {
     }
 
     private fun setA11yLabels() {
-        binding.bgInput.editText?.id?.let { binding.bgInputLabel.labelFor = it }
-        binding.carbsInput.editText?.id?.let { binding.carbsInputLabel.labelFor = it }
-        binding.correctionInput.editText?.id?.let { binding.correctionInputLabel.labelFor = it }
-        binding.carbTimeInput.editText?.id?.let { binding.carbTimeInputLabel.labelFor = it }
+        binding.bgInputLabel.labelFor = binding.bgInput.editTextId
+        binding.carbsInputLabel.labelFor = binding.carbsInput.editTextId
+        binding.correctionInputLabel.labelFor = binding.correctionInput.editTextId
+        binding.carbTimeInputLabel.labelFor = binding.carbTimeInput.editTextId
     }
 
     override fun onDestroyView() {
@@ -327,7 +327,7 @@ class WizardDialog : DaggerDialogFragment() {
             binding.carbsInput.value = carbsPassedIntoWizard
         }
         if (notesPassedIntoWizard.isNotBlank()) {
-            binding.notes.setText(notesPassedIntoWizard)
+            binding.notesLayout.notes.setText(notesPassedIntoWizard)
         }
         val profile = profileFunction.getProfile()
         val profileStore = activePlugin.activeProfileSource.profile
@@ -350,7 +350,7 @@ class WizardDialog : DaggerDialogFragment() {
         binding.bgInput.step = if (units == GlucoseUnit.MGDL) 1.0 else 0.1
 
         // Set BG if not old
-        binding.bgInput.value = iobCobCalculator.ads.actualBg()?.valueToUnits(units) ?: 0.0
+        binding.bgInput.value = iobCobCalculator.ads.actualBg()?.valueToUnits(units, sp) ?: 0.0
 
         binding.ttCheckbox.isEnabled = repository.getTemporaryTargetActiveAt(dateUtil.now()).blockingGet() is ValueWrapper.Existing
         binding.ttCheckboxIcon.visibility = binding.ttCheckbox.isEnabled.toVisibility()
@@ -427,7 +427,7 @@ class WizardDialog : DaggerDialogFragment() {
             binding.ttCheckbox.isChecked,
             binding.bgTrendCheckbox.isChecked,
             binding.alarm.isChecked,
-            binding.notes.text.toString(),
+            binding.notesLayout.notes.text.toString(),
             carbTime,
             usePercentage = usePercentage,
             totalPercentage = percentageCorrection

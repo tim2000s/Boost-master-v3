@@ -24,7 +24,7 @@ import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.FabricPrivacy
 import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.XDripBroadcast
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.shared.sharedPreferences.SP
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import javax.inject.Inject
@@ -122,6 +122,7 @@ class GlunovoPlugin @Inject constructor(
                         timestamp = timestamp,
                         value = value * Constants.MMOLL_TO_MGDL,
                         raw = 0.0,
+                        smoothed = 0.0,
                         noise = null,
                         trendArrow = GlucoseValue.TrendArrow.NONE,
                         sourceSensor = GlucoseValue.SourceSensor.GLUNOVO_NATIVE
