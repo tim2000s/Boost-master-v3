@@ -371,7 +371,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var act_missing;
 
     //MP Switch between activity control and activity build-up modes
-    if (glucose_status.delta <= 4.1) {
+    if (glucose_status.delta <= 4.0) {
         //MP Adjust activity target to activity_target % of current activity if glucose is near constant / delta is low (near-constant activity)
         act_missing = round((act_curr * activity_target - Math.max(act_future, 0)) / 5, 4); //MP Use activity_target% of current activity as target activity in the future; Divide by 5 to get per-minute activity
         deltaScore = Math.min(1, Math.max((bg - target_bg) / 100, 0)); //MP redefines deltaScore as it otherwise would be near-zero (low deltas). The higher the bg, the larger deltaScore
