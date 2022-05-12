@@ -17,7 +17,7 @@
             android:selectAllOnFocus="true"
             android:title="@string/insulin_peak_time"
             validate:maxNumber="120"
-            validate:minNumber="35"
+            validate:minNumber="20"
             validate:testType="numericRange" />
 
     </PreferenceCategory>
