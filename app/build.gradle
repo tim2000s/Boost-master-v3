@@ -152,6 +152,7 @@ android {
                 }
         }
     }
+    flavorDimensions "standard"
     productFlavors {
         full {
             applicationId "info.nightscout.androidaps"
