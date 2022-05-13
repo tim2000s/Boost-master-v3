@@ -361,6 +361,23 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var dynISFadjust = ( dynISFadjust / 100 );
     var TDD = (dynISFadjust * TDD);
     var variable_sens_old = (277700 / (TDD * bg));
+
+    var ins_val = 55;
+            var insulin = profile.insulinType;
+            console.log("Initial insulin value for ISF: "+ins_val+"; ");
+            console.log("Current value for insulin: "+insulin+"; ");
+
+            if (insulin == 'Free-Peak Oref'){
+                ins_val = 75; }
+            else if (insulin == 'Lyumjev'){
+                ins_val = 75; }
+            else if (insulin == 'Ultra-Rapid Oref'){
+                ins_val = 65;}
+            else if (insulin == 'Rapid-Acting Oref'){
+                ins_val = 55; }
+
+            console.log("Insulin value for ISF based on profile: "+ins_val+"; ");
+
     if(bg <= 180){
     var sens_bg = bg;
     console.log("Current sensitivity for predictions is based on current bg");
@@ -371,7 +388,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     }
     var insPeak = profile.insulinPeakTime
     console.log("Insulin Peak Time is "+insPeak+"; ");
-    variable_sens =  1800 / ( TDD * (Math.log(( bg / 75 ) + 1 ) ) );
+    variable_sens =  1800 / ( TDD * (Math.log(( bg / ins_val ) + 1 ) ) );
     variable_sens = round(variable_sens,1);
     console.log("Current sensitivity for predictions is " +variable_sens+" based on current bg");
     console.log("Sensitivity for predictions using old model is " +variable_sens_old+" based on current bg");

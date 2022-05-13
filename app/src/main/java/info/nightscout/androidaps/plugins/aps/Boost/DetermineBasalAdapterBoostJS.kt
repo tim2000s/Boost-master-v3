@@ -194,6 +194,10 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
     ) {
         val pump = activePlugin.activePump
         val pumpBolusStep = pump.pumpDescription.bolusStep
+
+        val insulin = activePlugin.activeInsulin
+        val insulinType = insulin.friendlyName
+
         this.profile.put("max_iob", maxIob)
         this.profile.put("dia", profile.dia)
         this.profile.put("type", "current")
