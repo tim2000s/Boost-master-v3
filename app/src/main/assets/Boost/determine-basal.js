@@ -369,8 +369,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             if (insulin == 'Free-Peak Oref'){
                 ins_val = 75; }
-            else if (insulin == 'Lyumjev-classic' || insulin == 'Lyumjev-U100' || insulin ==
-            'Lyumjev-U200'){
+            else if (insulin == 'Lyumjev-classic' || insulin == 'Lyumjev-U100' || insulin == 'Lyumjev-U200'){
                 ins_val = 75; }
             else if (insulin == 'Ultra-Rapid Oref'){
                 ins_val = 65;}
