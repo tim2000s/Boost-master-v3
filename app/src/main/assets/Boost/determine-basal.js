@@ -362,14 +362,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var TDD = (dynISFadjust * TDD);
     var variable_sens_old = (277700 / (TDD * bg));
 
-    var ins_val = 55;
+    var ins_val = 75;
             var insulin = profile.insulinType;
             console.log("Initial insulin value for ISF: "+ins_val+"; ");
             console.log("Current value for insulin: "+insulin+"; ");
 
             if (insulin == 'Free-Peak Oref'){
                 ins_val = 75; }
-            else if (insulin == 'OREF_LYUMJEV' || insulin == 'OREF_LYUMJEV_U100_PD' || insulin == 'OREF_LYUMJEV_U200_PD'){
+            else if (insulin == 'Lyumjev-classic' || insulin == 'Lyumjev-U100' || insulin ==
+            'Lyumjev-U200'){
                 ins_val = 75; }
             else if (insulin == 'Ultra-Rapid Oref'){
                 ins_val = 65;}
