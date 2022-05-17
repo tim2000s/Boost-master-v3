@@ -3,6 +3,7 @@ package info.nightscout.androidaps.database.transactions
 import info.nightscout.androidaps.database.entities.GlucoseValue
 import info.nightscout.androidaps.database.entities.TherapyEvent
 import java.util.ArrayList
+import kotlin.math.max
 import kotlin.math.round
 
 /**
@@ -202,11 +203,12 @@ class CgmSourceTransaction(
             }
              */
             for (i in 0 until minOf(ssBG.size, updateWindow)) { // noise at the beginning of the smoothing window is the greatest, so only include the 10 most recent values in the output
-                Data[i].smoothed = round(ssBG[i])
+                Data[i].smoothed = max(round(ssBG[i]), 39.0) //Make 39 the smallest value as smaller values trigger errors (xDrip error state = 38)
             }
         } else {
             for (i in 0 until minOf(Data.size, updateWindow)) { // noise at the beginning of the smoothing window is the greatest, so only include the 10 most recent values in the output
-                Data[i].smoothed = Data[i].value // if insufficient smoothing data, copy 'value' into 'smoothed' data column so that it isn't empty
+                Data[i].smoothed = max(Data[i].value, 39.0) // if insufficient smoothing data, copy 'value' into 'smoothed' data column so that it isn't empty; Make 39 the smallest value as smaller
+            // values trigger errors (xDrip error state = 38)
             }
         }
 
