@@ -197,6 +197,7 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
 
         val insulin = activePlugin.activeInsulin
         val insulinType = insulin.friendlyName
+        val insulinPeak = insulin.peak
 
         this.profile.put("max_iob", maxIob)
         this.profile.put("dia", profile.dia)
@@ -249,6 +250,7 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
         this.profile.put("maxUAMSMBBasalMinutes", sp.getInt(R.string.key_uamsmbmaxminutes, BoostDefaults.maxUAMSMBBasalMinutes))
         this.profile.put("DynISFAdjust",  SafeParse.stringToDouble(sp.getString(R.string.key_DynISFAdjust,"100")))
         this.profile.put("insulinType", insulinType)
+        this.profile.put("insulinPeak", insulinPeak)
 
         //set the min SMB amount to be the amount set by the pump.
         this.profile.put("bolus_increment", pumpBolusStep)

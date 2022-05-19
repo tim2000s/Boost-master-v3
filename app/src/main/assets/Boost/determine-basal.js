@@ -254,7 +254,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version 3.6.2 ");
+        console.error( "     Boost version 3.6.3 ");
         console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7){
@@ -266,53 +266,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
 
-    if (meal_data.TDDLast24){
-        var tdd_24 = meal_data.TDDLast24;
-        }
-        else {
-        var tdd_24 = (( basal * 24 ) * 2.8);
-        }
-
-   if (meal_data.TDDPUMP){
-        var tdd_pump = ( (meal_data.TDDPUMP / now ) * 24);
-        }
-        else {
-        var tdd_pump = (( basal * 24 ) * 2.8);
-        }
-        var TDD = (tdd7 * 0.4) + (tdd_pump * 0.6);
-
-
-       console.error("Pump extrapolated TDD = "+tdd_pump+"; ");
-        //if (tdd7 > 0){
-        /*if ( tdd_pump > tdd7 && now < 5 || now < 7 && TDD < ( 0.8 * tdd7 ) ){
-          TDD = ( 0.8 * tdd7 );
-          console.log("Excess or too low insulin from pump so TDD set to "+TDD+" based on 75% of TDD7; ");
-          rT.reason += "TDD: " +TDD+ " due to low or high tdd from pump; ";
-          }
-
-       else if (tdd_pump > (1.75 * tdd7)){
-           TDD = tdd7;
-           console.error("TDD set to TDD7 due to high pump usage reported. TDD = "+TDD+"; ");
-           rT.reason += "TDD set to TDD7 due to high pump usage reported. TDD = "+TDD+"; ";
-           }
-
-
-        else if (tdd_pump < (0.33 * tdd7)){
-           TDD = (tdd7 * 0.25) + (tdd_pump * 0.75);
-           console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
-           rT.reason += "TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ";
-           }
-
-        else {
-             console.log("TDD = " +TDD+ " based on standard pump 60/tdd7 40 split; ");
-             rT.reason += "TDD: " +TDD+ " based on standard pump 60/tdd7 40 split; ";
-             }*/
-        var tdd_pump_msec = meal_data.TDDPUMPmsec;
         var tdd1 = meal_data.TDDAIMI1;
-        var tdd3 = meal_data.TDDAIMI3;
-        var tdd5 = meal_data.TDDAIMI5;
-        var tdd6_exp = ( (meal_data.TDDLast6 / 6 ) * 24);
-        var tdd8_exp = ( (meal_data.TDDLast8 / 8 ) * 24);
         var tdd_4 = meal_data.TDDLast4;
         var tdd8to4 = meal_data.TDD4to8;
         var tdd_last8_wt = ( ( ( 1.4 * tdd_4) + ( 0.6 * tdd8to4) ) * 3 );
@@ -323,60 +277,45 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
        console.error("                                 ");
        //console.error("7-day average TDD is: " +tdd7+ "; ");
-       console.error("Rolling 24 hour TDD: "+tdd_24+";  ");
-       console.error("Extrapolated TDD: "+tdd_pump+"; ");
-       console.error("Extrapolated TDD using rolling 6 hours: "+tdd6_exp+"; ");
-       console.error("Extrapolated TDD using rolling 8 hours: "+tdd8_exp+"; ");
        console.error("Rolling 8 hours weight average: "+tdd_last8_wt+"; ");
        console.error("Extrapolated TDD (msec): "+tdd_pump_msec+"; ");
        console.error("Calculated TDD: "+TDD+"; ");
        console.error("1-day average TDD is: "+tdd1+"; ");
-       console.error("3-day average TDD is: "+tdd3+"; ");
-       console.error("5-day average TDD is: "+tdd5+"; ");
        console.error("7-day average TDD is: " +tdd7+ "; ");
-       /*if ( tdd_pump > tdd7 && now < 5 || now < 7 && TDD < ( 0.8 * tdd7 ) ){
-          TDD = ( 0.8 * tdd7 );
-          console.log("Excess or too low insulin from pump so TDD set to "+TDD+" based on 75% of TDD7; ");
-          rT.reason += "TDD: " +TDD+ " due to low or high tdd from pump; ";
-          }
 
-        else if (tdd_pump < (0.33 * tdd7)){
-           TDD = (tdd7 * 0.25) + (tdd_pump * 0.75);
-           console.error("TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ");
-           rT.reason += "TDD weighted to pump due to low insulin usage. TDD = "+TDD+"; ";
-           }
-
-        else {
-             console.log("TDD = " +TDD+ " based on standard pump 60/tdd7 40 split; ");
-             rT.reason += "TDD: " +TDD+ " based on standard pump 60/tdd7 40 split; ";
-             }*/
-
-    //var TDD = tdd_24;
-   /* if(bg = 55){
-        bg = 54;}
-    else {
-        bg = bg;
-        }*/
     var dynISFadjust = profile.DynISFAdjust;
     var dynISFadjust = ( dynISFadjust / 100 );
     var TDD = (dynISFadjust * TDD);
     var variable_sens_old = (277700 / (TDD * bg));
 
-    var ins_val = 75;
-            var insulin = profile.insulinType;
-            console.log("Initial insulin value for ISF: "+ins_val+"; ");
-            console.log("Current value for insulin: "+insulin+"; ");
+    var insulin = profile.insulinType;
 
-            if (insulin == 'Free-Peak Oref'){
-                ins_val = 75; }
-            else if (insulin == 'Lyumjev-classic' || insulin == 'Lyumjev-U100' || insulin == 'Lyumjev-U200'){
-                ins_val = 75; }
-            else if (insulin == 'Ultra-Rapid Oref'){
-                ins_val = 65;}
-            else if (insulin == 'Rapid-Acting Oref'){
-                ins_val = 55; }
+    var ins_val = 90; // Lyumjev peak: 75
+   /*             if (profile.insulinPeak > 65) { // lyumjev peak: 45
+                    ins_val = 55;
+                } else if (profile.insulinPeak > 50 { // ultra rapid peak: 55
+                    ins_val = 65;
+                }
+                } else if (profile.insulinPeak > 40 { // lyumjev peak is 45
+                                    ins_val = 75;
+                                   }*/
+    var insulinPeak = profile.insulinPeak;
+    if(insulinPeak < 30){
+        insulinPeak = 30;
+    }
+    else if(insulinPeak > 75){
+        insulinPeak = 75;
+    }
+     if(insulinPeak < 60){
+        ins_val = (90 - insulinPeak) + 30;
+        }
+     else{
+        ins_val = (90 - insulinPeak) + 40;
+     }
 
-            console.log("Insulin value for ISF based on profile: "+ins_val+"; ");
+                console.log("For "+profile.insulinType+" (insulin peak: "+profile.insulinPeak+") divisor is: "+ins_val+"; ");
+
+
 
     if(bg <= 180){
     var sens_bg = bg;
@@ -386,8 +325,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var sens_bg = 210;
     console.log("Current sensitivity for predictions is limited at 210mg/dl / 11.7mmol/l");
     }
-    var insPeak = profile.insulinPeakTime
-    console.log("Insulin Peak Time is "+insPeak+"; ");
+    /*var insPeak = profile.insulinPeakTime
+    console.log("Insulin Peak Time is "+insPeak+"; ");*/
     variable_sens =  1800 / ( TDD * (Math.log(( bg / ins_val ) + 1 ) ) );
     variable_sens = round(variable_sens,1);
     console.log("Current sensitivity for predictions is " +variable_sens+" based on current bg");

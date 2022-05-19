@@ -213,7 +213,7 @@ abstract class InsulinOrefBasePlugin(
             return comment
         }
 
-    abstract val peak: Int
+    override abstract val peak: Int
     abstract fun commentStandardText(): String
 
     companion object {
