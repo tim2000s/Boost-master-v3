@@ -642,13 +642,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     var lgsThreshold = profile.lgsThreshold;
     var threshold = min_bg - 0.5*(min_bg-40);
-    if( lgsThreshold < threshold){
-        threshold = threshold;}
-    else if(lgsThreshold < 65 || lgsThreshold > 120 ){
-        var threshold = min_bg - 0.5*(min_bg-40);
+
+    if(lgsThreshold < 65 || lgsThreshold > 120) {
+        threshold = threshold;
+        }
+    else if( lgsThreshold < threshold){
+        threshold = threshold;
         }
     else {
-        var threshold = lgsThreshold;
+        threshold = lgsThreshold;
         }
     console.error("Low glucose suspend threshold: "+threshold);
 
