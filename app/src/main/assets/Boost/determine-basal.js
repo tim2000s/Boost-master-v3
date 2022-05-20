@@ -278,7 +278,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
        console.error("                                 ");
        //console.error("7-day average TDD is: " +tdd7+ "; ");
        console.error("Rolling 8 hours weight average: "+tdd_last8_wt+"; ");
-       console.error("Extrapolated TDD (msec): "+tdd_pump_msec+"; ");
        console.error("Calculated TDD: "+TDD+"; ");
        console.error("1-day average TDD is: "+tdd1+"; ");
        console.error("7-day average TDD is: " +tdd7+ "; ");
