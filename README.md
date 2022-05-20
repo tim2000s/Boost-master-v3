@@ -14,7 +14,7 @@ dev: [![codecov](https://codecov.io/gh/MilosKozak/AndroidAPS/branch/dev/graph/ba
 
 ![BTC](https://bitit.io/assets/coins/icon-btc-1e5a37bc0eb730ac83130d7aa859052bd4b53ac3f86f99966627801f7b0410be.svg) 3KawK8aQe48478s6fxJ8Ms6VTWkwjgr9f2
 
-## Boost v3.5
+## Boost v3.6.3
 
 Boost v3 uses an updated version of the TDD ISF calculation, with a weighting of 20% to future Bg and 80% to current BG when delta is >6, current bg when delta 0 < 6 and future bg when delta is 0 or negative.
 
