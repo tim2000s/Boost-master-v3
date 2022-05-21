@@ -82,7 +82,6 @@
     <string name="description_overview">Displays the current state of your loop and buttons for most common actions</string>
     <string name="description_persistent_notification">Shows an ongoing notification with a short overview of what your loop is doing</string>
     <string name="description_profile_local">Define a profile which is available offline.</string>
-    <string name="description_pump_mdi">Pump integration for people who do multiple daily injections for their diabetes therapy</string>
     <string name="description_pump_virtual">Pump integration for pumps which don\'t have any driver yet (Open Loop)</string>
     <string name="description_sensitivity_aaps">Sensitivity is calculated the same way like Oref0, but you can specify timeframe to the past. Minimal carb absorption is calculated from max carb absorption time from preferences.</string>
     <string name="description_sensitivity_oref1">Sensitivity is calculated from 8h or 24h data in the past (using either which is more sensitive). Carbs (if not absorbed) are cut after time specified in preferences. Plugin also calculates UAM.</string>
@@ -304,7 +303,6 @@
     <string name="basalvaluebelowminimum">Basal value below minimum. Profile not set!</string>
     <string name="sms_actualbg">BG:</string>
     <string name="sms_lastbg">Last BG:</string>
-    <string name="mdi">MDI</string>
     <string name="MM640g">MM640g</string>
     <string name="ongoingnotificaction">Ongoing Notification</string>
     <string name="old_data">OLD DATA</string>
@@ -769,8 +767,7 @@
     <string name="key_wearwizard_tt" translatable="false">wearwizard_tt</string>
     <string name="key_wearwizard_trend" translatable="false">wearwizard_trend</string>
     <string name="key_wearwizard_cob" translatable="false">wearwizard_cob</string>
-    <string name="key_wearwizard_bolusiob" translatable="false">wearwizard_bolusiob</string>
-    <string name="key_wearwizard_basaliob" translatable="false">wearwizard_basaliob</string>
+    <string name="key_wearwizard_iob" translatable="false">wearwizard_iob</string>
     <string name="wear_wizard_settings_summary">Calculations included in the Wizard result:</string>
     <string name="wear_display_settings">Display Settings</string>
     <string name="wear_general_settings">General Settings</string>
@@ -1181,12 +1178,11 @@
     <string name="wizard_no_active_profile">No active profile set!</string>
     <string name="wizard_no_cob">Unknown COB! BG reading missing or recent app restart?</string>
     <string name="wizard_carbs_constraint">Carb constraint violation!</string>
-    <string name="wizard_explain_calc">Calc (IC: %2$.1f, ISF: %2$.1f) from:"</string>
+    <string name="wizard_explain_calc">Calc (IC: %1$.1f, ISF: %2$.1f)</string>
     <string name="wizard_explain_carbs">Carbs: %1$.2fU</string>
     <string name="wizard_explain_cob">COB: %1$.0fg %2$.2fU</string>
     <string name="wizard_explain_bg">BG: %1$.2fU</string>
-    <string name="wizard_explain_basal_iob">Basal IOB: %1$.2fU</string>
-    <string name="wizard_explain_bolus_iob">Bolus IOB: %1$.2fU</string>
+    <string name="wizard_explain_iob">IOB: %1$.2fU</string>
     <string name="wizard_explain_superbolus">Superbolus: %1$.2fU</string>
     <string name="wizard_explain_trend">15\' trend: %1$.2fU</string>
     <string name="wizard_explain_percent">Percentage: %1$.2fU x %2$d%% ≈ %3$.2fU</string>
@@ -1221,7 +1217,12 @@
     <string name="widget_description">AndroidAPS widget</string>
     <string name="configure">Configure opacity</string>
     <string name="loop_status">Loop status</string>
-
+    <string name="graph_scale">Graph scale</string>
+    <string name="profile1">Profile 1</string>
+    <string name="profile2">Profile 2</string>
+    <string name="login">Login</string>
+    <string name="remove_all">Remove all</string>
+    <string name="reset_start">Reset start</string>
     <string name="a11y_otp_qr_code">QR Code for setup one time password</string>
     <string name="a11y_open_settings">open settings</string>
     <string name="a11y_set_carb_timer">set carb timer alarm</string>
@@ -1311,7 +1312,6 @@
     <string name="wave_activity_target_summary">Percentage of current IA to maintain in case of small delta values (constant activity mode for Wave).</string>
     <string name="overview_show_tsunami">Tsunami</string>
     <!-- Tsunami End -->
-
     <!-- Tsunami PD models -->
     <string name="lyumjev_U100_PD">Lyumjev U100 (Tsunami)</string>
     <string name="lyumjev_U200_PD">Lyumjev U200 (Tsunami)</string>
