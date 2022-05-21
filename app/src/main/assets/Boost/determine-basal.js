@@ -268,8 +268,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         var tdd1 = meal_data.TDDAIMI1;
         var tdd_4 = meal_data.TDDLast4;
+        var tdd_8 = meal_data.TDDLast8;
         var tdd8to4 = meal_data.TDD4to8;
         var tdd_last8_wt = ( ( ( 1.4 * tdd_4) + ( 0.6 * tdd8to4) ) * 3 );
+        vat tdd8_exp = ( 3 * tdd_8 );
+        console.log("8 hour extrapolated = " +tdd8_exp+ "; ");
 
         TDD = ( tdd_last8_wt * 0.33 ) + ( tdd7 * 0.34 ) + (tdd1 * 0.33);
         console.log("TDD = " +TDD+ " using rolling 8h Total extrapolation + TDD7 (60/40); ");

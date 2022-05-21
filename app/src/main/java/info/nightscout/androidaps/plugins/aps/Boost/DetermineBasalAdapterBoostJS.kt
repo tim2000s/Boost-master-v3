@@ -315,7 +315,7 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
         //this.mealData.put("TDDLast24", tddAIMI!!.calculate24Daily().totalAmount)
         this.mealData.put("TDDLast4", tddAIMI!!.calculate4Daily().totalAmount)
         //this.mealData.put("TDDLast6", tddAIMI!!.calculate6Daily().totalAmount)
-        //this.mealData.put("TDDLast8", tddAIMI!!.calculate8Daily().totalAmount)
+        this.mealData.put("TDDLast8", tddAIMI!!.calculate8Daily().totalAmount)
         this.mealData.put("TDD4to8", tddAIMI!!.calculate8Gap().totalAmount)
         this.mealData.put("TDDAIMI1", tddAIMI!!.averageTDD(tddAIMI!!.calculate(1)).totalAmount)
         //this.mealData.put("TDDAIMI3", tddAIMI!!.averageTDD(tddAIMI!!.calculate(3)).totalAmount)
