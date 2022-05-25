@@ -20,6 +20,8 @@ Boost v3 uses an updated version of the TDD ISF calculation, with a weighting of
 
 **Traditional Autosens is deprecated in this code** and sensitivityRatio is calculated using ( (Rolling 24 hour TDD + Predicted TDD ) / 2) / 7-day average TDD.
 
+In Treatments Safety in preferences, there is now a user adjustable Low Glucose Suspend threshold. This allows the user to set a value higher than the system would normally use, such that when predictions drop below this level, a zero TBR is set. 
+
 You can use Boost when announcing carbs or without announcing carbs. There is no special code that differentiaties behaviour when doing either. Similarly, if you prefer to manually bolus, it fully supports that as well.
 
  It also has variable insulin percentage determined by the user, and while boost time is valid, the algorithm can bolus up to a maximum bolus defined by the user in preferences.
@@ -42,7 +44,7 @@ The short and long average delta clauses disable boost once delta and the averag
 
 **Boost Percentage Scale**
 
-Boost percentage Scale is a new feature that allows Boost to scale the SMB from 150% of insulin required at 108 mg/dl (6 mmol/l) to the user ientered insulin required PCT at 180mg/dl (10 mmol/l). It can be enabled via a switch in the preferences and the percentage values are hard coded. it is only active when [Delta - Short Average Delta ] is positive, meaning that it only happens when delta variation is accelerating.
+Boost percentage Scale is a new feature that allows Boost to scale the SMB from 150% of insulin required at 108 mg/dl (6 mmol/l) to the user entered insulin required PCT at 180mg/dl (10 mmol/l). It can be enabled via a switch in the preferences and the percentage values are hard coded. it is only active when [Delta - Short Average Delta ] is positive, meaning that it only happens when delta variation is accelerating.
 
 If none of the conditions are met, standard SMB logic is used to size SMBs, with the insulin required PCT entered in preferences. This has now been modified to only work on positive deviations and similar to the percent scale, when deltas are getting larger.
 
@@ -62,8 +64,8 @@ to adjust them.
 
 ### Recommended Settings
 
-**Boost Bolus Cap** - Start at 2.5% of TDD and increase to no more than 5% of total daily dose.
-**UAM Boost max IOB** - Start at 5% of TDD and increase to no more than 10% of total daily dose.
+**Boost Bolus Cap** - Start at 2.5% of TDD and increase to no more than 5% of 7 day average total daily dose.
+**UAM Boost max IOB** - Start at 5% of TDD and increase to no more than 15% of 7 day average total daily dose.
 **UAMSMBBasalMinutes** - 30 mins. This is only used overnight when IOB is large enough to trigger UAM, so it doesn't need to be a large value.
 **Boost insulin required percent** - recommended not to exceed 75%. Start at 50% and increase as necessary.
 
