@@ -68,4 +68,5 @@ to adjust them.
 **UAM Boost max IOB** - Start at 5% of TDD and increase to no more than 15% of 7 day average total daily dose.
 **UAMSMBBasalMinutes** - 30 mins. This is only used overnight when IOB is large enough to trigger UAM, so it doesn't need to be a large value.
 **Boost insulin required percent** - recommended not to exceed 75%. Start at 50% and increase as necessary.
+**Target** - Set a target of 6.5mmol/l (120mg/dl) to get started with Boost. This provides a cushion as you adjust settings. Values below 5.5mmol/l (100mg/DL) are not recommended. 
 
