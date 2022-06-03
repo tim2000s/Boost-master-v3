@@ -254,7 +254,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version 3.6.3 ");
+        console.error( "     Boost version 3.6.4 ");
         console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7){
@@ -1490,6 +1490,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      else {
                      boostInsulinReq = boostInsulinReq;
                      }
+                     if(delta_accl > 1){
+                         insulinReqPCT = 1;
+                         }
+                     else{
+                         insulinReqPCT;
+                         }
                      if (boostInsulinReq < (insulinReq/insulinReqPCT)) {
                      var microBolus = Math.floor(Math.min((insulinReq/insulinReqPCT),boost_max)*roundSMBTo)/roundSMBTo;
                      rT.reason += "UAM Boost enacted; SMB equals" + microBolus + "; ";
