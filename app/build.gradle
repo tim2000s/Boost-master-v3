@@ -109,7 +109,7 @@ android {
     defaultConfig {
         multiDexEnabled true
         versionCode 1500
-        version "Boost-3.0.0.2"
+        version "3.0.0.2"
         buildConfigField "String", "VERSION", '"' + version + '"'
         buildConfigField "String", "BUILDVERSION", '"' + generateGitBuild() + '-' + generateDate() + '"'
         buildConfigField "String", "REMOTE", '"' + generateGitRemote() + '"'
@@ -146,7 +146,7 @@ android {
 //                        newName = newName.replace("app-", "$project.ext.appName-")
                         // on below line we are replacing -release with our formatted date and ID.
                         //newName = newName.replace("-release", "-" + formattedDate + "-EN")
-                        newName = formattedDate + "-Boost-3.6.3" + newName.replace("-release", "")
+                        newName = formattedDate + "-Boost-3.6.4" + newName.replace("-release", "")
                         // at last we are setting our apk name to it.
                         output.outputFileName  = newName
                 }
