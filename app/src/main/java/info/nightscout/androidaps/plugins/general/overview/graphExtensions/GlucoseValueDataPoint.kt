@@ -27,7 +27,7 @@ class GlucoseValueDataPoint(
     override fun getY(): Double = valueToUnits(profileFunction.getUnits())
 
     override fun setY(y: Double) {}
-    override val label: String = Profile.toCurrentUnitsString(profileFunction, data.value)
+    override val label: String = Profile.toCurrentUnitsString(profileFunction, data.rawOrSmoothed(sp))
     override val duration = 0L
     override val shape get() = if (isPrediction) PointsWithLabelGraphSeries.Shape.PREDICTION else PointsWithLabelGraphSeries.Shape.BG
     override val size = 1f
