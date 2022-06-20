@@ -8,7 +8,6 @@ import info.nightscout.androidaps.utils.DecimalFormatter.to0Decimal
 import info.nightscout.androidaps.utils.DecimalFormatter.to1Decimal
 import info.nightscout.androidaps.utils.HardLimits
 import info.nightscout.androidaps.utils.Round
-import info.nightscout.androidaps.interfaces.ResourceHelper
 import org.joda.time.DateTime
 import org.json.JSONObject
 
@@ -62,6 +61,7 @@ interface Profile {
      * ISF value according to "now"" in MGDL
      */
     fun getIsfMgdl(): Double
+
     /**
      * ISF value according to timestamp in MGDL
      */
@@ -187,6 +187,9 @@ interface Profile {
         fun toCurrentUnitsString(profileFunction: ProfileFunction, anyBg: Double): String =
             if (isMmol(anyBg)) toUnitsString(anyBg * Constants.MMOLL_TO_MGDL, anyBg, profileFunction.getUnits())
             else toUnitsString(anyBg, anyBg * Constants.MGDL_TO_MMOLL, profileFunction.getUnits())
+
+        fun toMgdl(value: Double): Double =
+            if (isMgdl(value)) value else value * Constants.MMOLL_TO_MGDL
 
         fun toMgdl(value: Double, units: GlucoseUnit): Double =
             if (units == GlucoseUnit.MGDL) value else value * Constants.MMOLL_TO_MGDL

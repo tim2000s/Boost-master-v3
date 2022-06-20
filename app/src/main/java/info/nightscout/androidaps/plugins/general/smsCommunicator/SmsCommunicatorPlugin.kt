@@ -968,6 +968,7 @@ class SmsCommunicatorPlugin @Inject constructor(
                     var keyTarget = 0
                     var defaultTargetMMOL = 0.0
                     var defaultTargetMGDL = 0.0
+                    var reason = TemporaryTarget.Reason.EATING_SOON
                     when {
                         isMeal     -> {
                             keyDuration = R.string.key_eatingsoon_duration
@@ -975,6 +976,7 @@ class SmsCommunicatorPlugin @Inject constructor(
                             keyTarget = R.string.key_eatingsoon_target
                             defaultTargetMMOL = Constants.defaultEatingSoonTTmmol
                             defaultTargetMGDL = Constants.defaultEatingSoonTTmgdl
+                            reason = TemporaryTarget.Reason.EATING_SOON
                         }
 
                         isActivity -> {
@@ -983,6 +985,7 @@ class SmsCommunicatorPlugin @Inject constructor(
                             keyTarget = R.string.key_activity_target
                             defaultTargetMMOL = Constants.defaultActivityTTmmol
                             defaultTargetMGDL = Constants.defaultActivityTTmgdl
+                            reason = TemporaryTarget.Reason.ACTIVITY
                         }
 
                         isHypo     -> {
@@ -991,6 +994,7 @@ class SmsCommunicatorPlugin @Inject constructor(
                             keyTarget = R.string.key_hypo_target
                             defaultTargetMMOL = Constants.defaultHypoTTmmol
                             defaultTargetMGDL = Constants.defaultHypoTTmgdl
+                            reason = TemporaryTarget.Reason.HYPOGLYCEMIA
                         }
                     }
                     var ttDuration = sp.getInt(keyDuration, defaultTargetDuration)
@@ -1001,7 +1005,7 @@ class SmsCommunicatorPlugin @Inject constructor(
                     disposable += repository.runTransactionForResult(InsertAndCancelCurrentTemporaryTargetTransaction(
                         timestamp = dateUtil.now(),
                         duration = TimeUnit.MINUTES.toMillis(ttDuration.toLong()),
-                        reason = TemporaryTarget.Reason.EATING_SOON,
+                        reason = reason,
                         lowTarget = Profile.toMgdl(tt, profileFunction.getUnits()),
                         highTarget = Profile.toMgdl(tt, profileFunction.getUnits())
                     )).subscribe({ result ->

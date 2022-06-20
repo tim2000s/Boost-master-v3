@@ -58,6 +58,7 @@
     <string name="treatmentssafety_title">Treatments safety</string>
     <string name="treatmentssafety_maxbolus_title">Max allowed bolus [U]</string>
     <string name="treatmentssafety_maxcarbs_title">Max allowed carbs [g]</string>
+    <string name="treatmentssafety_lgsThreshold_title">BG level below which low glucose suspend occurs</string>
     <string name="nav_preferences_plugin">%1$s Preferences</string>
     <string name="nav_preferences">Preferences</string>
     <string name="nav_refreshtreatments">Refresh treatments from NS</string>
@@ -162,7 +163,7 @@
     <string name="apsmode_title">APS Mode</string>
     <string name="closedloop">Closed Loop</string>
     <string name="openloop">Open Loop</string>
-    <string name="lowglucosesuspend">Low Glucose Suspend</string>
+   <string name="lowglucosesuspend">Low Glucose Suspend</string>
     <string name="disabledloop">Loop Disabled</string>
     <string name="openloop_newsuggestion">New suggestion available</string>
     <string name="carbssuggestion">Carbs Suggestion</string>
@@ -708,6 +709,7 @@
     <string name="smb_frequency_exceeded">A bolus was delivered within the last 3 minutes, skipping SMB</string>
     <string name="basal_set_correctly">Basal set correctly</string>
     <string name="key_treatmentssafety_maxbolus" translatable="false">treatmentssafety_maxbolus</string>
+    <string name="key_lgs_threshold" translatable="false">lgsThreshold</string>
     <string name="limitingextendedbolus">Limiting extended bolus to %1$.1f U because of %2$s</string>
     <string name="limitingcarbs">Limiting carbs to %1$d g because of %2$s</string>
     <string name="limitingiob">Limiting IOB to %1$.1f U because of %2$s</string>
@@ -727,6 +729,7 @@
     <string name="openapssmb_maxiob_summary">This value is called Max IOB in OpenAPS context\nOpenAPS will not add more insulin if current IOB is greater than this value</string>
     <string name="absorption_cutoff_title">Meal max absorption time [h]</string>
     <string name="absorption_cutoff_summary">Time at which any meal is considered absorbed. Remaining carbs will be cut off.</string>
+    <string name="treatmentssafety_lgsThreshold_summary">BG value below which insulin is suspended. Default value uses standard target model. User can set value between 60mg/dl (3.3mmol/l) and 100mg/dl(5.5mmol/l). Values below 65/3.6 result in use of default model</string>
     <string name="overview_show_notes_field_in_dialogs_title">Show notes field in treatment dialogs</string>
     <string name="title_activity_setup_wizard" translatable="false">SetupWizardActivity</string>
     <string name="next_button">Next</string>
@@ -740,13 +743,17 @@
     <string name="secondcarbsincrement">Second carbs increment</string>
     <string name="thirdcarbsincrement">Third carbs increment</string>
     <string name="cgm">CGM</string>
-    <string name="key_ns_wifionly" translatable="false">ns_wifionly</string>
+    <string name="key_ns_cellular" translatable="false">ns_cellular</string>
+    <string name="key_ns_wifi" translatable="false">ns_wifi</string>
     <string name="key_ns_wifi_ssids" translatable="false">ns_wifi_ssids</string>
-    <string name="key_ns_allowroaming" translatable="false">ns_allowroaming</string>
-    <string name="key_ns_chargingonly" translatable="false">ns_chargingonly</string>
-    <string name="ns_wifionly">Use WiFi connection only</string>
+    <string name="key_ns_allow_roaming" translatable="false">ns_allowroaming</string>
+    <string name="key_ns_battery" translatable="false">ns_battery</string>
+    <string name="key_ns_charging" translatable="false">ns_charging</string>
+    <string name="ns_cellular">Use Cellular connection</string>
+    <string name="ns_wifi">Use WiFi connection</string>
     <string name="ns_wifi_ssids">WiFi SSID</string>
-    <string name="ns_chargingonly">Only if charging</string>
+    <string name="ns_charging">During charging</string>
+    <string name="ns_battery">On battery</string>
     <string name="connectionsettings_title">Connection settings</string>
     <string name="ns_wifi_allowedssids">Allowed SSIDs (semicolon separated)</string>
     <string name="ns_allowroaming">Allow connection in roaming</string>
@@ -837,6 +844,8 @@
     <string name="error_adding_treatment_message">A treatment (insulin: %1$.2f, carbs: %2$d, at: %3$s) could not be added to treatments. Please check and manually add a record as appropriate.</string>
     <string name="generated_ecarbs_note">eCarbs: %1$d g (%2$d h), delay: %3$d m</string>
     <string name="openaps_noasdata">No autosens data available</string>
+    <string name="log_files">Log files</string>
+    <string name="miscellaneous">Miscellaneous</string>
     <string name="nav_logsettings">Log settings</string>
     <string name="resettodefaults">Reset to defaults</string>
     <string name="nsmalfunction">NSClient malfunction. Consider NS and NSClient restart.</string>
@@ -952,6 +961,11 @@
     <string name="invalidpct">Invalid % entry</string>
     <string name="average">Average</string>
     <string name="tir">TIR</string>
+    <string name="day_tir">Day TIR</string>
+    <string name="night_tir">Night TIR</string>
+    <string name="detailed_14_days">Detailed 14 days</string>
+    <string name="std_deviation">SD: %1$s</string>
+    <string name="hba1c">HbA1c: </string>
     <string name="activitymonitor">Activity monitor</string>
     <string name="doyouwantresetstats">Do you want to reset activity stats?</string>
     <string name="statistics">Statistics</string>
@@ -1208,6 +1222,10 @@
     <string name="count_selected">%1$d selected</string>
     <string name="sort_label">Sort</string>
     <string name="dialog_canceled">Dialog canceled</string>
+    <string name="veryLow" comment="below 3.1">Very low</string>
+    <string name="low" comment="3.1-3.9">Low</string>
+    <string name="high" comment="10.0-13.9">High</string>
+    <string name="veryHigh" comment="above 13.9">Very high</string>
     <string name="below" comment="below &quot;in range&quot;">Below</string>
     <string name="in_range">In range</string>
     <string name="above" comment="above &quot;in range&quot;">Above</string>
@@ -1236,6 +1254,8 @@
     <string name="aidex">GlucoRx Aidex</string>
     <string name="aidex_short">Aidex</string>
     <string name="description_source_aidex">Receive BG values from GlucoRx Aidex CGMS.</string>
+    <string name="blocked_by_charging">Blocked by charging options</string>
+    <string name="blocked_by_connectivity">Blocked by connectivity options</string>
 
 
 </resources>
