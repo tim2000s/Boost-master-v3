@@ -8,10 +8,12 @@ import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.database.AppRepository
 import info.nightscout.androidaps.database.entities.Bolus
 import info.nightscout.androidaps.database.entities.TherapyEvent
+import info.nightscout.androidaps.extensions.rawOrSmoothed
 import info.nightscout.androidaps.interfaces.ActivePlugin
 import info.nightscout.androidaps.interfaces.GlucoseUnit
 import info.nightscout.androidaps.interfaces.Profile
 import info.nightscout.androidaps.interfaces.ProfileFunction
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.general.overview.OverviewData
 import info.nightscout.androidaps.plugins.general.overview.graphExtensions.*
@@ -21,7 +23,7 @@ import info.nightscout.androidaps.utils.DefaultValueHelper
 import info.nightscout.androidaps.utils.Round
 import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.Translator
-import info.nightscout.androidaps.interfaces.ResourceHelper
+import info.nightscout.shared.sharedPreferences.SP
 import javax.inject.Inject
 
 class PrepareTreatmentsDataWorker(
@@ -37,6 +39,7 @@ class PrepareTreatmentsDataWorker(
     @Inject lateinit var activePlugin: ActivePlugin
     @Inject lateinit var repository: AppRepository
     @Inject lateinit var defaultValueHelper: DefaultValueHelper
+    @Inject lateinit var sp: SP
 
     init {
         (context.applicationContext as HasAndroidInjector).androidInjector().inject(this)
@@ -53,8 +56,10 @@ class PrepareTreatmentsDataWorker(
 
         rxBus.send(EventIobCalculationProgress(CalculationWorkflow.ProgressData.PREPARE_TREATMENTS_DATA, 0, null))
         data.overviewData.maxTreatmentsValue = 0.0
+        data.overviewData.maxEpsValue = 0.0
         val filteredTreatments: MutableList<DataPointWithLabelInterface> = ArrayList()
         val filteredTherapyEvents: MutableList<DataPointWithLabelInterface> = ArrayList()
+        val filteredEps: MutableList<DataPointWithLabelInterface> = ArrayList()
 
         repository.getBolusesDataFromTimeToTime(data.overviewData.fromTime, data.overviewData.endTime, true).blockingGet()
             .map { BolusDataPoint(it, rh, activePlugin, defaultValueHelper) }
@@ -72,8 +77,11 @@ class PrepareTreatmentsDataWorker(
 
         // ProfileSwitch
         repository.getEffectiveProfileSwitchDataFromTimeToTime(data.overviewData.fromTime, data.overviewData.endTime, true).blockingGet()
-            .map { EffectiveProfileSwitchDataPoint(it, rh) }
-            .forEach(filteredTreatments::add)
+            .map { EffectiveProfileSwitchDataPoint(it, rh, data.overviewData.epsScale) }
+            .forEach {
+                data.overviewData.maxEpsValue = maxOf(data.overviewData.maxEpsValue, it.data.originalPercentage.toDouble())
+                filteredEps.add(it)
+            }
 
         // OfflineEvent
         repository.getOfflineEventDataFromTimeToTime(data.overviewData.fromTime, data.overviewData.endTime, true).blockingGet()
@@ -119,6 +127,7 @@ class PrepareTreatmentsDataWorker(
 
         data.overviewData.treatmentsSeries = PointsWithLabelGraphSeries(filteredTreatments.toTypedArray())
         data.overviewData.therapyEventSeries = PointsWithLabelGraphSeries(filteredTherapyEvents.toTypedArray())
+        data.overviewData.epsSeries = PointsWithLabelGraphSeries(filteredEps.toTypedArray())
 
         rxBus.send(EventIobCalculationProgress(CalculationWorkflow.ProgressData.PREPARE_TREATMENTS_DATA, 100, null))
         return Result.success()
@@ -131,9 +140,10 @@ class PrepareTreatmentsDataWorker(
         overviewData.bgReadingsArray.let { bgReadingsArray ->
             for (reading in bgReadingsArray) {
                 if (reading.timestamp > date) continue
-                return Profile.fromMgdlToUnits(reading.value, profileFunction.getUnits())
+                return Profile.fromMgdlToUnits(reading.rawOrSmoothed(sp), profileFunction
+                    .getUnits())
             }
-            return if (bgReadingsArray.isNotEmpty()) Profile.fromMgdlToUnits(bgReadingsArray[0].value, profileFunction.getUnits())
+            return if (bgReadingsArray.isNotEmpty()) Profile.fromMgdlToUnits(bgReadingsArray[0].rawOrSmoothed(sp), profileFunction.getUnits())
             else Profile.fromMgdlToUnits(100.0, profileFunction.getUnits())
         }
     }
