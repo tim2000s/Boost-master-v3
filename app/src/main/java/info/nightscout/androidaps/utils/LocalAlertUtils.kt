@@ -117,7 +117,8 @@ class LocalAlertUtils @Inject constructor(
 
     fun checkStaleBGAlert() {
         val bgReadingWrapped = repository.getLastGlucoseValueWrapped().blockingGet()
-        val bgReading = if (bgReadingWrapped is ValueWrapper.Existing) bgReadingWrapped.value else return
+        val bgReading = if (bgReadingWrapped is ValueWrapper.Existing) bgReadingWrapped.value else
+            return
         if (sp.getBoolean(R.string.key_enable_missed_bg_readings_alert, false)
             && bgReading.timestamp + missedReadingsThreshold() < System.currentTimeMillis()
             && sp.getLong("nextMissedReadingsAlarm", 0L) < System.currentTimeMillis()
