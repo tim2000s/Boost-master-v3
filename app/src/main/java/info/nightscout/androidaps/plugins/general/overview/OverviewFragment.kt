@@ -1007,18 +1007,44 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         if (tsunamiMode != null) {
             val remaining = tsunamiMode.duration + tsunamiMode.timestamp - dateUtil.now()
             if (tsunamiMode.tsunamiMode == 2 && remaining > 0) {
+                setRibbon(
+                    binding.buttonsLayout.tsunamiButton,
+                    R.attr.ribbonTextWarningColor,
+                    R.attr.ribbonWarningColor,
+                    dateUtil.untilString(tsunamiMode.end, rh)
+                )
+                /*
                 binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.ribbonTextWarningColor))
                 binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.ribbonWarningColor))
                 binding.buttonsLayout.tsunamiButton.text = dateUtil.untilString(tsunamiMode.end, rh)
+                 */
             } else {
+                setRibbon(
+                    binding.buttonsLayout.tsunamiButton,
+                    R.attr.tsunamiButtonColor,
+                    R.attr.defaultButtonColor,
+                    "TSUNAMI"
+                )
+                /*
                 binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.tsunamiButtonColor))
                 binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.defaultButtonColor))
                 binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
+
+                 */
             }
         } else {
+            setRibbon(
+                binding.buttonsLayout.tsunamiButton,
+                R.attr.tsunamiButtonColor,
+                R.attr.defaultButtonColor,
+                "TSUNAMI"
+            )
+            /*
             binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.tsunamiButtonColor))
             binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.defaultButtonColor))
             binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
+
+             */
         }
     }
 
