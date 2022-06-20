@@ -645,13 +645,6 @@
     <string name="key_carbs_button_increment_3" translatable="false">carbs_button_increment_3</string>
     <string name="carb_increment_button_message">Number of carbs to add when button is pressed</string>
     <string name="insulin_increment_button_message">Amount of insulin to add when button is pressed</string>
-
-    <!-- Tsunami Data Smoothing -->
-    <string name="key_use_data_smoothing" translatable="false">use_data_smoothing</string>
-    <string name="use_data_smoothing_summary" translatable="false">Smooth and display incoming sensor data in the main chart. Recommended if your glucose source does not smooth sensor readings by itself and you would like to enable SMB always.</string>
-    <string name="use_data_smoothing_title" translatable="false">Smooth incoming glucose values</string>
-    <string name="internal_smoothing_enabled">Smoothing of incoming sensor readings is enabled.</string>
-    <!-- Tsunami Data Smoothing end-->
     <string name="error_starting_cgm">Could not launch CGM application.  Make sure it is installed.</string>
     <string name="overview_cgm">CGM</string>
     <string name="ignore5m">Ignore 5m</string>
@@ -1257,5 +1250,10 @@
     <string name="blocked_by_charging">Blocked by charging options</string>
     <string name="blocked_by_connectivity">Blocked by connectivity options</string>
 
-
+    <!-- Tsunami Data Smoothing -->
+    <string name="key_use_data_smoothing" translatable="false">use_data_smoothing</string>
+    <string name="use_data_smoothing_summary" translatable="false">Smooth and display incoming sensor data in the main chart. Recommended if your glucose source does not smooth sensor readings by itself and you would like to enable SMB always.</string>
+    <string name="use_data_smoothing_title" translatable="false">Smooth incoming glucose values</string>
+    <string name="internal_smoothing_enabled">Smoothing of incoming sensor readings is enabled.</string>
+    <!-- Tsunami Data Smoothing end-->
 </resources>
