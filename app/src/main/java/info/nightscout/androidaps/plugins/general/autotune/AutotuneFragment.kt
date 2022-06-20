@@ -1,5 +1,6 @@
 package info.nightscout.androidaps.plugins.general.autotune
 
+import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
@@ -79,7 +80,8 @@ class AutotuneFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sp.putBoolean(R.string.key_autotune_tune_insulin_curve, false)  // put to false tune insulin curve
-        autotunePlugin.lastRun = sp.getLong(R.string.key_autotune_last_run, 0)
+        sp.putBoolean(R.string.key_autotune_additional_log, false)      // put to false additional log
+        autotunePlugin.loadLastRun()
         if (autotunePlugin.lastNbDays.isEmpty())
             autotunePlugin.lastNbDays = sp.getInt(R.string.key_autotune_default_tune_days, 5).toString()
         val defaultValue = sp.getInt(R.string.key_autotune_default_tune_days, 5).toDouble()
@@ -144,6 +146,7 @@ class AutotuneFragment : DaggerFragment() {
                                  autotunePlugin.tunedProfile?.profilename = localName
                                  autotunePlugin.updateProfile(autotunePlugin.tunedProfile)
                                  autotunePlugin.updateButtonVisibility = View.GONE
+                                 autotunePlugin.saveLastRun()
                                  uel.log(
                                      UserEntry.Action.STORE_PROFILE,
                                      UserEntry.Sources.Autotune,
@@ -163,6 +166,7 @@ class AutotuneFragment : DaggerFragment() {
                                  autotunePlugin.tunedProfile?.profilename = ""
                                  autotunePlugin.updateProfile(autotunePlugin.pumpProfile)
                                  autotunePlugin.updateButtonVisibility = View.VISIBLE
+                                 autotunePlugin.saveLastRun()
                                  uel.log(
                                      UserEntry.Action.STORE_PROFILE,
                                      UserEntry.Sources.Autotune,
@@ -251,6 +255,14 @@ class AutotuneFragment : DaggerFragment() {
                 }
             }
         }
+
+        binding.tuneLastrun.setOnClickListener {
+            if (!autotunePlugin.calculationRunning) {
+                autotunePlugin.loadLastRun()
+                updateGui()
+            }
+        }
+        binding.tuneLastrun.paintFlags = binding.tuneLastrun.paintFlags or Paint.UNDERLINE_TEXT_FLAG
     }
 
     @Synchronized
@@ -263,7 +275,6 @@ class AutotuneFragment : DaggerFragment() {
                 updateGui()
             }, { fabricPrivacy.logException(it) })
         checkNewDay()
-        binding.tuneDays.value = autotunePlugin.lastNbDays.toDouble()
         updateGui()
     }
 
@@ -276,6 +287,7 @@ class AutotuneFragment : DaggerFragment() {
     @Synchronized
     private fun updateGui() {
         _binding ?: return
+        binding.tuneDays.value = autotunePlugin.lastNbDays.toDouble()
         profileStore = activePlugin.activeProfileSource.profile ?: ProfileStore(injector, JSONObject(), dateUtil)
         profileName = if (binding.profileList.text.toString() == rh.gs(R.string.active)) "" else binding.profileList.text.toString()
         profileFunction.getProfile()?.let { currentProfile ->
@@ -381,57 +393,80 @@ class AutotuneFragment : DaggerFragment() {
     }
 
     private fun showResults() {
-        Thread {
+        context?.let { context ->
             runOnUiThread {
-                binding.autotuneResults.removeAllViews()
-                if (autotunePlugin.result.isNotBlank()) {
-                    var toMgDl = 1.0
-                    if (profileFunction.getUnits() == GlucoseUnit.MMOL) toMgDl = Constants.MMOLL_TO_MGDL
-                    val isfFormat = if (profileFunction.getUnits() == GlucoseUnit.MMOL) "%.2f" else "%.1f"
-                    binding.autotuneResults.addView(
-                        TableLayout(context).also { layout ->
-                            layout.addView(
-                                TextView(context).apply {
-                                    text = autotunePlugin.result
-                                    setTypeface(typeface, Typeface.BOLD)
-                                    gravity = Gravity.CENTER_HORIZONTAL
-                                    setTextAppearance(android.R.style.TextAppearance_Material_Medium)
-                                })
-                            autotunePlugin.tunedProfile?.let { tuned ->
-                                layout.addView(toTableRowHeader())
-                                val tuneInsulin = sp.getBoolean(R.string.key_autotune_tune_insulin_curve, false)
-                                if (tuneInsulin) {
-                                    layout.addView(toTableRowValue(rh.gs(R.string.insulin_peak), autotunePlugin.pumpProfile.localInsulin.peak.toDouble(), tuned.localInsulin.peak.toDouble(), "%.0f"))
-                                    layout.addView(toTableRowValue(rh.gs(R.string.dia), Round.roundTo(autotunePlugin.pumpProfile.localInsulin.dia, 0.1), Round.roundTo(tuned.localInsulin.dia, 0.1),"%.1f"))
-                                }
-                                layout.addView(toTableRowValue(rh.gs(R.string.isf_short), Round.roundTo(autotunePlugin.pumpProfile.isf / toMgDl, 0.001), Round.roundTo(tuned.isf / toMgDl, 0.001), isfFormat))
-                                layout.addView(toTableRowValue(rh.gs(R.string.ic_short), Round.roundTo(autotunePlugin.pumpProfile.ic, 0.001), Round.roundTo(tuned.ic, 0.001), "%.2f"))
+                _binding?.let {
+                    binding.autotuneResults.removeAllViews()
+                    if (autotunePlugin.result.isNotBlank()) {
+                        var toMgDl = 1.0
+                        if (profileFunction.getUnits() == GlucoseUnit.MMOL) toMgDl = Constants.MMOLL_TO_MGDL
+                        val isfFormat = if (profileFunction.getUnits() == GlucoseUnit.MMOL) "%.2f" else "%.1f"
+                        binding.autotuneResults.addView(
+                            TableLayout(context).also { layout ->
                                 layout.addView(
                                     TextView(context).apply {
-                                        text = rh.gs(R.string.basal)
+                                        text = autotunePlugin.result
                                         setTypeface(typeface, Typeface.BOLD)
                                         gravity = Gravity.CENTER_HORIZONTAL
                                         setTextAppearance(android.R.style.TextAppearance_Material_Medium)
+                                    })
+                                autotunePlugin.tunedProfile?.let { tuned ->
+                                    layout.addView(toTableRowHeader())
+                                    val tuneInsulin = sp.getBoolean(R.string.key_autotune_tune_insulin_curve, false)
+                                    if (tuneInsulin) {
+                                        layout.addView(
+                                            toTableRowValue(
+                                                rh.gs(R.string.insulin_peak),
+                                                autotunePlugin.pumpProfile.localInsulin.peak.toDouble(),
+                                                tuned.localInsulin.peak.toDouble(),
+                                                "%.0f"
+                                            )
+                                        )
+                                        layout.addView(
+                                            toTableRowValue(
+                                                rh.gs(R.string.dia),
+                                                Round.roundTo(autotunePlugin.pumpProfile.localInsulin.dia, 0.1),
+                                                Round.roundTo(tuned.localInsulin.dia, 0.1),
+                                                "%.1f"
+                                            )
+                                        )
                                     }
-                                )
-                                layout.addView(toTableRowHeader(true))
-                                var totalPump = 0.0
-                                var totalTuned = 0.0
-                                for (h in 0 until tuned.basal.size) {
-                                    val df = DecimalFormat("00")
-                                    val time = df.format(h.toLong()) + ":00"
-                                    totalPump += autotunePlugin.pumpProfile.basal[h]
-                                    totalTuned += tuned.basal[h]
-                                    layout.addView(toTableRowValue(time, autotunePlugin.pumpProfile.basal[h], tuned.basal[h], "%.3f", tuned.basalUntuned[h].toString()))
+                                    layout.addView(
+                                        toTableRowValue(
+                                            rh.gs(R.string.isf_short),
+                                            Round.roundTo(autotunePlugin.pumpProfile.isf / toMgDl, 0.001),
+                                            Round.roundTo(tuned.isf / toMgDl, 0.001),
+                                            isfFormat
+                                        )
+                                    )
+                                    layout.addView(toTableRowValue(rh.gs(R.string.ic_short), Round.roundTo(autotunePlugin.pumpProfile.ic, 0.001), Round.roundTo(tuned.ic, 0.001), "%.2f"))
+                                    layout.addView(
+                                        TextView(context).apply {
+                                            text = rh.gs(R.string.basal)
+                                            setTypeface(typeface, Typeface.BOLD)
+                                            gravity = Gravity.CENTER_HORIZONTAL
+                                            setTextAppearance(android.R.style.TextAppearance_Material_Medium)
+                                        }
+                                    )
+                                    layout.addView(toTableRowHeader(true))
+                                    var totalPump = 0.0
+                                    var totalTuned = 0.0
+                                    for (h in 0 until tuned.basal.size) {
+                                        val df = DecimalFormat("00")
+                                        val time = df.format(h.toLong()) + ":00"
+                                        totalPump += autotunePlugin.pumpProfile.basal[h]
+                                        totalTuned += tuned.basal[h]
+                                        layout.addView(toTableRowValue(time, autotunePlugin.pumpProfile.basal[h], tuned.basal[h], "%.3f", tuned.basalUntuned[h].toString()))
+                                    }
+                                    layout.addView(toTableRowValue("∑", totalPump, totalTuned, "%.3f", " "))
                                 }
-                                layout.addView(toTableRowValue("∑", totalPump, totalTuned, "%.3f", " "))
                             }
-                        }
-                    )
+                        )
+                    }
+                    binding.autotuneResultsCard.visibility = if (autotunePlugin.calculationRunning && autotunePlugin.result.isEmpty()) View.GONE else View.VISIBLE
                 }
-                binding.autotuneResultsCard.visibility = if (autotunePlugin.calculationRunning && autotunePlugin.result.isEmpty()) View.GONE else View.VISIBLE
             }
-        }.start()
+        }
     }
 
     private fun toTableRowHeader(basal:Boolean = false): TableRow =
