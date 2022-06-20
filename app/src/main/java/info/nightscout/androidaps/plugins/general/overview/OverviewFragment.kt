@@ -1013,38 +1013,21 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                     R.attr.ribbonWarningColor,
                     dateUtil.untilString(tsunamiMode.end, rh)
                 )
-                /*
-                binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.ribbonTextWarningColor))
-                binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.ribbonWarningColor))
-                binding.buttonsLayout.tsunamiButton.text = dateUtil.untilString(tsunamiMode.end, rh)
-                 */
             } else {
                 setRibbon(
                     binding.buttonsLayout.tsunamiButton,
                     R.attr.tsunamiButtonColor,
-                    R.attr.defaultButtonColor,
+                    R.attr.ribbonDefaultColor,
                     "TSUNAMI"
                 )
-                /*
-                binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.tsunamiButtonColor))
-                binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.defaultButtonColor))
-                binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
-
-                 */
             }
         } else {
             setRibbon(
                 binding.buttonsLayout.tsunamiButton,
                 R.attr.tsunamiButtonColor,
-                R.attr.defaultButtonColor,
+                R.attr.ribbonDefaultColor,
                 "TSUNAMI"
             )
-            /*
-            binding.buttonsLayout.tsunamiButton.setTextColor(rh.gac(context, R.attr.tsunamiButtonColor))
-            binding.buttonsLayout.tsunamiButton.backgroundTintList = ColorStateList.valueOf(rh.gac(context, R.attr.defaultButtonColor))
-            binding.buttonsLayout.tsunamiButton.text = "TSUNAMI"
-
-             */
         }
     }
 
