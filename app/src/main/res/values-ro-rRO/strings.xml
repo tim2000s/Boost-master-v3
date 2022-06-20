@@ -28,7 +28,6 @@
     <string name="description_overview">Afişează starea curentă a buclei şi butoanele pentru cele mai folosite acţiuni</string>
     <string name="description_persistent_notification">Afişează o notificare activă cu o scurtă descriere referitoare la starea buclei</string>
     <string name="description_profile_local">Definire profil care să fie valabil offline.</string>
-    <string name="description_pump_mdi">Integrare cu pompă virtuală, pentru persoanele ce folosesc terapia cu pen</string>
     <string name="description_pump_virtual">Integrare cu pompele ce nu au încă un driver software disponibil (Buclă Deschisă)</string>
     <string name="description_sensitivity_aaps">Sensibilitatea este calculată la fel ca în algoritmul Oref0, dar se poate specifica un interval de timp în trecut. Absorbția minimă de carbohidrați este calculată din parametrul echivalent, stabilit în preferințe.</string>
     <string name="description_sensitivity_oref1">Sensibilitatea este calculată folosind datele din ultimele 8 sau 24 ore (se alege cea mai mare din ele), iar carbohidrații (când nu sunt absorbiți) sunt ignorați după timpul specificat în preferințe. Plugin-ul calculează și UAM.</string>
@@ -160,6 +159,7 @@
     <string name="end_user_license_agreement">Licență utilizator final</string>
     <string name="end_user_license_agreement_text">NU FOLOSIȚI PENTRU LUAREA DE DECIZII MEDICALE. NU EXISTĂ RĂSPUNDERE LEGALĂ SAU GARANȚIE PENTRU ACEST PROGRAM, ÎN LIMITA APLICABILĂ A LEGII. CU EXCEPTIA CAZURILOR SPECIAL MENȚIONATE, AUTORUL ȘI/SAU ALTE PERSOANE IMPLICATE PUN LA DISPOZIȚIE ACEST PROGRAM FĂRĂ NICIO GARANȚIE, IMPLICITĂ SAU EXPLICITĂ, INCLUZÂND, DAR FĂRĂ A SE LIMITA LA, GARANȚIILE LEGATE DE VĂNZAREA SAU POTRIVIREA PENTRU UN ANUME SCOP. ÎNTREGUL RISC LEGAT DE CALITATEA ȘI PERFORMANȚA ACESTUI PROGRAM CAD ÎN RESPONSABILITATEA DUMNEAVOASTRĂ. DACĂ PROGRAMUL SE DOVEDEȘTE A FI DEFECT, DUMNEAVOASTRĂ VĂ ASUMAȚI ÎNTREAGA RĂSPUNDERE, PRECUM ȘI TOATE COSTURILE LEGATE DE SERVICE, REPARAȚII SAU CORECȚII.</string>
     <string name="end_user_license_agreement_i_understand">ÎNȚELEG ȘI SUNT DE ACORD</string>
+    <string name="save">Salvează</string>
     <string name="reloadprofile">Reîncarcă profilul</string>
     <string name="smscommunicator">Comunicator SMS</string>
     <string name="smscommunicator_allowednumbers">Numere de telefon permise</string>
@@ -247,7 +247,6 @@
     <string name="basalvaluebelowminimum">Valoarea bazalei este sub minimul permis. Profilul nu este setat!</string>
     <string name="sms_actualbg">Glicemie:</string>
     <string name="sms_lastbg">Ultima glicemie:</string>
-    <string name="mdi">MDI</string>
     <string name="MM640g">MM640g</string>
     <string name="ongoingnotificaction">Notificare activă</string>
     <string name="old_data">DATE VECHI</string>
@@ -597,9 +596,7 @@
     <string name="secondcarbsincrement">Al doilea increment de carbohidrați</string>
     <string name="thirdcarbsincrement">Al treilea increment de carbohidrați</string>
     <string name="cgm">CGM</string>
-    <string name="ns_wifionly">Folosește doar conexiune WiFi</string>
     <string name="ns_wifi_ssids">SSID WiFi</string>
-    <string name="ns_chargingonly">Doar când se încarcă</string>
     <string name="connectionsettings_title">Setări conexiune</string>
     <string name="ns_wifi_allowedssids">SSIDuri permise (separare prin punct și virgulă)</string>
     <string name="ns_allowroaming">Permite conexiuni în roaming</string>
@@ -898,5 +895,8 @@
     <string name="not_available_full">Nu este disponibil</string>
     <!-- Theme switcher dark and light mode-->
     <!-- WEAR OS-->
+    <string name="confirm_remove_multiple_items">Sigur vrei să elimini %1$d element(e)</string>
+    <string name="sort_label">Sortează</string>
+    <string name="login">Autentificare</string>
     <!-- Aidex Cgms -->
 </resources>
