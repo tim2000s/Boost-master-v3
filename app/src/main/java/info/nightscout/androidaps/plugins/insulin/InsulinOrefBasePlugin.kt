@@ -6,12 +6,12 @@ import info.nightscout.androidaps.data.Iob
 import info.nightscout.androidaps.database.embedments.InsulinConfiguration
 import info.nightscout.androidaps.database.entities.Bolus
 import info.nightscout.androidaps.interfaces.*
-import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.general.overview.events.EventNewNotification
 import info.nightscout.androidaps.plugins.general.overview.notifications.Notification
+import info.nightscout.androidaps.utils.HardLimits
 import info.nightscout.androidaps.utils.T
-import info.nightscout.androidaps.interfaces.ResourceHelper
+import info.nightscout.shared.logging.AAPSLogger
 import javax.inject.Inject
 import kotlin.math.exp
 import kotlin.math.pow
@@ -28,7 +28,8 @@ abstract class InsulinOrefBasePlugin(
     val profileFunction: ProfileFunction,
     val rxBus: RxBus,
     aapsLogger: AAPSLogger,
-    config: Config
+    config: Config,
+    val hardLimits: HardLimits
 ) : PluginBase(
     PluginDescription()
         .mainType(PluginType.INSULIN)
@@ -44,18 +45,18 @@ abstract class InsulinOrefBasePlugin(
     override val dia
         get(): Double {
             val dia = userDefinedDia
-            return if (dia >= MIN_DIA) {
+            return if (dia >= hardLimits.minDia()) {
                 dia
             } else {
                 sendShortDiaNotification(dia)
-                MIN_DIA
+                hardLimits.minDia()
             }
         }
 
     open fun sendShortDiaNotification(dia: Double) {
         if (System.currentTimeMillis() - lastWarned > 60 * 1000) {
             lastWarned = System.currentTimeMillis()
-            val notification = Notification(Notification.SHORT_DIA, String.format(notificationPattern, dia, MIN_DIA), Notification.URGENT)
+            val notification = Notification(Notification.SHORT_DIA, String.format(notificationPattern, dia, hardLimits.minDia()), Notification.URGENT)
             rxBus.send(EventNewNotification(notification))
         }
     }
@@ -66,11 +67,13 @@ abstract class InsulinOrefBasePlugin(
     open val userDefinedDia: Double
         get() {
             val profile = profileFunction.getProfile()
-            return profile?.dia ?: MIN_DIA
+            return profile?.dia ?: hardLimits.minDia()
         }
 
     @Inject lateinit var activePlugin: ActivePlugin
     override fun iobCalcForTreatment(bolus: Bolus, time: Long, dia: Double): Iob {
+        assert(dia != 0.0)
+        assert(peak != 0)
         val insulinInterface = activePlugin.activeInsulin
         val insulinID = insulinInterface.id.value
         val result = Iob()
@@ -120,45 +123,23 @@ abstract class InsulinOrefBasePlugin(
                 //    pct_ins_left += (2 * bolus.amount / tp_model) * i * exp(-i.toDouble().pow(2.0) / tp_model)
                 //}
                 //result.iobContrib = bolus.amount * (1 - (pct_ins_left/bolus.amount))
-
             } else {
                 // MP: If the Lyumjev pharmacodynamic models are not used (IDs 105 & 205), use the traditional PK-based insulin model instead;
-                val peak = peak
                 val td = dia * 60 //getDIA() always >= MIN_DIA
                 val tp = peak.toDouble()
                 // force the IOB to 0 if over DIA hours have passed
                 if (t < td) {
                     val tau = tp * (1 - tp / td) / (1 - 2 * tp / td)
                     val a = 2 * tau / td
-                    val S = 1 / (1 - a + (1 + a) * exp(-td / tau))
-                    result.activityContrib = bolus.amount * (S / tau.pow(2.0)) * t * (1 - t / td) * exp(-t / tau)
-                    result.iobContrib = bolus.amount * (1 - S * (1 - a) * ((t.pow(2.0) / (tau * td * (1 - a)) - t / tau - 1) * Math.exp(-t / tau) + 1))
+                    val s = 1 / (1 - a + (1 + a) * exp(-td / tau))
+                    result.activityContrib = bolus.amount * (s / tau.pow(2.0)) * t * (1 - t / td) * exp(-t / tau)
+                    result.iobContrib = bolus.amount * (1 - s * (1 - a) * ((t.pow(2.0) / (tau * td * (1 - a)) - t / tau - 1) * exp(-t / tau) + 1))
                 }
             }
         }
         return result
     }
-/* NON-TSUNAMI ACTIVITY CALCULATION CODE (original)
-    override fun iobCalcForTreatment(bolus: Bolus, time: Long, dia: Double): Iob {
-        val result = Iob()
-        val peak = peak
-        if (bolus.amount != 0.0) {
-            val bolusTime = bolus.timestamp
-            val t = (time - bolusTime) / 1000.0 / 60.0
-            val td = dia * 60 //getDIA() always >= MIN_DIA
-            val tp = peak.toDouble()
-            // force the IOB to 0 if over DIA hours have passed
-            if (t < td) {
-                val tau = tp * (1 - tp / td) / (1 - 2 * tp / td)
-                val a = 2 * tau / td
-                val S = 1 / (1 - a + (1 + a) * exp(-td / tau))
-                result.activityContrib = bolus.amount * (S / tau.pow(2.0)) * t * (1 - t / td) * exp(-t / tau)
-                result.iobContrib = bolus.amount * (1 - S * (1 - a) * ((t.pow(2.0) / (tau * td * (1 - a)) - t / tau - 1) * Math.exp(-t / tau) + 1))
-            }
-        }
-        return result
-    }
-*/
+
     override val insulinConfiguration: InsulinConfiguration
         get() = InsulinConfiguration(friendlyName, (dia * 1000.0 * 3600.0).toLong(), T.mins(peak.toLong()).msecs())
 
@@ -166,17 +147,12 @@ abstract class InsulinOrefBasePlugin(
         get(): String {
             var comment = commentStandardText()
             val userDia = userDefinedDia
-            if (userDia < MIN_DIA) {
-                comment += "\n" + rh.gs(R.string.dia_too_short, userDia, MIN_DIA)
+            if (userDia < hardLimits.minDia()) {
+                comment += "\n" + rh.gs(R.string.dia_too_short, userDia, hardLimits.minDia())
             }
             return comment
         }
 
-    override abstract val peak: Int
+    abstract override val peak: Int
     abstract fun commentStandardText(): String
-
-    companion object {
-
-        const val MIN_DIA = 5.0
-    }
 }
