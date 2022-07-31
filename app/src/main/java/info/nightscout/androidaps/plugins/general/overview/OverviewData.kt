@@ -129,12 +129,14 @@ class OverviewData @Inject constructor(
 
     val isLow: Boolean
         get() = lastBg?.let { lastBg ->
-            lastBg.valueToUnits(profileFunction.getUnits()) < defaultValueHelper.determineLowLine()
+            lastBg.valueToUnits(profileFunction.getUnits(), sp) < defaultValueHelper
+                .determineLowLine()
         } ?: false
 
     val isHigh: Boolean
         get() = lastBg?.let { lastBg ->
-            lastBg.valueToUnits(profileFunction.getUnits()) > defaultValueHelper.determineHighLine()
+            lastBg.valueToUnits(profileFunction.getUnits(), sp) > defaultValueHelper
+                .determineHighLine()
         } ?: false
 
     @ColorInt

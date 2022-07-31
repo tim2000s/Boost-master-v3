@@ -109,6 +109,7 @@ class RandomBgPlugin @Inject constructor(
             value = bgMgdl,
             raw = 0.0,
             noise = null,
+            smoothed = 0.0,
             trendArrow = GlucoseValue.TrendArrow.NONE,
             sourceSensor = GlucoseValue.SourceSensor.RANDOM
         )
