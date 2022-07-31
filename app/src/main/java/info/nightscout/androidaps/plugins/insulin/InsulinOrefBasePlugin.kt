@@ -81,50 +81,11 @@ abstract class InsulinOrefBasePlugin(
             val bolusTime = bolus.timestamp
             val t = (time - bolusTime) / 1000.0 / 60.0
             // force the IOB to 0 if over DIA hours have passed
-            if (t < 8 * 60 && (insulinID == 105 || insulinID == 205)) { //MP: Fixed DIA cut-off of 8 h - the model automatically changes its DIA based on the bolus size, thus no user-set DIA is
-                // required.
-                //MP Model for estimation of PD-based peak time: (a0 + a1*X)/(1+b1*X), where X = bolus size
-                val a0 = 61.33 //MP Units = min
-                val a1 = 12.27
-                val b1 = 0.05185
-                val tp: Double
-                if (insulinID == 205) { //MP ID = 205 for Lyumjev U200
-                    tp = (a0 + a1 * 2 * bolus.amount)/(1 + b1 * 2 * bolus.amount) //MP Units = min
-                } else {
-                    tp = (a0 + a1 * bolus.amount) / (1 + b1 * bolus.amount) //MP Units = min
-                }
-                val tp_model = tp.pow(2.0) * 2 //MP The peak time in the model is defined as half of the square root of this variable - thus the tp entered into the model must be transformed first
-                //MP Calculate remaining IOB of this bolus (PD based approach)
-                /**
-                 *
-                 * MP - UAM Tsunami PD model U100 vs U200
-                 *
-                 * InsActinvity calculation below: The same formula is used for both, U100 and U200
-                 * insulin as the concentration effect is already included in the peak time calculation.
-                 * If peak time is kept constant and only the dose is doubled, the general shape of the
-                 * curve doesn't change and hence the equation does not need adjusting. Unless a global
-                 * U200 mode is introduced where ISF between U100 and U200 has the same value (i.e.: When
-                 * ISF doubling and basal halving is done in AAPS' calculations and not by the user), the
-                 * equation doesn't need any changing.
-                 * The user must keep in mind that the displayed IOB is only half of the actual IOB.
-                 *
-                 */
-                result.activityContrib = (2 * bolus.amount / tp_model) * t * exp(-t.pow(2.0) / tp_model)
-
-                //MP New IOB formula - integrated version of the above activity curve
-                val lowerLimit = t //MP lower integration limit, in min
-                val upperLimit = 8.0 * 60 //MP upper integration limit, in min
-                result.iobContrib = bolus.amount * (exp(-lowerLimit.pow(2.0)/tp_model) - exp(-upperLimit.pow(2.0)/tp_model))
-
-                //bolus.amount * (exp(-lowerLimit.pow(2.0)/tp_model) - exp(-upperLimit.pow(2.0)/tp_model))
-                //MP Below: old IOB formula; produces (almost?) identical results, but requires for loop
-                //var pct_ins_left = 0.0 //MP insulin equivalents in U that are still "unused"
-                //for (i in 0..t.toInt()) {
-                //    pct_ins_left += (2 * bolus.amount / tp_model) * i * exp(-i.toDouble().pow(2.0) / tp_model)
-                //}
-                //result.iobContrib = bolus.amount * (1 - (pct_ins_left/bolus.amount))
-            } else {
-                // MP: If the Lyumjev pharmacodynamic models are not used (IDs 105 & 205), use the traditional PK-based insulin model instead;
+            if (t < 8 * 60 && (insulinID == 105 || insulinID == 205)) { //MP: use pharmacodynamic model if PD model is selected insulin (ID 105 or 205)
+                val PDresult = PDmodelIobCalculation(bolus, insulinID, t)
+                result.iobContrib = PDresult.iobContrib
+                result.activityContrib = PDresult.activityContrib
+            } else { // MP: If the pharmacodynamic models are not used (IDs 105 & 205), use the traditional PK-based insulin model instead;
                 val td = dia * 60 //getDIA() always >= MIN_DIA
                 val tp = peak.toDouble()
                 // force the IOB to 0 if over DIA hours have passed
@@ -137,6 +98,43 @@ abstract class InsulinOrefBasePlugin(
                 }
             }
         }
+        return result
+    }
+
+    fun PDmodelIobCalculation(bolus: Bolus, insulinID: Int, t: Double): Iob {
+        //MP Model for estimation of PD-based peak time: (a0 + a1*X)/(1+b1*X), where X = bolus size
+        val a0 = 61.33 //MP Units = min
+        val a1 = 12.27
+        val b1 = 0.05185
+        val tp: Double
+        val result = Iob()
+        if (insulinID == 205) { //MP ID = 205 for Lyumjev U200
+            tp = (a0 + a1 * 2 * bolus.amount)/(1 + b1 * 2 * bolus.amount) //MP Units = min
+        } else {
+            tp = (a0 + a1 * bolus.amount) / (1 + b1 * bolus.amount) //MP Units = min
+        }
+        val tp_model = tp.pow(2.0) * 2 //MP The peak time in the model is defined as half of the square root of this variable - thus the tp entered into the model must be transformed first
+        /**
+         *
+         * MP - UAM Tsunami PD model U100 vs U200
+         *
+         * InsActinvity calculation below: The same formula is used for both, U100 and U200
+         * insulin as the concentration effect is already included in the peak time calculation.
+         * If peak time is kept constant and only the dose is doubled, the general shape of the
+         * curve doesn't change and hence the equation does not need adjusting. Unless a global
+         * U200 mode is introduced where ISF between U100 and U200 has the same value (i.e.: When
+         * ISF doubling and basal halving is done in AAPS' calculations and not by the user), the
+         * equation doesn't need any changing.
+         * The user must keep in mind that the displayed IOB is only half of the actual IOB.
+         *
+         */
+        result.activityContrib = (2 * bolus.amount / tp_model) * t * exp(-t.pow(2.0) / tp_model)
+
+        //MP New IOB formula - integrated version of the above activity curve
+        val lowerLimit = t //MP lower integration limit, in min
+        val upperLimit = 8.0 * 60 //MP upper integration limit, in min
+        result.iobContrib = bolus.amount * (exp(-lowerLimit.pow(2.0)/tp_model) - exp(-upperLimit.pow(2.0)/tp_model))
+
         return result
     }
 
