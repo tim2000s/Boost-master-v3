@@ -22,7 +22,7 @@ class InsulinLyumjevU200PDPlugin @Inject constructor(
     aapsLogger: AAPSLogger,
     config: Config,
     hardLimits: HardLimits
-) : InsulinOrefBasePlugin(injector, rh, profileFunction, rxBus, aapsLogger, config, hardlimits) {
+) : InsulinOrefBasePlugin(injector, rh, profileFunction, rxBus, aapsLogger, config, hardLimits) {
 
     override val id get(): Insulin.InsulinType = Insulin.InsulinType.OREF_LYUMJEV_U200_PD
     override val friendlyName get(): String = rh.gs(R.string.lyumjev_U200_PD)
