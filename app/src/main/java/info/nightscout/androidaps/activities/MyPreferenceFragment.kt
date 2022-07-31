@@ -50,6 +50,7 @@ import info.nightscout.androidaps.utils.alertDialogs.OKDialog.show
 import info.nightscout.androidaps.utils.protection.PasswordCheck
 import info.nightscout.androidaps.utils.protection.ProtectionCheck.ProtectionType.*
 import info.nightscout.androidaps.interfaces.ResourceHelper
+import info.nightscout.androidaps.plugins.aps.openAPSSMBDynamicISF.OpenAPSSMBDynamicISFPlugin
 import info.nightscout.shared.SafeParse
 import info.nightscout.shared.sharedPreferences.SP
 import javax.inject.Inject
@@ -80,6 +81,7 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
     @Inject lateinit var nsClientPlugin: NSClientPlugin
     @Inject lateinit var openAPSAMAPlugin: OpenAPSAMAPlugin
     @Inject lateinit var openAPSSMBPlugin: OpenAPSSMBPlugin
+    @Inject lateinit var openAPSSMBDynamicISFPlugin: OpenAPSSMBDynamicISFPlugin
     @Inject lateinit var TsunamiPlugin: TsunamiPlugin
     @Inject lateinit var safetyPlugin: SafetyPlugin
     @Inject lateinit var sensitivityAAPSPlugin: SensitivityAAPSPlugin
@@ -173,6 +175,7 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
             addPreferencesFromResourceIfEnabled(loopPlugin, rootKey, config.APS)
             addPreferencesFromResourceIfEnabled(openAPSAMAPlugin, rootKey, config.APS)
             addPreferencesFromResourceIfEnabled(openAPSSMBPlugin, rootKey, config.APS)
+            addPreferencesFromResourceIfEnabled(openAPSSMBDynamicISFPlugin, rootKey, config.APS)
             addPreferencesFromResourceIfEnabled(TsunamiPlugin, rootKey, config.APS)
             addPreferencesFromResourceIfEnabled(sensitivityAAPSPlugin, rootKey)
             addPreferencesFromResourceIfEnabled(sensitivityWeightedAveragePlugin, rootKey)
@@ -353,7 +356,7 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
             }
         }
         if (pref is EditTextPreference) {
-            if (pref.getKey().contains("password") || pref.getKey().contains("pin") || pref.getKey().contains("secret")) {
+            if (pref.getKey().contains("password") || pref.getKey().contains("pin") || pref.getKey().contains("secret") || pref.getKey().contains("token")) {
                 pref.setSummary("******")
             } else if (pref.text != null) {
                 pref.dialogMessage = pref.dialogMessage
