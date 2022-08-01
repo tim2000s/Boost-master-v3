@@ -120,6 +120,16 @@
             validate:floatminNumber="0"
             validate:testType="floatNumericRange" />
 
+        <EditTextPreference
+            android:defaultValue="60"
+            android:inputType="numberDecimal"
+            android:dialogMessage="@string/treatmentssafety_lgsThreshold_summary"
+            android:key="@string/key_treatmentssafety_lgsThreshold"
+            android:title="@string/treatmentssafety_lgsThreshold_title"
+            validate:floatmaxNumber="100"
+            validate:floatminNumber="65"
+            validate:testType="numericRange" />
+
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_openapsama_useautosens"
