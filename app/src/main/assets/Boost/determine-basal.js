@@ -290,7 +290,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var dynISFadjust = ( dynISFadjust / 100 );
     var TDD = (dynISFadjust * TDD);
 
-
     var insulin = profile.insulinType;
 
     var ins_val = 90; // Lyumjev peak: 75
@@ -333,7 +332,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     variable_sens =  1800 / ( TDD * (Math.log(( bg / ins_val ) + 1 ) ) );
     variable_sens = round(variable_sens,1);
     console.log("Current sensitivity for predictions is " +variable_sens+" based on current bg");
-
 
 //Circadian ISF Adjustment
 
@@ -983,7 +981,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on current BG;";
             }*/
         else if( bg > 160 && bg < 270 && glucose_status.delta < 2 && glucose_status.delta > -2 && glucose_status.short_avgdelta > -2 && glucose_status.short_avgdelta < 2 && eventualBG < bg) {
-
             var future_sens = ( 1800 / (Math.log((((minPredBG * 0.6) + (bg * 0.4))/ins_val)+1)*TDD));
             console.log("Future state sensitivity is " +future_sens+" using current bg due to no COB & small delta or variation");
             rT.reason += "Dosing sensitivity: " +future_sens+" using current BG;";
@@ -999,7 +996,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.log("Future state sensitivity is " +future_sens+" based on current bg due to +ve delta");
             }
         else {
-
             var future_sens = ( 1800 / (Math.log((Math.max(minPredBG,1)/ins_val)+1)*TDD));
         console.log("Future state sensitivity is " +future_sens+" based on min predited bg due to -ve delta");
         rT.reason += "Dosing sensitivity: " +future_sens+" using eventual BG;";
