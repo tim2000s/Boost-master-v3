@@ -218,15 +218,13 @@ abstract class PluginsModule {
     @Binds
     @AllConfigs
     @IntoMap
-    @IntKey(240)
-
+    @IntKey(230)
     abstract fun bindBoostPlugin(plugin: BoostPlugin): PluginBase
 
     @Binds
     @AllConfigs
     @IntoMap
-    @IntKey(245)
-
+    @IntKey(240)
     abstract fun bindLocalProfilePlugin(plugin: LocalProfilePlugin): PluginBase
 
     @Binds

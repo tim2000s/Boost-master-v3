@@ -10,7 +10,6 @@ import info.nightscout.androidaps.databinding.OpenapsamaFragmentBinding
 import info.nightscout.androidaps.interfaces.ActivePlugin
 import info.nightscout.androidaps.plugins.aps.events.EventOpenAPSUpdateGui
 import info.nightscout.androidaps.plugins.aps.events.EventOpenAPSUpdateResultGui
-//import info.nightscout.androidaps.plugins.aps.Boost.BoostPlugin
 import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.FabricPrivacy
@@ -60,7 +59,7 @@ class BoostFragment : DaggerFragment() {
             setColorSchemeColors(rh.gac(context, R.attr.colorPrimaryDark), rh.gac(context, R.attr.colorPrimary), rh.gac(context, R.attr.colorSecondary))
             setOnRefreshListener {
                 binding.lastrun.text = rh.gs(info.nightscout.androidaps.R.string.executing)
-                Thread { activePlugin.activeAPS.invoke("Boost swiperefresh", false) }.start()
+                Thread { activePlugin.activeAPS.invoke("OpenAPSSMB swiperefresh", false) }.start()
             }
         }
     }
