@@ -35,7 +35,7 @@ The ISF for dosing decisions within Boost is slighty different to thhat in Dynam
 
 In Treatments Safety in preferences, there is now a user adjustable Low Glucose Suspend threshold. This allows the user to set a value higher than the system would normally use, such that when predictions drop below this level, a zero TBR is set.
 
-You can use Boost when announcing carbs or without announcing carbs. There is no special code that differentiaties behaviour when doing either. Similarly, if you prefer to manually bolus, it fully supports that as well.
+You can use Boost when announcing carbs or without announcing carbs. With COB there is an additional piece of bolusing code that oeprates for the first 40 mins of COB. If you prefer to manually bolus, it fully supports that with no other code.
 
 It also has variable insulin percentage determined by the user, and while boost time is valid, the algorithm can bolus up to a maximum bolus defined by the user in preferences.
 
