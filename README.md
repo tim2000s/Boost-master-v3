@@ -20,7 +20,7 @@ DEV:
 
 **Boost 3.6.5**
 
-Traditional Autosens is deprecated in this code and sensitivityRatio is calculated using ( (Rolling 24 hour TDD + Predicted TDD ) / 2) / 7-day average TDD.
+Traditional Autosens is deprecated in this code and sensitivityRatio is calculated using 'Eight hour weighted average TDD  / 7-day average TDD'.
 
 In Treatments Safety in preferences, there is now a user adjustable Low Glucose Suspend threshold. This allows the user to set a value higher than the system would normally use, such that when predictions drop below this level, a zero TBR is set.
 
@@ -32,7 +32,7 @@ The intention of this code is to deliver an early, larger bolus when rises are d
 
 All of the additional code outside of the standard SMB calculation requires a time period to be specified within which it is active. The default time settings disable the code. The time period is specified in hours using a 24 hour clock in the Boost preferences section.
 
-**COB:** With Carbs on Board, Boost has a 15 minute window to deliver the equivalent of a mealtime bolus and **is allowed to go higher than your Boost Bolus Cap**, up to {InsulinRequired/insulin required percent} calculated by the oref1 algorithm, taking carbs into account. In the following 40 mins after the carbs are added, it can do additional larger boluses, as long as there is a delta >5 and COB > 0. The max allowed is the greater of the Boost Bolus Cap or the "COB cap", which is calculated as  { COB / Carb Ratio }.
+**COB:** With Carbs on Board, Boost has a 15 minute window to deliver the equivalent of a mealtime bolus and **is allowed to go higher than your Boost Bolus Cap**, up to 'InsulinRequired/insulin required percent' calculated by the oref1 algorithm, taking carbs into account. In the following 40 mins after the carbs are added, it can do additional larger boluses, as long as there is a delta >5 and COB > 0. The max allowed is the greater of the Boost Bolus Cap or the "COB cap", which is calculated as 'COB / Carb Ratio'.
 
 During normal use, you should set your Boost Bolus Cap to be the max that boost delivers when Boost is enabled and no COB are entered.
 
