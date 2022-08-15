@@ -22,6 +22,17 @@ DEV:
 
 Traditional Autosens is deprecated in this code and sensitivityRatio is calculated using 'Eight hour weighted average TDD  / 7-day average TDD'.
 
+Boost uses a similar version of DynamicISF for making predictions, however, unlike the hardoded quanta for the different values of insulin peak, when free-peak is used, it scales between the highest and lowest values.
+
+The ISF for dosing decisions within Boost is slighty different to thhat in DynamicISF. The calculation is intended to mimic the effects of higher insulin sensitivty at lower glucose levels, and runs as follows:
+
+1. With COB and increasing deltas, use 75% of the predicted BG and 25% of the current BG.
+2. If current BG is accelerating fast, bg is below 180mg/dl/10mmol/l and eventual BG is higher than current, use 50% of both eventual and current BG.
+3. If BG is between 160 and 270 and almost flat, and eventual BG is lower than BG, use 60% min predicted BG and 40% current BG.
+4. If BG is increasing slowly, and above 198 or eventual BG is above current BG and current BG is above 198,  use 40% min predicted BG and 60% current BG.
+5. If BG is increasing more slowy, or eventual BG is greater than current BG, use current BG.
+6. If BG is not increasing, use minimum predicted BG. 
+
 In Treatments Safety in preferences, there is now a user adjustable Low Glucose Suspend threshold. This allows the user to set a value higher than the system would normally use, such that when predictions drop below this level, a zero TBR is set.
 
 You can use Boost when announcing carbs or without announcing carbs. There is no special code that differentiaties behaviour when doing either. Similarly, if you prefer to manually bolus, it fully supports that as well.
