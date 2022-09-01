@@ -255,7 +255,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version 3.6.5 ");
+        console.error( "     Boost version 3.7 ");
         console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7){
@@ -823,6 +823,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // over 60 minutes (data points every 5m)
             var predDev = ci * ( 1 - Math.min(1,IOBpredBGs.length/(60/5)) );
             IOBpredBG = IOBpredBGs[IOBpredBGs.length-1] + predBGI + predDev;
+            IOBpredBG = IOBpredBGs[IOBpredBGs.length-1] + (round(( -iobTick.activity * (1800 / ( TDD * (Math.log(( IOBpredBGs[IOBpredBGs.length-1] / ins_val ) + 1 ) ) )) * 5 ),2)) + predDev;
             // calculate predBGs with long zero temp without deviations
             var ZTpredBG = ZTpredBGs[ZTpredBGs.length-1] + predZTBGI;
             // for COBpredBGs, predicted carb impact drops linearly from current carb impact down to zero
