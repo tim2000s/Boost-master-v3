@@ -252,7 +252,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
     console.error("---------------------------------------------------------");
-    console.error("     Boost version 3.6.5 ");
+    console.error("     Boost version 3.6.5 hardcap ");
     console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7) {
@@ -1354,26 +1354,24 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         //console.error(iob_data.lastBolusTime);
         // minutes since last bolus
         var lastBolusAge = round((new Date(systemTime).getTime() - iob_data.lastBolusTime) / 60000, 1);
+        var maxBolus = 0.0;
         //console.error(lastBolusAge);
         //console.error(profile.temptargetSet, target_bg, rT.COB);
         // only allow microboluses with COB or low temp targets, or within DIA hours of a bolus
         if (microBolusAllowed && enableSMB && bg > threshold) {
             // never bolus more than maxSMBBasalMinutes worth of basal
             var mealInsulinReq = round(meal_data.mealCOB / profile.carb_ratio, 3);
+
+            console.error("IOB", iob_data.iob, (iob_data.iob > mealInsulinReq ?">":"<="), "COB", meal_data.mealCOB + "; mealInsulinReq =", mealInsulinReq);
             if (typeof profile.maxSMBBasalMinutes === 'undefined') {
-                var maxBolus = round(profile.current_basal * 30 / 60, 1);
+                maxBolus = round(profile.current_basal * 30 / 60, 1);
                 console.error("profile.maxSMBBasalMinutes undefined: defaulting to 30m");
                 // if IOB covers more than COB, limit maxBolus to 30m of basal
-            } else if ( /*iob_data.iob > mealInsulinReq &&*/  iob_data.iob > -0.2) {
-                console.error("IOB", iob_data.iob, "> COB", meal_data.mealCOB + "; mealInsulinReq =", mealInsulinReq);
-                if (profile.maxUAMSMBBasalMinutes) {
-                    console.error("profile.maxUAMSMBBasalMinutes: ", profile.maxUAMSMBBasalMinutes);
-                    console.error("profile.current_basal: ", round(profile.current_basal, 4));
-                    maxBolus = round(profile.current_basal * profile.maxUAMSMBBasalMinutes / 60, 1);
-                } else {
-                    console.error("profile.maxUAMSMBBasalMinutes undefined: defaulting to 30m");
-                    maxBolus = round(profile.current_basal * 30 / 60, 1);
-                }
+            }
+            else if (profile.maxUAMSMBBasalMinutes && iob_data.iob > mealInsulinReq && iob_data.iob > -0.2) {
+                console.error("profile.maxUAMSMBBasalMinutes: ", profile.maxUAMSMBBasalMinutes);
+                console.error("profile.current_basal: ", round(profile.current_basal, 4));
+                maxBolus = round(profile.current_basal * profile.maxUAMSMBBasalMinutes / 60, 1);
             } else {
                 console.error("profile.maxSMBBasalMinutes: ", profile.maxSMBBasalMinutes);
                 console.error("profile.current_basal: ", round(profile.current_basal, 4));
@@ -1391,8 +1389,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.error("---------------------- ");
             console.error("                       ");*/
 
+            console.error("            ");
             var insulinReqPCT = (100 / profile.Boost_InsulinReq);
-            console.error("Insulin required:" + round(((1 / insulinReqPCT) * 100), 2) + "%: ");
+            console.error("Insulin required: " + round(((1 / insulinReqPCT) * 100), 2) + "%: ");
 
             var insulinPCTsubtract = (insulinReqPCT - 1);
 
@@ -1401,8 +1400,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var bg_adjust = bga / 40;
             //console.error("bg_adjust value is "+bg_adjust+"; ");
             var insulinDivisor = insulinReqPCT - Math.min((insulinPCTsubtract * bg_adjust), 0.76);
-            console.error("Insulin Divisor is:" + round(insulinDivisor, 2) + "; ");
-            console.error("            ");
+            console.error("Insulin Divisor is: " + round(insulinDivisor, 2) + "; ");
             console.error("Value is " + round(((1 / insulinDivisor) * 100), 2) + "% of insulin required; ");
             console.error("insulinRequired is: " + round(insulinReq, 2) + "; ");
             console.error("            ");
@@ -1426,6 +1424,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             var boostMaxIOB = profile.boost_maxIOB;
             console.error("Max IOB from automated boluses = " + boostMaxIOB + "; ");
+            console.error("Max automated bolus is " + boost_max + "; ");
             console.error("            ");
 
             var boost_start = profile.boost_start;
@@ -1436,8 +1435,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var boost_time = now1 >= boost_start && now1 <= boost_end;
             console.error("Hours are now " + now1 + ", so UAM Boost is " + (boost_time ? "en" : "dis") + "abled;");
 
-            console.error("            ");
-            console.error("Max automated bolus is " + boost_max + "; ");
             console.error("            ");
 
             var boost_scale = profile.boost_scale;
@@ -1585,6 +1582,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             rT.reason += " insulinReq " + insulinReq;
             if (microBolus >= maxBolus) {
                 rT.reason += "; standardMaxBolus " + maxBolus;
+            }
+            if (microBolus > boost_max)
+            {
+                rT.reason += "; boostMaxBolus " + boost_max;
+                console.error("Limiting SMB to profile.boost_max: " + round(boost_max, 1))
+                microBolus = Math.floor(boost_max * roundSMBTo) / roundSMBTo;
             }
             if (durationReq > 0) {
                 rT.reason += "; setting " + durationReq + "m low temp of " + smbLowTempReq + "U/h";

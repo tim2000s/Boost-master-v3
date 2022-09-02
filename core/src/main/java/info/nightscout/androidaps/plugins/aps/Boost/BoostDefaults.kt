@@ -3,6 +3,7 @@ package info.nightscout.androidaps.plugins.aps.Boost
 @Suppress("SpellCheckingInspection")
 object BoostDefaults {
 
+    const val variant = "default"
     // CALCULATED OR FROM PREFS
     // max_iob: 0 // if max_iob is not provided, will default to zero
     // max_daily_safety_multiplier:3

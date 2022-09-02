@@ -8,6 +8,13 @@
         android:title="@string/Boost"
         app:initialExpandedChildrenCount="0">
 
+        <info.nightscout.androidaps.plugins.aps.Boost.BoostVariantPreference
+            android:title="@string/Boost_Variant_title"
+            android:key="@string/key_boost_variant"
+            android:defaultValue="default"
+            android:selectable="true"
+            />
+
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="1"
             android:dialogMessage="@string/openapsma_maxbasal_summary"
