@@ -1527,7 +1527,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                        }
                 var microBolus = Math.floor(Math.min(insulinReq,boost_max)*roundSMBTo)/roundSMBTo;
                 rT.reason += "Boost extra bolusing triggered; SMB equals" + microBolus + "; ";
-            }*/
+            }
            //give 100% of insulin requirement if prediction is a high delta and eventual BG is higher than target
            /*else if ( glucose_status.delta > 8 && delta_accl > 0 && iob_data.iob < boostMaxIOB && now1 >= boost_start && now1 < boost_end && eventualBG > target_bg ) { /*|| eventualBG > 180 && bg > 162 && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end
               if (insulinReq > boostMaxIOB-iob_data.iob) {
