@@ -823,9 +823,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             // over 60 minutes (data points every 5m)
             var predDev = ci * ( 1 - Math.min(1,IOBpredBGs.length/(60/5)) );
             IOBpredBG = IOBpredBGs[IOBpredBGs.length-1] + predBGI + predDev;
-            IOBpredBG = IOBpredBGs[IOBpredBGs.length-1] + (round(( -iobTick.activity * (1800 / ( TDD * (Math.log(( IOBpredBGs[IOBpredBGs.length-1] / ins_val ) + 1 ) ) )) * 5 ),2)) + predDev;
+            IOBpredBG = IOBpredBGs[IOBpredBGs.length-1] + (round(( -iobTick.activity * (1800 / ( TDD * (Math.log((Math.max( IOBpredBGs[IOBpredBGs.length-1],39) / ins_val ) + 1 ) ) )) * 5 ),2))
+
+             + predDev;
             // calculate predBGs with long zero temp without deviations
-            var ZTpredBG = ZTpredBGs[ZTpredBGs.length-1] + (round(( -iobTick.iobWithZeroTemp.activity * (1800 / ( TDD * (Math.log(( ZTpredBGs[ZTpredBGs.length-1] / ins_val ) + 1 ) ) )) * 5 ), 2));
+            var ZTpredBG = ZTpredBGs[ZTpredBGs.length-1] + (round(( -iobTick.iobWithZeroTemp
+            .activity * (1800 / ( TDD * (Math.log(( Math.max(ZTpredBGs[ZTpredBGs.length-1],39) / ins_val ) + 1 ) ) )) * 5 ), 2));
             // for COBpredBGs, predicted carb impact drops linearly from current carb impact down to zero
             // eventually accounting for all carbs (if they can be absorbed over DIA)
             var predCI = Math.max(0, Math.max(0,ci) * ( 1 - COBpredBGs.length/Math.max(cid*2,1) ) );
@@ -854,7 +857,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 //console.error(UAMpredBGs.length,slopeFromDeviations, predUCI);
                 UAMduration=round((UAMpredBGs.length+1)*5/60,1);
             }
-            UAMpredBG = UAMpredBGs[UAMpredBGs.length-1] + (round(( -iobTick.activity * (1800 / ( TDD * (Math.log(( UAMpredBGs[UAMpredBGs.length-1] / ins_val ) + 1 ) ) )) * 5 ),2)) + Math.min(0, predDev) + predUCI;
+            UAMpredBG = UAMpredBGs[UAMpredBGs.length-1] + (round(( -iobTick.activity * (1800 / ( TDD * (Math.log(( Math.max(UAMpredBGs[UAMpredBGs.length-1],39) / ins_val ) + 1 ) ) )) * 5 ),2)) + Math.min(0, predDev) + predUCI;
             //console.error(predBGI, predCI, predUCI);
             // truncate all BG predictions at 4 hours
             if ( IOBpredBGs.length < 48) { IOBpredBGs.push(IOBpredBG); }
@@ -999,7 +1002,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }
         else {
             var future_sens = ( 1800 / (Math.log((Math.max(minPredBG,1)/ins_val)+1)*TDD));
-        console.log("Future state sensitivity is " +future_sens+" based on min predited bg due to -ve delta");
+        console.log("Future state sensitivity is " +future_sens+" based on min predicted bg due to -ve delta");
         rT.reason += "Dosing sensitivity: " +future_sens+" using eventual BG;";
         }
         //future_sens = future_sens * circadian_sensitivity;
@@ -1399,7 +1402,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var bga = Math.abs(bg-180);
                 var bg_adjust = bga / 40;
                 //console.error("bg_adjust value is "+bg_adjust+"; ");
-                var insulinDivisor = insulinReqPCT - Math.min((insulinPCTsubtract * bg_adjust),0.76);
+                //var insulinDivisor = insulinReqPCT - Math.min((insulinPCTsubtract * bg_adjust),0.)
+                var insulinDivisor =  (insulinReqPCT - ((Math.abs(bg-180) / 72 ) * ( insulinReqPCT - 0.5)));
                 console.error("Insulin Divisor is:"+insulinDivisor+"; ");
                 console.error("            ");
                 console.error("Value is "+((1/insulinDivisor) * 100)+"% of insulin required; ");
@@ -1502,7 +1506,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      boostInsulinReq = boostInsulinReq;
                      }
                      if(delta_accl > 1){
-                         insulinReqPCT = 1;
+                         insulinReqPCT = insulinDivisor;
                          }
                      else{
                          insulinReqPCT;
@@ -1518,7 +1522,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      rT.reason += "UAM Boost enacted; SMB equals" + boostInsulinReq + "; ";
                  }
 
-            else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl > 0 && COB < 1 && iob_data.iob < boostMaxIOB && eventualBG > target_bg && bg > 120){
+            /*else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl > 0 && COB < 1 && iob_data.iob < boostMaxIOB && eventualBG > target_bg && bg > 120){
                 if (insulinReq > boostMaxIOB-iob_data.iob) {
                        insulinReq = boostMaxIOB-iob_data.iob;
                        }
@@ -1527,7 +1531,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                        }
                 var microBolus = Math.floor(Math.min(insulinReq,boost_max)*roundSMBTo)/roundSMBTo;
                 rT.reason += "Boost extra bolusing triggered; SMB equals" + microBolus + "; ";
-            }
+            }*/
            //give 100% of insulin requirement if prediction is a high delta and eventual BG is higher than target
            /*else if ( glucose_status.delta > 8 && delta_accl > 0 && iob_data.iob < boostMaxIOB && now1 >= boost_start && now1 < boost_end && eventualBG > target_bg ) { /*|| eventualBG > 180 && bg > 162 && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end
               if (insulinReq > boostMaxIOB-iob_data.iob) {
