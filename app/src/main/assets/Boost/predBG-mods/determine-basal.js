@@ -668,6 +668,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             , 'deliverAt' : deliverAt // The time at which the microbolus should be delivered
             , 'sensitivityRatio' : sensitivityRatio // autosens ratio (fraction of normal basal)
             , 'Total Daily Dose 7-day Ave' : tdd7 //7 day average tdd
+            , 'variable_sens' : sens
         };
 
     // generate predicted future BGs based on IOB, COB, and current absorption rate
