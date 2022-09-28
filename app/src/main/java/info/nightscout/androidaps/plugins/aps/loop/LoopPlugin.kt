@@ -8,9 +8,9 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
-import info.nightscout.androidaps.BuildConfig
 import androidx.core.app.NotificationCompat
 import dagger.android.HasAndroidInjector
+import info.nightscout.androidaps.BuildConfig
 import info.nightscout.androidaps.Constants
 import info.nightscout.androidaps.MainActivity
 import info.nightscout.androidaps.R
@@ -369,33 +369,32 @@ class LoopPlugin @Inject constructor(
                         if (resultAfterConstraints.bolusRequested()) lastRun.smbSetByPump = waiting
                         rxBus.send(EventLoopUpdateGui())
                         fabricPrivacy.logCustom("APSRequest")
-                        applySMBRequest(resultAfterConstraints, object : Callback() {
+                        applyTBRRequest(resultAfterConstraints, profile, object : Callback() {
                             override fun run() {
-                                // Callback is only called if a bolus was actually requested
                                 if (result.enacted || result.success) {
-                                    lastRun.smbSetByPump = result
-                                    lastRun.lastSMBRequest = lastRun.lastAPSRun
-                                    lastRun.lastSMBEnact = dateUtil.now()
-                                    applyTBRRequest(resultAfterConstraints, profile, object : Callback() {
+                                    lastRun.tbrSetByPump = result
+                                    lastRun.lastTBRRequest = lastRun.lastAPSRun
+                                    lastRun.lastTBREnact = dateUtil.now()
+                                    rxBus.send(EventLoopUpdateGui())
+                                    applySMBRequest(resultAfterConstraints, object : Callback() {
                                         override fun run() {
+                                            // Callback is only called if a bolus was actually requested
                                             if (result.enacted || result.success) {
-                                                lastRun.tbrSetByPump = result
-                                                lastRun.lastTBRRequest = lastRun.lastAPSRun
-                                                lastRun.lastTBREnact = dateUtil.now()
-                                                rxBus.send(EventLoopUpdateGui())
-
+                                                lastRun.smbSetByPump = result
+                                                lastRun.lastSMBRequest = lastRun.lastAPSRun
+                                                lastRun.lastSMBEnact = dateUtil.now()
                                             } else {
-                                                lastRun.tbrSetByPump = result
-                                                lastRun.lastTBRRequest = lastRun.lastAPSRun
+                                                Thread {
+                                                    SystemClock.sleep(1000)
+                                                    invoke("tempBasalFallback", allowNotification, true)
+                                                }.start()
                                             }
                                             rxBus.send(EventLoopUpdateGui())
                                         }
                                     })
                                 } else {
-                                    Thread {
-                                        SystemClock.sleep(1000)
-                                        invoke("tempBasalFallback", allowNotification, true)
-                                    }.start()
+                                    lastRun.tbrSetByPump = result
+                                    lastRun.lastTBRRequest = lastRun.lastAPSRun
                                 }
                                 rxBus.send(EventLoopUpdateGui())
                             }
@@ -604,7 +603,6 @@ class LoopPlugin @Inject constructor(
     private fun applySMBRequest(request: APSResult, callback: Callback?) {
         if (!request.bolusRequested()) {
             aapsLogger.debug(LTag.APS, "No SMB requested")
-            callback?.result(PumpEnactResult(injector).enacted(false).success(true).comment(R.string.nochangerequested))?.run()
             return
         }
         val pump = activePlugin.activePump

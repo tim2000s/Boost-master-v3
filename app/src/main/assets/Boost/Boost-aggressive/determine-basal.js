@@ -255,7 +255,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version 3.7 ");
+        console.error( "     Boost version: Aggressive Mods 1.1                 ");
         console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7){
@@ -873,9 +873,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
             // set minPredBGs starting when currently-dosed insulin activity will peak
             // look ahead 60m (regardless of insulin type) so as to be less aggressive on slower insulins
-            var insulinPeakTime = 60;
-            // add 30m to allow for insulin delivery (SMBs or temps)
-            insulinPeakTime = 90;
+
+            //var insulinPeakTime = 60;
+            // change look ahead to use actual peak time from config and add 30m to allow for insulin delivery (SMBs or temps)
+            insulinPeakTime = insulinPeak + 30;
             var insulinPeak5m = (insulinPeakTime/60)*12;
             //console.error(insulinPeakTime, insulinPeak5m, profile.insulinPeakTime, profile.curve);
 
