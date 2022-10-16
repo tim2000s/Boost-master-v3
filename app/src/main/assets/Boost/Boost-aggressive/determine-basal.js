@@ -273,12 +273,17 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var tdd8to4 = meal_data.TDD4to8;
         var tdd_last8_wt = ( ( ( 1.4 * tdd_4) + ( 0.6 * tdd8to4) ) * 3 );
         var tdd8_exp = ( 3 * tdd_8 );
-        console.log("8 hour extrapolated = " +tdd8_exp+ "; ");
+        //console.log("8 hour extrapolated = " +tdd8_exp+ "; ");
 
+
+        if ( tdd_last8_wt < (0.75 * tdd7)) {
+            tdd7 = ( ( tdd_last8_wt / tdd7 ) * tdd7 );
+            console.log(" Current TDD use below 75% of TDD7; adjusting TDD7 down");
+        }
+        else {
+            console.log("Normal TDD calculation used");
+        }
         TDD = ( tdd_last8_wt * 0.33 ) + ( tdd7 * 0.34 ) + (tdd1 * 0.33);
-        console.log("TDD = " +TDD+ " using rolling 8h Total extrapolation + TDD7 (60/40); ");
-        //var TDD = (tdd7 * 0.4) + (tdd_24 * 0.6);
-
        console.error("                                 ");
        //console.error("7-day average TDD is: " +tdd7+ "; ");
        console.error("Rolling 8 hours weight average: "+tdd_last8_wt+"; ");
