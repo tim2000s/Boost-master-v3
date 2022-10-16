@@ -1451,8 +1451,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 }
 
                 /*var boost_start = profile.boost_start;
-                var boost_end = profile.boost_end;
-                var boost_max = profile.boost_bolus;*/
+                var boost_end = profile.boost_end;*/
+                var boost_max = profile.boost_bolus;
                 console.error("            ");
                 console.error("Max automated bolus is "+boost_max+"; ");
                 console.error("            ");
