@@ -967,13 +967,18 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         console.log("EventualBG is" +eventualBG+" ;");
 
+    var now1 = new Date().getHours();
+    var boost_start = profile.boost_start;
+    var boost_end = profile.boost_end;
+
+
         if( meal_data.mealCOB > 0 && delta_accl > 0 ) {
 
             var future_sens = ( 1800 / (Math.log((((eventualBG * 0.75) + (bg * 0.25))/ins_val)+1)*TDD));
             console.log("Future state sensitivity is " +future_sens+" weighted on eventual BG due to COB");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on predicted BG due to COB;";
             }
-        else if( glucose_status.delta > 4 && delta_accl > 10 && bg < 180 && eventualBG > bg ) {
+        else if( glucose_status.delta > 4 && delta_accl > 10 && bg < 180 && eventualBG > bg && now1 >= boost_start && now1 < boost_end ) {
 
             var future_sens = ( 1800 / (Math.log((((eventualBG * 0.5) + (bg * 0.5))/ins_val)+1)*TDD));
             console.log("Future state sensitivity is " +future_sens+" weighted on predicted bg due to increasing deltas");
@@ -1432,7 +1437,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("Max IOB from automated boluses = "+boostMaxIOB+"; ");
                 console.error("            ");
 
-                var now1 = new Date().getHours();
+                //var now1 = new Date().getHours();
 
                 if (now1 >= profile.boost_start && now1 <= profile.boost_end) {
                     console.error("Hours are now "+now1+", so UAM Boost is enabled;");
@@ -1440,9 +1445,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     console.error("Hours are now "+now1+", so UAM Boost is disabled;");
                 }
 
-                var boost_start = profile.boost_start;
+                /*var boost_start = profile.boost_start;
                 var boost_end = profile.boost_end;
-                var boost_max = profile.boost_bolus;
+                var boost_max = profile.boost_bolus;*/
                 console.error("            ");
                 console.error("Max automated bolus is "+boost_max+"; ");
                 console.error("            ");
