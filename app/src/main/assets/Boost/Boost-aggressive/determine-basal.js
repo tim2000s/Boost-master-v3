@@ -255,7 +255,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version: Aggressive Mods 1.2                 ");
+        console.error( "     Boost version: Aggressive Mods 1.3                 ");
         console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7){
@@ -293,7 +293,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     var dynISFadjust = profile.DynISFAdjust;
     var dynISFadjust = ( dynISFadjust / 100 );
+
+    var profileSwitch = profile.profilePercent;
+
+    console.error("Current Profile percent: "+profileSwitch+"; ");
+
+    dynISFadjust = dynISFadjust * (profileSwitch / 100);
     var TDD = (dynISFadjust * TDD);
+
+    console.error("Adjusted TDD = "+TDD+"; ");
 
     var insulin = profile.insulinType;
 
