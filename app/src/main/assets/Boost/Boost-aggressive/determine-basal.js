@@ -277,8 +277,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
         if ( tdd_last8_wt < (0.75 * tdd7)) {
-            tdd7 = ( ( tdd_last8_wt / tdd7 ) * tdd7 );
-            console.log(" Current TDD use below 75% of TDD7; adjusting TDD7 down");
+            tdd7 = tdd_last8_wt + ( ( tdd_last8_wt / tdd7 ) * ( tdd7 - tdd_last8_wt ) );
+            console.log(" Current TDD use below 75% of TDD7; adjusting TDD7 down to: "+tdd7+"; ");
         }
         else {
             console.log("Normal TDD calculation used");
