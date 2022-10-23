@@ -4,6 +4,7 @@ import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.R
 import info.nightscout.androidaps.data.IobTotal
 import info.nightscout.androidaps.data.MealData
+import info.nightscout.androidaps.data.ProfileSealed
 import info.nightscout.androidaps.extensions.convertedToAbsolute
 import info.nightscout.androidaps.extensions.getPassedDurationToTimeInMinutes
 import info.nightscout.androidaps.extensions.plannedRemainingMinutes
@@ -229,6 +230,7 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
         this.profile.put("DynISFAdjust",  SafeParse.stringToDouble(sp.getString(R.string.key_DynISFAdjust,"100")))
         this.profile.put("insulinType", insulinType)
         this.profile.put("insulinPeak", insulinPeak)
+        this.profile.put("profilePercent",  if (profile is ProfileSealed.EPS) profile.value.originalPercentage else 100)
 
         //set the min SMB amount to be the amount set by the pump.
         this.profile.put("bolus_increment", pumpBolusStep)
