@@ -35,8 +35,8 @@ class VersionCheckerUtils @Inject constructor(
     fun triggerCheckVersion() {
 
         if (!sp.contains(R.string.key_last_time_this_version_detected_as_ok)) {
-            // On a new installation, set it as 30 days old in order to warn that there is a new version.
-            sp.putLong(R.string.key_last_time_this_version_detected_as_ok, dateUtil.now() - TimeUnit.DAYS.toMillis(30))
+            // On a new installation, set it as 1825 days old in order to warn that there is a new version.
+            sp.putLong(R.string.key_last_time_this_version_detected_as_ok, dateUtil.now() - TimeUnit.DAYS.toMillis(1825))
         }
 
         // If we are good, only check once every day.
