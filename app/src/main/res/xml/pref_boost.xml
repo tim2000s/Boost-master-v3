@@ -72,6 +72,20 @@
             validate:testType="floatNumericRange" />
 
         <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+            android:defaultValue="200"
+            android:dialogMessage="@string/openapsama_boost_scale_factor_summary"
+            android:digits="0123456789.,"
+            android:inputType="numberDecimal"
+            android:key="@string/key_openapsama_boost_scale_factor"
+            android:maxLines="20"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/openapsama_boost_scale_factor_title"
+            validate:floatmaxNumber="500"
+            validate:floatminNumber="50"
+            validate:testType="floatNumericRange" />
+
+        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="1.0"
             android:dialogMessage="@string/openapsama_boost_scale_summary"
             android:digits="0123456789.,"
