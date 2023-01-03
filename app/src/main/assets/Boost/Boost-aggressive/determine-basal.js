@@ -1421,7 +1421,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var bga = Math.abs(bg-180);
                 var bg_adjust = bga / 40;
 
-                var scale_pct = round ( 100 / profile.percent_scale ,3 );
+                var scale_pct = round ( 100 / profile.boost_percent_scale ,3 );
                 console.error("Percent Scale is:"+scale_pct+"; ");
 
                 //console.error("bg_adjust value is "+bg_adjust+"; ");
