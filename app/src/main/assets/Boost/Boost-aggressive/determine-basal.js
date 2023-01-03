@@ -1420,6 +1420,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 //Calculate variables for sliding scale microbolus increase
                 var bga = Math.abs(bg-180);
                 var bg_adjust = bga / 40;
+                var scale_pct_raw = profile.percent_scale;
                 //console.error("bg_adjust value is "+bg_adjust+"; ");
                 //var insulinDivisor = insulinReqPCT - Math.min((insulinPCTsubtract * bg_adjust),0.)
                 var insulinDivisor =  (insulinReqPCT - ((Math.abs(bg-180) / 72 ) * ( insulinReqPCT - 0.33)));
