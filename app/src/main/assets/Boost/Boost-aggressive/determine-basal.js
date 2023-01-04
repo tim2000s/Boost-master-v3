@@ -1569,7 +1569,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.reason += "100% of insulinRequired "+insulinReq;
                  }
                  //If no other criteria are met, and delta is positive, scale microbolus size up to 1.0x insulin required from bg > 108 to bg = 180.
-           else if (bg > 90 && bg < 181 && glucose_status.delta > 3 && delta_accl > 0 && eventualBG > target_bg && iob_data.iob < boostMaxIOB && now1 >= boost_start && now1 < boost_end && profile.enableBoostPercentScale === true) {
+           else if (bg > 98 && bg < 181 && glucose_status.delta > 3 && delta_accl > 0 && eventualBG
+           > target_bg && iob_data.iob < boostMaxIOB && now1 >= boost_start && now1 < boost_end && profile.enableBoostPercentScale === true) {
                 if (insulinReq > boostMaxIOB-iob_data.iob) {
                           insulinReq = boostMaxIOB-iob_data.iob;
                       }
