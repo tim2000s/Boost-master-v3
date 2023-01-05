@@ -1426,7 +1426,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 //console.error("bg_adjust value is "+bg_adjust+"; ");
                 //var insulinDivisor = insulinReqPCT - Math.min((insulinPCTsubtract * bg_adjust),0.)
-                var insulinDivisor =  (insulinReqPCT - ((Math.abs(bg-180) / 72 ) * ( insulinReqPCT - scale_pct)));
+                if( bg < 108 ){
+                    var insulinDivisor = scale_pct;
+                }
+                else {
+                    var insulinDivisor =  (insulinReqPCT - ((Math.abs(bg-180) / 72 ) * ( insulinReqPCT - scale_pct)));
+                }
                 console.error("Insulin Divisor is:"+insulinDivisor+"; ");
                 console.error("            ");
                 console.error("Value is "+((1/insulinDivisor) * 100)+"% of insulin required; ");
