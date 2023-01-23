@@ -666,6 +666,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     else {
         threshold = lgsThreshold;
         }
+    if (delta_accl > 0) {
+    threshold = 55;
+    }
     console.error("Low glucose suspend threshold: "+threshold);
 
     //console.error(reservoir_data);
