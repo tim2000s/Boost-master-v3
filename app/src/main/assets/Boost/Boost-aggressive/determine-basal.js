@@ -258,14 +258,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.error( "     Boost version: Aggressive Mods 1.3                 ");
         console.error("---------------------------------------------------------");
 
-    if (meal_data.TDDAIMI7){
+    if (meal_data.TDDAIMI7 != null){
         var tdd7 = meal_data.TDDAIMI7;
             }
         else{
         var tdd7 = ((basal * 12)*100)/21;
         }
 
-
+    if (meal_data.TDDAIMI1 != null){
+        var tdd1 = meal_data.TDDAIMI1;
+            }
+        else{
+        var tdd1 = ((basal * 12)*100)/21;
+        }
 
         var tdd1 = meal_data.TDDAIMI1;
         var tdd_4 = meal_data.TDDLast4;
