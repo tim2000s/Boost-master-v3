@@ -92,7 +92,17 @@ class OverviewPlugin @Inject constructor(
             .subscribe({
                            overviewData.pumpStatus = it.getStatus(rh)
                        }, fabricPrivacy::logException)
+        /*
+        disposable += rxBus
+            .toObservable(EventTsunamiModeChange::class.java)
+            .observeOn(aapsSchedulers.io)
+            .subscribe({ //loadTsunamiData("EventTsunamiModeChange")
+                //MP graph test
+                //overviewData.prepareTsunamiData("EventTsunamiModeChange")
+                overviewBus.send(EventRefreshOverview("EventTsunamiModeChange"))
+            }, fabricPrivacy::logException)
 
+         */
     }
 
     override fun onStop() {

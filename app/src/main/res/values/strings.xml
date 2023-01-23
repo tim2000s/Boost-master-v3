@@ -72,7 +72,8 @@
     <string name="description_food">Displays the food presets defined in Nightscout</string>
     <string name="description_insulin_rapid">Insulin preset for Humalog and NovoRapid / NovoLog</string>
     <string name="description_insulin_ultra_rapid">Insulin preset for Fiasp</string>
-    <string name="description_insulin_lyumjev">Insulin preset for Lyumjev</string>
+    <string name="description_insulin_lyumjev">Insulin preset for Lyumjev. (classic
+        pharmacokinetic model)</string>
     <string name="description_insulin_free_peak">Allows you to define the peak of the insulin activity and should only be used by advanced users</string>
     <string name="description_loop">Activate or deactivate the implementation triggering the loop.</string>
     <string name="description_ns_client">Synchronizes your data with Nightscout</string>
@@ -563,7 +564,7 @@
     <string name="free_peak_oref">Free-Peak Oref</string>
     <string name="rapid_acting_oref">Rapid-Acting Oref</string>
     <string name="ultrarapid_oref">Ultra-Rapid Oref</string>
-    <string name="lyumjev">Lyumjev</string>
+    <string name="lyumjev">Lyumjev (classic)</string>
     <string name="dia_too_short">DIA of %1$f too short - using %2$f instead!</string>
     <string name="activate_profile">Activate profile</string>
     <string name="invalid">INVALID</string>
@@ -1292,5 +1293,91 @@
     <string name="no_watch_connected">(No Watch Connected)</string>
     <string name="error_asking_for_permissions">Error asking for permissions</string>
 
-
+    <!-- Tsunami -->
+    <string name="tsunami_shortname">TSU</string>
+    <string name="description_tsunami">Tsunami Activity Engine for automatic handling of meals</string>
+    <string name="key_tsunami_settings" translatable="false">tsunami_settings</string>
+    <string name="key_tsunami_smbcap" translatable="false">tsuSMBCap</string>
+    <string name="tsunami_smbcap_title">Tsunami SMB cap [U]</string>
+    <string name="tsunami_smbcap_summary">max SMB size deliverable by Tsunami.</string>
+    <string name="key_insulinReqPCT" translatable="false">insulinReqPCT</string>
+    <string name="insulinReqPCT_title">Tsunami insulin delivery percentage [%]</string>
+    <string name="insulinReqPCT_summary">Reduces the calculated insulin required to the specified percentage for delivery. Example: If calculated insulin required is 1 U and fraction size is 50%, at most 0.5 U will be delivered if no other constraints (e.g. SMB caps) apply.</string>
+    <string name="key_tsunami_start" translatable="false">tsunami_start</string>
+    <string name="tsunami_start_summary">Hour of the day from when on Tsunami will be enabled.</string>
+    <string name="tsunami_start_title">Tsunami start time (incl.) [h]</string>
+    <string name="key_tsunami_end" translatable="false">tsunami_end</string>
+    <string name="tsunami_end_summary">Hour of the day until (and including) which Tsunami is enabled.</string>
+    <string name="tsunami_end_title">Tsunami end time (incl.) [h]</string>
+    <string name="tsunami">Tsunami</string>
+    <string name="tsunami_label">Tsunami</string>
+    <string name="tsunami_mode_settings_title" translatable="false">Tsunami mode settings</string>
+    <string name="key_show_tsunami_button" translatable="false">show_tsunami_button</string>
+    <string name="show_tsunami_button_summary" translatable="false">Required to initiate Tsunami meal response. Can be hidden if manually bolusing for the majority of carbs.</string>
+    <string name="show_tsunami_button_title" translatable="false">Show Tsunami button</string>
+    <string name="tsunami_duration">Tsunami duration</string>
+    <string name="cancel_tsunami">Cancel Tsunami mode.</string>
+    <string name="key_tsunami_default_duration" translatable="false">tsunami_default_duration</string>
+    <string name="tsunami_default_duration_message">Default Tsunami duration.</string>
+    <string name="tsunami_default_duration_title">Tsunami default duration [min]</string>
+    <string name="prebolus_increment_button_message">Amount of insulin to add when button is pressed</string>
+    <string name="key_prebolus_increment_1" translatable="false">prebolus_increment_1</string>
+    <string name="key_prebolus_increment_2" translatable="false">prebolus_increment_2</string>
+    <string name="key_prebolus_increment_3" translatable="false">prebolus_increment_3</string>
+    <string name="prebolus_increment_1">First prebolus button increment [U]</string>
+    <string name="prebolus_increment_2">Second prebolus button increment [U]</string>
+    <string name="prebolus_increment_3">Third prebolus button increment [U]</string>
+    <string name="prebolus">Prebolus</string>
+    <string name="wave_mode_settings_title" translatable="false">Wave mode settings</string>
+    <string name="key_enable_wave_mode" translatable="false">enable_wave_mode</string>
+    <string name="enable_wave_mode_summary" translatable="false">Glucose watchdog to overrule the openAPSSMB algorithm within specified time slot if Tsunami mode is inactive.</string>
+    <string name="enable_wave_mode_title" translatable="false">Enable wave mode</string>
+    <string name="key_use_wave_smbcap" translatable="false">use_wave_smbcap</string>
+    <string name="use_wave_smbcap_summary" translatable="false">Use fixed SMB cap instead of basal minutes as SMB size limiter.</string>
+    <string name="use_wave_smbcap_title" translatable="false">Use SMB cap</string>
+    <string name="key_wave_smbcap" translatable="false">wave_smbcap</string>
+    <string name="wave_smbcap_message" translatable="false">max SMB size deliverable by wave mode.</string>
+    <string name="wave_smbcap_title" translatable="false">Wave SMB cap [U]</string>
+    <string name="key_wave_start" translatable="false">wave_start</string>
+    <string name="wave_start_summary">Hour of the day from when on wave mode will be enabled.</string>
+    <string name="wave_start_title">Wave start time (incl.) [h]</string>
+    <string name="key_wave_end" translatable="false">wave_end</string>
+    <string name="wave_end_summary">Hour of the day until (and including) which wave mode is enabled.</string>
+    <string name="wave_end_title">Wave end time (incl.) [h]</string>
+    <string name="key_wave_insulinReqPCT" translatable="false">waveinsulinReqPCT</string>
+    <string name="wave_insulinReqPCT_message">Reduces the calculated insulin required to the specified percentage for delivery. Example: If calculated insulin required is 1 U and fraction size is 50%, at most 0.5 U will be delivered if no other constraints (e.g. SMB caps) apply.</string>
+    <string name="wave_insulinReqPCT_title">Wave mode insulin delivery percentage [%]</string>
+    <string name="key_tsu_SMB_scaling" translatable="false">tsu_SMB_scaling</string>
+    <string name="tsu_SMB_scaling_title">Enable SMB cap scaling</string>
+    <string name="tsu_SMB_scaling_summary">Scales Tsunami SMB cap with the current profile percentage (max: 130%).</string>
+    <string name="key_wave_SMB_scaling" translatable="false">wave_SMB_scaling</string>
+    <string name="wave_SMB_scaling_title">Enable SMB cap scaling</string>
+    <string name="wave_SMB_scaling_summary">Scales Wave SMB cap with the current profile percentage (max: 130%).</string>
+    <string name="key_advanced_tsunami" translatable="false">Advanced_tsunami_settings</string>
+    <string name="advanced_tsunami_title">Advanced Tsunami settings</string>
+    <string name="advanced_tsunami_disclaimer">The following settings are for experienced users only and do not have to be adjusted! New users are advised to use the default settings.</string>
+    <string name="key_tsu_activity_target" translatable="false">tsu_activity_target</string>
+    <string name="tsu_activity_target_title">Activity target (Tsunami) [%]</string>
+    <string name="tsu_activity_target_summary">Percentage of current IA to maintain in case of small delta values (constant activity mode for Tsunami).</string>
+    <string name="key_advanced_wave" translatable="false">Advanced_wave_settings</string>
+    <string name="advanced_wave_title">Advanced Wave settings</string>
+    <string name="advanced_wave_disclaimer">The following settings are for experienced users only and do not have to be adjusted! New users are advised to use the default settings.</string>
+    <string name="key_wave_activity_target" translatable="false">wave_activity_target</string>
+    <string name="wave_activity_target_title">Activity target (Wave) [%]</string>
+    <string name="wave_activity_target_summary">Percentage of current IA to maintain in case of small delta values (constant activity mode for Wave).</string>
+    <string name="overview_show_tsunami">Tsunami</string>
+    <!-- Tsunami End -->
+    <!-- Tsunami PD models -->
+    <string name="lyumjev_U100_PD">Lyumjev U100 (Tsunami)</string>
+    <string name="lyumjev_U200_PD">Lyumjev U200 (Tsunami)</string>
+    <string name="description_insulin_lyumjev_U100_PD">Glucodynamic model for Lyumjev U100 (standard concentration); This model automatically adjusts the duration of insulin action (DIA).</string>
+    <string name="description_insulin_lyumjev_U200_PD">Glucodynamic model for Lyumjev U200 (2 x
+        concentrated); This model automatically adjusts the duration of insulin action (DIA).
+        YOU MUST HALVE YOUR BASALS AND DOUBLE YOUR ISFS BEFORE USE!</string>
+    <!-- Tsunami Data Smoothing -->
+    <string name="key_use_data_smoothing" translatable="false">use_data_smoothing</string>
+    <string name="use_data_smoothing_summary" translatable="false">Smooth and display incoming sensor data in the main chart. Recommended if your glucose source does not smooth sensor readings by itself and you would like to enable SMB always.</string>
+    <string name="use_data_smoothing_title" translatable="false">Smooth incoming glucose values</string>
+    <string name="internal_smoothing_enabled">Smoothing of incoming sensor readings is enabled.</string>
+    <!-- Tsunami Data Smoothing end-->
 </resources>

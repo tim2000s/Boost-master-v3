@@ -65,6 +65,20 @@
             app:iconPadding="-4dp" />
 
         <info.nightscout.androidaps.utils.ui.SingleClickButton
+            android:id="@+id/tsunami_button"
+            style="@style/ButtonSmallFontStyle"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_marginEnd="-2dp"
+            android:layout_weight="0.5"
+            android:drawableTop="@drawable/ic_tsunami"
+            android:text="@string/tsunami_label"
+            android:singleLine="true"
+            android:ellipsize="end"
+            app:iconPadding="-4dp"
+            android:textColor="?attr/tsunamiButtonColor" />
+
+        <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/carbs_button"
             style="@style/ButtonSmallFontStyle"
             android:layout_width="0px"

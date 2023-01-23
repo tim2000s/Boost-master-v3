@@ -100,9 +100,10 @@ class PrepareIobAutosensGraphDataWorker(
         data.overviewData.maxFromMinValueFound = Double.MIN_VALUE
 
         val adsData = data.iobCobCalculator.ads.clone()
+        val endTime = data.overviewData.toTime + 120 * 60 * 1000
 
-        while (time <= data.overviewData.toTime) {
-            val progress = (time - data.overviewData.fromTime).toDouble() / (data.overviewData.toTime - data.overviewData.fromTime) * 100.0
+        while (time <= endTime) { //MP endTime as used here instead of data.overviewData.toTime plots data further into the future
+            val progress = (time - data.overviewData.fromTime).toDouble() / (endTime - data.overviewData.fromTime) * 100.0
             rxBus.send(EventIobCalculationProgress(CalculationWorkflow.ProgressData.PREPARE_IOB_AUTOSENS_DATA, progress.toInt(), null))
             val profile = profileFunction.getProfile(time)
             if (profile == null) {

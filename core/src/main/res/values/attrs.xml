@@ -36,6 +36,8 @@
     <attr name="calibrationButtonColor" format="reference|color" />
     <!-- QuickWizard Button -->
     <attr name="quickWizardButtonColor" format="reference|color" />
+    <!-- Tsunami Button -->
+    <attr name="tsunamiButtonColor" format="reference|color" />
     <!-- Stats  -->
     <attr name="statsColor" format="reference|color" />
     <!-- Pump -->
@@ -205,6 +207,8 @@
     <!---Popupmenu TextColor -->
     <attr name="menuTextColor" format="reference|color" />
     <attr name="menuTextColorInverse" format="reference|color" />
+    <!--Tsunami Colour-->
+    <attr name="tsunamiColor" format="reference|color" />
     <!-- CardView specific colors  -->
     <attr name="strokeColor" format="reference|color" />
     <attr name="textAppearanceMediumColor" format="reference|color" />

@@ -105,6 +105,7 @@ class EversensePlugin @Inject constructor(
                             timestamp = glucoseTimestamps[i],
                             value = glucoseLevels[i].toDouble(),
                             raw = glucoseLevels[i].toDouble(),
+                            smoothed = 0.0,
                             noise = null,
                             trendArrow = GlucoseValue.TrendArrow.NONE,
                             sourceSensor = GlucoseValue.SourceSensor.EVERSENSE

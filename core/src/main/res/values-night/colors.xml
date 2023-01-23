@@ -192,6 +192,7 @@
     <color name="colorSetTempButton">#FF478EFF</color>
     <color name="colorSetExtendedButton">#FFDD7792</color>
     <color name="colorProfileSwitchButton">#ca77dd</color>
+    <color name="colorTsunamiButton">#00D38D</color>
 
     <color name="cardObjectiveText">#779ECB</color>
     <color name="colorObjectivesDisabledText">#FF5722</color>

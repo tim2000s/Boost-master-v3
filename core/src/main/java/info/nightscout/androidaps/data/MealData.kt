@@ -7,6 +7,7 @@ class MealData {
     var slopeFromMaxDeviation = 0.0
     var slopeFromMinDeviation = 999.0
     var lastBolusTime: Long = 0
+    var lastBolus = 0.0
     var lastCarbTime = 0L
     var usedMinCarbsImpact = 0.0
 }

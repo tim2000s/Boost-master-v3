@@ -1,6 +1,9 @@
 package info.nightscout.androidaps.plugins.general.overview
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.DashPathEffect
+import android.graphics.Paint
 import androidx.annotation.ColorInt
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.DataPoint
@@ -11,6 +14,7 @@ import info.nightscout.androidaps.database.AppRepository
 import info.nightscout.androidaps.database.ValueWrapper
 import info.nightscout.androidaps.database.entities.GlucoseValue
 import info.nightscout.androidaps.database.entities.TemporaryTarget
+import info.nightscout.androidaps.database.entities.Tsunami
 import info.nightscout.androidaps.extensions.convertedToPercent
 import info.nightscout.androidaps.extensions.isInProgress
 import info.nightscout.androidaps.extensions.toStringFull
@@ -71,6 +75,7 @@ class OverviewData @Inject constructor(
         absIobSeries = FixedLineGraphSeries()
         iobPredictions1Series = PointsWithLabelGraphSeries()
         //iobPredictions2Series = PointsWithLabelGraphSeries()
+        tsunamiSeries = LineGraphSeries()
         minusBgiSeries = FixedLineGraphSeries()
         minusBgiHistSeries = FixedLineGraphSeries()
         cobSeries = FixedLineGraphSeries()
@@ -124,12 +129,14 @@ class OverviewData @Inject constructor(
 
     val isLow: Boolean
         get() = lastBg?.let { lastBg ->
-            lastBg.valueToUnits(profileFunction.getUnits()) < defaultValueHelper.determineLowLine()
+            lastBg.valueToUnits(profileFunction.getUnits(), sp) < defaultValueHelper
+                .determineLowLine()
         } ?: false
 
     val isHigh: Boolean
         get() = lastBg?.let { lastBg ->
-            lastBg.valueToUnits(profileFunction.getUnits()) > defaultValueHelper.determineHighLine()
+            lastBg.valueToUnits(profileFunction.getUnits(), sp) > defaultValueHelper
+                .determineHighLine()
         } ?: false
 
     @ColorInt
@@ -236,6 +243,17 @@ class OverviewData @Inject constructor(
             }
 
     /*
+    * TSUNAMI
+    */
+
+    val tsunami: Tsunami?
+        get() =
+            repository.getTsunamiModeActiveAt(dateUtil.now()).blockingGet().let { tsunami ->
+                if (tsunami is ValueWrapper.Existing) tsunami.value
+                else null
+            }
+
+    /*
      * SENSITIVITY
      */
 
@@ -258,6 +276,9 @@ class OverviewData @Inject constructor(
     var absoluteBasalGraphSeries: LineGraphSeries<ScaledDataPoint> = LineGraphSeries()
 
     var temporaryTargetSeries: LineGraphSeries<DataPoint> = LineGraphSeries()
+//MP graph test
+    var tsunamiSeries: LineGraphSeries<DataPoint> = LineGraphSeries()
+
 
     var maxIAValue = 0.0
     val actScale = Scale()

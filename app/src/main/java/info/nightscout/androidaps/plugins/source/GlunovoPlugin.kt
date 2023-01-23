@@ -118,27 +118,28 @@ class GlunovoPlugin @Inject constructor(
                         continue
                     }
 
-                    if (curr != 0.0)
-                        glucoseValues += CgmSourceTransaction.TransactionGlucoseValue(
+                if (curr != 0.0)
+                    glucoseValues += CgmSourceTransaction.TransactionGlucoseValue(
+                        timestamp = timestamp,
+                        value = value * Constants.MMOLL_TO_MGDL,
+                        raw = 0.0,
+                        smoothed = 0.0,
+                        noise = null,
+                        trendArrow = GlucoseValue.TrendArrow.NONE,
+                        sourceSensor = GlucoseValue.SourceSensor.GLUNOVO_NATIVE
+                    )
+                else
+                    calibrations.add(
+                        CgmSourceTransaction.Calibration(
                             timestamp = timestamp,
-                            value = value * Constants.MMOLL_TO_MGDL,
-                            raw = 0.0,
-                            noise = null,
-                            trendArrow = GlucoseValue.TrendArrow.NONE,
-                            sourceSensor = GlucoseValue.SourceSensor.GLUNOVO_NATIVE
+                            value = value,
+                            glucoseUnit = TherapyEvent.GlucoseUnit.MMOL
                         )
-                    else
-                        calibrations.add(
-                            CgmSourceTransaction.Calibration(
-                                timestamp = timestamp,
-                                value = value,
-                                glucoseUnit = TherapyEvent.GlucoseUnit.MMOL
-                            )
-                        )
-                    sp.putLong(R.string.key_last_processed_glunovo_timestamp, timestamp)
-                    cr.moveToNext()
-                }
-                cr.close()
+                    )
+                sp.putLong(R.string.key_last_processed_glunovo_timestamp, timestamp)
+                cr.moveToNext()
+            }
+            cr.close()
 
                 if (glucoseValues.isNotEmpty() || calibrations.isNotEmpty())
                     repository.runTransactionForResult(CgmSourceTransaction(glucoseValues, calibrations, null))

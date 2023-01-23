@@ -13,6 +13,7 @@ fun ColorGroup.colorId(): Int {
         ColorGroup.Careportal       -> R.color.high
         ColorGroup.Pump             -> R.color.iob
         ColorGroup.Aaps             -> R.color.defaultText
+        ColorGroup.Tsunami          -> R.color.tsunami
         else                        -> R.color.defaultText
     }
 }

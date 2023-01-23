@@ -29,6 +29,7 @@ import info.nightscout.androidaps.database.transactions.InsertTherapyEventAnnoun
 import info.nightscout.androidaps.events.EventAcceptOpenLoopChange
 import info.nightscout.androidaps.events.EventMobileToWear
 import info.nightscout.androidaps.events.EventTempTargetChange
+import info.nightscout.androidaps.events.EventTsunamiModeChange
 import info.nightscout.androidaps.extensions.buildDeviceStatus
 import info.nightscout.androidaps.extensions.convertedToAbsolute
 import info.nightscout.androidaps.extensions.convertedToPercent
@@ -113,6 +114,10 @@ class LoopPlugin @Inject constructor(
             .toObservable(EventTempTargetChange::class.java)
             .observeOn(aapsSchedulers.io)
             .subscribe({ invoke("EventTempTargetChange", true) }, fabricPrivacy::logException)
+        disposable += rxBus
+            .toObservable(EventTsunamiModeChange::class.java)
+            .observeOn(aapsSchedulers.io)
+            .subscribe({ invoke("EventTsunamiModeChange", true) }, fabricPrivacy::logException)
     }
 
     private fun createNotificationChannel() {

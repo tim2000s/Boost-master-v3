@@ -71,6 +71,10 @@ class GraphData(
             it.backgroundColor = rh.gac(graph.context, R.attr.inRangeBackground)
         })
     }
+    //MP graph test
+    fun addTsunamiArea() {
+        addSeries(overviewData.tsunamiSeries)
+    }
 
     fun addBasals() {
         overviewData.basalScale.multiplier = 1.0 // get unscaled Y-values for max calculation

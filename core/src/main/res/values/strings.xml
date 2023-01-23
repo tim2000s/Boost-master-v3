@@ -74,6 +74,7 @@
     <string name="key_autotune_additional_log" translatable="false">autotune_additional_log</string>
     <string name="key_autotune_plugin" translatable="false">key_autotune_plugin</string>
     <string name="key_autotune_last_run" translatable="false">key_autotune_last_run</string>
+    <string name="key_use_data_smoothing" translatable="false">plot_smoothed_data</string>
 
     <string name="key_Boost_settings" translatable="false">Boost_settings</string>
     <string name="key_Boost_max_iob" translatable="false">Boost_max_iob</string>
@@ -605,6 +606,13 @@
     <string name="autotune_run_with_error">Error during last Autotune run</string>
     <string name="autotune_run_cancelled">Another run of Autotune is detected, run cancelled</string>
     <string name="needconnectpermission">Application needs bluetooth permission</string>
+
+    <!-- Tsunami -->
+    <string name="uel_tsunami">TSUNAMI</string>
+    <string name="uel_tsunami_bolus">TSUNAMI+BOLUS</string>
+    <string name="uel_cancel_tsunami">CANCEL TSUNAMI</string>
+    <string name="tsunami_shortname">TSU</string>
+    <!-- Tsunami -->
 
     <plurals name="days">
         <item quantity="one">%1$d day</item>

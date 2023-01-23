@@ -875,6 +875,17 @@ import kotlin.math.roundToInt
         totalDailyDoses = database.totalDailyDoseDao.getNewEntriesSince(since, until, limit, offset),
         versionChanges = database.versionChangeDao.getNewEntriesSince(since, until, limit, offset),
     )
+
+    // Tsunami
+    fun getTsunamiModeActiveAt(timestamp: Long): Single<ValueWrapper<Tsunami>> =
+        database.tsunamiDao.getTsunamiModeActiveAt(timestamp)
+            .subscribeOn(Schedulers.io())
+            .toWrappedSingle()
+//MP graph test
+    fun getTsunamiDataFromTime(timestamp: Long): Single<List<Tsunami>> =
+        database.tsunamiDao.getTsunamiDataFromTime(timestamp)
+            .subscribeOn(Schedulers.io())
+
 }
 
 @Suppress("USELESS_CAST")

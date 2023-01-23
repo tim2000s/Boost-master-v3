@@ -221,7 +221,9 @@ dependencies {
     implementation project(':omnipod-dash')
     implementation project(':diaconn')
     implementation project(':openhumans')
-
+    // MP added implementations to resolve build conflict (duplicate lifecycle classes)
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     /* Dagger2 - We are going to use dagger.android which includes

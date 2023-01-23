@@ -76,6 +76,8 @@
         <item name="calibrationButtonColor">@color/colorCalibrationButton</item>
         <!-- QuickWizard Button -->
         <item name="quickWizardButtonColor">@color/colorQuickWizardButton</item>
+        <!-- Tsunami Button -->
+        <item name="tsunamiButtonColor">@color/colorTsunamiButton</item>
         <!-- Pump -->
         <item name="pumpStatusBackground">@color/pumpStatusBackground</item>
         <!-- Objectives -->
@@ -229,6 +231,7 @@
         <item name="activityColor">@color/activity</item>
         <item name="baseBasalColor">@color/baseBasal</item>
         <item name="dotLineColor">@color/black</item>
+        <item name="tsunamiColor">@color/tsunami</item>
         <!---Popupmenu TextColor -->
         <item name="menuTextColor">@color/black</item>
         <item name="menuTextColorInverse">@color/white</item>

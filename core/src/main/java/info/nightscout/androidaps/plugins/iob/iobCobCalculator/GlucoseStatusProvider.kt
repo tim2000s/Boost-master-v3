@@ -1,10 +1,13 @@
 package info.nightscout.androidaps.plugins.iob.iobCobCalculator
 
 import dagger.Reusable
+import info.nightscout.androidaps.extensions.rawOrSmoothed
+import info.nightscout.androidaps.extensions.useDataSmoothing
 import info.nightscout.androidaps.interfaces.IobCobCalculator
 import info.nightscout.shared.logging.AAPSLogger
 import info.nightscout.shared.logging.LTag
 import info.nightscout.androidaps.utils.DateUtil
+import info.nightscout.shared.sharedPreferences.SP
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -13,7 +16,8 @@ import kotlin.math.roundToLong
 class GlucoseStatusProvider @Inject constructor(
     private val aapsLogger: AAPSLogger,
     private val iobCobCalculator: IobCobCalculator,
-    private val dateUtil: DateUtil
+    private val dateUtil: DateUtil,
+    private val sp: SP
 ) {
 
     val glucoseStatusData: GlucoseStatus?
@@ -41,7 +45,9 @@ class GlucoseStatusProvider @Inject constructor(
                 delta = 0.0,
                 shortAvgDelta = 0.0,
                 longAvgDelta = 0.0,
-                date = nowDate
+                date = nowDate,
+                //*** Tsunami ***
+                deltaScore = 0.0
             ).asRounded()
         }
         val nowValueList = ArrayList<Double>()
@@ -50,7 +56,7 @@ class GlucoseStatusProvider @Inject constructor(
         val longDeltas = ArrayList<Double>()
 
         // Use the latest sgv value in the now calculations
-        nowValueList.add(now.value)
+        nowValueList.add(now.rawOrSmoothed(sp))
         for (i in 1 until sizeRecords) {
             if (data[i].value > 38) {
                 val then = data[i]
@@ -58,15 +64,15 @@ class GlucoseStatusProvider @Inject constructor(
 
                 val minutesAgo = ((nowDate - thenDate) / (1000.0 * 60)).roundToLong()
                 // multiply by 5 to get the same units as delta, i.e. mg/dL/5m
-                change = now.value - then.value
+                change = now.rawOrSmoothed(sp) - then.rawOrSmoothed(sp)
                 val avgDel = change / minutesAgo * 5
                 aapsLogger.debug(LTag.GLUCOSE, "$then minutesAgo=$minutesAgo avgDelta=$avgDel")
 
                 // use the average of all data points in the last 2.5m for all further "now" calculations
                 if (0 < minutesAgo && minutesAgo < 2.5) {
                     // Keep and average all values within the last 2.5 minutes
-                    nowValueList.add(then.value)
-                    now.value = average(nowValueList)
+                    nowValueList.add(then.rawOrSmoothed(sp))
+                    if (useDataSmoothing(sp)) now.smoothed = average(nowValueList) else now.value = average(nowValueList)
                     // short_deltas are calculated from everything ~5-15 minutes ago
                 } else if (2.5 < minutesAgo && minutesAgo < 17.5) {
                     //console.error(minutesAgo, avgDelta);
@@ -90,14 +96,42 @@ class GlucoseStatusProvider @Inject constructor(
         } else {
             average(lastDeltas)
         }
+        //*** Tsunami ***
+        // MP Tsunami meal detection system (requires data smoothing code for variable definitions)
+        //TODO: Check if code includes data smoothing or if running Tsunami standalone version
+        //Uncomment below if using WITHOUT data smoothing code
+        var deltaScore = shortAverageDelta / 4.0
+
+        //Uncomment below if using WITH data smoothing code
+        /*
+        var deltaScore: Double
+        val deltaThreshold = 4.0 //MP average delta above which deltaScore will be 1.
+        val weight = 0.15 //MP Weighting used for weighted averages
+        var scoreDivisor: Double
+        val before = data[1]
+
+        if (!insufficientSmoothingData) {
+            deltaScore = 0.0
+            scoreDivisor = 0.0
+            for (i in 0 until Math.min(windowSize - 1, 6)) { //MP Dynamically adjust deltas to include
+                deltaScore += ssD[i] * (1 - weight * i)
+                scoreDivisor += 1 - weight * i //MP weighted score
+            }
+            deltaScore = deltaScore / scoreDivisor / deltaThreshold //MP: Check how deltaScore compares to the threshold
+        } else {
+            deltaScore = 0.5 //MP If there's not enough data, set deltaScore to 50%
+        }
+        */
         return GlucoseStatus(
-            glucose = now.value,
+            glucose = now.rawOrSmoothed(sp),
             date = nowDate,
             noise = 0.0, //for now set to nothing as not all CGMs report noise
             shortAvgDelta = shortAverageDelta,
             delta = delta,
             longAvgDelta = average(longDeltas),
-        ).also { aapsLogger.debug(LTag.GLUCOSE, it.log()) }.asRounded()
+            //*** Tsunami ***
+            deltaScore = deltaScore
+            ).also { aapsLogger.debug(LTag.GLUCOSE, it.log()) }.asRounded()
     }
 
     companion object {
