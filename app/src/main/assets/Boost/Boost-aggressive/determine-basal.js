@@ -1570,8 +1570,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 rT.reason += "Boost extra bolusing triggered; SMB equals" + microBolus + "; ";
             }*/
            //give 100% of insulin requirement if prediction is a high delta and eventual BG is higher than target
-           else if ( /*glucose_status.delta > 8 && delta_accl > 0 && iob_data.iob < boostMaxIOB &&
-           now1 >= boost_start && now1 < boost_end && eventualBG > target_bg ) ||*/ eventualBG > 144 && bg > 216 && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end && delta_accl > 0 ) {
+           /*else if ( /*glucose_status.delta > 8 && delta_accl > 0 && iob_data.iob < boostMaxIOB &&
+           now1 >= boost_start && now1 < boost_end && eventualBG > target_bg ) ||*/ /*eventualBG >
+           144 && bg > 216 && iob_data.iob < boostMaxIOB && now1 > boost_start && now1 < boost_end && delta_accl > 0 ) {
               if (insulinReq > boostMaxIOB-iob_data.iob) {
                        insulinReq = boostMaxIOB-iob_data.iob;
                        }
@@ -1581,7 +1582,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     var microBolus = Math.floor(Math.min(insulinReq,boost_max)*roundSMBTo)/roundSMBTo;
                     console.error("100% of insulinRequired (" +insulinReq+") given; ");
                     rT.reason += "100% of insulinRequired "+insulinReq;
-                 }
+                 }*/
                  //If no other criteria are met, and delta is positive, scale microbolus size up to 1.0x insulin required from bg > 108 to bg = 180.
            else if (bg > 98 && bg < 181 && glucose_status.delta > 3 && delta_accl > 0 && eventualBG
            > target_bg && iob_data.iob < boostMaxIOB && now1 >= boost_start && now1 < boost_end && profile.enableBoostPercentScale === true) {
