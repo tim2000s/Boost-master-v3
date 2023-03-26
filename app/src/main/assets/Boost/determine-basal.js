@@ -255,17 +255,22 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version: 3.7                 ");
+        console.error( "     Boost version: 3.8                 ");
         console.error("---------------------------------------------------------");
 
-    if (meal_data.TDDAIMI7){
+    if (meal_data.TDDAIMI7 != null){
         var tdd7 = meal_data.TDDAIMI7;
             }
         else{
         var tdd7 = ((basal * 12)*100)/21;
         }
 
-
+    if (meal_data.TDDAIMI1 != null){
+        var tdd1 = meal_data.TDDAIMI1;
+            }
+        else{
+        var tdd1 = ((basal * 12)*100)/21;
+        }
 
         var tdd1 = meal_data.TDDAIMI1;
         var tdd_4 = meal_data.TDDLast4;
@@ -666,6 +671,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     else {
         threshold = lgsThreshold;
         }
+    if (delta_accl > 0) {
+    threshold = 65;
+    }
     console.error("Low glucose suspend threshold: "+threshold);
 
     //console.error(reservoir_data);
@@ -1003,10 +1011,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             console.log("Future state sensitivity is " +future_sens+" weighted on current bg due to no COB");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on current BG;";
             }*/
-       /* else if( bg > 160 && bg < 270 && glucose_status.delta < 2 && glucose_status.delta > -2 &&
-       glucose_status.short_avgdelta > -2 && glucose_status.short_avgdelta < 2 && eventualBG < bg) {
-            var future_sens = ( 1800 / (Math.log((((minPredBG * 0.6) + (bg * 0.4))/ins_val)+1)*TDD));
-            console.log("Future state sensitivity is " +future_sens+" using current bg due to no COB & small delta or variation");
+       else if( bg > 180 && glucose_status.delta < 2 && glucose_status.delta > -2 && glucose_status.short_avgdelta > -2 && glucose_status.short_avgdelta < 2 && glucose_status.long_avgdelta > -2 && glucose_status.long_avgdelta < 2) {
+            var future_sens = ( 1800 / (Math.log((((minPredBG * 0.25) + (bg * 0.75))/ins_val)+1)
+            *TDD)
+            );
+            console.log("Future state sensitivity is " +future_sens+" due to flat high glucose");
             rT.reason += "Dosing sensitivity: " +future_sens+" using current BG;";
             }
         /*else if( glucose_status.delta > 0 && delta_accl > 0 && bg > 198 || eventualBG > bg && bg >
@@ -1420,9 +1429,21 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 //Calculate variables for sliding scale microbolus increase
                 var bga = Math.abs(bg-180);
                 var bg_adjust = bga / 40;
+
+                if(profile.enableBoostPercentScale === true){
+                    var scale_pct = round ( 100 / profile.boost_percent_scale ,3 );
+                    console.error("Percent Scale is:"+scale_pct+"; ");
+
                 //console.error("bg_adjust value is "+bg_adjust+"; ");
                 //var insulinDivisor = insulinReqPCT - Math.min((insulinPCTsubtract * bg_adjust),0.)
-                var insulinDivisor =  (insulinReqPCT - ((Math.abs(bg-180) / 72 ) * ( insulinReqPCT - 0.5)));
+                    if( bg < 108 ){
+                        var insulinDivisor = scale_pct;
+                    }
+                    else {
+                        var insulinDivisor =  (insulinReqPCT - ((Math.abs(bg-180) / 72 ) * ( insulinReqPCT - scale_pct)));
+                    }
+                    } else { insulinDivisor = insulinReqPCT;}
+
                 console.error("Insulin Divisor is:"+insulinDivisor+"; ");
                 console.error("            ");
                 console.error("Value is "+((1/insulinDivisor) * 100)+"% of insulin required; ");
@@ -1541,6 +1562,31 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      rT.reason += "UAM Boost enacted; SMB equals" + boostInsulinReq + "; ";
                  }
 
+                 else if (delta_accl > 0 && bg > 180 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 3 && eventualBG > target_bg && bg > 80 && insulinReq > 0 ) {
+                     console.error("Profile Boost Scale value is "+boost_scale+": ");
+                     //console.error("Automated Boost Scale value is "+scaleSMB+": ");
+                     //document the pre-boost insulin required recommendation
+                     console.error("Insulin required pre-boost is "+insulinReq+": ");
+                     //Boost insulin required variable set to 1 hour of insulin based on TDD, and possible to scale using profile scaling factor.
+                     boostInsulinReq = Math.min(boost_scale * boostInsulinReq,boost_max);
+                        if (boostInsulinReq > boostMaxIOB-iob_data.iob) {
+                            boostInsulinReq = boostMaxIOB-iob_data.iob;
+                        }
+                     else {
+                     boostInsulinReq = boostInsulinReq;
+                     }
+
+                     if (boostInsulinReq < (insulinReq/insulinReqPCT)) {
+                     var microBolus = Math.floor(Math.min((insulinReq/insulinReqPCT),boost_max)*roundSMBTo)/roundSMBTo;
+                     rT.reason += "UAM  High Boost enacted; SMB equals" + microBolus + "; ";
+                     }
+                     else {
+                     var microBolus = Math.floor(Math.min(boostInsulinReq)*roundSMBTo)/roundSMBTo;
+                     }
+                     console.error("UAM High Boost enacted; SMB equals "+boostInsulinReq+" ; Original insulin requirement was "+insulinReq+"; Boost is " +(boostInsulinReq/insulinReq)+" times increase" );
+                     rT.reason += "UAM High Boost enacted; Boost SMB equals" + boostInsulinReq + "; ";
+                 }
+
             /*else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl > 0 && COB < 1 && iob_data.iob < boostMaxIOB && eventualBG > target_bg && bg > 120){
                 if (insulinReq > boostMaxIOB-iob_data.iob) {
                        insulinReq = boostMaxIOB-iob_data.iob;
@@ -1564,7 +1610,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.reason += "100% of insulinRequired "+insulinReq;
                  }*/
                  //If no other criteria are met, and delta is positive, scale microbolus size up to 1.0x insulin required from bg > 108 to bg = 180.
-           else if (bg > 108 && bg < 181 && glucose_status.delta > 3 && delta_accl > 0 && eventualBG > target_bg && iob_data.iob < boostMaxIOB && now1 >= boost_start && now1 < boost_end && profile.enableBoostPercentScale === true) {
+           else if (bg > 98 && bg < 181 && glucose_status.delta > 3 && delta_accl > 0 && eventualBG
+           > target_bg && iob_data.iob < boostMaxIOB && now1 >= boost_start && now1 < boost_end && profile.enableBoostPercentScale === true) {
                 if (insulinReq > boostMaxIOB-iob_data.iob) {
                           insulinReq = boostMaxIOB-iob_data.iob;
                       }
