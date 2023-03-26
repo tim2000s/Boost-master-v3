@@ -83,6 +83,7 @@ Note that the default settings are designed to disable most of the functions, an
 *Boost insulin required percent* - defaults to 50% can be increased, but increasing increases hypo risk.<br>
 *Boost Scale Value* - defaults to 1.0. Only increase multiplier once you have trialled. <br>
 *Boost Bolus Cap* - defaults to 0.1 <br>
+*Percent scale factor* - defaults to 200 <br>
 *UAM Boost max IOB* - defaults to 0.1 <br>
 *UAM Boost Start Time (in hours using 24 hour clock)* - defaults to 7 <br>
 *UAM Boost end time (in hours using 24 hour clock)* - defaults to 8
@@ -91,6 +92,7 @@ Note that the default settings are designed to disable most of the functions, an
 **Recommended Settings**
 
 *Boost Bolus Cap* - Start at 2.5% of TDD and increase to no more than 5% of 7 day average total daily dose. <br>
+*Percent scale factor* - Once you are familiar with the percentage scale factor, the values can be increased up to 500% with associated increase in hypo risk with rises that are not linked to food.
 *UAM Boost max IOB* - Start at 5% of TDD and increase to no more than 15% of 7 day average total daily dose. <br>
 *UAMSMBBasalMinutes* - 30 mins. This is only used overnight when IOB is large enough to trigger UAM, so it doesn't need to be a large value. <br>
 *Boost insulin required percent* - recommended not to exceed 75%. Start at 50% and increase as necessary. <br>
