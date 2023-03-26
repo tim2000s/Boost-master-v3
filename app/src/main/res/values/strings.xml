@@ -130,6 +130,10 @@
 
     <string name="openapsama_boost_max_iob">Max IOB allowed from accelerated bolusing</string>
     <string name="openapsama_boost_bolus">Boost bolus in iu</string>
+    <string name="openapsama_boost_scale_factor">Max percentage scale applied to Boostu</string>
+    <string name="openapsama_boost_scale_factor_title">Percent scale factor</string>
+    <string name="key_openapsama_boost_scale_factor" translatable="false">Percent scale factor for Boost</string>
+    <string name="openapsama_boost_scale_factor_summary">Default value: 200\nThis is the maximum scale factor that Boost can use when increasing SMB sizes at lower glucose levels before returning to standrd settings at 180 or 10.</string>
     <string name="openapsama_boost_start">Boost start time in hours</string>
     <string name="openapsama_boost_end">Boost end time</string>
     <string name="key_openapsama_boost_bolus" translatable="false">Boost bolus cap</string>
