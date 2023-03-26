@@ -22,7 +22,7 @@ DEV:
 
 Traditional Autosens is deprecated in this code and sensitivityRatio is calculated using 'Eight hour weighted average TDD  / 7-day average TDD'.
 
-Boost uses a similar version of DynamicISF for making predictions, however, unlike the hardoded quanta for the different values of insulin peak, when free-peak is used, it scales between the highest and lowest values.
+Boost uses a similar version of DynamicISF for making predictions, however, unlike the hardoded quanta for the different values of insulin peak, when free-peak is used, it scales between the highest and lowest values. It also enables variation of the Dynamic ISF adjustment factor with profile percentage changes. 
 
 The ISF for dosing decisions within Boost is slighty different to thhat in DynamicISF. The calculation is intended to mimic the effects of higher insulin sensitivty at lower glucose levels, and runs as follows:
 
@@ -66,7 +66,7 @@ The short and long average delta clauses disable boost once delta and the averag
 
 **Boost Percentage Scale**
 
-Boost percentage Scale is a feature that allows Boost to scale the SMB from 150% of insulin required at 108 mg/dl (6 mmol/l) to the user entered insulin required PCT at 180mg/dl (10 mmol/l). It can be enabled via a switch in the preferences and the percentage values are hard coded. it is only active when [Delta - Short Average Delta ] is positive, meaning that it only happens when delta variation is accelerating.
+Boost percentage Scale is a feature that allows Boost to scale the SMB from a user defined percentage of insulin required (up to 500%, but not recommended) at 108 mg/dl (6 mmol/l) to the user entered insulin required PCT at 180mg/dl (10 mmol/l). It can be enabled via a switch in the preferences and the percentage values are hard coded. it is only active when [Delta - Short Average Delta ] is positive, meaning that it only happens when delta variation is accelerating.
 
 **Enhanced oref1**
 
