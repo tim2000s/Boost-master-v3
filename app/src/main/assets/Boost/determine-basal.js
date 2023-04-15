@@ -75,16 +75,6 @@ function enable_smb(
         return true;
     }
 
-function enable_boost(profile,target_bg)
-{
-    // disable SMB when a high temptarget is set
-    if (! profile.allowBoost_with_high_temptarget && profile.temptargetSet && target_bg > 100) {
-        console.error("Boost disabled due to high temptarget of",target_bg);
-        return false;
-    } else {
-        return true;
-    }
-}
     // enable SMB/UAM (if enabled in preferences) while we have COB
     if (profile.enableSMB_with_COB === true && meal_data.mealCOB) {
         if (meal_data.bwCarbs) {
@@ -119,6 +109,19 @@ function enable_boost(profile,target_bg)
     console.error("SMB disabled (no enableSMB preferences active or no condition satisfied)");
     return false;
 }
+
+function enable_boost(profile,target_bg)
+{
+    // disable Boost when a high temptarget is set
+    if (! profile.allowBoost_with_high_temptarget && profile.temptargetSet && target_bg > 100) {
+        console.error("Boost disabled due to high temptarget of",target_bg);
+        return false;
+    } else {
+        console.error("Boost enabled");
+    }
+    return true;
+}
+
 
 /*function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data,
 sensitivityRatio)
