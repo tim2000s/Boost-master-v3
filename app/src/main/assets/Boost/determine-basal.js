@@ -75,6 +75,18 @@ function enable_smb(
         return true;
     }
 
+function enable_boost(
+    profile,
+    target_bg
+) {
+    // disable SMB when a high temptarget is set
+    if (! profile.allowBoost_with_high_temptarget && profile.temptargetSet && target_bg > 100) {
+        console.error("Boost disabled due to high temptarget of",target_bg);
+        return false;
+    } else {
+        return true;
+    }
+
     // enable SMB/UAM (if enabled in preferences) while we have COB
     if (profile.enableSMB_with_COB === true && meal_data.mealCOB) {
         if (meal_data.bwCarbs) {
@@ -714,6 +726,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         meal_data,
         target_bg
     );
+
+    var enableBoost = enable_boost(
+            profile,
+            target_bg
+        );
 
     // enable UAM (if enabled in preferences)
     var enableUAM=(profile.enableUAM);
@@ -1502,13 +1519,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("Base boost insulin is "+boostInsulinReq+" iu; ");
                 console.error("            ");
 
+                /*
+
                 if (profile.allowBoost_with_high_temptarget === false && profile.temptargetSet && target_bg > 100) {
                     console.error("Boost disabled due to high temptarget of",target_bg);
-                    var enableBoost = false;
+                    enableBoost = false;
                 } else {
-                    var enableBoost = true;
+                    enableBoost = true;
                     console.error("Boost enabled);
-                }
+                }*/
 
                 //cARB HANDLING INSULIN UPTICK CODE.
                 //With COB, allow a large initial bolus
