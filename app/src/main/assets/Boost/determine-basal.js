@@ -360,6 +360,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
     } else {
         var sens_bg = bg;
+        }
     /*var insPeak = profile.insulinPeakTime
     console.log("Insulin Peak Time is "+insPeak+"; ");*/
     variable_sens =  1800 / ( TDD * (Math.log(( sens_bg / ins_val ) + 1 ) ) );
