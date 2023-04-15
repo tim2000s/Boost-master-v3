@@ -1505,7 +1505,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (profile.allowBoost_with_high_temptarget === false && profile.temptargetSet && target_bg > 100) {
                     console.error("Boost disabled due to high temptarget of",target_bg);
                     var enableBoost = false;
-                } else
+                } else {
                     var enableBoost = true;
                     console.error("Boost enabled);
                 }
