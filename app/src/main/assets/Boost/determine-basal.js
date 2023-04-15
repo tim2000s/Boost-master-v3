@@ -75,10 +75,8 @@ function enable_smb(
         return true;
     }
 
-function enable_boost(
-    profile,
-    target_bg
-) {
+function enable_boost(profile,target_bg)
+{
     // disable SMB when a high temptarget is set
     if (! profile.allowBoost_with_high_temptarget && profile.temptargetSet && target_bg > 100) {
         console.error("Boost disabled due to high temptarget of",target_bg);
@@ -86,7 +84,7 @@ function enable_boost(
     } else {
         return true;
     }
-
+}
     // enable SMB/UAM (if enabled in preferences) while we have COB
     if (profile.enableSMB_with_COB === true && meal_data.mealCOB) {
         if (meal_data.bwCarbs) {
