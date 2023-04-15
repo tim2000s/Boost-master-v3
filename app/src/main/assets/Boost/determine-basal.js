@@ -255,7 +255,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version: 3.8                 ");
+        console.error( "     Boost version: 3.9                 ");
         console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7 != null){
