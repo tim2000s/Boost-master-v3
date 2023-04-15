@@ -641,10 +641,14 @@
     <string name="extendedbolusdeliveryerror">Extended bolus delivery error</string>
     <string name="key_enableSMB_always" translatable="false">enableSMB_always</string>
     <string name="key_enableBoostPercentScale" translatable="false">enableBoostPercentScale</string>
+    <string name="key_enableSensBGCap" translatable="false">Reduce effect of DynamicISF at higher BG</string>
+    <string name="enableSensBGCap">Enables a cap point above which DynamicISF reduces the rate of ISF reduction</string>
+    <string name="enableSensBGCap_summary">Allows DynamicISF to start to reduce the ISF rate of reduction at 11.7mmol 210mg/dl</string>
     <string name="key_enableSMB_with_COB" translatable="false">enableSMB_with_COB</string>
     <string name="key_enableSMB_with_temptarget" translatable="false">enableSMB_with_temptarget</string>
     <string name="key_enableSMB_after_carbs" translatable="false">enableSMB_after_carbs</string>
     <string name="key_allowSMB_with_high_temptarget" translatable="false">enableSMB_with_high_temptarget</string>
+    <string name="key_allowBoost_with_high_temptarget" translatable="false">enableBoost_with_high_temptarget</string>
     <string name="enablesmbalways">Enable SMB always</string>
     <string name="enablesmbalways_summary">Enable SMB always, independently to boluses. Possible only with BG source with proper filtering, such as Dexcom G5.</string>
     <string name="enableBoostPercentScale">Enable Boost perfentage scaling</string>
@@ -660,6 +664,8 @@
     <string name="enablesmbwithtemptarget_summary">Enable SMB when there is temp target active (eating soon, exercise)</string>
     <string name="enablesmbwithhightemptarget">Enable SMB with high temp targets</string>
     <string name="enablesmbwithhightemptarget_summary">Enable SMB when there is high temp target active (exercise, above 100 mg/dl or 5.5 mmol/l)</string>
+    <string name="enableBoostwithhightemptarget">Enable Boost with high temp targets</string>
+    <string name="enableBoostwithhightemptarget_summary">Enable Boost when there is high temp target active (exercise, above 100 mg/dl or 5.5 mmol/l)</string>
     <string name="overview_insulin_label">Insulin</string>
     <string name="overview_buttons_selection">Buttons</string>
     <string name="key_show_calibration_button" translatable="false">show_calibration_button</string>

@@ -337,17 +337,20 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
 
-    if(bg <= 180){
-    var sens_bg = bg;
-    console.log("Current sensitivity for predictions is based on current bg");
-    }
-    else {
-    var sens_bg = 210;
-    console.log("Current sensitivity for predictions is limited at 210mg/dl / 11.7mmol/l");
-    }
+    if(profile.SensBGCap === true){
+        if(bg > 210){
+            var sens_bg = ( 210 + ((bg - 210) / 3));
+            console.log("Current sensitivity increasing slowly from 210mg/dl / 11.7mmol/l");
+        }
+        else {
+            var sens_bg = bg;
+            console.log("Current sensitivity for predictions is current bg");
+        }
+    } else {
+        var sens_bg = bg;
     /*var insPeak = profile.insulinPeakTime
     console.log("Insulin Peak Time is "+insPeak+"; ");*/
-    variable_sens =  1800 / ( TDD * (Math.log(( bg / ins_val ) + 1 ) ) );
+    variable_sens =  1800 / ( TDD * (Math.log(( sens_bg / ins_val ) + 1 ) ) );
     variable_sens = round(variable_sens,1);
     console.log("Current sensitivity for predictions is " +variable_sens+" based on current bg");
 
@@ -995,13 +998,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         if( meal_data.mealCOB > 0 && delta_accl > 0 ) {
 
-            var future_sens = ( 1800 / (Math.log((((eventualBG * 0.75) + (bg * 0.25))/ins_val)+1)*TDD));
+            var future_sens = ( 1800 / (Math.log((((eventualBG * 0.75) + (sens_bg * 0.25))/ins_val)
+            +1)*TDD));
             console.log("Future state sensitivity is " +future_sens+" weighted on eventual BG due to COB");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on predicted BG due to COB;";
             }
         else if( glucose_status.delta > 4 && delta_accl > 10 && bg < 180 && eventualBG > bg && now1 >= boost_start && now1 < boost_end ) {
 
-            var future_sens = ( 1800 / (Math.log((((eventualBG * 0.5) + (bg * 0.5))/ins_val)+1)*TDD));
+            var future_sens = ( 1800 / (Math.log((((eventualBG * 0.5) + (sens_bg * 0.5))/ins_val)+1)
+            *TDD));
             console.log("Future state sensitivity is " +future_sens+" weighted on predicted bg due to increasing deltas");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on predicted BG due to delta;";
             }
@@ -1012,9 +1017,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on current BG;";
             }*/
        else if( bg > 180 && glucose_status.delta < 2 && glucose_status.delta > -2 && glucose_status.short_avgdelta > -2 && glucose_status.short_avgdelta < 2 && glucose_status.long_avgdelta > -2 && glucose_status.long_avgdelta < 2) {
-            var future_sens = ( 1800 / (Math.log((((minPredBG * 0.25) + (bg * 0.75))/ins_val)+1)
-            *TDD)
-            );
+            var future_sens = ( 1800 / (Math.log((((minPredBG * 0.25) + (sens_bg * 0.75))/ins_val) +1) *TDD) );
             console.log("Future state sensitivity is " +future_sens+" due to flat high glucose");
             rT.reason += "Dosing sensitivity: " +future_sens+" using current BG;";
             }
@@ -1025,7 +1028,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             }*/
 
         else if( glucose_status.delta > 0 && delta_accl > 1 || eventualBG > bg) {
-            var future_sens = ( 1800 / (Math.log((bg/ins_val)+1)*TDD));
+            var future_sens = ( 1800 / (Math.log((sens_bg/ins_val)+1)*TDD));
             console.log("Future state sensitivity is " +future_sens+" based on current bg due to +ve delta");
             }
         else {
@@ -1499,6 +1502,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("Base boost insulin is "+boostInsulinReq+" iu; ");
                 console.error("            ");
 
+                if (profile.allowBoost_with_high_temptarget === false && profile.temptargetSet && target_bg > 100) {
+                    console.error("Boost disabled due to high temptarget of",target_bg);
+                    var enableBoost = false;
+                } else
+                    var enableBoost = true;
+                    console.error("Boost enabled);
+                }
+
                 //cARB HANDLING INSULIN UPTICK CODE.
                 //With COB, allow a large initial bolus
                 if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 15  ){
@@ -1532,7 +1543,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                  }
                  //End of Carb handling uptick code.
                  //Test whether we have a positive delta, and confirm iob, time and boost being possible, then use the boost function
-                 else if (glucose_status.delta >= 5 && glucose_status.short_avgdelta >= 3 && uamBoost1 > 1.2 && uamBoost2 > 2 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 3 && eventualBG > target_bg && bg > 80 && insulinReq > 0 ) {
+                 else if (glucose_status.delta >= 5 && glucose_status.short_avgdelta >= 3 && uamBoost1 > 1.2 && uamBoost2 > 2 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 3 && eventualBG > target_bg && bg > 80
+                 && insulinReq > 0 && enableBoost) {
                      console.error("Profile Boost Scale value is "+boost_scale+": ");
                      //console.error("Automated Boost Scale value is "+scaleSMB+": ");
                      //document the pre-boost insulin required recommendation
@@ -1562,7 +1574,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      rT.reason += "UAM Boost enacted; SMB equals" + boostInsulinReq + "; ";
                  }
 
-                 else if (delta_accl > 0 && bg > 180 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 3 && eventualBG > target_bg && bg > 80 && insulinReq > 0 ) {
+                 else if (delta_accl > 0 && bg > 180 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 3 && eventualBG > target_bg && bg > 80 && insulinReq > 0 && enableBoost) {
                      console.error("Profile Boost Scale value is "+boost_scale+": ");
                      //console.error("Automated Boost Scale value is "+scaleSMB+": ");
                      //document the pre-boost insulin required recommendation
@@ -1610,8 +1622,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     rT.reason += "100% of insulinRequired "+insulinReq;
                  }*/
                  //If no other criteria are met, and delta is positive, scale microbolus size up to 1.0x insulin required from bg > 108 to bg = 180.
-           else if (bg > 98 && bg < 181 && glucose_status.delta > 3 && delta_accl > 0 && eventualBG
-           > target_bg && iob_data.iob < boostMaxIOB && now1 >= boost_start && now1 < boost_end && profile.enableBoostPercentScale === true) {
+           else if (bg > 98 && bg < 181 && glucose_status.delta > 3 && delta_accl > 0 && eventualBG > target_bg && iob_data.iob < boostMaxIOB && now1 >= boost_start && now1 < boost_end && enableBoost ) {
                 if (insulinReq > boostMaxIOB-iob_data.iob) {
                           insulinReq = boostMaxIOB-iob_data.iob;
                       }
@@ -1621,7 +1632,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var microBolus = Math.floor(Math.min(insulinReq/insulinDivisor,boost_max)*roundSMBTo)/roundSMBTo;
                 rT.reason += "Increased SMB as percentage of insulin required to "+((1/insulinDivisor) * 100)+"%. SMB is " + microBolus;
                               }
-            else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl >= 0 ){
+            else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl >= 2 enableBoost){
 
             var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,boost_max)*roundSMBTo)/roundSMBTo;
             rT.reason += "Enhanced oref1 triggered; SMB equals" + microBolus + "; ";

@@ -165,6 +165,13 @@
         <SwitchPreference
             android:defaultValue="false"
             android:dependency="@string/key_use_smb"
+            android:key="@string/key_allowBoost_with_high_temptarget"
+            android:summary="@string/enableBoostwithhightemptarget_summary"
+            android:title="@string/enableBoostwithhightemptarget" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/key_use_smb"
             android:key="@string/key_enableSMB_always"
             android:summary="@string/enablesmbalways_summary"
             android:title="@string/enablesmbalways" />
@@ -196,6 +203,13 @@
             android:key="@string/key_enableBoostPercentScale"
             android:summary="@string/enableBoostPercentScale_summary"
             android:title="@string/enableBoostPercentScale" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="@string/key_use_smb"
+            android:key="@string/key_enableSensBGCap"
+            android:summary="@string/enableSensBGCap_summary"
+            android:title="@string/enableSensBGCap" />
 
         <SwitchPreference
             android:defaultValue="false"
