@@ -1747,7 +1747,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
 
         var maxSafeBasal = tempBasalFunctions.getMaxSafeBasal(profile);
-        rt.reason += "Additional basasl trigger currently set to "+iTimeActive+"; ";
+        rT.reason += "Additional basasl trigger currently set to "+iTimeActive+"; ";
 
         if (iTimeActive === true){
             rT.reason += " Add high basal with Boost or percent scale to manage rise "+(basal*5/60)*30+" U";
