@@ -262,6 +262,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
     var delta_accl = round(( glucose_status.delta - glucose_status.short_avgdelta ) / Math.abs(glucose_status.short_avgdelta),2);
     delta_accl = 100 * delta_accl;
+    var iTimeActive = false;
 
     //*********************************************************************************
     //**                   Start of Dynamic ISF code for predictions                 **
@@ -1511,7 +1512,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 var COB = meal_data.mealCOB;
                 var CR = profile.carb_ratio;
-                var iTimeActive = false;
+
 
 
                 console.error("Delta variance is "+delta_accl+"; ");
