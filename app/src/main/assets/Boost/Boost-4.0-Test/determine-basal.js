@@ -173,7 +173,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var recentSteps60Minutes = profile.recentSteps60Minutes;
 
     console.log("Step counts for last periods of time are:");
-    console.log("Five mins: "+recentSteps5Minutes"; ");
+    console.log("Five mins: "+recentSteps5Minutes+"; ");
     console.log("Ten mins: "+recentSteps10Minutes+"; ");
     console.log("Thirty mins: "+recentSteps30Minutes+"; ");
     console.log("Sixty mins: "+recentSteps60Minutes+"; ");
