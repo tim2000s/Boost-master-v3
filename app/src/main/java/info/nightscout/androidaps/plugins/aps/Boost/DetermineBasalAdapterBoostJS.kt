@@ -1,5 +1,7 @@
 package info.nightscout.androidaps.plugins.aps.Boost
 
+import android.os.Environment
+import android.util.Log
 import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.R
 import info.nightscout.androidaps.data.IobTotal
@@ -42,6 +44,36 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
     @Inject lateinit var activePlugin: ActivePlugin
     @Inject lateinit var tddCalculator: TddCalculator
 
+
+    private var iob = 0.0f
+    private var cob = 0.0f
+    private var lastCarbAgeMin: Int = 0
+    private var futureCarbs = 0.0f
+    private var tags0to60minAgo = ""
+    private var tags60to120minAgo = ""
+    private var tags120to180minAgo = ""
+    private var tags180to240minAgo = ""
+    private var bg = 0.0f
+    private var targetBg = 100.0f
+    private var delta = 0.0f
+    private var shortAvgDelta = 0.0f
+    private var longAvgDelta = 0.0f
+    private var accelerating_up = 0.0f
+    private var deccelerating_up = 0.0f
+    private var accelerating_down = 0.0f
+    private var deccelerating_down = 0.0f
+    private var stable = 0.0f
+    private var maxIob = 0.0f
+    private var maxSMB = 1.0f
+    private var lastbolusage: Long = 0
+    private var tdd7DaysPerHour = 0.0f
+    private var tdd2DaysPerHour = 0.0f
+    private var tddPerHour = 0.0f
+    private var tdd24HrsPerHour = 0.0f
+    private var tddlastHrs = 0.0f
+    private var tddDaily = 0.0f
+    private var hourOfDay: Int = 0
+    private var weekend: Int = 0
     private var profile = JSONObject()
     private var mGlucoseStatus = JSONObject()
     private var iobData: JSONArray? = null
@@ -51,7 +83,26 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
     private var microBolusAllowed = false
     private var smbAlwaysAllowed = false
     private var currentTime: Long = 0
-    private var saveCgmSource = false
+    private var flatBGsDetected = false
+    private var lastBolusNormalTimecount: Long = 0
+    private var lastPBoluscount: Long = 0
+    private var extendedsmbCount: Long = 0
+    private var lastBolusSMBcount: Long = 0
+    private var SMBcount: Long = 0
+    private var MaxSMBcount: Long = 0
+    private var b30bolus: Long = 0
+    private var lastBolusNormalUnits = 0.0f
+    private var recentSteps5Minutes: Int = 0
+    private var recentSteps10Minutes: Int = 0
+    private var recentSteps15Minutes: Int = 0
+    private var recentSteps30Minutes: Int = 0
+    private var recentSteps60Minutes: Int = 0
+    private var now: Long = 0
+    private var modelai: Boolean = false
+    private var smbToGivetest: Double = 0.0
+    private var smbTopredict: Double = 0.0
+    private var variableSensitivity = 0.0f
+    private var saveCgmSource = true
 
     override var currentTempParam: String? = null
     override var iobDataParam: String? = null
@@ -74,6 +125,7 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
         aapsLogger.debug(LTag.APS, "SMBAlwaysAllowed:  $smbAlwaysAllowed")
         aapsLogger.debug(LTag.APS, "CurrentTime: $currentTime")
         aapsLogger.debug(LTag.APS, "isSaveCgmSource: $saveCgmSource")
+
         var determineBasalResultBoost: DetermineBasalResultBoost? = null
         val rhino = Context.enter()
         val scope: Scriptable = rhino.initStandardObjects()
@@ -299,6 +351,12 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
         this.mealData.put("TDDLast8", tddCalculator.calculateDaily(-8, 0).totalAmount)
         this.mealData.put("TDD4to8", tddCalculator.calculateDaily(-8, -4).totalAmount)
         this.mealData.put("TDD24", tddCalculator.calculateDaily(-24, 0).totalAmount)
+
+        this.recentSteps5Minutes = StepService.getRecentStepCount5Min()
+        this.recentSteps10Minutes = StepService.getRecentStepCount10Min()
+        this.recentSteps15Minutes = StepService.getRecentStepCount15Min()
+        this.recentSteps30Minutes = StepService.getRecentStepCount30Min()
+        this.recentSteps60Minutes = StepService.getRecentStepCount60Min()
 
 
 

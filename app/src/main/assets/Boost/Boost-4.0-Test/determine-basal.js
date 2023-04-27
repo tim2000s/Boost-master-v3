@@ -166,6 +166,19 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var rT = {}; //short for requestedTemp
 
     var deliverAt = new Date();
+    var countsteps = true; //profile.key_use_countsteps;
+    var recentSteps5Minutes = profile.recentSteps5Minutes;
+    var recentSteps10Minutes = profile.recentSteps10Minutes;
+    var recentSteps30Minutes = profile.recentSteps30Minutes;
+    var recentSteps60Minutes = profile.recentSteps60Minutes;
+
+    console.log("Step counts for last periods of time are:");
+    console.log("Five mins: "+recentSteps5Minutes"; ");
+    console.log("Ten mins: "+recentSteps10Minutes+"; ");
+    console.log("Thirty mins: "+recentSteps30Minutes+"; ");
+    console.log("Sixty mins: "+recentSteps60Minutes+"; ");
+    console.log("              ");
+
     if (currentTime) {
         deliverAt = new Date(currentTime);
     }
@@ -269,7 +282,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version: 4.0                 ");
+        console.error( "     Boost version: 4.1                 ");
         console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7 != null){
