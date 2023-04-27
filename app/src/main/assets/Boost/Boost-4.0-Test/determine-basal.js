@@ -1588,13 +1588,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      var microBolus = Math.floor(Math.min((insulinReq/insulinReqPCT),boost_max)*roundSMBTo)/roundSMBTo;
                      rT.reason += "UAM Boost enacted; SMB equals" + microBolus + "; ";
                      iTimeActive = true;
-                     console.error("Post Boost trigger state:"+iTimeActive"; ");
+                     console.error("Post Boost trigger state:"+iTimeActive+"; ");
 
                      }
                      else {
                      var microBolus = Math.floor(Math.min(boostInsulinReq)*roundSMBTo)/roundSMBTo;
                      iTimeActive = true;
-                     console.error("Post Boost trigger state:"+iTimeActive"; ");
+                     console.error("Post Boost trigger state:"+iTimeActive+"; ");
                      }
                      console.error("UAM Boost enacted; SMB equals "+boostInsulinReq+" ; Original insulin requirement was "+insulinReq+"; Boost is " +(boostInsulinReq/insulinReq)+" times increase" );
                      rT.reason += "UAM Boost enacted; SMB equals" + boostInsulinReq + "; ";
@@ -1658,7 +1658,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var microBolus = Math.floor(Math.min(insulinReq/insulinDivisor,boost_max)*roundSMBTo)/roundSMBTo;
                 rT.reason += "Increased SMB as percentage of insulin required to "+((1/insulinDivisor) * 100)+"%. SMB is " + microBolus;
                 iTimeActive = true;
-                console.error("Post percent scale trigger state:"+iTimeActive"; ");
+                console.error("Post percent scale trigger state:"+iTimeActive+"; ");
                               }
             else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl >= 1 && enableBoost){
 
@@ -1734,6 +1734,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         }
 
         var maxSafeBasal = tempBasalFunctions.getMaxSafeBasal(profile);
+        rt.reason += "Additional basasl trigger currently set to "+iTimeActive+"; ";
 
         if (iTimeActive === true){
             rT.reason += " Add high basal with Boost or percent scale to manage rise "+(basal*5/60)*30+" U";
