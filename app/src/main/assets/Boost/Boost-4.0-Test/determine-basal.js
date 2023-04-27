@@ -1517,7 +1517,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("Delta variance is "+delta_accl+"; ");
                 console.error("Boost start time is "+(boost_start)+"hrs and boost end time is "+(boost_end)+"hrs; ");
                 console.error("Base boost insulin is "+boostInsulinReq+" iu; ");
-                console.error("            ");
+                console.error("Post Boost trigger state:"+iTimeActive"; ");
+                console.error("           ");
 
                 /*
 
