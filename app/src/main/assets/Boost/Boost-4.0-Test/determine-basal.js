@@ -1518,7 +1518,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("Delta variance is "+delta_accl+"; ");
                 console.error("Boost start time is "+(boost_start)+"hrs and boost end time is "+(boost_end)+"hrs; ");
                 console.error("Base boost insulin is "+boostInsulinReq+" iu; ");
-                console.error("Post Boost trigger state:"+iTimeActive"; ");
+                console.error("Post Boost trigger state:"+iTimeActive+"; ");
                 console.error("           ");
 
                 /*
@@ -1588,10 +1588,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      var microBolus = Math.floor(Math.min((insulinReq/insulinReqPCT),boost_max)*roundSMBTo)/roundSMBTo;
                      rT.reason += "UAM Boost enacted; SMB equals" + microBolus + "; ";
                      iTimeActive = true;
+                     console.error("Post Boost trigger state:"+iTimeActive"; ");
+
                      }
                      else {
                      var microBolus = Math.floor(Math.min(boostInsulinReq)*roundSMBTo)/roundSMBTo;
                      iTimeActive = true;
+                     console.error("Post Boost trigger state:"+iTimeActive"; ");
                      }
                      console.error("UAM Boost enacted; SMB equals "+boostInsulinReq+" ; Original insulin requirement was "+insulinReq+"; Boost is " +(boostInsulinReq/insulinReq)+" times increase" );
                      rT.reason += "UAM Boost enacted; SMB equals" + boostInsulinReq + "; ";
@@ -1655,6 +1658,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 var microBolus = Math.floor(Math.min(insulinReq/insulinDivisor,boost_max)*roundSMBTo)/roundSMBTo;
                 rT.reason += "Increased SMB as percentage of insulin required to "+((1/insulinDivisor) * 100)+"%. SMB is " + microBolus;
                 iTimeActive = true;
+                console.error("Post percent scale trigger state:"+iTimeActive"; ");
                               }
             else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl >= 1 && enableBoost){
 
