@@ -358,6 +358,11 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
         this.recentSteps30Minutes = StepService.getRecentStepCount30Min()
         this.recentSteps60Minutes = StepService.getRecentStepCount60Min()
 
+        this.profile.put("recentSteps5Minutes", recentSteps5Minutes)
+        this.profile.put("recentSteps10Minutes", recentSteps10Minutes)
+        this.profile.put("recentSteps15Minutes", recentSteps15Minutes)
+        this.profile.put("recentSteps30Minutes", recentSteps30Minutes)
+        this.profile.put("recentSteps60Minutes", recentSteps60Minutes)
 
 
         if (constraintChecker.isAutosensModeEnabled().value()) {
