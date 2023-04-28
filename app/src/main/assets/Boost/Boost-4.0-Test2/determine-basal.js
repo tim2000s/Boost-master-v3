@@ -122,6 +122,7 @@ function enable_boost(profile,target_bg)
     return true;
 }
 
+
 /*function autoISF(sens, target_bg, profile, glucose_status, meal_data, autosens_data,
 sensitivityRatio)
 {   // #### mod 7e: added switch fr autoISF ON/OFF
@@ -322,8 +323,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
        console.error("1-day average TDD is: "+tdd1+"; ");
        console.error("7-day average TDD is: " +tdd7+ "; ");
 
-    var stepsAdjust = steps_adjust(profile);
-
     var dynISFadjust = profile.DynISFAdjust;
     var dynISFadjust = ( dynISFadjust / 100 );
 
@@ -332,16 +331,17 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     console.error("Current Profile percent: "+profileSwitch+"; ");
 
     if(! recentSteps60Minutes < 500 && profileSwitch = 100 && now > 9 && now < 22){
-        dynISFadjust = dynISFadjust * (profileSwitch / 100);
-        console.error("Dynamic ISF adjusted by profile % change: "+profileSwitch+"%; ");
+            dynISFadjust = ( dynISFadjust * (profileSwitch / 100));
+            console.error("Dynamic ISF adjusted by profile % change: "+profileSwitch+"%; ");
     }else{
-        profileSwitch = 130;
-        dynISFadjust = dynISFadjust * (profileSwitch / 100);
-        console.error("Dynamic ISF increased due to inactivity to: "+profileSwitch+"%; ");
-        basal = profile.current_basal * profileSwitch;
-        console.error("Profile basal increased due to inactivity to: "+basal+"U/hr; ");
-    }
+            profileSwitch = 130;
+            dynISFadjust = ( dynISFadjust * (profileSwitch / 100));
+            console.error("Dynamic ISF increased due to inactivity to: "+profileSwitch+"%; ");
+            basal = ( profile.current_basal * ( profileSwitch / 100 ) );
+            console.error("Profile basal increased due to inactivity to: "+basal+"U/hr; ");
+        }
 
+    //dynISFadjust = dynISFadjust * (profileSwitch / 100);
     var TDD = (dynISFadjust * TDD);
 
     console.error("Adjusted TDD = "+TDD+"; ");
