@@ -323,8 +323,6 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
        console.error("1-day average TDD is: "+tdd1+"; ");
        console.error("7-day average TDD is: " +tdd7+ "; ");
 
-    var stepsAdjust = steps_adjust(profile);
-
     var dynISFadjust = profile.DynISFAdjust;
     var dynISFadjust = ( dynISFadjust / 100 );
 
