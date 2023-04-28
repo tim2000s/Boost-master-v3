@@ -124,8 +124,8 @@ function enable_boost(profile,target_bg)
 
 function steps_adjust(profile)
 {
-    // disable Boost when a high temptarget is set
-    if (! profile.recentSteps60Minutes < 500 ) {
+    // enable sensitivity adjustment when steps are < 500
+    if (profile.recentSteps60Minutes > 500 ) {
         console.error("No adjustment for steps because steps count is: "+profile.recentSteps60Minutes+"; ");
         return false;
     } else {
