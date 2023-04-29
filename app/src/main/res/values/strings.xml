@@ -130,7 +130,7 @@
 
     <string name="openapsama_boost_max_iob">Max IOB allowed from accelerated bolusing</string>
     <string name="openapsama_boost_bolus">Boost bolus in iu</string>
-    <string name="openapsama_boost_scale_factor">Max percentage scale applied to Boostu</string>
+    <string name="openapsama_boost_scale_factor">Max percentage scale applied to Boost</string>
     <string name="openapsama_boost_scale_factor_title">Percent scale factor</string>
     <string name="key_openapsama_boost_scale_factor" translatable="false">Percent scale factor for Boost</string>
     <string name="openapsama_boost_scale_factor_summary">Default value: 200\nThis is the maximum scale factor that Boost can use when increasing SMB sizes at lower glucose levels before returning to standrd settings at 180 or 10.</string>
@@ -1174,7 +1174,42 @@
     <string name="not_available_full">Not available</string>
     <string name="key_Boost_InsulinReq" translatable="false">Boost_InsulinReq</string>
     <string name="key_boost_variant" translatable="false">boost_variant</string>
+    <string name="key_stepcount_settings" translatable="false">Stepcount_settings</string>
+    <string name="Stepcount_settings_title">Stepcount Settings</string>
     <string name="Boost_InsulinReq_title">Boost Insulin required %</string>
+    <string name="Stepcount_preference_summary">The following preferences adjust the settings for stepcount related adjustments</string>
+    <string name="key_inactivity_steps" translatable="false">Steps below which user is considered inactive</string>
+    <string name="inactivity_steps_summary">Default value: 500\nThis is the number of steps in an hour below which a user is considered inactive, and a profile percentage increase will be enacted.</string>
+    <string name="inactivity_steps_title">Inactivity Stepcount</string>
+    <string name="inactivity_steps">Stepcount below which a user is considered inactive</string>
+    <string name="key_inactivity_pct_inc" translatable="false">Profile percent increase for inactivity</string>
+    <string name="inactivity_pct_inc_summary">Default value: 130\nProfile percentage increase when inactivity detected.</string>
+    <string name="inactivity_pct_inc_title">Inactivity profile percent increase</string>
+    <string name="inactivity_pct_inc">Profile percent increase for inactivity</string>
+    <string name="key_sleep_in_hrs" translatable="false">Additional hours for sleep-in beyond boost start</string>
+    <string name="sleep_in_hrs_summary">Default value: 2\nAdditional hours allowed for sleep-in beyond Boost start time, disabling Boost for that period when no activity detected</string>
+    <string name="sleep_in_hrs_title">Sleep-in hours</string>
+    <string name="sleep_in_hrs">Hours beyond Boost start time to allow sleeping in when activity is not detected.</string>
+    <string name="key_sleep_in_steps" translatable="false">Steps in past 60 mins below which considered sleeping</string>
+    <string name="sleep_in_steps_summary">Default value: 250\nNumber of steps below which user is considered to be still sleeping after Boost start time</string>
+    <string name="sleep_in_steps_title">Sleep-in steps</string>
+    <string name="sleep_in_steps">Steps below which user is considered sleeping beyond Boost start time.</string>
+    <string name="key_activity_steps" translatable="false">Steps in last hour above which user is considered active</string>
+    <string name="activity_steps_summary">Default value: 1800\nThis is the number of steps in the last hour above which a user is considered active, and a profile percentage decrese will be enacted.</string>
+    <string name="activity_steps_title">Activity Stepcount</string>
+    <string name="activity_steps">Stepcount above which a user is considered active</string>
+    <string name="key_activity_pct_inc" translatable="false">Profile percent decrease for activity</string>
+    <string name="activity_pct_inc_summary">Default value: 80\nProfile percentage decrease when activity detected.</string>
+    <string name="activity_pct_inc_title">Activity profile percent increase</string>
+    <string name="activity_pct_inc">Profile percent decrease for activity</string>
+
+
+
+
+
+
+
+
     <string name="Boost_InsulinReq_summary">percentage of the algos determined insulin to give</string>
     <string name="Boost_Variant_title">Boost variant</string>
     <string name="disable_Libre_smb_restrictions">Filtering active for every sensor, Go SMB!</string>

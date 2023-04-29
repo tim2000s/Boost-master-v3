@@ -213,14 +213,12 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:dependency="@string/key_use_smb"
             android:key="@string/key_enableSensBGCap"
             android:summary="@string/enableSensBGCap_summary"
             android:title="@string/enableSensBGCap" />
 
         <SwitchPreference
             android:defaultValue="false"
-            android:dependency="@string/key_use_smb"
             android:key="@string/key_enableCircadianISF"
             android:summary="@string/enableCircadianISF_summary"
             android:title="@string/enableCircadianISF" />
@@ -313,6 +311,99 @@
             validate:maxNumber="10"
             validate:minNumber="1"
             validate:testType="numericRange" />
+
+        <androidx.preference.PreferenceScreen
+            android:key="@string/key_stepcount_settings"
+            android:title="@string/Stepcount_settings_title">
+
+            <Preference android:summary="@string/Stepcount_preference_summary">
+            </Preference>
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="500"
+                android:dialogMessage="@string/inactivity_steps_summary"
+                android:digits="0123456789.,"
+                android:inputType="numberDecimal"
+                android:key="@string/key_inactivity_steps"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/inactivity_steps_title"
+                validate:maxNumber="1000"
+                validate:minNumber="1"
+                validate:testType="numericRange" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="130"
+                android:dialogMessage="@string/inactivity_pct_inc_summary"
+                android:digits="0123456789.,"
+                android:inputType="numberDecimal"
+                android:key="@string/key_inactivity_pct_inc"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/inactivity_pct_inc_title"
+                validate:maxNumber="150"
+                validate:minNumber="100"
+                validate:testType="numericRange" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="2"
+                android:dialogMessage="@string/sleep_in_hrs_summary"
+                android:digits="0123456789.,"
+                android:inputType="numberDecimal"
+                android:key="@string/key_sleep_in_hrs"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/sleep_in_hrs_title"
+                validate:maxNumber="6"
+                validate:minNumber="0"
+                validate:testType="numericRange" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="250"
+                android:dialogMessage="@string/sleep_in_steps_summary"
+                android:digits="0123456789.,"
+                android:inputType="numberDecimal"
+                android:key="@string/key_sleep_in_steps"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/sleep_in_steps_title"
+                validate:maxNumber="1000"
+                validate:minNumber="1"
+                validate:testType="numericRange" />
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="1800"
+                android:dialogMessage="@string/activity_steps_summary"
+                android:digits="0123456789.,"
+                android:inputType="numberDecimal"
+                android:key="@string/key_activity_steps"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/activity_steps_title"
+                validate:maxNumber="5000"
+                validate:minNumber="1"
+                validate:testType="numericRange" />
+
+            <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
+                android:defaultValue="130"
+                android:dialogMessage="@string/activity_pct_inc_summary"
+                android:digits="0123456789.,"
+                android:inputType="numberDecimal"
+                android:key="@string/key_activity_pct_inc"
+                android:maxLines="20"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/activity_pct_inc_title"
+                validate:maxNumber="150"
+                validate:minNumber="30"
+                validate:testType="numericRange" />
+
+        </androidx.preference.PreferenceScreen>
+
 
         <androidx.preference.PreferenceScreen
             android:key="absorption_smb_advanced"
