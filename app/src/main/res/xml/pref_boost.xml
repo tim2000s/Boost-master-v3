@@ -343,7 +343,7 @@
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
                 android:title="@string/inactivity_pct_inc_title"
-                validate:maxNumber="150"
+                validate:maxNumber="200"
                 validate:minNumber="100"
                 validate:testType="numericRange" />
 
@@ -389,7 +389,7 @@
                 validate:testType="numericRange" />
 
             <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
-                android:defaultValue="130"
+                android:defaultValue="80"
                 android:dialogMessage="@string/activity_pct_inc_summary"
                 android:digits="0123456789.,"
                 android:inputType="numberDecimal"
