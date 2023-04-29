@@ -100,6 +100,10 @@ Note that the default settings are designed to disable most of the functions, an
 
 With Boost and Percent Scale functions, the algorithm can set a 5x current basal rate in this run of the algorithm, with a cap of 2x insulin required, as per normal oref1. This is reassesed at each glucose point. 
 
+Enable Boost with High Temp Target is carried through. This allows Boost, Percent Scale and Enhanced oref1 to be disabled when a user sets a high temp target, while retaining SMBs.
+
+Enhanced oref1 is modified from the master version to only fire when deltas are increasing above a rate of 0.5%. This should reduce the amount of times it fires when glucose levels are higher, but still allow additional bolusing.
+
 *Stepcount Features*
 
 Three stepcount features have been added to the *Boost 4.1* Variant in the Test Platform branch. The preferences for this are in a separate section in the Boost Preferences area.
