@@ -95,3 +95,20 @@ Note that the default settings are designed to disable most of the functions, an
 *UAMSMBBasalMinutes* - 30 mins. This is only used overnight when IOB is large enough to trigger UAM, so it doesn't need to be a large value. <br>
 *Boost insulin required percent* - recommended not to exceed 75%. Start at 50% and increase as necessary. <br>
 *Target* - Set a target of 6.5mmol/l (120mg/dl) to get started with Boost. This provides a cushion as you adjust settings. Values below 5.5mmol/l (100mg/DL) are not recommended.<br>
+
+**Boost Test Platform Branch Additions**
+
+With Boost and Percent Scale functions, the algorithm can set a 5x current basal rate in this run of the algorithm, with a cap of 2x insulin required, as per normal oref1. This is reassesed at each glucose point. 
+
+*Stepcount Features*
+
+Three stepcount features have been added to the *Boost 4.1* Variant in the Test Platform branch. The preferences for this are in a separate section in the Boost Preferences area.
+
+1. *Inactivity Detection* Inactivity detection determines when the stepcount is below a user defined limit over the previous hour, and increases basal and DynamicISF adjustment factor by a user defined percentage. The defaults are 500 steps and increase to 130%.
+2. *Sleep-in protection* Sleep-in protection checks stepcount for a user defined period (in hours) after the Boost start time, and if it is below a user defined threshold, extends the time during which Boost and Percent Scale are disabled. The defaults are 2 hours and 250 steps.
+3. *Activity detection* Activity detection allows a user to set the number of steps in the past hour, above which it will set a user defined lower percentage, to reduce basal and dynamicISF adjustment factor by. The defaults are 1800 steps and decrease to 80%. Activity detection will run until the number of steps has dropped below your threshold level over the past hour, giving a period of time beyond exercise where the system believes you will be more sensitive.
+
+Both activity detection settings are overridden by a percentage profile switch.
+
+There are no enable/disable buttons for these settings, however, in both activity detection settings, *if the % value is set to 100, they have no effect*. Similarly, *if the Sleep-in protection hours are set to 0, it has no effect*.
+
