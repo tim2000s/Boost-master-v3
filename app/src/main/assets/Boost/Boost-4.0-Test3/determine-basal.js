@@ -330,7 +330,20 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     console.error("Current Profile percent: "+profileSwitch+"; ");
 
-    dynISFadjust = dynISFadjust * (profileSwitch / 100);
+    //dynISFadjust = dynISFadjust * (profileSwitch / 100);
+
+    if(! recentSteps60Minutes < 500 && profileSwitch = 100 && now > 9 && now < 22){
+            dynISFadjust = ( dynISFadjust * (profileSwitch / 100));
+            console.error("Dynamic ISF adjusted by profile % change: "+profileSwitch+"%; ");
+        }else{
+            profileSwitch = 130;
+            dynISFadjust = ( dynISFadjust * (profileSwitch / 100));
+            console.error("Dynamic ISF increased due to inactivity to: "+profileSwitch+"%; ");
+            basal = ( profile.current_basal * ( profileSwitch / 100 ) );
+            console.error("Profile basal increased due to inactivity to: "+basal+"U/hr; ");
+        }
+
+
     var TDD = (dynISFadjust * TDD);
 
     console.error("Adjusted TDD = "+TDD+"; ");
