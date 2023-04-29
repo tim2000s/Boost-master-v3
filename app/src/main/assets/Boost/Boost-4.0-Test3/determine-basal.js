@@ -332,7 +332,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     //dynISFadjust = dynISFadjust * (profileSwitch / 100);
 
-    if(recentSteps60Minutes < 500 && profileSwitch = 100 && now > 9 && now < 22){
+    if(recentSteps60Minutes < 500 /*&& profileSwitch = 100 && now > 9 && now < 22*/){
         profileSwitch = 130;
         dynISFadjust = ( dynISFadjust * (profileSwitch / 100));
         console.error("Dynamic ISF increased due to inactivity to: "+profileSwitch+"%; ");
