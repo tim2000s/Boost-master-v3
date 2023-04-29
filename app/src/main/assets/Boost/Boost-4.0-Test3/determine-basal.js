@@ -1548,15 +1548,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("Post Boost trigger state:"+iTimeActive+"; ");
                 console.error("           ");
 
-                /*
 
-                if (profile.allowBoost_with_high_temptarget === false && profile.temptargetSet && target_bg > 100) {
-                    console.error("Boost disabled due to high temptarget of",target_bg);
+
+                if (now1 < ( boost_start + 2 ) && recentSteps60Minutes < 250) {
+                    console.error("Boost disabled due to lie-in");
                     enableBoost = false;
-                } else {
-                    enableBoost = true;
-                    console.error("Boost enabled);
-                }*/
+                }else{
+                    console.error("Regular boost setting enabled");
+                }
 
                 //cARB HANDLING INSULIN UPTICK CODE.
                 //With COB, allow a large initial bolus
