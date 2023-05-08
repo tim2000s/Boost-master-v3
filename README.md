@@ -108,9 +108,9 @@ Enhanced oref1 is modified from the master version to only fire when deltas are 
 
 Three stepcount features have been added to the *Boost 4.1* Variant in the Test Platform branch. The preferences for this are in a separate section in the Boost Preferences area.
 
-1. *Inactivity Detection* Inactivity detection determines when the stepcount is below a user defined limit over the previous hour, and increases basal and DynamicISF adjustment factor by a user defined percentage. The defaults are 500 steps and increase to 130%.
-2. *Sleep-in protection* Sleep-in protection checks stepcount for a user defined period (in hours) after the Boost start time, and if it is below a user defined threshold, extends the time during which Boost and Percent Scale are disabled. The defaults are 2 hours and 250 steps.
-3. *Activity detection* Activity detection allows a user to set the number of steps in the past hour, above which it will set a user defined lower percentage, to reduce basal and dynamicISF adjustment factor by. The defaults are 1800 steps and decrease to 80%. Activity detection will run until the number of steps has dropped below your threshold level over the past hour, giving a period of time beyond exercise where the system believes you will be more sensitive.
+1. *Inactivity Detection* Inactivity detection determines when the stepcount is below a user defined limit over the previous hour, and increases basal and DynamicISF adjustment factor by a user defined percentage. The defaults are 400 steps and increase to 130%.
+2. *Sleep-in protection* Sleep-in protection checks stepcount for a user defined period (in hours) after the Boost start time, and if it is below a user defined threshold, extends the time during which Boost and Percent Scale are disabled. The defaults are 2 hours and 250 steps. The maximum value for this is now 18 hours.
+3. *Activity detection* Activity detection allows a user to set the number of steps in the past 5 mins, 30 mins and hour as triggers for activity. If any of these are true, it will set a user defined lower percentage, to reduce basal and dynamicISF adjustment factor.  For the five minute setting, it will wait for 15 mins to revert to non-activity. The other two settings wait for the value for the period to drop below the threshold. The defaults are 420 steps for 5 mins (which corresponds to the 5 minute activity trigger on a Garmin), 1200 for 30 mins and 1800 for 60 mins. Profile decrease is set to 80%. 
 
 Both activity detection settings are overridden by a percentage profile switch.
 
