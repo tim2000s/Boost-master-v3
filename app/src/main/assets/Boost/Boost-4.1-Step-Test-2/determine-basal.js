@@ -1822,13 +1822,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var rate = round_basal(basal*5,profile);
         }
 
-        if (rate > maxSafeBasal) {
+        if (rate > maxSafeBasal && ! iTimeActive === true) {
             rT.reason += "adj. req. rate: "+round(rate, 2)+" to maxSafeBasal: "+maxSafeBasal+", ";
             rate = round_basal(maxSafeBasal, profile);
         }
-
         insulinScheduled = currenttemp.duration * (currenttemp.rate - basal) / 60;
-        if (insulinScheduled >= insulinReq * 2) { // if current temp would deliver >2x more than the required insulin, lower the rate
+
+        if (insulinScheduled >= insulinReq * 2 && ! iTimeActive === true) { // if current temp would deliver >2x more than the required insulin and iTimeActive is not true, lower the rate
             rT.reason += currenttemp.duration + "m@" + (currenttemp.rate).toFixed(2) + " > 2 * insulinReq. Setting temp basal of " + rate + "U/hr. ";
             return tempBasalFunctions.setTempBasal(rate, 30, profile, rT, currenttemp);
         }
