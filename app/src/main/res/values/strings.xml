@@ -526,7 +526,7 @@
     <string name="configbuilder_sensitivity">Sensitivity detection</string>
     <string name="configbuilder_sensitivity_description">Which sensitivity algorithm should be used?</string>
     <string name="sensitivity_shortname">SENS</string>
-    <string name="sensitivityoref1">Sensitivity Oref1</string>
+    <string name="sensitivityoref1">Sensitivity oref1</string>
     <string name="sensitivityaaps">Sensitivity AAPS</string>
     <string name="absorptionsettings_title">Absorption settings</string>
     <string name="absorption_maxtime_title">Meal max absorption time [h]</string>
@@ -1172,12 +1172,18 @@
     <string name="a11_correction_percentage">correct outcome with %</string>
     <string name="a11_correction_units">correct outcome with units</string>
     <string name="not_available_full">Not available</string>
+    <string name="key_Boost_settings" translatable="false">Boost_settings</string>
+    <string name="advancedsettings_title" translatable="false">Advanced settings</string>
     <string name="key_Boost_InsulinReq" translatable="false">Boost_InsulinReq</string>
     <string name="key_boost_variant" translatable="false">boost_variant</string>
     <string name="key_stepcount_settings" translatable="false">Stepcount_settings</string>
     <string name="Stepcount_settings_title">Stepcount Settings</string>
     <string name="Boost_InsulinReq_title">Boost Insulin required %</string>
-    <string name="Stepcount_preference_summary">The following preferences adjust the settings for stepcount related adjustments</string>
+    <string name="key_activity_settings" translatable="false">Activity_settings</string>
+    <string name="activity_settings_title">Activity Settings</string>
+    <string name="Stepcount_preference_summary">The following preferences adjust the settings for stepcount related variability.</string>
+    <string name="Activity_preference_summary">The following stepcount settings allow control over when activity is recognised, and how long adjustments are made to account for it. You will probably need to make changes from the defaults.</string>
+
     <string name="key_inactivity_steps" translatable="false">Steps below which user is considered inactive</string>
     <string name="inactivity_steps_summary">Default value: 500\nThis is the number of steps in an hour below which a user is considered inactive, and a profile percentage increase will be enacted.</string>
     <string name="inactivity_steps_title">Inactivity Stepcount</string>
@@ -1186,6 +1192,7 @@
     <string name="inactivity_pct_inc_summary">Default value: 130\nProfile percentage increase when inactivity detected.</string>
     <string name="inactivity_pct_inc_title">Inactivity profile percent increase</string>
     <string name="inactivity_pct_inc">Profile percent increase for inactivity</string>
+
     <string name="key_sleep_in_hrs" translatable="false">Additional hours for sleep-in beyond boost start</string>
     <string name="sleep_in_hrs_summary">Default value: 2\nAdditional hours allowed for sleep-in beyond Boost start time, disabling Boost for that period when no activity detected</string>
     <string name="sleep_in_hrs_title">Sleep-in hours</string>
@@ -1194,20 +1201,35 @@
     <string name="sleep_in_steps_summary">Default value: 250\nNumber of steps below which user is considered to be still sleeping after Boost start time</string>
     <string name="sleep_in_steps_title">Sleep-in steps</string>
     <string name="sleep_in_steps">Steps below which user is considered sleeping beyond Boost start time.</string>
-    <string name="key_activity_steps" translatable="false">Steps in last hour above which user is considered active</string>
-    <string name="activity_steps_summary">Default value: 1800\nThis is the number of steps in the last hour above which a user is considered active, and a profile percentage decrese will be enacted.</string>
-    <string name="activity_steps_title">Activity Stepcount</string>
-    <string name="activity_steps">Stepcount above which a user is considered active</string>
+
+    <string name="key_activity_steps_5" translatable="false">Steps in last hour above which user is considered active</string>
+    <string name="activity_steps_5_summary">Default value: 420\nThis is the number of steps in the last 5 mins above which a user is considered active, and a profile percentage decrease will be enacted.</string>
+    <string name="activity_steps_5_title">Five minute stepcount</string>
+    <string name="activity_steps_5">Five minute stepcount above which a user is considered active</string>
+
+    <string name="key_activity_steps_30" translatable="false">Steps in last 30 mins above which user is considered active</string>
+    <string name="activity_steps_30_summary">Default value: 1200\nThis is the number of steps in the last 30 mins above which a user is considered active, and a profile percentage decrease will be enacted.</string>
+    <string name="activity_steps_30_title">30 min activity stepcount</string>
+    <string name="activity_steps_30">30 min stepcount above which a user is considered active</string>
+
+    <string name="key_activity_steps_60_" translatable="false">Steps in last hour above which user is considered active</string>
+    <string name="activity_steps_60_summary_">Default value: 1800\nThis is the number of steps in the last hour above which a user is considered active, and a profile percentage decrease will be enacted.</string>
+    <string name="activity_steps_60_title_">60 mins activity stepcount</string>
+    <string name="activity_steps_60_">Stepcount above which a user is considered active</string>
+
+    <string name="key_activity_hour_steps" translatable="false">"Steps in last hour to be considered active</string>string>
+    <string name="activity_hour_steps_summary">Default value: 1800\nNumber of steps that indicates user is active and causes profile percentage decrease.</string>
+    <string name="activity_hour_steps_title">One hour step count</string>
+    <string name="activity_hour_steps">Stepcount above which user is deemed active.</string>
+
     <string name="key_activity_pct_inc" translatable="false">Profile percent decrease for activity</string>
     <string name="activity_pct_inc_summary">Default value: 80\nProfile percentage decrease when activity detected.</string>
-    <string name="activity_pct_inc_title">Activity profile percent increase</string>
+    <string name="activity_pct_inc_title">Activity profile percent decrease</string>
     <string name="activity_pct_inc">Profile percent decrease for activity</string>
-
-
-
-
-
-
+    <!-- string name="key_activity_steps_10" translatable="false">Steps in last ten minutes above which user is considered active</string-->
+    <!-- string name="activity_steps_10_summary">Default value: 420\nThis is the number of steps in the last ten mins above which a user is considered active, and a profile percentage decrease will be enacted.</string-->
+    <!-- string name="activity_steps_10_title">10 min activity Stepcount</string-->
+    <!-- string name="activity_steps_10">10 min stepcount above which a user is considered active</string-->
 
 
     <string name="Boost_InsulinReq_summary">percentage of the algos determined insulin to give</string>

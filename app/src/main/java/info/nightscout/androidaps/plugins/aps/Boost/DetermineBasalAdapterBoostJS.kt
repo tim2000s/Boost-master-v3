@@ -311,11 +311,13 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
         this.profile.put("boost_maxIOB",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_boost_max_iob, "1.0")))
         this.profile.put("Boost_InsulinReq",  SafeParse.stringToDouble(sp.getString(R.string.key_Boost_InsulinReq,"50.0")))
         this.profile.put("boost_scale",  SafeParse.stringToDouble(sp.getString(R.string.key_openapsama_boost_scale, "1.0")))
-        this.profile.put("inactivity_steps",SafeParse.stringToDouble(sp.getString(R.string.key_inactivity_steps,"500")))
+        this.profile.put("inactivity_steps",SafeParse.stringToDouble(sp.getString(R.string.key_inactivity_steps,"400")))
         this.profile.put("inactivity_pct",SafeParse.stringToDouble(sp.getString(R.string.key_inactivity_pct_inc,"130")))
         this.profile.put("sleep_in_hrs",SafeParse.stringToDouble(sp.getString(R.string.key_sleep_in_hrs,"2")))
         this.profile.put("sleep_in_steps",SafeParse.stringToDouble(sp.getString(R.string.key_sleep_in_steps,"250")))
-        this.profile.put("activity_steps",SafeParse.stringToDouble(sp.getString(R.string.key_activity_steps,"1800")))
+        this.profile.put("activity_steps_5",SafeParse.stringToDouble(sp.getString(R.string.key_activity_steps_5,"420")))
+        this.profile.put("activity_steps_30",SafeParse.stringToDouble(sp.getString(R.string.key_activity_steps_30,"1200")))
+        this.profile.put("activity_steps_60",SafeParse.stringToDouble(sp.getString(R.string.key_activity_hour_steps,"1800")))
         this.profile.put("activity_pct",SafeParse.stringToDouble(sp.getString(R.string.key_activity_pct_inc,"80")))
 
 

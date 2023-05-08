@@ -117,9 +117,23 @@ function enable_boost(profile,target_bg)
         console.error("Boost disabled due to high temptarget of",target_bg);
         return false;
     } else {
-        console.error("Boost enabled");
+        console.error("Boost enabled \n");
     }
     return true;
+}
+function activity_on(profile)
+{
+    // flag activity as recognised when steps are above a certain level
+    if ( profile.recentSteps5Minutes > profile.activity_steps_5 || profile.recentSteps30Minutes > profile.activity_steps_30 || profile.recentSteps60Minutes > profile.activity_steps_60) {
+        console.error("Activity settings active due to high step count");
+        return true;
+    }else if ( profile.recentSteps5Minutes < profile.activity_steps_5 && profile.recentSteps15Minutes > profile.activity_steps_5 ) {
+        console.error("Activity settings extended for 15 mins after short active period");
+        return true;
+    }else{
+        console.error("No activity detected");
+    }
+    return false;
 }
 
 
@@ -172,12 +186,15 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     var recentSteps30Minutes = profile.recentSteps30Minutes;
     var recentSteps60Minutes = profile.recentSteps60Minutes;
 
-    console.log("Step counts for last periods of time are:");
-    console.log("Five mins: "+recentSteps5Minutes+"; ");
-    console.log("Ten mins: "+recentSteps10Minutes+"; ");
-    console.log("Thirty mins: "+recentSteps30Minutes+"; ");
-    console.log("Sixty mins: "+recentSteps60Minutes+"; ");
-    console.log("              ");
+    rT.reason = "Step counts for last periods of time are:";
+    rT.reason = "Five mins: "+recentSteps5Minutes+"; ";
+    rT.reason = "Ten mins: "+recentSteps10Minutes+"; ";
+    rT.reason = "Thirty mins: "+recentSteps30Minutes+"; ";
+    rT.reason = "Sixty mins: "+recentSteps60Minutes+"; ";
+    rT.reason = "              ";
+
+    var boost_start = profile.boost_start;
+    var boost_end = profile.boost_end;
 
     if (currentTime) {
         deliverAt = new Date(currentTime);
@@ -282,7 +299,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version: 4.1                 ");
+        console.error( "     Boost version: 4.1a                 ");
         console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7 != null){
@@ -323,27 +340,62 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
        console.error("1-day average TDD is: "+tdd1+"; ");
        console.error("7-day average TDD is: " +tdd7+ "; ");
 
+    var enableBoost = enable_boost(
+                profile,
+                target_bg
+            );
+
+    var activity = activity_on(
+                    profile
+                );
+
     var dynISFadjust = profile.DynISFAdjust;
     var dynISFadjust = ( dynISFadjust / 100 );
 
     var profileSwitch = profile.profilePercent;
-
     console.error("Current Profile percent: "+profileSwitch+"; ");
 
     //dynISFadjust = dynISFadjust * (profileSwitch / 100);
 
-    if(recentSteps60Minutes < 500 && profileSwitch == 100 && now > 9 && now < 22){
-        profileSwitch = 130;
+    /*if(recentSteps60Minutes < profile.inactivity_steps && profileSwitch == 100 && now > 9 && now <
+     22){
+        profileSwitch = profile.inactivity_pct;
         dynISFadjust = ( dynISFadjust * (profileSwitch / 100));
-        console.error("Dynamic ISF increased due to inactivity to: "+profileSwitch+"%; ");
+        console.error("Dynamic ISF TDD increased due to inactivity to: "+profileSwitch+"%; ");
         basal = ( profile.current_basal * ( profileSwitch / 100 ) );
         console.error("Profile basal increased due to inactivity to: "+basal+"U/hr; ");
+
+    }else if(recentSteps60Minutes > profile.activity_steps_60 && profileSwitch == 100){
+        profileSwitch = profile.activity_pct;
+        dynISFadjust = ( dynISFadjust * (profileSwitch / 100));
+        console.error("Dynamic ISF TDD decreased due to activity to: "+profileSwitch+"%; ");
+        basal = ( profile.current_basal * ( profileSwitch / 100 ) );
+        console.error("Profile basal decreased due to activity to: "+basal+"U/hr; ");
 
     }else{
         dynISFadjust = ( dynISFadjust * (profileSwitch / 100));
         console.error("Dynamic ISF adjusted by profile % change: "+profileSwitch+"%; ");
-    }
+    }*/
 
+    //Adjusting sensitivty behaviour with activity or inactivity
+    if( activity && profileSwitch == 100){
+            profileSwitch = profile.activity_pct;
+            dynISFadjust = ( dynISFadjust * (profileSwitch / 100));
+            console.error("Dynamic ISF TDD decreased due to activity to: "+profileSwitch+"%; ");
+            basal = ( profile.current_basal * ( profileSwitch / 100 ) );
+            console.error("Profile basal decreased due to activity to: "+basal+"U/hr; ");
+
+    }else if(recentSteps60Minutes < profile.inactivity_steps && profileSwitch == 100 && now > boost_start && now < boost_end){
+            profileSwitch = profile.inactivity_pct;
+            dynISFadjust = ( dynISFadjust * (profileSwitch / 100));
+            console.error("Dynamic ISF TDD increased due to inactivity to: "+profileSwitch+"%; ");
+            basal = ( profile.current_basal * ( profileSwitch / 100 ) );
+            console.error("Profile basal increased due to inactivity to: "+basal+"U/hr; ");
+
+    }else{
+            dynISFadjust = ( dynISFadjust * (profileSwitch / 100));
+            console.error("Dynamic ISF adjusted by profile % change: "+profileSwitch+"%; ");
+    }
 
     var TDD = (dynISFadjust * TDD);
 
@@ -706,6 +758,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     // min_bg of 90 -> threshold of 65, 100 -> 70 110 -> 75, and 130 -> 85, or if specified by user, take that value
 
     var lgsThreshold = profile.lgsThreshold;
+    console.error("Profile LGS Threshold is "+lgsThreshold+"; ");
     var threshold = min_bg - 0.5*(min_bg-40);
 
     if(lgsThreshold < 65 || lgsThreshold > 120) {
@@ -758,10 +811,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         target_bg
     );
 
-    var enableBoost = enable_boost(
+    /*var enableBoost = enable_boost(
             profile,
             target_bg
-        );
+        );*/
 
     // enable UAM (if enabled in preferences)
     var enableUAM=(profile.enableUAM);
@@ -1040,8 +1093,8 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         console.log("EventualBG is" +eventualBG+" ;");
 
     var now1 = new Date().getHours();
-    var boost_start = profile.boost_start;
-    var boost_end = profile.boost_end;
+    //var boost_start = profile.boost_start;
+    //var boost_end = profile.boost_end;
 
 
         if( meal_data.mealCOB > 0 && delta_accl > 0 ) {
@@ -1550,7 +1603,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
 
 
-                if (now1 < ( boost_start + 2 ) && recentSteps60Minutes < 250) {
+                if (now1 < ( boost_start + profile.sleep_in_hrs ) && recentSteps60Minutes < profile.sleep_in_steps) {
                     console.error("Boost disabled due to lie-in");
                     enableBoost = false;
                 }else{
@@ -1686,7 +1739,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 iTimeActive = true;
                 console.error("Post percent scale trigger state:"+iTimeActive+"; ");
                               }
-            else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl >= 1 && enableBoost){
+            else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl >= 0.5 && enableBoost){
 
             var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,boost_max)*roundSMBTo)/roundSMBTo;
             rT.reason += "Enhanced oref1 triggered; SMB equals" + microBolus + "; ";

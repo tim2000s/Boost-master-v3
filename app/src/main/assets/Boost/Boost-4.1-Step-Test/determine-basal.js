@@ -344,10 +344,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         basal = ( profile.current_basal * ( profileSwitch / 100 ) );
         console.error("Profile basal increased due to inactivity to: "+basal+"U/hr; ");
 
-    }else if(recentSteps60Minutes > profile.activity_steps && profileSwitch == 100){
+    }else if(recentSteps60Minutes > profile.activity_steps_60 && profileSwitch == 100){
         profileSwitch = profile.activity_pct;
         dynISFadjust = ( dynISFadjust * (profileSwitch / 100));
-        console.error("Dynamic ISF TDD decreased due to inactivity to: "+profileSwitch+"%; ");
+        console.error("Dynamic ISF TDD decreased due to activity to: "+profileSwitch+"%; ");
         basal = ( profile.current_basal * ( profileSwitch / 100 ) );
         console.error("Profile basal decreased due to activity to: "+basal+"U/hr; ");
 
