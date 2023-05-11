@@ -299,7 +299,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version: 4.1a                 ");
+        console.error( "     Boost version: 4.1.1                               ");
         console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7 != null){
@@ -1625,7 +1625,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 //cARB HANDLING INSULIN UPTICK CODE.
                 //With COB, allow a large initial bolus
-                if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 15  ){
+                if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 25  ){
                     //var cob_boost_max = Math.max((( COB / CR ) / insulinReqPCT),boost_max);
                     rT.reason += "boost_max due to COB = " + insulinReq + "; ";
                     rT.reason += "Last carb age is: " + lastCarbAge + "; ";
@@ -1636,6 +1636,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     else {
                           insulinReq = insulinReq;
                          }*/
+
                     var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,insulinReq)*roundSMBTo)/roundSMBTo;
                     console.error("Insulin required % ("+((1/insulinReqPCT) * 100)+"%) applied.");
                     }
@@ -1825,8 +1826,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         }
 
+        if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 15  ){
+            iTimeActive = true;
+        }
+
         var maxSafeBasal = tempBasalFunctions.getMaxSafeBasal(profile);
-        rT.reason += "Additional basasl trigger currently set to "+iTimeActive+"; ";
+        rT.reason += "Additional basal trigger currently set to "+iTimeActive+"; ";
 
         if (iTimeActive === true){
             rT.reason += " Add high basal with Boost or percent scale to manage rise "+(basal*5/60)*30+" U";
