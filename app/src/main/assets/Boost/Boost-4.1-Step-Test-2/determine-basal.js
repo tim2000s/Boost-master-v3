@@ -1096,17 +1096,30 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //var boost_start = profile.boost_start;
     //var boost_end = profile.boost_end;
 
+    if(profile.SensBGCap === true){
+            if(eventualBG > 210){
+                var fsens_bg = ( 210 + ((eventualBG - 210) / 3));
+                console.log("Dosing sensitivity increasing slowly from 210mg/dl / 11.7mmol/l");
+            }
+            else {
+                var fsens_bg = eventualBG;
+                console.log("Current sensitivity for dosing uses current bg");
+            }
+        } else {
+            var fsens_bg = eventualBG;
+            console.log("Reduced ISF change at high predicted BG disabled");
+            }
 
         if( meal_data.mealCOB > 0 && delta_accl > 0 ) {
 
-            var future_sens = ( 1800 / (Math.log((((eventualBG * 0.75) + (sens_bg * 0.25))/ins_val)
+            var future_sens = ( 1800 / (Math.log((((fsens_bg * 0.75) + (sens_bg * 0.25))/ins_val)
             +1)*TDD));
             console.log("Future state sensitivity is " +future_sens+" weighted on eventual BG due to COB");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on predicted BG due to COB;";
             }
         else if( glucose_status.delta > 4 && delta_accl > 10 && bg < 180 && eventualBG > bg && now1 >= boost_start && now1 < boost_end ) {
 
-            var future_sens = ( 1800 / (Math.log((((eventualBG * 0.5) + (sens_bg * 0.5))/ins_val)+1)
+            var future_sens = ( 1800 / (Math.log((((fsens_bg * 0.5) + (sens_bg * 0.5))/ins_val)+1)
             *TDD));
             console.log("Future state sensitivity is " +future_sens+" weighted on predicted bg due to increasing deltas");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on predicted BG due to delta;";
