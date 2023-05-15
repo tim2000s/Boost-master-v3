@@ -1098,7 +1098,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
     if(profile.SensBGCap === true){
             if(eventualBG > 210){
-                var fsens_bg = ( 210 + ((eventualBG - 210) / 3));
+                var fsens_bg = ( 210 + ((eventualBG - 210) / 2));
                 console.log("Dosing sensitivity increasing slowly from 210mg/dl / 11.7mmol/l");
             }
             else {
