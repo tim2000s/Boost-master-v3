@@ -299,7 +299,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version: 4.1a                 ");
+        console.error( "     Boost version: 4.1.1                               ");
         console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7 != null){
@@ -1096,17 +1096,30 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //var boost_start = profile.boost_start;
     //var boost_end = profile.boost_end;
 
+    if(profile.SensBGCap === true){
+            if(eventualBG > 210){
+                var fsens_bg = ( 210 + ((eventualBG - 210) / 2));
+                console.log("Dosing sensitivity increasing slowly from 210mg/dl / 11.7mmol/l");
+            }
+            else {
+                var fsens_bg = eventualBG;
+                console.log("Current sensitivity for dosing uses current bg");
+            }
+        } else {
+            var fsens_bg = eventualBG;
+            console.log("Reduced ISF change at high predicted BG disabled");
+            }
 
         if( meal_data.mealCOB > 0 && delta_accl > 0 ) {
 
-            var future_sens = ( 1800 / (Math.log((((eventualBG * 0.75) + (sens_bg * 0.25))/ins_val)
+            var future_sens = ( 1800 / (Math.log((((fsens_bg * 0.75) + (sens_bg * 0.25))/ins_val)
             +1)*TDD));
             console.log("Future state sensitivity is " +future_sens+" weighted on eventual BG due to COB");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on predicted BG due to COB;";
             }
         else if( glucose_status.delta > 4 && delta_accl > 10 && bg < 180 && eventualBG > bg && now1 >= boost_start && now1 < boost_end ) {
 
-            var future_sens = ( 1800 / (Math.log((((eventualBG * 0.5) + (sens_bg * 0.5))/ins_val)+1)
+            var future_sens = ( 1800 / (Math.log((((fsens_bg * 0.5) + (sens_bg * 0.5))/ins_val)+1)
             *TDD));
             console.log("Future state sensitivity is " +future_sens+" weighted on predicted bg due to increasing deltas");
             rT.reason += "Dosing sensitivity: " +future_sens+" weighted on predicted BG due to delta;";
@@ -1612,7 +1625,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                 //cARB HANDLING INSULIN UPTICK CODE.
                 //With COB, allow a large initial bolus
-                if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 15  ){
+                if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 25  ){
                     //var cob_boost_max = Math.max((( COB / CR ) / insulinReqPCT),boost_max);
                     rT.reason += "boost_max due to COB = " + insulinReq + "; ";
                     rT.reason += "Last carb age is: " + lastCarbAge + "; ";
@@ -1623,6 +1636,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     else {
                           insulinReq = insulinReq;
                          }*/
+
                     var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,insulinReq)*roundSMBTo)/roundSMBTo;
                     console.error("Insulin required % ("+((1/insulinReqPCT) * 100)+"%) applied.");
                     }
@@ -1812,8 +1826,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         }
 
+        if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 15  ){
+            iTimeActive = true;
+        }
+
         var maxSafeBasal = tempBasalFunctions.getMaxSafeBasal(profile);
-        rT.reason += "Additional basasl trigger currently set to "+iTimeActive+"; ";
+        rT.reason += "Additional basal trigger currently set to "+iTimeActive+"; ";
 
         if (iTimeActive === true){
             rT.reason += " Add high basal with Boost or percent scale to manage rise "+(basal*5/60)*30+" U";
@@ -1822,13 +1840,13 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var rate = round_basal(basal*5,profile);
         }
 
-        if (rate > maxSafeBasal) {
+        if (rate > maxSafeBasal && ! iTimeActive === true) {
             rT.reason += "adj. req. rate: "+round(rate, 2)+" to maxSafeBasal: "+maxSafeBasal+", ";
             rate = round_basal(maxSafeBasal, profile);
         }
-
         insulinScheduled = currenttemp.duration * (currenttemp.rate - basal) / 60;
-        if (insulinScheduled >= insulinReq * 2) { // if current temp would deliver >2x more than the required insulin, lower the rate
+
+        if (insulinScheduled >= insulinReq * 2 && ! iTimeActive === true) { // if current temp would deliver >2x more than the required insulin and iTimeActive is not true, lower the rate
             rT.reason += currenttemp.duration + "m@" + (currenttemp.rate).toFixed(2) + " > 2 * insulinReq. Setting temp basal of " + rate + "U/hr. ";
             return tempBasalFunctions.setTempBasal(rate, 30, profile, rT, currenttemp);
         }
