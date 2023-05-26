@@ -1794,7 +1794,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 if (microBolus >= maxBolus) {
                     rT.reason +=  "; standardMaxBolus " + maxBolus;
                 }
-                if (durationReq > 0) {
+                if (durationReq > 0 && ! iTimeActive === true) {
                     rT.reason += "; setting " + durationReq + "m low temp of " + smbLowTempReq + "U/h";
                 }
                 rT.reason += ". ";
@@ -1820,7 +1820,11 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             //rT.reason += ". ";
 
             // if no zero temp is required, don't return yet; allow later code to set a high temp
-            if (durationReq > 0) {
+           if ( (now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 15) || ( basal > ( 4 * profile_current_basal ) && lastBolusAge < 15 && delta_accl > 0 ) ){
+                       iTimeActive = true;
+                   }
+
+            if (durationReq > 0 && ! iTimeActive === true) {
                 rT.rate = smbLowTempReq;
                 rT.duration = durationReq;
                 return rT;
@@ -1828,9 +1832,10 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         }
 
-        if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 15 || ( basal > ( 4 * profile_current_basal ) && lastBolusAge < 15 && delta_accl > 0 ) ){
+        /*if ( now1 >= boost_start && now1 < boost_end && COB > 0 && lastCarbAge < 15 || ( basal > (
+         4 * profile_current_basal ) && lastBolusAge < 15 && delta_accl > 0 ) ){
             iTimeActive = true;
-        }
+        }*/
 
         var maxSafeBasal = tempBasalFunctions.getMaxSafeBasal(profile);
         rT.reason += "Additional basal trigger currently set to "+iTimeActive+"; ";
