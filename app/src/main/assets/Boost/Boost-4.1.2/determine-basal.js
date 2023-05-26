@@ -1842,7 +1842,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
         if (iTimeActive === true)  {
             rT.reason += " Add high basal with Boost or percent scale to manage rise "+(basal*5/60)*30+" U";
-            var durationReq = 30;
+            var durationReq = 15;
             rT.duration = durationReq;
             var rate = round_basal(basal*5,profile);
         }
