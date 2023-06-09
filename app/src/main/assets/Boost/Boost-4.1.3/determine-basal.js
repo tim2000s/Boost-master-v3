@@ -299,7 +299,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version: 4.1.1                               ");
+        console.error( "     Boost version: 4.1.3                               ");
         console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7 != null){
@@ -1755,6 +1755,28 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 iTimeActive = true;
                 console.error("Post percent scale trigger state:"+iTimeActive+"; ");
                               }
+
+           else if (delta_accl > 25 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && enableBoost){
+
+            boostInsulinReq = Math.min(boost_scale * boostInsulinReq,boost_max);
+                    if (boostInsulinReq > boostMaxIOB-iob_data.iob) {
+                            boostInsulinReq = boostMaxIOB-iob_data.iob;
+                    }
+                    else {
+                        boostInsulinReq = boostInsulinReq;
+                    }
+
+                    insulinDivisor =  (insulinReqPCT - ((Math.abs(bg-180) / 72 ) * ( insulinReqPCT - (2 * scale_pct))));
+                    insulinReqPCT = insulinDivisor;
+
+            var microBolus = Math.floor(Math.min((insulinReq/insulinReqPCT),boost_max)*roundSMBTo)/roundSMBTo;
+            iTimeActive = true;
+            console.error("Post Boost trigger state:"+iTimeActive+"; ");
+            console.error("Acceleration bolus triggered; SMB equals "+boostInsulinReq+"; " );
+            rT.reason += "Acceleration bolus triggered; SMB equals" + boostInsulinReq + "; ";
+
+            }
+
       else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl >= 0.5 && enableBoost){
 
             var microBolus = Math.floor(Math.min(insulinReq/insulinReqPCT,boost_max)*roundSMBTo)/roundSMBTo;
@@ -1840,8 +1862,14 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
         var maxSafeBasal = tempBasalFunctions.getMaxSafeBasal(profile);
         rT.reason += "Additional basal trigger currently set to "+iTimeActive+"; ";
 
+        if (iTimeActive === true && ! microBolus > 0 ){
+            var microBolus = Math.floor(Math.min((boostInsulinReq),boost_max)*roundSMBTo)/roundSMBTo;
+            rT.reason += "Boost bolus triggered due to continued accleration post Boost function with negative SMB suggested";
+        }
+
         if (iTimeActive === true)  {
-            rT.reason += " Add high basal with Boost or percent scale to manage rise "+(basal*5/60)*30+" U";
+            rT.reason += "Add high basal with Boost or percent scale to manage rise "+(basal*5/60)*30+" U";
+
             var durationReq = 15;
             rT.duration = durationReq;
             var rate = round_basal(basal*5,profile);
