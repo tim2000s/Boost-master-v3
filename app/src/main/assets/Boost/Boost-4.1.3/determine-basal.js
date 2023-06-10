@@ -1754,6 +1754,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
 
                         insulinDivisor =  (insulinReqPCT - ((Math.abs(bg-180) / 72 ) * ( insulinReqPCT - (2 * scale_pct))));
                         insulinReq = boostInsulinReq;
+                        console.error("Increased SMB as insulin required < 0"
 
                 }
                 var microBolus = Math.floor(Math.min(insulinReq/insulinDivisor,boost_max)*roundSMBTo)/roundSMBTo;
