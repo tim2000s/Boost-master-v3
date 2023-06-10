@@ -1750,6 +1750,12 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 else {
                            insulinReq = insulinReq;
                            }
+                if (insulinReq < 0 ){
+
+                        insulinDivisor =  (insulinReqPCT - ((Math.abs(bg-180) / 72 ) * ( insulinReqPCT - (2 * scale_pct))));
+                        insulinReq = boostInsulinReq;
+
+                }
                 var microBolus = Math.floor(Math.min(insulinReq/insulinDivisor,boost_max)*roundSMBTo)/roundSMBTo;
                 rT.reason += "Increased SMB as percentage of insulin required to "+((1/insulinDivisor) * 100)+"%. SMB is " + microBolus;
                 iTimeActive = true;
@@ -1769,7 +1775,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                     insulinDivisor =  (insulinReqPCT - ((Math.abs(bg-180) / 72 ) * ( insulinReqPCT - (2 * scale_pct))));
                     insulinReqPCT = insulinDivisor;
 
-            var microBolus = Math.floor(Math.min((insulinReq/insulinReqPCT),boost_max)*roundSMBTo)/roundSMBTo;
+            var microBolus = Math.floor(Math.min((boostInsulinReq/insulinReqPCT),boost_max)*roundSMBTo)/roundSMBTo;
             iTimeActive = true;
             console.error("Post Boost trigger state:"+iTimeActive+"; ");
             console.error("Acceleration bolus triggered; SMB equals "+boostInsulinReq+"; " );
