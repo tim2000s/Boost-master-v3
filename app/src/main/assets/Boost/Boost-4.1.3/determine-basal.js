@@ -1695,8 +1695,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      rT.reason += "UAM Boost enacted; SMB equals" + boostInsulinReq + "; ";
                  }
 
-                 else if (delta_accl > 5 && bg > 180 && now1 >= boost_start && now1 < boost_end &&
-                 iob_data.iob < boostMaxIOB && boost_scale < 3 && eventualBG > target_bg && bg > 80 && insulinReq > 0 && enableBoost) {
+                 else if (delta_accl > 5 && bg > 180 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && boost_scale < 3 && eventualBG > target_bg && bg > 80 && insulinReq > 0 && enableBoost) {
                      console.error("Profile Boost Scale value is "+boost_scale+": ");
                      //console.error("Automated Boost Scale value is "+scaleSMB+": ");
                      //document the pre-boost insulin required recommendation
@@ -1711,6 +1710,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      }
 
                      if (boostInsulinReq < (insulinReq/insulinReqPCT)) {
+                     var boostInsulinReq = Math.min((boostInsulinReq + (0.5 * (insulinReq/insulinReqPCT))),(insulinReq/insulinReqPCT));
                      var microBolus = Math.floor(Math.min((insulinReq/insulinReqPCT),boost_max)*roundSMBTo)/roundSMBTo;
                      rT.reason += "UAM  High Boost enacted; SMB equals" + microBolus + "; ";
                      }
@@ -1718,7 +1718,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      var microBolus = Math.floor(Math.min(boostInsulinReq)*roundSMBTo)/roundSMBTo;
                      }
                      console.error("UAM High Boost enacted; SMB equals "+boostInsulinReq+" ; Original insulin requirement was "+insulinReq+"; Boost is " +(boostInsulinReq/insulinReq)+" times increase" );
-                     rT.reason += "UAM High Boost enacted; Boost SMB equals" + boostInsulinReq + "; ";
+                     //rT.reason += "UAM High Boost enacted; Boost SMB equals" + boostInsulinReq + "; ";
                  }
 
             /*else if ( now1 >= boost_start && now1 < boost_end && glucose_status.delta > 0 && delta_accl > 0 && COB < 1 && iob_data.iob < boostMaxIOB && eventualBG > target_bg && bg > 120){
