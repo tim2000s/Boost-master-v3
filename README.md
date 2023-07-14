@@ -18,7 +18,7 @@ DEV:
 
 3KawK8aQe48478s6fxJ8Ms6VTWkwjgr9f2
 
-**Boost 4.1**
+**Boost 4.1.3**
 
 Traditional Autosens is deprecated in this code and sensitivityRatio is calculated using 'Eight hour weighted average TDD  / 7-day average TDD'.
 
@@ -50,13 +50,15 @@ During normal use, you should set your Boost Bolus Cap to be the max that boost 
 Boost outside the first 40 mins of COB, or with 0 COB has four phases:
 
 1. Boost bolus
-2. Percentage Scale
-3. Enhanced oref1
-4. Regular oref1
+2. High Boost Bolus
+3. Percentage Scale
+4. Accleration Bolus
+5. Enhanced oref1
+6. Regular oref1
 
 **Boost**
 
-When an initial rise is detected with a meal, but no announced COB, delta, short_avgDelta and long_avgDelta are used to trigger the early bolus (assuming IOB is below a user defined amount). The early bolus value is one hour of basal requirement and is based on the current period basal rate, unless this is smaller than "Insulin Required" when that is used instead.
+When an initial rise is detected with a meal, but no announced COB, delta, short_avgDelta and long_avgDelta are used to trigger the early bolus (assuming IOB is below a user defined amount). The early bolus value is one hour of basal requirement and is based on the current period basal rate, unless this is smaller than "Insulin Required" when that is used instead. This only works between 5mmol/l (90mg/dl) and 10mmol/l (180mg/dl)
 
 The user defined Boost Scale Value can be used to increase the boost bolus if the user requires, however, users should be aware that this increases the risk of hypos when small rises occur.
 
@@ -64,9 +66,17 @@ If **Boost Scale Value** is less than 3, Boost is enabled.
 
 The short and long average delta clauses disable boost once delta and the average deltas are aligned. There is a preferences setting (Boost Bolus Cap) that limits the maximum bolus that can be delivered by Boost outside of the standard UAMSMBBasalMinutes limit.
 
+**High Boost**
+
+If glucose levels are above 10, and glucose acceleration is greater than 5%, a high boost is delivered. The bolus value is one hour of basal requirement and is based on the current period basal rate, unless this is smaller than "Insulin Required" when one hour of basal plus half the insulin required is used, divided by your "pecentage of insulin required value", unless this value is more than insulin required, at which point that is used.
+
 **Boost Percentage Scale**
 
 Boost percentage Scale is a feature that allows Boost to scale the SMB from 150% of insulin required at 108 mg/dl (6 mmol/l) to the user entered insulin required PCT at 180mg/dl (10 mmol/l). It can be enabled via a switch in the preferences and the percentage values are hard coded. it is only active when [Delta - Short Average Delta ] is positive, meaning that it only happens when delta variation is accelerating.
+
+**Acceleration bolus**
+
+The accleration bolus is used when glucose levels are rising very rapidly (more than 25%) when a dose that is scaled similar to the Percent Scale is used, with the scaling operating at half the rate of the "Boost Percentage Scale" option.
 
 **Enhanced oref1**
 
