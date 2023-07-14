@@ -1710,8 +1710,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                      }
 
                      if (boostInsulinReq < (insulinReq/insulinReqPCT)) {
-                     var boostInsulinReq = Math.min((boostInsulinReq + (0.5 * (insulinReq/insulinReqPCT))),(insulinReq/insulinReqPCT));
-                     var microBolus = Math.floor(Math.min((insulinReq/insulinReqPCT),boost_max)*roundSMBTo)/roundSMBTo;
+                     boostInsulinReq = Math.min((boostInsulinReq + (0.5 * (insulinReq/insulinReqPCT))),(insulinReq/insulinReqPCT));
+                     var microBolus = Math.floor(Math.min((boostInsulinReq/insulinReqPCT),boost_max)
+                     *roundSMBTo)/roundSMBTo;
                      rT.reason += "UAM  High Boost enacted; SMB equals" + microBolus + "; ";
                      }
                      else {
