@@ -299,7 +299,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version: 4.1.3                               ");
+        console.error( "     Boost version: 4.1.3a                              ");
         console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7 != null){
@@ -1764,7 +1764,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
                 console.error("Post percent scale trigger state:"+iTimeActive+"; ");
                               }
 
-           else if (delta_accl > 25 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && enableBoost){
+           else if (delta_accl > 25 && glucose_status.delta > 4 && now1 >= boost_start && now1 < boost_end && iob_data.iob < boostMaxIOB && enableBoost && eventualBG > target_bg){
 
             boostInsulinReq = Math.min(boost_scale * boostInsulinReq,boost_max);
                     if (boostInsulinReq > boostMaxIOB-iob_data.iob) {
