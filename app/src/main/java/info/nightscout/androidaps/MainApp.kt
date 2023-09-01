@@ -1,8 +1,11 @@
 package info.nightscout.androidaps
 
 import android.bluetooth.BluetoothDevice
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.Build
