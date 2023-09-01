@@ -62,6 +62,8 @@ When an initial rise is detected with a meal, but no announced COB, delta, short
 
 The user defined Boost Scale Value can be used to increase the boost bolus if the user requires, however, users should be aware that this increases the risk of hypos when small rises occur.
 
+Boost also uses the percent scale value to increase the early bolus size.
+
 If **Boost Scale Value** is less than 3, Boost is enabled.
 
 The short and long average delta clauses disable boost once delta and the average deltas are aligned. There is a preferences setting (Boost Bolus Cap) that limits the maximum bolus that can be delivered by Boost outside of the standard UAMSMBBasalMinutes limit.
@@ -103,7 +105,7 @@ Note that the default settings are designed to disable most of the functions, an
 
 The settings with the largest effect on post prandial outcomes are *Boost insulin required percent* and *Percent Scale Factor*, alongside your usual SMBMinutes settings.
 
-*Boost insulin required percent* under normal AAPS is hardcoded to 50%. This setting allows you to tell the accelerated dosing features to give more a higher percentage of the insulin required. <br>
+*Boost insulin required percent* under normal AAPS, percentage of insulin required to be given as SMB is hardcoded to 50%. This setting allows you to tell the accelerated dosing features to give more a higher percentage of the insulin required. <br>
 *Percent scale factor* is the max amount that the Boost and Percent Scale functions can multiply the insulin required by at lower glucose levels. A larger number here leads to more insulin. <br>
 SMBMinutes settings: When there is no longer any acceleration in glucose delta values, the algorithm reverts to standard oref1 code and uses SMBminutes values as its max SMB size. When using Boost these values should generally be set to less then the default 30mins. A max of 15 or 20 is usually best.
 
