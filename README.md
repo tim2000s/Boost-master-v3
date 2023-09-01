@@ -101,9 +101,9 @@ Note that the default settings are designed to disable most of the functions, an
 
 **Notes on settings**
 
-The settings with the largest effect on post prandial outcomes are *Boost insulin required percent* and *Percent Scale Factor*, alongisde your usual SMBMinutes settings.
+The settings with the largest effect on post prandial outcomes are *Boost insulin required percent* and *Percent Scale Factor*, alongside your usual SMBMinutes settings.
 
-*Boost insulin required percent* under normal AAPS is hardcoded to 50%. This setting allows yo uto tell the accelerated dosing features to give more a higher percentage of the insulin required. <br>
+*Boost insulin required percent* under normal AAPS is hardcoded to 50%. This setting allows you to tell the accelerated dosing features to give more a higher percentage of the insulin required. <br>
 *Percent scale factor* is the max amount that the Boost and Percent Scale functions can multiply the insulin required by at lower glucose levels. A larger number here leads to more insulin. <br>
 SMBMinutes settings: When there is no longer any acceleration in glucose delta values, the algorithm reverts to standard oref1 code and uses SMBminutes values as its max SMB size. When using Boost these values should generally be set to less then the default 30mins. A max of 15 or 20 is usually best.
 
@@ -112,7 +112,7 @@ SMBMinutes settings: When there is no longer any acceleration in glucose delta v
 *Boost Bolus Cap* - Start at 2.5% of TDD and increase to no more than 5% of 7 day average total daily dose. <br>
 *Percent scale factor* - Once you are familiar with the percentage scale factor, the values can be increased up to 500% with associated increase in hypo risk with rises that are not linked to food.
 *UAM Boost max IOB* - Start at 5% of TDD and increase to no more than 15% of 7 day average total daily dose. <br>
-*UAMSMBBasalMinutes* - 30 mins. This is only used overnight when IOB is large enough to trigger UAM, so it doesn't need to be a large value. <br>
+*UAMSMBBasalMinutes* - 20 mins. This is only used overnight when IOB is large enough to trigger UAM, so it doesn't need to be a large value. <br>
 *Boost insulin required percent* - recommended not to exceed 75%. Start at 50% and increase as necessary. <br>
 *Target* - Set a target of 6.5mmol/l (120mg/dl) to get started with Boost. This provides a cushion as you adjust settings. Values below 5.5mmol/l (100mg/DL) are not recommended.<br>
 
