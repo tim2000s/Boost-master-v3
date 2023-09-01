@@ -108,13 +108,13 @@ Note that the default settings are designed to disable most of the functions, an
 *Boost insulin required percent* - recommended not to exceed 75%. Start at 50% and increase as necessary. <br>
 *Target* - Set a target of 6.5mmol/l (120mg/dl) to get started with Boost. This provides a cushion as you adjust settings. Values below 5.5mmol/l (100mg/DL) are not recommended.<br>
 
-**Boost Test Platform Branch Additions**
+**New Updates**
 
 With Boost and Percent Scale functions, the algorithm can set a 5x current basal rate in this run of the algorithm, with a cap of 2x insulin required, as per normal oref1. This is reassesed at each glucose point. 
 
 Enable Boost with High Temp Target is carried through. This allows Boost, Percent Scale and Enhanced oref1 to be disabled when a user sets a high temp target, while retaining SMBs.
 
-Enhanced oref1 is modified from the master version to only fire when deltas are increasing above a rate of 0.5%. This should reduce the amount of times it fires when glucose levels are higher, but still allow additional bolusing.
+Enhanced oref1 is modified to only fire when deltas are increasing above a rate of 0.5%. This reduces the amount of times it fires when glucose levels are higher, but still allows additional bolusing.
 
 *Stepcount Features*
 
