@@ -47,7 +47,7 @@ All of the additional code outside of the standard SMB calculation requires a ti
 
 During normal use, you should set your Boost Bolus Cap to be the max that boost delivers when Boost is enabled and no COB are entered.
 
-Boost outside the first 40 mins of COB, or with 0 COB has four phases:
+Boost outside the first 40 mins of COB, or with 0 COB has six phases:
 
 1. Boost bolus
 2. High Boost Bolus
@@ -72,7 +72,7 @@ If glucose levels are above 10, and glucose acceleration is greater than 5%, a h
 
 **Boost Percentage Scale**
 
-Boost percentage Scale is a feature that allows Boost to scale the SMB from 150% of insulin required at 108 mg/dl (6 mmol/l) to the user entered insulin required PCT at 180mg/dl (10 mmol/l). It can be enabled via a switch in the preferences and the percentage values are hard coded. it is only active when [Delta - Short Average Delta ] is positive, meaning that it only happens when delta variation is accelerating.
+Boost percentage Scale is a feature that allows Boost to scale the SMB from a user entered multiple of insulin required at 108 mg/dl (6 mmol/l) to the user entered *Boost insulin required percent* at 180mg/dl (10 mmol/l). It can be enabled via a switch in the preferences and the percentage values are hard coded. it is only active when [Delta - Short Average Delta ] is positive, meaning that it only happens when delta variation is accelerating.
 
 **Acceleration bolus**
 
@@ -98,6 +98,14 @@ Note that the default settings are designed to disable most of the functions, an
 *UAM Boost Start Time (in hours using 24 hour clock)* - defaults to 7 <br>
 *UAM Boost end time (in hours using 24 hour clock)* - defaults to 8
 *BG level below which low glucose suspend occurs* - defaults to standard algorithm behaviour; can be adjusted between 65 and 100.<br>
+
+**Notes on settings**
+
+The settings with the largest effect on post prandial outcomes are *Boost insulin required percent* and *Percent Scale Factor*, alongisde your usual SMBMinutes settings.
+
+*Boost insulin required percent* under normal AAPS is hardcoded to 50%. This setting allows yo uto tell the accelerated dosing features to give more a higher percentage of the insulin required. <br>
+*Percent scale factor* is the max amount that the Boost and Percent Scale functions can multiply the insulin required by at lower glucose levels. A larger number here leads to more insulin. <br>
+SMBMinutes settings: When there is no longer any acceleration in glucose delta values, the algorithm reverts to standard oref1 code and uses SMBminutes values as its max SMB size. When using Boost these values should generally be set to less then the default 30mins. A max of 15 or 20 is usually best.
 
 **Recommended Settings**
 
