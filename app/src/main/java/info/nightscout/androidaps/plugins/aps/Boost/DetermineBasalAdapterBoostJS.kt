@@ -97,7 +97,7 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
     private var recentSteps15Minutes: Int = 0
     private var recentSteps30Minutes: Int = 0
     private var recentSteps60Minutes: Int = 0
-    private var recentSteps36hrs: Int = 0
+    //private var recentSteps36hrs: Int = 0
     private var now: Long = 0
     private var modelai: Boolean = false
     private var smbToGivetest: Double = 0.0
@@ -273,7 +273,6 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
         this.profile.put("enableUAM", uamAllowed)
         this.profile.put("A52_risk_enable", BoostDefaults.A52_risk_enable)
         val smbEnabled = sp.getBoolean(R.string.key_use_smb, false)
-        val limit_v_sens = sp.getBoolean(R.string.key_enableSensBGCap, false)
         this.profile.put("SMBInterval", sp.getInt(R.string.key_smbinterval, BoostDefaults.SMBInterval))
         this.profile.put("enableSMB_with_COB", smbEnabled && sp.getBoolean(R.string.key_enableSMB_with_COB, false))
         this.profile.put("enableSMB_with_temptarget", smbEnabled && sp.getBoolean(R.string.key_enableSMB_with_temptarget, false))
@@ -364,14 +363,14 @@ class DetermineBasalAdapterBoostJS internal constructor(private val scriptReader
         this.recentSteps15Minutes = StepService.getRecentStepCount15Min()
         this.recentSteps30Minutes = StepService.getRecentStepCount30Min()
         this.recentSteps60Minutes = StepService.getRecentStepCount60Min()
-        this.recentSteps36hrs = StepService.getRecentStepCount36Hrs()
+        //this.recentSteps36hrs = StepService.getRecentStepCount36Hrs()
 
         this.profile.put("recentSteps5Minutes", recentSteps5Minutes)
         this.profile.put("recentSteps10Minutes", recentSteps10Minutes)
         this.profile.put("recentSteps15Minutes", recentSteps15Minutes)
         this.profile.put("recentSteps30Minutes", recentSteps30Minutes)
         this.profile.put("recentSteps60Minutes", recentSteps60Minutes)
-        this.profile.put("recentSteps36hrs", recentSteps36hrs)
+        //this.profile.put("recentSteps36hrs", recentSteps36hrs)
 
         if (constraintChecker.isAutosensModeEnabled().value()) {
             autosensData.put("ratio", autosensDataRatio)
