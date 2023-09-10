@@ -117,7 +117,7 @@ function enable_boost(profile,target_bg)
         console.error("Boost disabled due to high temptarget of",target_bg);
         return false;
     } else {
-        console.error("Boost enabled \n");
+        console.error("No high temp target; Boost can run \n");
     }
     return true;
 }
@@ -303,7 +303,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
     //*********************************************************************************
 
         console.error("---------------------------------------------------------");
-        console.error( "     Boost version: 4.1.4                              ");
+        console.error( "     Boost version: 4.1.5                              ");
         console.error("---------------------------------------------------------");
 
     if (meal_data.TDDAIMI7 != null){
@@ -373,7 +373,7 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             target_bg = 150;
             console.error("Temp target due to activity set to: "+target_bg+"; ");
 
-    }else if(recentSteps60Minutes < profile.inactivity_steps && profileSwitch == 100 && now > boost_start && now < boost_end){
+    }else if(recentSteps60Minutes < profile.inactivity_steps && profileSwitch == 100 && now > boost_start && now < boost_end && !(now1 < ( boost_start + profile.sleep_in_hrs ) && recentSteps60Minutes < profile.sleep_in_steps)){
             profileSwitch = profile.inactivity_pct;
             dynISFadjust = ( dynISFadjust * (profileSwitch / 100));
             console.error("Dynamic ISF TDD increased due to inactivity to: "+profileSwitch+"%; ");
